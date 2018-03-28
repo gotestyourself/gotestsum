@@ -13,13 +13,15 @@ image=builder:
   image: gotestsum-dev
   context: dobifiles/
   dockerfile: Dockerfile
+  target: dev
   args:
     GOLANG_VERSION: '{env.GOLANG_VERSION:}' 
 
 image=linter:
   image: gotestsum-lint
   context: dobifiles/
-  dockerfile: Dockerfile.lint
+  dockerfile: Dockerfile
+  target: linter
 
 job=shell:
   use: builder

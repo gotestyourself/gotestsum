@@ -1,22 +1,45 @@
+
 ARG     GOLANG_VERSION
-FROM    golang:${GOLANG_VERSION:-1.10-alpine}
-
+FROM    golang:${GOLANG_VERSION:-1.10-alpine} as golang
 RUN     apk add -U curl git bash
+WORKDIR /go/src/gotest.tools/gotestsum
+ENV     CGO_ENABLED=0
+ENV     PS1="# "
 
-ARG     FILEWATCHER_SHA=v0.2.1
+
+FROM    golang as tools
+ARG     FILEWATCHER=v0.2.1
 RUN     go get -d github.com/dnephin/filewatcher && \
         cd /go/src/github.com/dnephin/filewatcher && \
-        git checkout -q "$FILEWATCHER_SHA" && \
-        go build -v -o /usr/bin/filewatcher . && \
-        rm -rf /go/src/* /go/pkg/* /go/bin/*
-
+        git checkout -q "$FILEWATCHER" && \
+        go build -o /usr/bin/filewatcher .
 ARG     DEP_TAG=v0.4.1
 RUN     go get -d github.com/golang/dep/cmd/dep && \
         cd /go/src/github.com/golang/dep && \
         git checkout -q "$DEP_TAG" && \
-        go build -v -o /usr/bin/dep ./cmd/dep && \
-        rm -rf /go/src/* /go/pkg/* /go/bin/*
+        go build -o /usr/bin/dep ./cmd/dep
 
-ENV     PS1="# "
-WORKDIR /go/src/gotest.tools/gotestsum
-ENV     CGO_ENABLED=0
+
+FROM    golang as dev
+COPY    --from=tools /usr/bin/filewatcher /usr/bin/filewatcher
+COPY    --from=tools /usr/bin/dep /usr/bin/dep
+
+
+FROM    dev as dev-with-source
+COPY    . .
+
+
+FROM    golang as linter
+ARG     GOMETALINTER=v2.0.5
+RUN     go get -d github.com/alecthomas/gometalinter && \
+        cd /go/src/github.com/alecthomas/gometalinter && \
+        git checkout -q "$GOMETALINTER" && \
+        go build -v -o /usr/local/bin/gometalinter . && \
+        gometalinter --install && \
+        rm -rf /go/src/* /go/pkg/*
+ENTRYPOINT ["/usr/local/bin/gometalinter"]
+CMD     ["--config=.gometalinter.json", "./..."]
+
+
+FROM    linter as linter-with-source
+COPY    . .

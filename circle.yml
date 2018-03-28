@@ -13,21 +13,21 @@ jobs:
       - run:
           name: "Install Dependencies"
           command: |
-            dockerfile=dobifiles/Dockerfile
-            echo "COPY . ." >> $dockerfile
-            docker build -f $dockerfile --tag testsum-builder:$CIRCLE_BUILD_NUM .
+            docker build -f dobifiles/Dockerfile \
+              --target dev-with-source \
+              --tag testsum-builder:$CIRCLE_BUILD_NUM .
             docker run --name \
                 deps-$CIRCLE_BUILD_NUM testsum-builder:$CIRCLE_BUILD_NUM \
                 dep ensure
             docker cp \
-                deps-$CIRCLE_BUILD_NUM:/go/src/github.com/gotestyourself/gotestyourself/vendor \
+                deps-$CIRCLE_BUILD_NUM:/go/src/gotest.tools/gotestsum/vendor \
                 vendor
       - run:
           name: "Lint"
           command: |
-            dockerfile=dobifiles/Dockerfile.lint
-            echo "COPY . ." >> $dockerfile
-            docker build -f $dockerfile --tag testsum-linter:$CIRCLE_BUILD_NUM .
+            docker build -f dobifiles/Dockerfile \
+            --target linter-with-source \
+            --tag testsum-linter:$CIRCLE_BUILD_NUM .
             docker run --rm testsum-linter:$CIRCLE_BUILD_NUM
 
   test-golang-1.10:
