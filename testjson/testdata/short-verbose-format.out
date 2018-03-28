@@ -1,0 +1,58 @@
+sometimes main can exit 2
+FAIL testjson/internal/badmain
+--- PASS testjson/internal/good TestPassed (0.00s)
+--- PASS testjson/internal/good TestPassedWithLog (0.00s)
+--- PASS testjson/internal/good TestPassedWithStdout (0.00s)
+--- PASS testjson/internal/good TestWithStderr (0.00s)
+--- PASS testjson/internal/good TestNestedSuccess/a/sub (0.00s)
+--- PASS testjson/internal/good TestNestedSuccess/a (0.00s)
+--- PASS testjson/internal/good TestNestedSuccess/b/sub (0.00s)
+--- PASS testjson/internal/good TestNestedSuccess/b (0.00s)
+--- PASS testjson/internal/good TestNestedSuccess/c/sub (0.00s)
+--- PASS testjson/internal/good TestNestedSuccess/c (0.00s)
+--- PASS testjson/internal/good TestNestedSuccess/d/sub (0.00s)
+--- PASS testjson/internal/good TestNestedSuccess/d (0.00s)
+--- PASS testjson/internal/good TestNestedSuccess (0.00s)
+--- PASS testjson/internal/good TestParallelTheThird (0.00s)
+--- PASS testjson/internal/good TestParallelTheSecond (0.01s)
+--- PASS testjson/internal/good TestParallelTheFirst (0.01s)
+PASS testjson/internal/good
+--- PASS testjson/internal/stub TestPassed (0.00s)
+--- PASS testjson/internal/stub TestPassedWithLog (0.00s)
+--- PASS testjson/internal/stub TestPassedWithStdout (0.00s)
+=== RUN   TestFailed
+--- FAIL: TestFailed (0.00s)
+	stub_test.go:34: this failed
+--- FAIL testjson/internal/stub TestFailed (0.00s)
+--- PASS testjson/internal/stub TestWithStderr (0.00s)
+=== RUN   TestFailedWithStderr
+this is stderr
+--- FAIL: TestFailedWithStderr (0.00s)
+	stub_test.go:43: also failed
+--- FAIL testjson/internal/stub TestFailedWithStderr (0.00s)
+--- PASS testjson/internal/stub TestNestedWithFailure/a/sub (0.00s)
+--- PASS testjson/internal/stub TestNestedWithFailure/a (0.00s)
+--- PASS testjson/internal/stub TestNestedWithFailure/b/sub (0.00s)
+--- PASS testjson/internal/stub TestNestedWithFailure/b (0.00s)
+=== RUN   TestNestedWithFailure/c
+    --- FAIL: TestNestedWithFailure/c (0.00s)
+    	stub_test.go:65: failed
+--- FAIL testjson/internal/stub TestNestedWithFailure/c (0.00s)
+--- PASS testjson/internal/stub TestNestedWithFailure/d/sub (0.00s)
+--- PASS testjson/internal/stub TestNestedWithFailure/d (0.00s)
+=== RUN   TestNestedWithFailure
+--- FAIL: TestNestedWithFailure (0.00s)
+--- FAIL testjson/internal/stub TestNestedWithFailure (0.00s)
+--- PASS testjson/internal/stub TestNestedSuccess/a/sub (0.00s)
+--- PASS testjson/internal/stub TestNestedSuccess/a (0.00s)
+--- PASS testjson/internal/stub TestNestedSuccess/b/sub (0.00s)
+--- PASS testjson/internal/stub TestNestedSuccess/b (0.00s)
+--- PASS testjson/internal/stub TestNestedSuccess/c/sub (0.00s)
+--- PASS testjson/internal/stub TestNestedSuccess/c (0.00s)
+--- PASS testjson/internal/stub TestNestedSuccess/d/sub (0.00s)
+--- PASS testjson/internal/stub TestNestedSuccess/d (0.00s)
+--- PASS testjson/internal/stub TestNestedSuccess (0.00s)
+--- PASS testjson/internal/stub TestParallelTheThird (0.00s)
+--- PASS testjson/internal/stub TestParallelTheSecond (0.01s)
+--- PASS testjson/internal/stub TestParallelTheFirst (0.01s)
+FAIL testjson/internal/stub

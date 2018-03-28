@@ -1,0 +1,25 @@
+
+[[constraint]]
+  name = "github.com/google/go-cmp"
+  version = "0.2.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/gotestyourself/gotestyourself"
+
+[[constraint]]
+  name = "github.com/jonboulle/clockwork"
+  version = "0.1.0"
+
+[[constraint]]
+  name = "github.com/pkg/errors"
+  version = "0.8.0"
+
+[[constraint]]
+  name = "github.com/spf13/pflag"
+  version = "1.0.0"
+
+[prune]
+  non-go = true
+  go-tests = true
+  unused-packages = true

@@ -1,0 +1,3 @@
+✖  testjson/internal/badmain (10ms)
+✓  testjson/internal/good
+✖  testjson/internal/stub (11ms)
