@@ -8,7 +8,9 @@ Requires Go version 1.10+
 [![CircleCI](https://circleci.com/gh/gotestyourself/gotestsum/tree/master.svg?style=shield)](https://circleci.com/gh/gotestyourself/gotestsum/tree/master)
 [![Go Reportcard](https://goreportcard.com/badge/github.com/gotestyourself/gotestsum)](https://goreportcard.com/report/github.com/gotestyourself/gotestsum)
 
+## Install
 
+    go get gotest.tools/gotestsum/cmd
 
 ## Key Features
 
