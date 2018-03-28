@@ -1,0 +1,60 @@
+meta:
+  project: gotestsum
+
+mount=source:
+  bind: .
+  path: /go/src/gotest.tools/gotestsum
+
+mount=depsources:
+ bind: ./.depsources
+ path: /go/pkg/dep/sources
+
+image=builder:
+  image: gotestsum-dev
+  context: dobifiles/
+  dockerfile: Dockerfile
+  target: dev
+  args:
+    GOLANG_VERSION: '{env.GOLANG_VERSION:}' 
+
+image=linter:
+  image: gotestsum-lint
+  context: dobifiles/
+  dockerfile: Dockerfile
+  target: linter
+
+job=shell:
+  use: builder
+  mounts: [source, depsources]
+  interactive: true
+  command: sh
+
+job=watch:
+  use: builder
+  mounts: [source]
+  interactive: true
+  command: scripts/watch
+  env: ['TESTFLAGS={env.TESTFLAGS:}']
+
+job=test-unit:
+  use: builder
+  mounts: [source]
+  interactive: true
+  command: scripts/test-unit
+
+job=deps:
+  use: builder
+  mounts: [source, depsources]
+  command: dep ensure
+
+job=lint:
+  use: linter
+  mounts: [source]
+
+job=binary:
+  use: builder
+  mounts: [source]
+  command: scripts/build
+
+alias=test:
+  tasks: [test-unit]

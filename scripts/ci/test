@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+set -eu -o pipefail
+
+golang_version=${1-}
+dockerfile=dobifiles/Dockerfile
+
+image="testsum-builder:$CIRCLE_BUILD_NUM"
+docker build \
+    -f "$dockerfile" \
+    --target dev-with-source \
+    --build-arg GOLANG_VERSION="$golang_version" \
+    --tag "$image" .
+docker run \
+    -e TESTTIMEOUT=30s \
+    --name "test-$CIRCLE_BUILD_NUM" "$image" \
+    bash -ec 'dep ensure; scripts/build; scripts/test-unit'

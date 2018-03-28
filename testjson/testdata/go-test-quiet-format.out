@@ -1,0 +1,6 @@
+this is a Print
+--- FAIL: TestFailed (0.00s)
+	stub_test.go:33: this failed
+this is stderr
+FAIL
+FAIL	github.com/gotestyourself/gotestyourself/testjson/internal/stub	0.011s

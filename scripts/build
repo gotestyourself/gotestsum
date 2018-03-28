@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+exec go build -o ./dist/gotestsum ./cmd/gotestsum

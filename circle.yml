@@ -1,0 +1,48 @@
+version: 2
+
+jobs:
+
+  lint:
+    working_directory: /work
+    docker: [{image: 'docker:18.03-git'}]
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          command: docker version
+      - run:
+          name: "Install Dependencies"
+          command: |
+            docker build -f dobifiles/Dockerfile \
+              --target dev-with-source \
+              --tag testsum-builder:$CIRCLE_BUILD_NUM .
+            docker run --name \
+                deps-$CIRCLE_BUILD_NUM testsum-builder:$CIRCLE_BUILD_NUM \
+                dep ensure
+            docker cp \
+                deps-$CIRCLE_BUILD_NUM:/go/src/gotest.tools/gotestsum/vendor \
+                vendor
+      - run:
+          name: "Lint"
+          command: |
+            docker build -f dobifiles/Dockerfile \
+            --target linter-with-source \
+            --tag testsum-linter:$CIRCLE_BUILD_NUM .
+            docker run --rm testsum-linter:$CIRCLE_BUILD_NUM
+
+  test-golang-1.10:
+    working_directory: /work
+    docker: [{image: 'docker:17.06-git'}]
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: "Unit Test GO 1.10"
+          command: scripts/ci/test 1.10-alpine
+
+workflows:
+  version: 2
+  ci:
+    jobs:
+      - lint
+      - test-golang-1.10
