@@ -38,7 +38,15 @@ jobs:
       - setup_remote_docker
       - run:
           name: "Unit Test GO 1.10"
-          command: scripts/ci/test 1.10-alpine
+          command: |
+            scripts/ci/test 1.10-alpine
+            mkdir -p junit/gotest
+            docker cp \
+                test-$CIRCLE_BUILD_NUM:/go/src/gotest.tools/gotestsum/junit.xml \
+                junit/gotest/junit.xml
+
+      - store_test_results:
+          path: junit/
 
 workflows:
   version: 2

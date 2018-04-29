@@ -61,8 +61,7 @@ type JUnitFailure struct {
 
 // Write creates an XML document and writes it to out.
 func Write(out io.Writer, exec *testjson.Execution) error {
-	doc := generate(exec)
-	return errors.Wrap(write(out, doc), "failed to write JUnit XML")
+	return errors.Wrap(write(out, generate(exec)), "failed to write JUnit XML")
 }
 
 func generate(exec *testjson.Execution) JUnitTestSuites {
