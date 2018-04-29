@@ -8,6 +8,10 @@ import (
 	"strings"
 )
 
+// EventFormatter is a function which handles an event and returns a string to
+// output for the event.
+type EventFormatter func(event TestEvent, output *Execution) (string, error)
+
 func debugFormat(event TestEvent, _ *Execution) (string, error) {
 	return fmt.Sprintf("%s %s %s (%.3f) [%d] %s\n",
 		event.Package,
@@ -149,8 +153,8 @@ func getPkgPathPrefix() string {
 
 var pkgPathPrefix = getPkgPathPrefix()
 
-// NewEventHandler returns a handler for printing events.
-func NewEventHandler(format string) HandleEvent {
+// NewEventFormatter returns a formatter for printing events.
+func NewEventFormatter(format string) EventFormatter {
 	switch format {
 	case "debug":
 		return debugFormat

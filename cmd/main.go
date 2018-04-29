@@ -94,22 +94,24 @@ func run(opts *options) error {
 	defer goTestProc.cancel()
 
 	out := os.Stdout
-	handler := testjson.NewEventHandler(opts.format)
-	if handler == nil {
-		return errors.Errorf("unknown format %s", opts.format)
+	handler, err := newEventHandler(opts, out, os.Stderr)
+	if err != nil {
+		return err
 	}
+	defer handler.Close()
 	exec, err := testjson.ScanTestOutput(testjson.ScanConfig{
 		Stdout:  goTestProc.stdout,
 		Stderr:  goTestProc.stderr,
 		Handler: handler,
-		Out:     out,
-		Err:     os.Stderr,
 	})
 	if err != nil {
 		return err
 	}
 	// TODO: add a --summary flag to show/hide different parts of the summary
 	if err := testjson.PrintSummary(out, exec); err != nil {
+		return err
+	}
+	if err := writeJUnitFile(opts.junitFile, exec); err != nil {
 		return err
 	}
 	return goTestProc.cmd.Wait()

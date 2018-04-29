@@ -39,6 +39,8 @@ type TestEvent struct {
 	Elapsed float64
 	// Output of test or benchmark
 	Output string
+	// raw is the raw JSON bytes of the event
+	raw []byte
 }
 
 // PackageEvent returns true if the event is a package start or end event
@@ -49,6 +51,11 @@ func (e TestEvent) PackageEvent() bool {
 // ElapsedFormatted returns Elapsed formatted in the go test format, ex (0.00s).
 func (e TestEvent) ElapsedFormatted() string {
 	return fmt.Sprintf("(%.2fs)", e.Elapsed)
+}
+
+// Bytes returns the serialized JSON bytes that were parsed to create the event.
+func (e TestEvent) Bytes() []byte {
+	return e.raw
 }
 
 // Package is the set of TestEvents for a single go package
@@ -208,25 +215,24 @@ func NewExecution() *Execution {
 	}
 }
 
-// HandleEvent is a function which handles an event and returns a string to
-// output for the event.
-type HandleEvent func(event TestEvent, output *Execution) (string, error)
-
 // ScanConfig used by ScanTestOutput
 type ScanConfig struct {
-	Stdout io.Reader
-	Stderr io.Reader
-	// TODO: accept a OutHandler and ErrHandler instead of Writers and handler
-	Out     io.Writer
-	Err     io.Writer
-	Handler HandleEvent
+	Stdout  io.Reader
+	Stderr  io.Reader
+	Handler EventHandler
+}
+
+// EventHandler is called by ScanTestOutput for each event and write to stderr.
+type EventHandler interface {
+	Event(event TestEvent, execution *Execution) error
+	Err(text string) error
 }
 
 // ScanTestOutput reads lines from stdout and stderr, creates an Execution,
 // calls the Handler for each event, and returns the Execution.
 func ScanTestOutput(config ScanConfig) (*Execution, error) {
 	execution := NewExecution()
-	waitOnStderr := readStderr(config.Stderr, config.Err, execution)
+	waitOnStderr := readStderr(config.Stderr, config.Handler.Err, execution)
 	scanner := bufio.NewScanner(config.Stdout)
 
 	for scanner.Scan() {
@@ -236,11 +242,7 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 			return nil, errors.Wrapf(err, "failed to parse test output: %s", string(raw))
 		}
 		execution.add(event)
-		line, err := config.Handler(event, execution)
-		if err != nil {
-			return nil, err
-		}
-		if _, err := config.Out.Write([]byte(line)); err != nil {
+		if err := config.Handler.Event(event, execution); err != nil {
 			return nil, err
 		}
 	}
@@ -252,14 +254,16 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 	return execution, errors.Wrap(scanner.Err(), "failed to scan test output")
 }
 
-func readStderr(in io.Reader, out io.Writer, exec *Execution) chan error {
+type errHandler func(text string) error
+
+func readStderr(in io.Reader, handle errHandler, exec *Execution) chan error {
 	wait := make(chan error, 1)
 	go func() {
 		defer close(wait)
 		scanner := bufio.NewScanner(in)
 		for scanner.Scan() {
 			exec.addError(scanner.Text())
-			if _, err := out.Write(append(scanner.Bytes(), '\n')); err != nil {
+			if err := handle(scanner.Text()); err != nil {
 				wait <- err
 				return
 			}
@@ -272,5 +276,6 @@ func readStderr(in io.Reader, out io.Writer, exec *Execution) chan error {
 func parseEvent(raw []byte) (TestEvent, error) {
 	event := TestEvent{}
 	err := json.Unmarshal(raw, &event)
+	event.raw = raw
 	return event, err
 }
