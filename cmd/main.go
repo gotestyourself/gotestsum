@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"os/exec"
 	"strings"
 
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/pflag"
 	"gotest.tools/gotestsum/testjson"
 )
@@ -21,6 +21,7 @@ func main() {
 		os.Exit(1)
 	}
 	opts.args = flags.Args()
+	setupLogging(opts)
 
 	switch err := run(opts).(type) {
 	case nil:
@@ -59,6 +60,10 @@ Formats:
 		"print format of test input")
 	flags.BoolVar(&opts.rawCommand, "raw-command", false,
 		"don't prepend 'go test -json' to the 'go test' command")
+	flags.StringVar(&opts.jsonFile, "jsonfile", "",
+		"write all TestEvents to file")
+	flags.StringVar(&opts.junitFile, "junitfile", "",
+		"write a JUnit XML file")
 	return flags, opts
 }
 
@@ -67,13 +72,20 @@ type options struct {
 	format     string
 	debug      bool
 	rawCommand bool
+	jsonFile   string
+	junitFile  string
+}
+
+func setupLogging(opts *options) {
+	if opts.debug {
+		log.SetLevel(log.DebugLevel)
+	}
 }
 
 // TODO: add flag --max-failures
-// TODO: use logrus
 func run(opts *options) error {
 	ctx := context.Background()
-	goTestProc, err := startGoTest(ctx, goTestCmdArgs(opts), opts.debug)
+	goTestProc, err := startGoTest(ctx, goTestCmdArgs(opts))
 	if err != nil {
 		return errors.Wrapf(err, "failed to run %s %s",
 			goTestProc.cmd.Path,
@@ -133,15 +145,13 @@ type proc struct {
 	cancel func()
 }
 
-func startGoTest(ctx context.Context, args []string, debug bool) (proc, error) {
+func startGoTest(ctx context.Context, args []string) (proc, error) {
 	ctx, cancel := context.WithCancel(ctx)
 	p := proc{
 		cmd:    exec.CommandContext(ctx, args[0], args[1:]...),
 		cancel: cancel,
 	}
-	if debug {
-		log.Printf("exec: %s", p.cmd.Args)
-	}
+	log.Debugf("exec: %s", p.cmd.Args)
 	var err error
 	p.stdout, err = p.cmd.StdoutPipe()
 	if err != nil {
@@ -152,8 +162,8 @@ func startGoTest(ctx context.Context, args []string, debug bool) (proc, error) {
 		return p, err
 	}
 	err = p.cmd.Start()
-	if err == nil && debug {
-		log.Printf("go test pid: %d", p.cmd.Process.Pid)
+	if err == nil {
+		log.Debugf("go test pid: %d", p.cmd.Process.Pid)
 	}
 	return p, err
 }
