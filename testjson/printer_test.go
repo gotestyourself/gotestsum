@@ -85,22 +85,22 @@ var expectedExecution = &Execution{
 	errors:  []string{"internal/broken/broken.go:5:21: undefined: somepackage"},
 	packages: map[string]*Package{
 		"github.com/gotestyourself/gotestyourself/testjson/internal/good": {
-			run: 18,
-			skipped: []TestCase{
+			Total: 18,
+			Skipped: []TestCase{
 				{Test: "TestSkipped"},
 				{Test: "TestSkippedWitLog"},
 			},
 			action: ActionPass,
 		},
 		"github.com/gotestyourself/gotestyourself/testjson/internal/stub": {
-			run: 28,
-			failed: []TestCase{
+			Total: 28,
+			Failed: []TestCase{
 				{Test: "TestFailed"},
 				{Test: "TestFailedWithStderr"},
 				{Test: "TestNestedWithFailure/c"},
 				{Test: "TestNestedWithFailure"},
 			},
-			skipped: []TestCase{
+			Skipped: []TestCase{
 				{Test: "TestSkipped"},
 				{Test: "TestSkippedWitLog"},
 			},
@@ -121,6 +121,7 @@ var cmpExecutionShallow = gocmp.Options{
 var cmpPackageShallow = gocmp.Options{
 	// TODO: use opt.PathField(Package{}, "output")
 	gocmp.FilterPath(stringPath("packages.output"), gocmp.Ignore()),
+	gocmp.FilterPath(stringPath("packages.Passed"), gocmp.Ignore()),
 	gocmp.Comparer(func(x, y TestCase) bool {
 		return x.Test == y.Test
 	}),

@@ -98,7 +98,7 @@ func run(opts *options) error {
 	if err != nil {
 		return err
 	}
-	defer handler.Close()
+	defer handler.Close() // nolint: errcheck
 	exec, err := testjson.ScanTestOutput(testjson.ScanConfig{
 		Stdout:  goTestProc.stdout,
 		Stderr:  goTestProc.stderr,

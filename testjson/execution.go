@@ -60,14 +60,39 @@ func (e TestEvent) Bytes() []byte {
 
 // Package is the set of TestEvents for a single go package
 type Package struct {
-	run     int
-	failed  []TestCase
-	skipped []TestCase
-	//passed []time.Duration
-	output map[string][]string
+	Total   int
+	Failed  []TestCase
+	Skipped []TestCase
+	Passed  []TestCase
+	output  map[string][]string
 	// action identifies if the package passed or failed. A package may fail
 	// with no test failures if an init() or TestMain exits non-zero.
 	action Action
+}
+
+// Result returns if the package passed, failed, or was skipped because there
+// were no tests.
+func (p Package) Result() Action {
+	return p.action
+}
+
+// Elapsed returns the sum of the elapsed time for all tests in the package.
+func (p Package) Elapsed() time.Duration {
+	elapsed := time.Duration(0)
+	for _, testcase := range p.TestCases() {
+		elapsed = elapsed + testcase.Elapsed
+	}
+	return elapsed
+}
+
+// TestCases returns all the test cases.
+func (p Package) TestCases() []TestCase {
+	return append(append(p.Passed, p.Failed...), p.Skipped...)
+}
+
+// Output returns the full test output for a test.
+func (p Package) Output(test string) []string {
+	return p.output[test]
 }
 
 // TestCase stores the name and elapsed time for a test case.
@@ -106,30 +131,35 @@ func (e *Execution) add(event TestEvent) {
 
 	switch event.Action {
 	case ActionRun:
-		pkg.run++
+		pkg.Total++
 	case ActionFail:
-		pkg.failed = append(pkg.failed, TestCase{
+		pkg.Failed = append(pkg.Failed, TestCase{
 			Package: event.Package,
 			Test:    event.Test,
-			Elapsed: elapsedDuration(event),
+			Elapsed: elapsedDuration(event.Elapsed),
 		})
 	case ActionSkip:
-		pkg.skipped = append(pkg.skipped, TestCase{
+		pkg.Skipped = append(pkg.Skipped, TestCase{
 			Package: event.Package,
 			Test:    event.Test,
-			Elapsed: elapsedDuration(event),
+			Elapsed: elapsedDuration(event.Elapsed),
 		})
 	case ActionOutput, ActionBench:
 		// TODO: limit size of buffered test output
 		pkg.output[event.Test] = append(pkg.output[event.Test], event.Output)
 	case ActionPass:
+		pkg.Passed = append(pkg.Passed, TestCase{
+			Package: event.Package,
+			Test:    event.Test,
+			Elapsed: elapsedDuration(event.Elapsed),
+		})
 		// Remove test output once a test passes, it wont be used
 		pkg.output[event.Test] = nil
 	}
 }
 
-func elapsedDuration(event TestEvent) time.Duration {
-	return time.Duration(event.Elapsed*1000) * time.Millisecond
+func elapsedDuration(elapsed float64) time.Duration {
+	return time.Duration(elapsed*1000) * time.Millisecond
 }
 
 // Output returns the full test output for a test.
@@ -137,9 +167,14 @@ func (e *Execution) Output(pkg, test string) []string {
 	return e.packages[pkg].output[test]
 }
 
-// Package returns the Package for a TestEvent.
-func (e *Execution) Package(event TestEvent) *Package {
-	return e.packages[event.Package]
+// Package returns the Package by name.
+func (e *Execution) Package(name string) *Package {
+	return e.packages[name]
+}
+
+// Packages returns a sorted list of all package names.
+func (e *Execution) Packages() []string {
+	return sortedKeys(e.packages)
 }
 
 var clock = clockwork.NewRealClock()
@@ -156,10 +191,10 @@ func (e *Execution) Failed() []TestCase {
 		pkg := e.packages[name]
 
 		// Add package-level failure output if there were no failed tests.
-		if pkg.action == ActionFail && len(pkg.failed) == 0 {
+		if pkg.action == ActionFail && len(pkg.Failed) == 0 {
 			failed = append(failed, TestCase{Package: name})
 		} else {
-			failed = append(failed, pkg.failed...)
+			failed = append(failed, pkg.Failed...)
 		}
 	}
 	return failed
@@ -178,7 +213,7 @@ func sortedKeys(pkgs map[string]*Package) []string {
 func (e *Execution) Skipped() []TestCase {
 	var skipped []TestCase
 	for _, pkg := range sortedKeys(e.packages) {
-		skipped = append(skipped, e.packages[pkg].skipped...)
+		skipped = append(skipped, e.packages[pkg].Skipped...)
 	}
 	return skipped
 }
@@ -187,7 +222,7 @@ func (e *Execution) Skipped() []TestCase {
 func (e *Execution) Total() int {
 	total := 0
 	for _, pkg := range e.packages {
-		total += pkg.run
+		total += pkg.Total
 	}
 	return total
 }

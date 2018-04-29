@@ -92,7 +92,7 @@ func shortFormat(event TestEvent, _ *Execution) (string, error) {
 		return "", nil
 	}
 	fmtElapsed := func() string {
-		d := elapsedDuration(event)
+		d := elapsedDuration(event.Elapsed)
 		if d == 0 {
 			return ""
 		}
@@ -114,12 +114,12 @@ func shortFormat(event TestEvent, _ *Execution) (string, error) {
 }
 
 func dotsFormat(event TestEvent, exec *Execution) (string, error) {
-	pkg := exec.Package(event)
+	pkg := exec.Package(event.Package)
 
 	switch {
 	case event.PackageEvent():
 		return "", nil
-	case event.Action == ActionRun && pkg.run == 1:
+	case event.Action == ActionRun && pkg.Total == 1:
 		return "[" + relativePackagePath(event.Package) + "]", nil
 	case event.Action == ActionPass:
 		return "·", nil

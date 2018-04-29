@@ -2,11 +2,11 @@ package main
 
 import (
 	"io"
-
 	"os"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
+	"gotest.tools/gotestsum/internal/junitxml"
 	"gotest.tools/gotestsum/testjson"
 )
 
@@ -24,7 +24,7 @@ func (h *eventHandler) Err(text string) error {
 
 func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execution) error {
 	if h.jsonFile != nil {
-		_, err := h.jsonFile.Write(event.Bytes())
+		_, err := h.jsonFile.Write(append(event.Bytes(), '\n'))
 		if err != nil {
 			return errors.Wrap(err, "failed to write JSON file")
 		}
@@ -83,6 +83,5 @@ func writeJUnitFile(filename string, execution *testjson.Execution) error {
 		}
 	}()
 
-	// TODO: generate report
-	return nil
+	return junitxml.Write(junitFile, execution)
 }

@@ -16,7 +16,7 @@ func PrintSummary(out io.Writer, execution *Execution) error {
 		formatTestCount(len(execution.Skipped()), "skipped", ""),
 		formatTestCount(len(execution.Failed()), "failure", "s"),
 		formatTestCount(len(errors), "error", "s"),
-		formatDurationAsSeconds(execution.Elapsed(), 3))
+		FormatDurationAsSeconds(execution.Elapsed(), 3))
 
 	writeTestCaseSummary(out, execution, formatSkipped)
 	writeTestCaseSummary(out, execution, formatFailures)
@@ -42,8 +42,9 @@ func formatTestCount(count int, category string, pluralize string) string {
 	return fmt.Sprintf(", %d %s", count, category)
 }
 
-func formatDurationAsSeconds(d time.Duration, precision int) string {
-	return fmt.Sprintf("%.[2]*[1]fs", float64(d.Nanoseconds()/1000000)/1000, precision)
+// FormatDurationAsSeconds formats a time.Duration as a float.
+func FormatDurationAsSeconds(d time.Duration, precision int) string {
+	return fmt.Sprintf("%.[2]*[1]fs", d.Seconds(), precision)
 }
 
 func writeTestCaseSummary(out io.Writer, execution *Execution, conf testCaseFormatConfig) {
@@ -57,7 +58,7 @@ func writeTestCaseSummary(out io.Writer, execution *Execution, conf testCaseForm
 			conf.prefix,
 			relativePackagePath(tc.Package),
 			tc.Test,
-			formatDurationAsSeconds(tc.Elapsed, 2))
+			FormatDurationAsSeconds(tc.Elapsed, 2))
 		for _, line := range execution.Output(tc.Package, tc.Test) {
 			if isRunLine(line) || conf.filter(line) {
 				continue
