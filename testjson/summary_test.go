@@ -18,8 +18,8 @@ func TestPrintSummaryNoFailures(t *testing.T) {
 	exec := &Execution{
 		started: fake.Now(),
 		packages: map[string]*Package{
-			"foo":   {run: 12},
-			"other": {run: 1},
+			"foo":   {Total: 12},
+			"other": {Total: 1},
 		},
 	}
 	fake.Advance(34123111 * time.Microsecond)
@@ -40,8 +40,8 @@ func TestPrintSummaryWithFailures(t *testing.T) {
 		started: fake.Now(),
 		packages: map[string]*Package{
 			"example.com/project/fs": {
-				run: 12,
-				failed: []TestCase{
+				Total: 12,
+				Failed: []TestCase{
 					{
 						Package: "example.com/project/fs",
 						Test:    "TestFileDo",
@@ -68,15 +68,15 @@ Some stdout/stderr here
 				action: ActionFail,
 			},
 			"example.com/project/pkg/more": {
-				run: 1,
-				failed: []TestCase{
+				Total: 1,
+				Failed: []TestCase{
 					{
 						Package: "example.com/project/pkg/more",
 						Test:    "TestAlbatross",
 						Elapsed: 40 * time.Millisecond,
 					},
 				},
-				skipped: []TestCase{
+				Skipped: []TestCase{
 					{
 						Package: "example.com/project/pkg/more",
 						Test:    "TestOnlySometimes",

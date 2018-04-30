@@ -8,6 +8,10 @@ import (
 	"strings"
 )
 
+// EventFormatter is a function which handles an event and returns a string to
+// output for the event.
+type EventFormatter func(event TestEvent, output *Execution) (string, error)
+
 func debugFormat(event TestEvent, _ *Execution) (string, error) {
 	return fmt.Sprintf("%s %s %s (%.3f) [%d] %s\n",
 		event.Package,
@@ -88,7 +92,7 @@ func shortFormat(event TestEvent, _ *Execution) (string, error) {
 		return "", nil
 	}
 	fmtElapsed := func() string {
-		d := elapsedDuration(event)
+		d := elapsedDuration(event.Elapsed)
 		if d == 0 {
 			return ""
 		}
@@ -110,12 +114,12 @@ func shortFormat(event TestEvent, _ *Execution) (string, error) {
 }
 
 func dotsFormat(event TestEvent, exec *Execution) (string, error) {
-	pkg := exec.Package(event)
+	pkg := exec.Package(event.Package)
 
 	switch {
 	case event.PackageEvent():
 		return "", nil
-	case event.Action == ActionRun && pkg.run == 1:
+	case event.Action == ActionRun && pkg.Total == 1:
 		return "[" + relativePackagePath(event.Package) + "]", nil
 	case event.Action == ActionPass:
 		return "·", nil
@@ -149,8 +153,8 @@ func getPkgPathPrefix() string {
 
 var pkgPathPrefix = getPkgPathPrefix()
 
-// NewEventHandler returns a handler for printing events.
-func NewEventHandler(format string) HandleEvent {
+// NewEventFormatter returns a formatter for printing events.
+func NewEventFormatter(format string) EventFormatter {
 	switch format {
 	case "debug":
 		return debugFormat
