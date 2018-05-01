@@ -75,6 +75,7 @@ func isPkgFailureOutput(event TestEvent) bool {
 		out != "FAIL\n",
 		!strings.HasPrefix(out, "FAIL\t"+event.Package),
 		!strings.HasPrefix(out, "ok  \t"+event.Package),
+		!strings.HasPrefix(out, "?   \t"+event.Package),
 	)
 }
 
