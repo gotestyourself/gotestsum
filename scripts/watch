@@ -5,4 +5,4 @@ exec filewatcher \
     -x 'scripts' \
     -x '**/*___jb_tmp___' \
     -x '**/*___jb_old___' \
-    scripts/test-unit './${dir}'
+    ./dist/gotestsum --format short-verbose -- -test.timeout "10s" './${dir}'
