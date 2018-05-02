@@ -53,9 +53,13 @@ jobs:
     working_directory: /go/src/gotest.tools/gotestsum
     steps:
       - checkout
-      - deploy: |
-          go get github.com/goreleaser/goreleaser
-          goreleaser --rm-dist
+      - deploy:
+          name: "release"
+          command: |
+            curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+            dep ensure
+            go get github.com/goreleaser/goreleaser
+            goreleaser --rm-dist
 
 workflows:
   version: 2
