@@ -48,9 +48,22 @@ jobs:
       - store_test_results:
           path: junit/
 
+  release:
+    docker: [{image: 'circleci/golang:1.10'}]
+    working_directory: /go/src/gotest.tools/gotestsum
+    steps:
+      - checkout
+      - deploy: |
+          go get github.com/goreleaser/goreleaser
+          goreleaser --rm-dist
+
 workflows:
   version: 2
   ci:
     jobs:
       - lint
       - test-golang-1.10
+      - release:
+          filters:
+            tags: {only: '/v[0-9]+(\.[0-9]+)*/'}
+            branches: {ignore: '/.*/'}
