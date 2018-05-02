@@ -29,7 +29,7 @@ Requires Go version 1.10+
 
 ## Install
 
-    go get gotest.tools/gotestsum/cmd
+    go get gotest.tools/gotestsum
 
 ## Example Output
 
