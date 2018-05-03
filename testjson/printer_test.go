@@ -6,9 +6,9 @@ import (
 	"time"
 
 	gocmp "github.com/google/go-cmp/cmp"
-	"github.com/gotestyourself/gotestyourself/assert"
-	"github.com/gotestyourself/gotestyourself/assert/opt"
-	"github.com/gotestyourself/gotestyourself/golden"
+	"gotest.tools/assert"
+	"gotest.tools/assert/opt"
+	"gotest.tools/golden"
 )
 
 //go:generate ./generate.sh
