@@ -4,10 +4,6 @@
   version = "0.2.0"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/gotestyourself/gotestyourself"
-
-[[constraint]]
   name = "github.com/jonboulle/clockwork"
   version = "0.1.0"
 
@@ -27,3 +23,7 @@
 [[constraint]]
   name = "github.com/sirupsen/logrus"
   version = "1.0.5"
+
+[[constraint]]
+  name = "gotest.tools"
+  version = "2.0.0"

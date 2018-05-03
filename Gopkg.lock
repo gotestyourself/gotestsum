@@ -13,20 +13,6 @@
   version = "v0.2.0"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/gotestyourself/gotestyourself"
-  packages = [
-    "assert",
-    "assert/cmp",
-    "assert/opt",
-    "golden",
-    "internal/difflib",
-    "internal/format",
-    "internal/source"
-  ]
-  revision = "f2728c79a87095c99f7a496701a81d3eae9fe3df"
-
-[[projects]]
   name = "github.com/jonboulle/clockwork"
   packages = ["."]
   revision = "2eee05ed794112d45db504eb05aa693efd2b8b09"
@@ -65,9 +51,23 @@
   ]
   revision = "cbbc999da32df943dac6cd71eb3ee39e1d7838b9"
 
+[[projects]]
+  name = "gotest.tools"
+  packages = [
+    "assert",
+    "assert/cmp",
+    "assert/opt",
+    "golden",
+    "internal/difflib",
+    "internal/format",
+    "internal/source"
+  ]
+  revision = "14eefd8766a1439cddfc295ecf6327cb422b4bb2"
+  version = "v2.0.0"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f3ffd605e3c6dcf802b619e6a8110763cdf1130bfc3bada1501088210d26b6d2"
+  inputs-digest = "70a2a1a45b39ef4b60db02124d2ab874873422122365e901b4e7e075a637c3e7"
   solver-name = "gps-cdcl"
   solver-version = 1

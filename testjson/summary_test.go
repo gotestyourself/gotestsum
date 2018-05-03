@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gotestyourself/gotestyourself/assert"
 	"github.com/jonboulle/clockwork"
+	"gotest.tools/assert"
 )
 
 func TestPrintSummaryNoFailures(t *testing.T) {
