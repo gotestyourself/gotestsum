@@ -87,7 +87,7 @@ func setupLogging(opts *options) {
 		log.SetLevel(log.DebugLevel)
 	}
 	if opts.noColor {
-		color.NoColor = false
+		color.NoColor = true
 	}
 }
 

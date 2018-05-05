@@ -2,14 +2,13 @@ package testjson
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"sort"
 	"strings"
 	"time"
-
-	"bytes"
 
 	"github.com/jonboulle/clockwork"
 	"github.com/pkg/errors"
@@ -172,7 +171,7 @@ func (e *Execution) Output(pkg, test string) string {
 	return strings.Join(e.packages[pkg].output[test], "")
 }
 
-// Output returns the full test output for a test as an array of lines.
+// OutputLines returns the full test output for a test as an array of lines.
 func (e *Execution) OutputLines(pkg, test string) []string {
 	return e.packages[pkg].output[test]
 }

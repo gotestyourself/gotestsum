@@ -5,6 +5,8 @@ import (
 	"io"
 	"strings"
 	"time"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/fatih/color"
 )
@@ -12,12 +14,12 @@ import (
 // Summary enumerates the sections which can be printed by PrintSummary
 type Summary int
 
+// nolint: golint
 const (
 	SummarizeNone Summary = 1 << (iota * 2)
 	SummarizeSkipped
 	SummarizeFailed
 	SummarizeErrors
-
 	SummarizeAll = SummarizeSkipped | SummarizeFailed | SummarizeErrors
 )
 
@@ -41,8 +43,7 @@ func PrintSummary(out io.Writer, execution *Execution, opts Summary) error {
 		execution.Total(),
 		formatTestCount(len(execution.Skipped()), "skipped", ""),
 		formatTestCount(len(execution.Failed()), "failure", "s"),
-		// TODO: only count lines without any leading whitespace as errors
-		formatTestCount(len(errors), "error", "s"),
+		formatTestCount(countErrors(errors), "error", "s"),
 		FormatDurationAsSeconds(execution.Elapsed(), 3))
 
 	return nil
@@ -71,6 +72,20 @@ func writeErrorSummary(out io.Writer, errors []string) {
 	for _, err := range errors {
 		fmt.Fprintln(out, err)
 	}
+}
+
+// countErrors in stderr lines. Build errors may include multiple lines where
+// subsequent lines are indented.
+// FIXME: Panics will include multiple lines, and are still overcounted.
+func countErrors(errors []string) int {
+	var count int
+	for _, line := range errors {
+		r, _ := utf8.DecodeRuneInString(line)
+		if !unicode.IsSpace(r) {
+			count++
+		}
+	}
+	return count
 }
 
 func writeTestCaseSummary(out io.Writer, execution *Execution, conf testCaseFormatConfig) {

@@ -105,7 +105,7 @@ Some stdout/stderr here
 		},
 	}
 	fake.Advance(34123111 * time.Microsecond)
-	err := PrintSummary(out, exec)
+	err := PrintSummary(out, exec, SummarizeAll)
 	assert.NilError(t, err)
 
 	expected := `
