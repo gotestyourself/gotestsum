@@ -60,6 +60,7 @@ func (e TestEvent) Bytes() []byte {
 
 // Package is the set of TestEvents for a single go package
 type Package struct {
+	// TODO: this could be Total()
 	Total   int
 	Failed  []TestCase
 	Skipped []TestCase
@@ -67,6 +68,7 @@ type Package struct {
 	output  map[string][]string
 	// action identifies if the package passed or failed. A package may fail
 	// with no test failures if an init() or TestMain exits non-zero.
+	// skip indicates there were no tests.
 	action Action
 }
 
@@ -91,8 +93,8 @@ func (p Package) TestCases() []TestCase {
 }
 
 // Output returns the full test output for a test.
-func (p Package) Output(test string) []string {
-	return p.output[test]
+func (p Package) Output(test string) string {
+	return strings.Join(p.output[test], "")
 }
 
 // TestCase stores the name and elapsed time for a test case.
@@ -163,7 +165,12 @@ func elapsedDuration(elapsed float64) time.Duration {
 }
 
 // Output returns the full test output for a test.
-func (e *Execution) Output(pkg, test string) []string {
+func (e *Execution) Output(pkg, test string) string {
+	return strings.Join(e.packages[pkg].output[test], "")
+}
+
+// Output returns the full test output for a test as an array of lines.
+func (e *Execution) OutputLines(pkg, test string) []string {
 	return e.packages[pkg].output[test]
 }
 

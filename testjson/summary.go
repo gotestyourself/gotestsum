@@ -59,7 +59,7 @@ func writeTestCaseSummary(out io.Writer, execution *Execution, conf testCaseForm
 			relativePackagePath(tc.Package),
 			tc.Test,
 			FormatDurationAsSeconds(tc.Elapsed, 2))
-		for _, line := range execution.Output(tc.Package, tc.Test) {
+		for _, line := range execution.OutputLines(tc.Package, tc.Test) {
 			if isRunLine(line) || conf.filter(line) {
 				continue
 			}

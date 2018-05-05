@@ -7,7 +7,6 @@ import (
 	"io"
 	"path/filepath"
 	"runtime"
-	"strings"
 
 	"github.com/pkg/errors"
 	"gotest.tools/gotestsum/testjson"
@@ -94,14 +93,14 @@ func packageTestCases(pkg *testjson.Package) []JUnitTestCase {
 		jtc := newJUnitTestCase(tc)
 		jtc.Failure = &JUnitFailure{
 			Message:  "Failed",
-			Contents: strings.Join(pkg.Output(tc.Test), ""),
+			Contents: pkg.Output(tc.Test),
 		}
 		cases = append(cases, jtc)
 	}
 
 	for _, tc := range pkg.Skipped {
 		jtc := newJUnitTestCase(tc)
-		jtc.SkipMessage = &JUnitSkipMessage{Message: strings.Join(pkg.Output(tc.Test), "")}
+		jtc.SkipMessage = &JUnitSkipMessage{Message: pkg.Output(tc.Test)}
 		cases = append(cases, jtc)
 	}
 

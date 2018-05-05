@@ -39,33 +39,42 @@ func standardQuietFormat(event TestEvent, _ *Execution) (string, error) {
 }
 
 func shortVerboseFormat(event TestEvent, exec *Execution) (string, error) {
+	result := strings.ToUpper(string(event.Action))
+	formatTest := func() string {
+		return fmt.Sprintf("%s %s.%s %s\n",
+			result,
+			relativePackagePath(event.Package),
+			event.Test,
+			event.ElapsedFormatted())
+	}
+
 	switch {
 	case isPkgFailureOutput(event):
 		return event.Output, nil
-	// TODO: share more code with shortFormat() for these PackageEvent cases
-	case event.Action == ActionSkip && event.PackageEvent():
-		return "EMPTY " + relativePackagePath(event.Package) + "\n", nil
-	case event.Action == ActionPass && event.PackageEvent():
-		return "PASS " + relativePackagePath(event.Package) + "\n", nil
-	case event.Action == ActionFail && event.PackageEvent():
-		return "FAIL " + relativePackagePath(event.Package) + "\n", nil
-	case event.Action == ActionPass:
-		return fmt.Sprintf("--- PASS %s %s %s\n",
-			relativePackagePath(event.Package),
-			event.Test,
-			event.ElapsedFormatted(),
-		), nil
+
+	case event.PackageEvent():
+		switch event.Action {
+		case ActionSkip:
+			result = "EMPTY"
+			fallthrough
+		case ActionPass, ActionFail:
+			return fmt.Sprintf("%s %s\n", result, relativePackagePath(event.Package)), nil
+		}
+
 	case event.Action == ActionFail:
-		return fmt.Sprintf("%s--- FAIL %s %s %s\n",
-			strings.Join(exec.Output(event.Package, event.Test), ""),
-			relativePackagePath(event.Package),
-			event.Test,
-			event.ElapsedFormatted(),
-		), nil
+		return exec.Output(event.Package, event.Test) + formatTest(), nil
+
+	case event.Action == ActionPass:
+		return formatTest(), nil
+
 	}
 	return "", nil
 }
 
+// isPkgFailureOutput returns true if the event is package output, and the output
+// doesn't match any of the expected framing messages. Events which match this
+// pattern should be package-level failures (ex: exit(1) or panic in an init() or
+// TestMain).
 func isPkgFailureOutput(event TestEvent) bool {
 	out := event.Output
 	return all(
