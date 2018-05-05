@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
 // EventFormatter is a function which handles an event and returns a string to
@@ -39,33 +41,42 @@ func standardQuietFormat(event TestEvent, _ *Execution) (string, error) {
 }
 
 func shortVerboseFormat(event TestEvent, exec *Execution) (string, error) {
+	result := colorEvent(event)(strings.ToUpper(string(event.Action)))
+	formatTest := func() string {
+		return fmt.Sprintf("%s %s.%s %s\n",
+			result,
+			relativePackagePath(event.Package),
+			event.Test,
+			event.ElapsedFormatted())
+	}
+
 	switch {
 	case isPkgFailureOutput(event):
 		return event.Output, nil
-	// TODO: share more code with shortFormat() for these PackageEvent cases
-	case event.Action == ActionSkip && event.PackageEvent():
-		return "EMPTY " + relativePackagePath(event.Package) + "\n", nil
-	case event.Action == ActionPass && event.PackageEvent():
-		return "PASS " + relativePackagePath(event.Package) + "\n", nil
-	case event.Action == ActionFail && event.PackageEvent():
-		return "FAIL " + relativePackagePath(event.Package) + "\n", nil
-	case event.Action == ActionPass:
-		return fmt.Sprintf("--- PASS %s %s %s\n",
-			relativePackagePath(event.Package),
-			event.Test,
-			event.ElapsedFormatted(),
-		), nil
+
+	case event.PackageEvent():
+		switch event.Action {
+		case ActionSkip:
+			result = colorEvent(event)("EMPTY")
+			fallthrough
+		case ActionPass, ActionFail:
+			return fmt.Sprintf("%s %s\n", result, relativePackagePath(event.Package)), nil
+		}
+
 	case event.Action == ActionFail:
-		return fmt.Sprintf("%s--- FAIL %s %s %s\n",
-			strings.Join(exec.Output(event.Package, event.Test), ""),
-			relativePackagePath(event.Package),
-			event.Test,
-			event.ElapsedFormatted(),
-		), nil
+		return exec.Output(event.Package, event.Test) + formatTest(), nil
+
+	case event.Action == ActionPass:
+		return formatTest(), nil
+
 	}
 	return "", nil
 }
 
+// isPkgFailureOutput returns true if the event is package output, and the output
+// doesn't match any of the expected framing messages. Events which match this
+// pattern should be package-level failures (ex: exit(1) or panic in an init() or
+// TestMain).
 func isPkgFailureOutput(event TestEvent) bool {
 	out := event.Output
 	return all(
@@ -103,19 +114,21 @@ func shortFormat(event TestEvent, _ *Execution) (string, error) {
 		return fmt.Sprintf("%s  %s%s\n",
 			action, relativePackagePath(event.Package), fmtElapsed()), nil
 	}
+	withColor := colorEvent(event)
 	switch event.Action {
 	case ActionSkip:
-		return fmtEvent("∅")
+		return fmtEvent(withColor("∅"))
 	case ActionPass:
-		return fmtEvent("✓")
+		return fmtEvent(withColor("✓"))
 	case ActionFail:
-		return fmtEvent("✖")
+		return fmtEvent(withColor("✖"))
 	}
 	return "", nil
 }
 
 func dotsFormat(event TestEvent, exec *Execution) (string, error) {
 	pkg := exec.Package(event.Package)
+	withColor := colorEvent(event)
 
 	switch {
 	case event.PackageEvent():
@@ -123,13 +136,25 @@ func dotsFormat(event TestEvent, exec *Execution) (string, error) {
 	case event.Action == ActionRun && pkg.Total == 1:
 		return "[" + relativePackagePath(event.Package) + "]", nil
 	case event.Action == ActionPass:
-		return "·", nil
+		return withColor("·"), nil
 	case event.Action == ActionFail:
-		return "✖", nil
+		return withColor("✖"), nil
 	case event.Action == ActionSkip:
-		return "↷", nil
+		return withColor("↷"), nil
 	}
 	return "", nil
+}
+
+func colorEvent(event TestEvent) func(format string, a ...interface{}) string {
+	switch event.Action {
+	case ActionPass:
+		return color.GreenString
+	case ActionFail:
+		return color.RedString
+	case ActionSkip:
+		return color.YellowString
+	}
+	return color.WhiteString
 }
 
 func relativePackagePath(pkgpath string) string {

@@ -4,14 +4,11 @@
 [![CircleCI](https://circleci.com/gh/gotestyourself/gotestsum/tree/master.svg?style=shield)](https://circleci.com/gh/gotestyourself/gotestsum/tree/master)
 [![Go Reportcard](https://goreportcard.com/badge/gotest.tools/gotestsum)](https://goreportcard.com/report/gotest.tools/gotestsum)
 
-`gotestsum` is a Golang test runner.
-
 `gotestsum` runs `go test --json ./...`, ingests the test output, and prints
 customizable output:
- * print test counts for all packages: tests run, skipped, failed, package build
+ * print test counts: tests run, skipped, failed, package build
    errors, and elapsed time.
- * print all failure and skip message after all tests have run, so
-   they are collected all together at the end of the output.
+ * print a summary of all failure and skip message after the tests have run
  * write a JUnit  XML, or
    [Go TestEvent JSON](https://golang.org/cmd/test2json/#hdr-Output_Format)
    file for ingestion by CI systems.

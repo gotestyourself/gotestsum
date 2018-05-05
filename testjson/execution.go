@@ -2,6 +2,7 @@ package testjson
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/jonboulle/clockwork"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 // Action of TestEvent
@@ -60,6 +62,7 @@ func (e TestEvent) Bytes() []byte {
 
 // Package is the set of TestEvents for a single go package
 type Package struct {
+	// TODO: this could be Total()
 	Total   int
 	Failed  []TestCase
 	Skipped []TestCase
@@ -67,6 +70,7 @@ type Package struct {
 	output  map[string][]string
 	// action identifies if the package passed or failed. A package may fail
 	// with no test failures if an init() or TestMain exits non-zero.
+	// skip indicates there were no tests.
 	action Action
 }
 
@@ -91,8 +95,8 @@ func (p Package) TestCases() []TestCase {
 }
 
 // Output returns the full test output for a test.
-func (p Package) Output(test string) []string {
-	return p.output[test]
+func (p Package) Output(test string) string {
+	return strings.Join(p.output[test], "")
 }
 
 // TestCase stores the name and elapsed time for a test case.
@@ -163,7 +167,12 @@ func elapsedDuration(elapsed float64) time.Duration {
 }
 
 // Output returns the full test output for a test.
-func (e *Execution) Output(pkg, test string) []string {
+func (e *Execution) Output(pkg, test string) string {
+	return strings.Join(e.packages[pkg].output[test], "")
+}
+
+// OutputLines returns the full test output for a test as an array of lines.
+func (e *Execution) OutputLines(pkg, test string) []string {
 	return e.packages[pkg].output[test]
 }
 
@@ -273,7 +282,12 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 	for scanner.Scan() {
 		raw := scanner.Bytes()
 		event, err := parseEvent(raw)
-		if err != nil {
+		switch err {
+		case errBadEvent:
+			// TODO: put raw into errors.
+			continue
+		case nil:
+		default:
 			return nil, errors.Wrapf(err, "failed to parse test output: %s", string(raw))
 		}
 		execution.add(event)
@@ -282,9 +296,9 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 		}
 	}
 
-	// TODO: this is not reached if handler or Out.Write error
+	// TODO: this is not reached if pareseEvent or Handler.Event returns an error
 	if err := <-waitOnStderr; err != nil {
-		// TODO: log failure
+		logrus.Warnf("failed reading stderr: %s", err)
 	}
 	return execution, errors.Wrap(scanner.Err(), "failed to scan test output")
 }
@@ -309,8 +323,16 @@ func readStderr(in io.Reader, handle errHandler, exec *Execution) chan error {
 }
 
 func parseEvent(raw []byte) (TestEvent, error) {
+	// TODO: this seems to be a bug in the `go test -json` output
+	if bytes.HasPrefix(raw, []byte("FAIL")) {
+		logrus.Warn(string(raw))
+		return TestEvent{}, errBadEvent
+	}
+
 	event := TestEvent{}
 	err := json.Unmarshal(raw, &event)
 	event.raw = raw
 	return event, err
 }
+
+var errBadEvent = errors.New("bad output from test2json")

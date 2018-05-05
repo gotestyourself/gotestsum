@@ -23,7 +23,7 @@ func TestPrintSummaryNoFailures(t *testing.T) {
 		},
 	}
 	fake.Advance(34123111 * time.Microsecond)
-	err := PrintSummary(out, exec)
+	err := PrintSummary(out, exec, SummarizeNone)
 	assert.NilError(t, err)
 
 	expected := "\nDONE 13 tests in 34.123s\n"
@@ -105,18 +105,16 @@ Some stdout/stderr here
 		},
 	}
 	fake.Advance(34123111 * time.Microsecond)
-	err := PrintSummary(out, exec)
+	err := PrintSummary(out, exec, SummarizeAll)
 	assert.NilError(t, err)
 
 	expected := `
-DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
-
 === Skipped
 === SKIP: project/pkg/more TestOnlySometimes (0.00s)
 	good_test.go:27: the skip message
 
 
-=== Failures
+=== Failed
 === FAIL: project/badmain  (0.00s)
 sometimes main can exit 2
 
@@ -132,6 +130,8 @@ Some stdout/stderr here
 
 === Errors
 pkg/file.go:99:12: missing ',' before newline
+
+DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
 `
 	assert.Equal(t, out.String(), expected)
 }

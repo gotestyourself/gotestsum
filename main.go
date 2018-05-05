@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/pflag"
@@ -64,6 +65,9 @@ Formats:
 		"write all TestEvents to file")
 	flags.StringVar(&opts.junitFile, "junitfile", "",
 		"write a JUnit XML file")
+	flags.BoolVar(&opts.noColor, "no-color", false, "disable color output")
+	flags.StringSliceVar(&opts.noSummary, "no-summary", nil,
+		"do not print summary of: failed, skipped, errors")
 	return flags, opts
 }
 
@@ -74,11 +78,16 @@ type options struct {
 	rawCommand bool
 	jsonFile   string
 	junitFile  string
+	noColor    bool
+	noSummary  []string
 }
 
 func setupLogging(opts *options) {
 	if opts.debug {
 		log.SetLevel(log.DebugLevel)
+	}
+	if opts.noColor {
+		color.NoColor = true
 	}
 }
 
@@ -107,8 +116,7 @@ func run(opts *options) error {
 	if err != nil {
 		return err
 	}
-	// TODO: add a --summary flag to show/hide different parts of the summary
-	if err := testjson.PrintSummary(out, exec); err != nil {
+	if err := summarizer(opts)(out, exec); err != nil {
 		return err
 	}
 	if err := writeJUnitFile(opts.junitFile, exec); err != nil {
@@ -168,4 +176,22 @@ func startGoTest(ctx context.Context, args []string) (proc, error) {
 		log.Debugf("go test pid: %d", p.cmd.Process.Pid)
 	}
 	return p, err
+}
+
+func summarizer(opts *options) func(io.Writer, *testjson.Execution) error {
+	summary := testjson.SummarizeAll
+	// TODO: do this in a pflag.Value to validate the string
+	for _, item := range opts.noSummary {
+		switch item {
+		case "failed":
+			summary -= testjson.SummarizeFailed
+		case "skipped":
+			summary -= testjson.SummarizeSkipped
+		case "errors":
+			summary -= testjson.SummarizeErrors
+		}
+	}
+	return func(out io.Writer, exec *testjson.Execution) error {
+		return testjson.PrintSummary(out, exec, summary)
+	}
 }
