@@ -57,18 +57,28 @@ Formats:
 `)
 	}
 	flags.BoolVar(&opts.debug, "debug", false, "enabled debug")
-	flags.StringVar(&opts.format, "format", "short",
+	flags.StringVar(&opts.format, "format",
+		lookEnvWithDefault("GOTESTSUM_FORMAT", "short"),
 		"print format of test input")
 	flags.BoolVar(&opts.rawCommand, "raw-command", false,
 		"don't prepend 'go test -json' to the 'go test' command")
-	flags.StringVar(&opts.jsonFile, "jsonfile", "",
+	flags.StringVar(&opts.jsonFile, "jsonfile",
+		lookEnvWithDefault("GOTESTSUM_JSONFILE", ""),
 		"write all TestEvents to file")
-	flags.StringVar(&opts.junitFile, "junitfile", "",
+	flags.StringVar(&opts.junitFile, "junitfile",
+		lookEnvWithDefault("GOTESTSUM_JUNITFILE", ""),
 		"write a JUnit XML file")
 	flags.BoolVar(&opts.noColor, "no-color", false, "disable color output")
 	flags.StringSliceVar(&opts.noSummary, "no-summary", nil,
 		"do not print summary of: failed, skipped, errors")
 	return flags, opts
+}
+
+func lookEnvWithDefault(key, defValue string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return defValue
 }
 
 type options struct {
@@ -132,11 +142,18 @@ func goTestCmdArgs(opts *options) []string {
 	case opts.rawCommand:
 		return args
 	case len(args) == 0:
-		return append(defaultArgs, "-json", "./...")
+		return append(defaultArgs, "-json", pathFromEnv("./..."))
 	case !hasJSONArg(args):
 		defaultArgs = append(defaultArgs, "-json")
 	}
+	if testPath := pathFromEnv(""); testPath != "" {
+		args = append(args, testPath)
+	}
 	return append(defaultArgs, args...)
+}
+
+func pathFromEnv(defaultPath string) string {
+	return lookEnvWithDefault("TEST_DIRECTORY", defaultPath)
 }
 
 func hasJSONArg(args []string) bool {
