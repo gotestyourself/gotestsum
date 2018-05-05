@@ -9,8 +9,11 @@ import (
 	"strings"
 	"time"
 
+	"bytes"
+
 	"github.com/jonboulle/clockwork"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 // Action of TestEvent
@@ -280,7 +283,12 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 	for scanner.Scan() {
 		raw := scanner.Bytes()
 		event, err := parseEvent(raw)
-		if err != nil {
+		switch err {
+		case errBadEvent:
+			// TODO: put raw into errors.
+			continue
+		case nil:
+		default:
 			return nil, errors.Wrapf(err, "failed to parse test output: %s", string(raw))
 		}
 		execution.add(event)
@@ -289,9 +297,9 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 		}
 	}
 
-	// TODO: this is not reached if handler or Out.Write error
+	// TODO: this is not reached if pareseEvent or Handler.Event returns an error
 	if err := <-waitOnStderr; err != nil {
-		// TODO: log failure
+		logrus.Warnf("failed reading stderr: %s", err)
 	}
 	return execution, errors.Wrap(scanner.Err(), "failed to scan test output")
 }
@@ -316,8 +324,16 @@ func readStderr(in io.Reader, handle errHandler, exec *Execution) chan error {
 }
 
 func parseEvent(raw []byte) (TestEvent, error) {
+	// TODO: this seems to be a bug in the `go test -json` output
+	if bytes.HasPrefix(raw, []byte("FAIL")) {
+		logrus.Warn(string(raw))
+		return TestEvent{}, errBadEvent
+	}
+
 	event := TestEvent{}
 	err := json.Unmarshal(raw, &event)
 	event.raw = raw
 	return event, err
 }
+
+var errBadEvent = errors.New("bad output from test2json")

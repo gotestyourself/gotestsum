@@ -9,20 +9,39 @@ import (
 	"github.com/fatih/color"
 )
 
-// PrintSummary of a test Execution. Prints a DONE line with counts, following
-// by any skips, failures, or errors.
-func PrintSummary(out io.Writer, execution *Execution) error {
-	writeTestCaseSummary(out, execution, formatSkipped())
-	writeTestCaseSummary(out, execution, formatFailures())
+// Summary enumerates the sections which can be printed by PrintSummary
+type Summary int
+
+const (
+	SummarizeNone Summary = 1 << (iota * 2)
+	SummarizeSkipped
+	SummarizeFailed
+	SummarizeErrors
+
+	SummarizeAll = SummarizeSkipped | SummarizeFailed | SummarizeErrors
+)
+
+// PrintSummary of a test Execution. Prints a section for each summary type
+// followed by a DONE line.
+func PrintSummary(out io.Writer, execution *Execution, opts Summary) error {
+	if opts&SummarizeSkipped != 0 {
+		writeTestCaseSummary(out, execution, formatSkipped())
+	}
+	if opts&SummarizeFailed != 0 {
+		writeTestCaseSummary(out, execution, formatFailed())
+	}
 
 	errors := execution.Errors()
-	writeErrorSummary(out, errors)
+	if opts&SummarizeErrors != 0 {
+		writeErrorSummary(out, errors)
+	}
 
 	fmt.Fprintf(out, "\n%s %d tests%s%s%s in %s\n",
 		"DONE", // TODO: maybe color this?
 		execution.Total(),
 		formatTestCount(len(execution.Skipped()), "skipped", ""),
 		formatTestCount(len(execution.Failed()), "failure", "s"),
+		// TODO: only count lines without any leading whitespace as errors
 		formatTestCount(len(errors), "error", "s"),
 		FormatDurationAsSeconds(execution.Elapsed(), 3))
 
@@ -83,10 +102,10 @@ type testCaseFormatConfig struct {
 	getter func(*Execution) []TestCase
 }
 
-func formatFailures() testCaseFormatConfig {
+func formatFailed() testCaseFormatConfig {
 	withColor := color.RedString
 	return testCaseFormatConfig{
-		header: withColor("Failures"),
+		header: withColor("Failed"),
 		prefix: withColor("FAIL"),
 		filter: func(line string) bool {
 			return strings.HasPrefix(line, "--- FAIL: Test")

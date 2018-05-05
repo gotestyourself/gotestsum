@@ -23,7 +23,7 @@ func TestPrintSummaryNoFailures(t *testing.T) {
 		},
 	}
 	fake.Advance(34123111 * time.Microsecond)
-	err := PrintSummary(out, exec)
+	err := PrintSummary(out, exec, SummarizeNone)
 	assert.NilError(t, err)
 
 	expected := "\nDONE 13 tests in 34.123s\n"
@@ -114,7 +114,7 @@ Some stdout/stderr here
 	good_test.go:27: the skip message
 
 
-=== Failures
+=== Failed
 === FAIL: project/badmain  (0.00s)
 sometimes main can exit 2
 
