@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/pflag"
@@ -64,6 +65,7 @@ Formats:
 		"write all TestEvents to file")
 	flags.StringVar(&opts.junitFile, "junitfile", "",
 		"write a JUnit XML file")
+	flags.BoolVar(&opts.noColor, "no-color", false, "disable color output")
 	return flags, opts
 }
 
@@ -74,11 +76,15 @@ type options struct {
 	rawCommand bool
 	jsonFile   string
 	junitFile  string
+	noColor    bool
 }
 
 func setupLogging(opts *options) {
 	if opts.debug {
 		log.SetLevel(log.DebugLevel)
+	}
+	if opts.noColor {
+		color.NoColor = false
 	}
 }
 

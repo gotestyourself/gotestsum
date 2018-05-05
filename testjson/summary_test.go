@@ -109,8 +109,6 @@ Some stdout/stderr here
 	assert.NilError(t, err)
 
 	expected := `
-DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
-
 === Skipped
 === SKIP: project/pkg/more TestOnlySometimes (0.00s)
 	good_test.go:27: the skip message
@@ -132,6 +130,8 @@ Some stdout/stderr here
 
 === Errors
 pkg/file.go:99:12: missing ',' before newline
+
+DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
 `
 	assert.Equal(t, out.String(), expected)
 }

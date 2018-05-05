@@ -5,28 +5,26 @@ import (
 	"io"
 	"strings"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 // PrintSummary of a test Execution. Prints a DONE line with counts, following
 // by any skips, failures, or errors.
 func PrintSummary(out io.Writer, execution *Execution) error {
+	writeTestCaseSummary(out, execution, formatSkipped())
+	writeTestCaseSummary(out, execution, formatFailures())
+
 	errors := execution.Errors()
-	fmt.Fprintf(out, "\nDONE %d tests%s%s%s in %s\n",
+	writeErrorSummary(out, errors)
+
+	fmt.Fprintf(out, "\n%s %d tests%s%s%s in %s\n",
+		"DONE", // TODO: maybe color this?
 		execution.Total(),
 		formatTestCount(len(execution.Skipped()), "skipped", ""),
 		formatTestCount(len(execution.Failed()), "failure", "s"),
 		formatTestCount(len(errors), "error", "s"),
 		FormatDurationAsSeconds(execution.Elapsed(), 3))
-
-	writeTestCaseSummary(out, execution, formatSkipped)
-	writeTestCaseSummary(out, execution, formatFailures)
-
-	if len(errors) > 0 {
-		fmt.Fprintln(out, "\n=== Errors")
-	}
-	for _, err := range errors {
-		fmt.Fprintln(out, err)
-	}
 
 	return nil
 }
@@ -47,14 +45,23 @@ func FormatDurationAsSeconds(d time.Duration, precision int) string {
 	return fmt.Sprintf("%.[2]*[1]fs", d.Seconds(), precision)
 }
 
+func writeErrorSummary(out io.Writer, errors []string) {
+	if len(errors) > 0 {
+		fmt.Fprintln(out, color.MagentaString("\n=== Errors"))
+	}
+	for _, err := range errors {
+		fmt.Fprintln(out, err)
+	}
+}
+
 func writeTestCaseSummary(out io.Writer, execution *Execution, conf testCaseFormatConfig) {
 	testCases := conf.getter(execution)
 	if len(testCases) == 0 {
 		return
 	}
-	fmt.Fprintln(out, "\n"+conf.header)
+	fmt.Fprintln(out, "\n=== "+conf.header)
 	for _, tc := range testCases {
-		fmt.Fprintf(out, "%s %s %s (%s)\n",
+		fmt.Fprintf(out, "=== %s: %s %s (%s)\n",
 			conf.prefix,
 			relativePackagePath(tc.Package),
 			tc.Test,
@@ -76,26 +83,32 @@ type testCaseFormatConfig struct {
 	getter func(*Execution) []TestCase
 }
 
-var formatFailures = testCaseFormatConfig{
-	header: "=== Failures",
-	prefix: "=== FAIL:",
-	filter: func(line string) bool {
-		return strings.HasPrefix(line, "--- FAIL: Test")
-	},
-	getter: func(execution *Execution) []TestCase {
-		return execution.Failed()
-	},
+func formatFailures() testCaseFormatConfig {
+	withColor := color.RedString
+	return testCaseFormatConfig{
+		header: withColor("Failures"),
+		prefix: withColor("FAIL"),
+		filter: func(line string) bool {
+			return strings.HasPrefix(line, "--- FAIL: Test")
+		},
+		getter: func(execution *Execution) []TestCase {
+			return execution.Failed()
+		},
+	}
 }
 
-var formatSkipped = testCaseFormatConfig{
-	header: "=== Skipped",
-	prefix: "=== SKIP:",
-	filter: func(line string) bool {
-		return strings.HasPrefix(line, "--- SKIP: Test")
-	},
-	getter: func(execution *Execution) []TestCase {
-		return execution.Skipped()
-	},
+func formatSkipped() testCaseFormatConfig {
+	withColor := color.YellowString
+	return testCaseFormatConfig{
+		header: withColor("Skipped"),
+		prefix: withColor("SKIP"),
+		filter: func(line string) bool {
+			return strings.HasPrefix(line, "--- SKIP: Test")
+		},
+		getter: func(execution *Execution) []TestCase {
+			return execution.Skipped()
+		},
+	}
 }
 
 func isRunLine(line string) bool {

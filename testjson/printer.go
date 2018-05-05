@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
 // EventFormatter is a function which handles an event and returns a string to
@@ -39,7 +41,7 @@ func standardQuietFormat(event TestEvent, _ *Execution) (string, error) {
 }
 
 func shortVerboseFormat(event TestEvent, exec *Execution) (string, error) {
-	result := strings.ToUpper(string(event.Action))
+	result := colorEvent(event)(strings.ToUpper(string(event.Action)))
 	formatTest := func() string {
 		return fmt.Sprintf("%s %s.%s %s\n",
 			result,
@@ -55,7 +57,7 @@ func shortVerboseFormat(event TestEvent, exec *Execution) (string, error) {
 	case event.PackageEvent():
 		switch event.Action {
 		case ActionSkip:
-			result = "EMPTY"
+			result = colorEvent(event)("EMPTY")
 			fallthrough
 		case ActionPass, ActionFail:
 			return fmt.Sprintf("%s %s\n", result, relativePackagePath(event.Package)), nil
@@ -112,19 +114,21 @@ func shortFormat(event TestEvent, _ *Execution) (string, error) {
 		return fmt.Sprintf("%s  %s%s\n",
 			action, relativePackagePath(event.Package), fmtElapsed()), nil
 	}
+	withColor := colorEvent(event)
 	switch event.Action {
 	case ActionSkip:
-		return fmtEvent("∅")
+		return fmtEvent(withColor("∅"))
 	case ActionPass:
-		return fmtEvent("✓")
+		return fmtEvent(withColor("✓"))
 	case ActionFail:
-		return fmtEvent("✖")
+		return fmtEvent(withColor("✖"))
 	}
 	return "", nil
 }
 
 func dotsFormat(event TestEvent, exec *Execution) (string, error) {
 	pkg := exec.Package(event.Package)
+	withColor := colorEvent(event)
 
 	switch {
 	case event.PackageEvent():
@@ -132,13 +136,25 @@ func dotsFormat(event TestEvent, exec *Execution) (string, error) {
 	case event.Action == ActionRun && pkg.Total == 1:
 		return "[" + relativePackagePath(event.Package) + "]", nil
 	case event.Action == ActionPass:
-		return "·", nil
+		return withColor("·"), nil
 	case event.Action == ActionFail:
-		return "✖", nil
+		return withColor("✖"), nil
 	case event.Action == ActionSkip:
-		return "↷", nil
+		return withColor("↷"), nil
 	}
 	return "", nil
+}
+
+func colorEvent(event TestEvent) func(format string, a ...interface{}) string {
+	switch event.Action {
+	case ActionPass:
+		return color.GreenString
+	case ActionFail:
+		return color.RedString
+	case ActionSkip:
+		return color.YellowString
+	}
+	return color.WhiteString
 }
 
 func relativePackagePath(pkgpath string) string {
