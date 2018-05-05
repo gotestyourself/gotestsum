@@ -89,6 +89,17 @@ func packageProperties() []JUnitProperty {
 func packageTestCases(pkg *testjson.Package) []JUnitTestCase {
 	cases := []JUnitTestCase{}
 
+	if pkg.TestMainFailed() {
+		jtc := newJUnitTestCase(testjson.TestCase{
+			Test: "TestMain",
+		})
+		jtc.Failure = &JUnitFailure{
+			Message:  "Failed",
+			Contents: pkg.Output(""),
+		}
+		cases = append(cases, jtc)
+	}
+
 	for _, tc := range pkg.Failed {
 		jtc := newJUnitTestCase(tc)
 		jtc.Failure = &JUnitFailure{
