@@ -99,6 +99,12 @@ func (p Package) Output(test string) string {
 	return strings.Join(p.output[test], "")
 }
 
+// TestMainFailed returns true if the package failed, but there were no tests.
+// This may occur if the package init() or TestMain exited non-zero.
+func (p Package) TestMainFailed() bool {
+	return p.action == ActionFail && len(p.Failed) == 0
+}
+
 // TestCase stores the name and elapsed time for a test case.
 type TestCase struct {
 	Package string
@@ -200,7 +206,7 @@ func (e *Execution) Failed() []TestCase {
 		pkg := e.packages[name]
 
 		// Add package-level failure output if there were no failed tests.
-		if pkg.action == ActionFail && len(pkg.Failed) == 0 {
+		if pkg.TestMainFailed() {
 			failed = append(failed, TestCase{Package: name})
 		} else {
 			failed = append(failed, pkg.Failed...)
