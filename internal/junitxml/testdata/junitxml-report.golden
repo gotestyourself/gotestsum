@@ -2,7 +2,7 @@
 <testsuites>
 	<testsuite tests="0" failures="0" time="0.000s" name="github.com/gotestyourself/gotestyourself/testjson/internal/badmain">
 		<properties>
-			<property name="go.version" value="go1.10.2"></property>
+			<property name="go.version" value="go1.10.3"></property>
 		</properties>
 		<testcase classname="." name="TestMain" time="0.000s">
 			<failure message="Failed" type="">sometimes main can exit 2&#xA;FAIL&#x9;github.com/gotestyourself/gotestyourself/testjson/internal/badmain&#x9;0.010s&#xA;</failure>
@@ -10,7 +10,7 @@
 	</testsuite>
 	<testsuite tests="18" failures="0" time="0.020s" name="github.com/gotestyourself/gotestyourself/testjson/internal/good">
 		<properties>
-			<property name="go.version" value="go1.10.2"></property>
+			<property name="go.version" value="go1.10.3"></property>
 		</properties>
 		<testcase classname="good" name="TestSkipped" time="0.000s">
 			<skipped message="=== RUN   TestSkipped&#xA;--- SKIP: TestSkipped (0.00s)&#xA;&#x9;good_test.go:23: &#xA;"></skipped>
@@ -37,7 +37,7 @@
 	</testsuite>
 	<testsuite tests="28" failures="4" time="0.020s" name="github.com/gotestyourself/gotestyourself/testjson/internal/stub">
 		<properties>
-			<property name="go.version" value="go1.10.2"></property>
+			<property name="go.version" value="go1.10.3"></property>
 		</properties>
 		<testcase classname="stub" name="TestFailed" time="0.000s">
 			<failure message="Failed" type="">=== RUN   TestFailed&#xA;--- FAIL: TestFailed (0.00s)&#xA;&#x9;stub_test.go:34: this failed&#xA;</failure>
