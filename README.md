@@ -1,65 +1,119 @@
 # gotestsum
 
+`gotestsum` runs tests, prints friendly test output and a summary of the test run.  Requires Go 1.10+.
+
+## Install
+
+Download a binary from [releases](https://github.com/gotestyourself/gotestsum/releases), or get the
+source with `go get gotest.tools/gotestsum` (you may need to run `dep ensure`).
+
+## Demo
+
+![Demo](https://raw.githubusercontent.com/gotestyourself/gotestsum/master/docs/demo.gif)
+
+## Docs
+
 [![GoDoc](https://godoc.org/gotest.tools/gotestsum?status.svg)](https://godoc.org/gotest.tools/gotestsum)
 [![CircleCI](https://circleci.com/gh/gotestyourself/gotestsum/tree/master.svg?style=shield)](https://circleci.com/gh/gotestyourself/gotestsum/tree/master)
 [![Go Reportcard](https://goreportcard.com/badge/gotest.tools/gotestsum)](https://goreportcard.com/report/gotest.tools/gotestsum)
 
-`gotestsum` runs `go test --json ./...`, ingests the test output, and prints
-customizable output:
- * print test counts: tests run, skipped, failed, package build
-   errors, and elapsed time.
- * print a summary of all failure and skip message after the tests have run
- * write a JUnit  XML, or
-   [Go TestEvent JSON](https://golang.org/cmd/test2json/#hdr-Output_Format)
-   file for ingestion by CI systems.
- * print customized test output with different formats. Formats from most condensed to most
-   verbose:
-   * `dots` - prints one character per test.
-   * `short` - prints a line for each test package (a more condensed version of the
-       `go test` default output).
-   * `standard-quiet` - prints the default `go test` format.
-   * `short-verbose` - prints a line for each test and package.
-   * `standard-verbose` - prints the standard `go test -v` format.
-   * want some other format? Open an issue!
+`gotestsum` works by running `go test --json ./...` and reading the JSON
+output.
 
-Requires Go version 1.10+
+### TOC
 
-## Install
+- [Format](#format)
+- [Summary](#summary)
+- [JUnit XML](#junit-xml)
+- [JSON file](#json-file-output)
+- [Custom command](#custom-go-test-command)
 
-    go get gotest.tools/gotestsum
+### Format
 
-## Example Output
-
-### short (default)
-
-Prints a condensed format using relative package paths and symbols for test
-results.  Skip, failure, and error messages are printed after all the tests
-have completed.
-
+Set a format with the `--format` flag or the `GOTESTSUM_FORMAT` environment
+variable.
 ```
-✓  cmd (10ms)
-✖  pkg/do
-✓  pkg/log (11ms)
-↷  pkg/untested
-
-DONE 47 tests, 3 skipped, 5 failed in 0.120s
+gotestsum --format short-verbose
 ```
 
-TODO: add failure and skip messages to example output
+The supported formats are:
+ * `dots` - output one character per test.
+ * `short` (default) - output a line for each test package.
+ * `standard-quiet` - the default `go test` format.
+ * `short-verbose` - output a line for each test and package.
+ * `standard-verbose` - the standard `go test -v` format.
 
-### dots
+Have a suggestion for some other format? Please open an issue!
 
-Prints the package name, followed by a `.` for passed tests, `✖` for failed
-tests, and `↷` for skipped tests. Skip, failure, and error messages are printed
-after all the tests have completed.
+### Summary
+
+After the tests are done a summary of the test run is printed.
+The summary includes:
+ * A count of the tests run, skipped, failed, build errors, and elapsed time.
+ * Test output of all failed and skipped tests, and any build errors.
+
+To disable parts of the summary use `--no-summary section`.
+
+Example: hide skipped tests in the summary
+```
+gotestsum --no-summary=skipped
+```
+
+Example: hide failed and skipped
+```
+gotestsum --no-summary=skipped,failed
+```
+
+### JUnit XML
+
+In addition to the normal test output you can write a JUnit XML file for
+integration with CI systems. Write a file using the `--junitxml` flag or
+the `GOTESTSUM_JUNITFILE` environment variable.
 
 ```
-[cmd]···↷···········[pkg/do]···↷↷✖·✖✖····✖··✖····[pkg/log]········
-DONE 47 tests, 3 skipped, 5 failed in 0.120s
+gotestsum --junitfile unit-tests.xml
 ```
 
-TODO: add failure and skip messages to example output
+### JSON file output
 
+In addition to the normal test output you can write a line-delimited JSON
+file with all the [test2json](https://golang.org/cmd/test2json/#hdr-Output_Format)
+output that was written by `go test --json`. This file can be used to calculate
+statistics about the test run.
+
+```
+gotestsum --jsonfile test-output.log
+```
+
+### Custom `go test` command
+
+By default `gotestsum` runs `go test --json ./...`. You can change this by
+specifying additional positional arguments after a `--`. Use `--debug` to
+echo the command before it is run.
+
+Example: set build tags
+```
+gotestsum -- -tags=integration ./...
+```
+
+Example: run only a single package
+```
+gotestsum -- ./io/http
+```
+
+Example: enable coverage
+```
+gotestsum -- -coverprofile=cover.out ./...
+```
+
+Example: run a script instead of `go test`
+```
+gotestsum --raw-command -- ./scripts/run_tests.sh
+```
+
+Note: when using `--raw-command` you must ensure that the stdout produced by
+the script only contains the `test2json` output. Any stderr produced will
+be considered an error (to match the behaviour of `go test --json`).
 
 ## Thanks
 
