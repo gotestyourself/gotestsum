@@ -27,7 +27,6 @@ output.
 - [JUnit XML](#junit-xml)
 - [JSON file](#json-file-output)
 - [Custom command](#custom-go-test-command)
-
 ### Format
 
 Set a format with the `--format` flag or the `GOTESTSUM_FORMAT` environment
@@ -88,8 +87,11 @@ gotestsum --jsonfile test-output.log
 ### Custom `go test` command
 
 By default `gotestsum` runs `go test --json ./...`. You can change this by
-specifying additional positional arguments after a `--`. Use `--debug` to
-echo the command before it is run.
+specifying additional positional arguments after a `--`. You can change just the
+test directory value (which defaults to `./...`) by setting the `TEST_DIRECTORY`
+environment variable.
+
+You can use `--debug` to echo the command before it is run.
 
 Example: set build tags
 ```
@@ -114,6 +116,22 @@ gotestsum --raw-command -- ./scripts/run_tests.sh
 Note: when using `--raw-command` you must ensure that the stdout produced by
 the script only contains the `test2json` output. Any stderr produced will
 be considered an error (to match the behaviour of `go test --json`).
+
+Example: using `TEST_DIRECTORY`
+```
+TEST_DIRECTORY=./io/http gotestsum
+```
+
+### Run tests when a file is modified
+
+[filewatcher](https://github.com/dnephin/filewatcher) will automatically set the
+`TEST_DIRECTORY` environment variable which makes it easy to integrate
+`gotestsum`.
+
+Example: run tests for a package when any file in that package is saved
+```
+filewatcher gotestsum
+```
 
 ## Thanks
 
