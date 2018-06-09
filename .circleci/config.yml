@@ -39,7 +39,7 @@ jobs:
       - run:
           name: "Unit Test GO 1.10"
           command: |
-            scripts/ci/test 1.10-alpine
+            scripts/ci/test 1.10.3-alpine
             mkdir -p junit/gotest
             docker cp \
                 test-$CIRCLE_BUILD_NUM:/go/src/gotest.tools/gotestsum/junit.xml \
