@@ -66,7 +66,7 @@ gotestsum --no-summary=skipped,failed
 ### JUnit XML
 
 In addition to the normal test output you can write a JUnit XML file for
-integration with CI systems. Write a file using the `--junitxml` flag or
+integration with CI systems. Write a file using the `--junitfile` flag or
 the `GOTESTSUM_JUNITFILE` environment variable.
 
 ```
