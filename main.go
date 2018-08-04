@@ -18,7 +18,12 @@ import (
 func main() {
 	name := os.Args[0]
 	flags, opts := setupFlags(name)
-	if err := flags.Parse(os.Args[1:]); err != nil {
+	switch err := flags.Parse(os.Args[1:]); {
+	case err == pflag.ErrHelp:
+		os.Exit(0)
+	case err != nil:
+		log.Error(err.Error())
+		flags.Usage()
 		os.Exit(1)
 	}
 	opts.args = flags.Args()
@@ -173,6 +178,10 @@ type proc struct {
 }
 
 func startGoTest(ctx context.Context, args []string) (proc, error) {
+	if len(args) == 0 {
+		return proc{}, errors.New("missing command to run")
+	}
+
 	ctx, cancel := context.WithCancel(ctx)
 	p := proc{
 		cmd:    exec.CommandContext(ctx, args[0], args[1:]...),

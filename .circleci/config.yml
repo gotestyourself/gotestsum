@@ -21,7 +21,7 @@ jobs:
                 dep ensure
             docker cp \
                 deps-$CIRCLE_BUILD_NUM:/go/src/gotest.tools/gotestsum/vendor \
-                vendor
+                .
       - run:
           name: "Lint"
           command: |
