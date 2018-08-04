@@ -13,7 +13,7 @@ RUN     go get -d github.com/dnephin/filewatcher && \
         cd /go/src/github.com/dnephin/filewatcher && \
         git checkout -q "$FILEWATCHER" && \
         go build -o /usr/bin/filewatcher .
-ARG     DEP_TAG=v0.4.1
+ARG     DEP_TAG=v0.5.0
 RUN     go get -d github.com/golang/dep/cmd/dep && \
         cd /go/src/github.com/golang/dep && \
         git checkout -q "$DEP_TAG" && \
@@ -30,7 +30,7 @@ COPY    . .
 
 
 FROM    golang as linter
-ARG     GOMETALINTER=v2.0.5
+ARG     GOMETALINTER=v2.0.6
 RUN     go get -d github.com/alecthomas/gometalinter && \
         cd /go/src/github.com/alecthomas/gometalinter && \
         git checkout -q "$GOMETALINTER" && \
