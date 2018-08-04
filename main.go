@@ -62,7 +62,7 @@ Formats:
 `)
 	}
 	flags.BoolVar(&opts.debug, "debug", false, "enabled debug")
-	flags.StringVar(&opts.format, "format",
+	flags.StringVarP(&opts.format, "format", "f",
 		lookEnvWithDefault("GOTESTSUM_FORMAT", "short"),
 		"print format of test input")
 	flags.BoolVar(&opts.rawCommand, "raw-command", false,
@@ -80,7 +80,7 @@ Formats:
 }
 
 func lookEnvWithDefault(key, defValue string) string {
-	if value, ok := os.LookupEnv(key); ok {
+	if value := os.Getenv(key); value != "" {
 		return value
 	}
 	return defValue
