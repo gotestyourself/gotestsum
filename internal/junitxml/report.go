@@ -80,9 +80,11 @@ func generate(exec *testjson.Execution) JUnitTestSuites {
 	return suites
 }
 
+var goVersion = runtime.Version()
+
 func packageProperties() []JUnitProperty {
 	return []JUnitProperty{
-		{Name: "go.version", Value: runtime.Version()},
+		{Name: "go.version", Value: goVersion},
 	}
 }
 
