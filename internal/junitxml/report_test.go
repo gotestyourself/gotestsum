@@ -15,6 +15,7 @@ func TestWrite(t *testing.T) {
 	out := new(bytes.Buffer)
 	exec := createExecution(t)
 
+	defer patchGoVersion("go7.7.7")()
 	err := Write(out, exec)
 	assert.NilError(t, err)
 	golden.Assert(t, out.String(), "junitxml-report.golden")
@@ -44,4 +45,12 @@ func (s *noopHandler) Event(testjson.TestEvent, *testjson.Execution) error {
 
 func (s *noopHandler) Err(string) error {
 	return nil
+}
+
+func patchGoVersion(version string) func() {
+	orig := goVersion
+	goVersion = version
+	return func() {
+		goVersion = orig
+	}
 }
