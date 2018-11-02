@@ -318,7 +318,9 @@ func readStderr(in io.Reader, handle errHandler, exec *Execution) chan error {
 		scanner := bufio.NewScanner(in)
 		for scanner.Scan() {
 			// TODO: remove this check if go module events stop being output as stdErr
-			if checkIsGoModuleEvent(scanner.Text()) { continue }
+			if checkIsGoModuleEvent(scanner.Text()) {
+				continue
+			}
 
 			exec.addError(scanner.Text())
 			if err := handle(scanner.Text()); err != nil {
