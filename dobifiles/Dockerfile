@@ -1,6 +1,6 @@
 
 ARG     GOLANG_VERSION
-FROM    golang:${GOLANG_VERSION:-1.10.3-alpine} as golang
+FROM    golang:${GOLANG_VERSION:-1.11-alpine} as golang
 RUN     apk add -U curl git bash
 WORKDIR /go/src/gotest.tools/gotestsum
 ENV     CGO_ENABLED=0
