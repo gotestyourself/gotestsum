@@ -317,23 +317,19 @@ func readStderr(in io.Reader, handle errHandler, exec *Execution) chan error {
 		defer close(wait)
 		scanner := bufio.NewScanner(in)
 		for scanner.Scan() {
-			// TODO: remove this check if go module events stop being output as stdErr
-			if checkIsGoModuleEvent(scanner.Text()) {
+			line := scanner.Text()
+			handle(line)
+			if isGoModuleOutput(line) {
 				continue
 			}
-
-			exec.addError(scanner.Text())
-			if err := handle(scanner.Text()); err != nil {
-				wait <- err
-				return
-			}
+			exec.addError(line)
 		}
 		wait <- scanner.Err()
 	}()
 	return wait
 }
 
-func checkIsGoModuleEvent(scannerText string) bool {
+func isGoModuleOutput(scannerText string) bool {
 	prefixes := [2]string{"go: extracting", "go: downloading"}
 
 	for _, prefix := range prefixes {
