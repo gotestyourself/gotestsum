@@ -13,6 +13,7 @@ import (
 	"github.com/jonboulle/clockwork"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/sync/errgroup"
 )
 
 // Action of TestEvent
@@ -282,51 +283,47 @@ type EventHandler interface {
 // calls the Handler for each event, and returns the Execution.
 func ScanTestOutput(config ScanConfig) (*Execution, error) {
 	execution := NewExecution()
-	waitOnStderr := readStderr(config.Stderr, config.Handler.Err, execution)
-	scanner := bufio.NewScanner(config.Stdout)
+	var group errgroup.Group
+	group.Go(func() error {
+		return readStdout(config, execution)
+	})
+	group.Go(func() error {
+		return readStderr(config, execution)
+	})
+	return execution, group.Wait()
+}
 
+func readStdout(config ScanConfig, execution *Execution) error {
+	scanner := bufio.NewScanner(config.Stdout)
 	for scanner.Scan() {
 		raw := scanner.Bytes()
 		event, err := parseEvent(raw)
-		switch err {
-		case errBadEvent:
-			// TODO: put raw into errors.
+		switch {
+		case err == errBadEvent:
+			config.Handler.Err(errBadEvent.Error() + ": " + scanner.Text())
 			continue
-		case nil:
-		default:
-			return nil, errors.Wrapf(err, "failed to parse test output: %s", string(raw))
+		case err != nil:
+			return errors.Wrapf(err, "failed to parse test output: %s", string(raw))
 		}
 		execution.add(event)
 		if err := config.Handler.Event(event, execution); err != nil {
-			return nil, err
+			return  err
 		}
 	}
-
-	// TODO: this is not reached if pareseEvent or Handler.Event returns an error
-	if err := <-waitOnStderr; err != nil {
-		logrus.Warnf("failed reading stderr: %s", err)
-	}
-	return execution, errors.Wrap(scanner.Err(), "failed to scan test output")
+	return errors.Wrap(scanner.Err(), "failed to scan test output")
 }
 
-type errHandler func(text string) error
-
-func readStderr(in io.Reader, handle errHandler, exec *Execution) chan error {
-	wait := make(chan error, 1)
-	go func() {
-		defer close(wait)
-		scanner := bufio.NewScanner(in)
-		for scanner.Scan() {
-			line := scanner.Text()
-			handle(line)
-			if isGoModuleOutput(line) {
-				continue
-			}
-			exec.addError(line)
+func readStderr(config ScanConfig, execution *Execution) error {
+	scanner := bufio.NewScanner(config.Stderr)
+	for scanner.Scan() {
+		line := scanner.Text()
+		config.Handler.Err(line)
+		if isGoModuleOutput(line) {
+			continue
 		}
-		wait <- scanner.Err()
-	}()
-	return wait
+		execution.addError(line)
+	}
+	return errors.Wrap(scanner.Err(), "failed to scan test stderr")
 }
 
 func isGoModuleOutput(scannerText string) bool {
