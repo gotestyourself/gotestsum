@@ -300,6 +300,7 @@ func readStdout(config ScanConfig, execution *Execution) error {
 		event, err := parseEvent(raw)
 		switch {
 		case err == errBadEvent:
+			// nolint: errcheck
 			config.Handler.Err(errBadEvent.Error() + ": " + scanner.Text())
 			continue
 		case err != nil:
@@ -307,7 +308,7 @@ func readStdout(config ScanConfig, execution *Execution) error {
 		}
 		execution.add(event)
 		if err := config.Handler.Event(event, execution); err != nil {
-			return  err
+			return err
 		}
 	}
 	return errors.Wrap(scanner.Err(), "failed to scan test output")
@@ -317,7 +318,7 @@ func readStderr(config ScanConfig, execution *Execution) error {
 	scanner := bufio.NewScanner(config.Stderr)
 	for scanner.Scan() {
 		line := scanner.Text()
-		config.Handler.Err(line)
+		config.Handler.Err(line) // nolint: errcheck
 		if isGoModuleOutput(line) {
 			continue
 		}
@@ -327,7 +328,11 @@ func readStderr(config ScanConfig, execution *Execution) error {
 }
 
 func isGoModuleOutput(scannerText string) bool {
-	prefixes := [2]string{"go: extracting", "go: downloading"}
+	prefixes := []string{
+		"go: extracting",
+		"go: downloading",
+		"go: finding",
+	}
 
 	for _, prefix := range prefixes {
 		if strings.HasPrefix(scannerText, prefix) {
