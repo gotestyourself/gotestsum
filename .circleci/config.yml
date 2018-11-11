@@ -77,7 +77,7 @@ jobs:
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
             go get github.com/goreleaser/goreleaser
-            goreleaser --rm-dist
+            goreleaser --rm-dist --skip-validate
 
 workflows:
   version: 2
