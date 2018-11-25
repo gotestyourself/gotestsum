@@ -2,6 +2,9 @@ package testjson
 
 import (
 	"bytes"
+	"os"
+	"runtime"
+	"strings"
 	"testing"
 	"time"
 
@@ -9,6 +12,7 @@ import (
 	"gotest.tools/assert"
 	"gotest.tools/assert/opt"
 	"gotest.tools/golden"
+	"gotest.tools/skip"
 )
 
 //go:generate ./generate.sh
@@ -54,7 +58,14 @@ func patchPkgPathPrefix(val string) func() {
 	return func() { pkgPathPrefix = oldVal }
 }
 
+func isGoWithModules() bool {
+	version := runtime.Version()
+	return strings.HasPrefix(version, "go1.11") && os.Getenv("GO111MODULE") != ""
+}
+
 func TestRelativePackagePath(t *testing.T) {
+	skip.If(t, isGoWithModules, "no known way of getting package path yet")
+	t.Log(runtime.Version())
 	relPath := relativePackagePath(
 		"gotest.tools/gotestsum/testjson/extra/relpath")
 	assert.Equal(t, relPath, "extra/relpath")
@@ -65,6 +76,7 @@ func TestRelativePackagePath(t *testing.T) {
 }
 
 func TestGetPkgPathPrefix(t *testing.T) {
+	skip.If(t, isGoWithModules, "no known way of getting package path yet")
 	assert.Equal(t, pkgPathPrefix, "gotest.tools/gotestsum/testjson")
 }
 
