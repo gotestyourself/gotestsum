@@ -5,57 +5,50 @@ mount=source:
   bind: .
   path: /go/src/gotest.tools/gotestsum
 
-mount=depsources:
- bind: ./.depsources
- path: /go/pkg/dep/sources
+mount=buildcache:
+  bind: ~/.cache/go-build
+  path: /root/.cache/go-build
 
-image=builder:
+mount=modcache:
+  bind: ~/go/pkg/mod
+  path: /go/pkg/mod
+
+
+image=dev:
   image: gotestsum-dev
-  context: dobifiles/
   dockerfile: Dockerfile
   target: dev
   args:
-    GOLANG_VERSION: '{env.GOLANG_VERSION:}' 
-
-image=linter:
-  image: gotestsum-lint
-  context: dobifiles/
-  dockerfile: Dockerfile
-  target: linter
+    GOLANG_VERSION: '{env.GOLANG_VERSION:}'
 
 job=shell:
-  use: builder
-  mounts: [source, depsources]
+  use: dev
+  mounts: [source, buildcache, modcache]
   interactive: true
   command: sh
 
 job=watch:
-  use: builder
-  mounts: [source]
+  use: dev
+  mounts: [source, buildcache, modcache]
   interactive: true
   command: |
       filewatcher -x vendor ./dist/gotestsum -- -test.timeout 10s
   env: ['GOTESTSUM_FORMAT=short-verbose']
 
 job=test-unit:
-  use: builder
+  use: dev
   mounts: [source]
   interactive: true
   command: scripts/test-unit
 
-job=deps:
-  use: builder
-  mounts: [source, depsources]
-  command: dep ensure
+alias=test:
+  tasks: [test-unit]
+
+image=linter:
+  image: gotestsum-lint
+  dockerfile: Dockerfile
+  target: linter
 
 job=lint:
   use: linter
   mounts: [source]
-
-job=binary:
-  use: builder
-  mounts: [source]
-  command: scripts/build
-
-alias=test:
-  tasks: [test-unit]
