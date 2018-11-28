@@ -8,7 +8,7 @@ ENV     PS1="# "
 
 
 FROM    golang as tools
-ARG     FILEWATCHER=v0.3.0
+ARG     FILEWATCHER=v0.3.2
 RUN     go get -d github.com/dnephin/filewatcher && \
         cd /go/src/github.com/dnephin/filewatcher && \
         git checkout -q "$FILEWATCHER" && \

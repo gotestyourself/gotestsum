@@ -27,6 +27,7 @@ output.
 - [JUnit XML](#junit-xml)
 - [JSON file](#json-file-output)
 - [Custom command](#custom-go-test-command)
+
 ### Format
 
 Set a format with the `--format` flag or the `GOTESTSUM_FORMAT` environment
@@ -61,6 +62,12 @@ gotestsum --no-summary=skipped
 Example: hide failed and skipped
 ```
 gotestsum --no-summary=skipped,failed
+```
+
+Example: hide output in the summary, only print names of failed and skipped tests
+and errors
+```
+gotestsum --no-summary=output
 ```
 
 ### JUnit XML
