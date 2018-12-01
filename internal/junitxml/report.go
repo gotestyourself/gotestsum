@@ -5,10 +5,13 @@ package junitxml
 import (
 	"encoding/xml"
 	"io"
+	"os"
+	"os/exec"
 	"path/filepath"
-	"runtime"
+	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"gotest.tools/gotestsum/testjson"
 )
 
@@ -64,6 +67,7 @@ func Write(out io.Writer, exec *testjson.Execution) error {
 }
 
 func generate(exec *testjson.Execution) JUnitTestSuites {
+	version := goVersion()
 	suites := JUnitTestSuites{}
 	for _, pkgname := range exec.Packages() {
 		pkg := exec.Package(pkgname)
@@ -71,7 +75,7 @@ func generate(exec *testjson.Execution) JUnitTestSuites {
 			Name:       pkgname,
 			Tests:      pkg.Total,
 			Time:       testjson.FormatDurationAsSeconds(pkg.Elapsed(), 3),
-			Properties: packageProperties(),
+			Properties: packageProperties(version),
 			TestCases:  packageTestCases(pkg),
 			Failures:   len(pkg.Failed),
 		}
@@ -80,12 +84,30 @@ func generate(exec *testjson.Execution) JUnitTestSuites {
 	return suites
 }
 
-var goVersion = runtime.Version()
-
-func packageProperties() []JUnitProperty {
+func packageProperties(goVersion string) []JUnitProperty {
 	return []JUnitProperty{
 		{Name: "go.version", Value: goVersion},
 	}
+}
+
+// goVersion returns the version as reported by the go binary in PATH. This
+// version will not be the same as runtime.Version, which is always the version
+// of go used to build the gotestsum binary.
+//
+// To skip the os/exec call set the GOVERSION environment variable to the
+// desired value.
+func goVersion() string {
+	if version, ok := os.LookupEnv("GOVERSION"); ok {
+		return version
+	}
+	logrus.Debugf("exec: go version")
+	cmd := exec.Command("go", "version")
+	out, err := cmd.Output()
+	if err != nil {
+		logrus.WithError(err).Warn("failed to lookup go version for junit xml")
+		return "unknown"
+	}
+	return strings.TrimPrefix(strings.TrimSpace(string(out)), "go version ")
 }
 
 func packageTestCases(pkg *testjson.Package) []JUnitTestCase {
