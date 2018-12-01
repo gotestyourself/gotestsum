@@ -10,7 +10,7 @@ import (
 	"gotest.tools/assert"
 )
 
-func TestPrintSummaryNoFailures(t *testing.T) {
+func TestPrintSummary_NoFailures(t *testing.T) {
 	fake, reset := patchClock()
 	defer reset()
 
@@ -23,19 +23,18 @@ func TestPrintSummaryNoFailures(t *testing.T) {
 		},
 	}
 	fake.Advance(34123111 * time.Microsecond)
-	err := PrintSummary(out, exec, SummarizeNone)
+	err := PrintSummary(out, exec, SummarizeAll)
 	assert.NilError(t, err)
 
 	expected := "\nDONE 13 tests in 34.123s\n"
 	assert.Equal(t, out.String(), expected)
 }
 
-func TestPrintSummaryWithFailures(t *testing.T) {
+func TestPrintSummary_WithFailures(t *testing.T) {
 	defer patchPkgPathPrefix("example.com")()
 	fake, reset := patchClock()
 	defer reset()
 
-	out := new(bytes.Buffer)
 	exec := &Execution{
 		started: fake.Now(),
 		packages: map[string]*Package{
@@ -105,10 +104,13 @@ Some stdout/stderr here
 		},
 	}
 	fake.Advance(34123111 * time.Microsecond)
-	err := PrintSummary(out, exec, SummarizeAll)
-	assert.NilError(t, err)
 
-	expected := `
+	t.Run("summarize all", func(t *testing.T) {
+		out := new(bytes.Buffer)
+		err := PrintSummary(out, exec, SummarizeAll)
+		assert.NilError(t, err)
+
+		expected := `
 === Skipped
 === SKIP: project/pkg/more TestOnlySometimes (0.00s)
 	good_test.go:27: the skip message
@@ -133,7 +135,50 @@ pkg/file.go:99:12: missing ',' before newline
 
 DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
 `
-	assert.Equal(t, out.String(), expected)
+		assert.Equal(t, out.String(), expected)
+	})
+
+	t.Run("summarize no output", func(t *testing.T) {
+		out := new(bytes.Buffer)
+		err := PrintSummary(out, exec, SummarizeAll-SummarizeOutput)
+		assert.NilError(t, err)
+
+		expected := `
+=== Skipped
+=== SKIP: project/pkg/more TestOnlySometimes (0.00s)
+
+
+=== Failed
+=== FAIL: project/badmain  (0.00s)
+
+=== FAIL: project/fs TestFileDo (1.41s)
+
+=== FAIL: project/fs TestFileDoError (0.01s)
+
+=== FAIL: project/pkg/more TestAlbatross (0.04s)
+
+
+=== Errors
+pkg/file.go:99:12: missing ',' before newline
+
+DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
+`
+		assert.Equal(t, out.String(), expected)
+	})
+
+	t.Run("summarize only errors", func(t *testing.T) {
+		out := new(bytes.Buffer)
+		err := PrintSummary(out, exec, SummarizeErrors)
+		assert.NilError(t, err)
+
+		expected := `
+=== Errors
+pkg/file.go:99:12: missing ',' before newline
+
+DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
+`
+		assert.Equal(t, out.String(), expected)
+	})
 }
 
 func patchClock() (clockwork.FakeClock, func()) {

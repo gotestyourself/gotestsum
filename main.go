@@ -75,7 +75,7 @@ Formats:
 		"write a JUnit XML file")
 	flags.BoolVar(&opts.noColor, "no-color", false, "disable color output")
 	flags.StringSliceVar(&opts.noSummary, "no-summary", nil,
-		"do not print summary of: failed, skipped, errors")
+		"do not print summary of: failed, skipped, errors, output")
 	return flags, opts
 }
 
@@ -215,6 +215,8 @@ func summarizer(opts *options) func(io.Writer, *testjson.Execution) error {
 			summary -= testjson.SummarizeSkipped
 		case "errors":
 			summary -= testjson.SummarizeErrors
+		case "output":
+			summary -= testjson.SummarizeOutput
 		}
 	}
 	return func(out io.Writer, exec *testjson.Execution) error {

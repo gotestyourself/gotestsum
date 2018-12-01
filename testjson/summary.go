@@ -20,17 +20,19 @@ const (
 	SummarizeSkipped
 	SummarizeFailed
 	SummarizeErrors
-	SummarizeAll = SummarizeSkipped | SummarizeFailed | SummarizeErrors
+	SummarizeOutput
+	SummarizeAll = SummarizeSkipped | SummarizeFailed | SummarizeErrors | SummarizeOutput
 )
 
 // PrintSummary of a test Execution. Prints a section for each summary type
 // followed by a DONE line.
 func PrintSummary(out io.Writer, execution *Execution, opts Summary) error {
+	execSummary := newExecSummary(execution, opts)
 	if opts&SummarizeSkipped != 0 {
-		writeTestCaseSummary(out, execution, formatSkipped())
+		writeTestCaseSummary(out, execSummary, formatSkipped())
 	}
 	if opts&SummarizeFailed != 0 {
-		writeTestCaseSummary(out, execution, formatFailed())
+		writeTestCaseSummary(out, execSummary, formatFailed())
 	}
 
 	errors := execution.Errors()
@@ -88,7 +90,28 @@ func countErrors(errors []string) int {
 	return count
 }
 
-func writeTestCaseSummary(out io.Writer, execution *Execution, conf testCaseFormatConfig) {
+type executionSummary interface {
+	Failed() []TestCase
+	Skipped() []TestCase
+	OutputLines(pkg, test string) []string
+}
+
+type noOutputSummary struct {
+	Execution
+}
+
+func (s *noOutputSummary) OutputLines(_, _ string) []string {
+	return nil
+}
+
+func newExecSummary(execution *Execution, opts Summary) executionSummary {
+	if opts&SummarizeOutput != 0 {
+		return execution
+	}
+	return &noOutputSummary{Execution: *execution}
+}
+
+func writeTestCaseSummary(out io.Writer, execution executionSummary, conf testCaseFormatConfig) {
 	testCases := conf.getter(execution)
 	if len(testCases) == 0 {
 		return
@@ -114,7 +137,7 @@ type testCaseFormatConfig struct {
 	header string
 	prefix string
 	filter func(string) bool
-	getter func(*Execution) []TestCase
+	getter func(executionSummary) []TestCase
 }
 
 func formatFailed() testCaseFormatConfig {
@@ -125,7 +148,7 @@ func formatFailed() testCaseFormatConfig {
 		filter: func(line string) bool {
 			return strings.HasPrefix(line, "--- FAIL: Test")
 		},
-		getter: func(execution *Execution) []TestCase {
+		getter: func(execution executionSummary) []TestCase {
 			return execution.Failed()
 		},
 	}
@@ -139,7 +162,7 @@ func formatSkipped() testCaseFormatConfig {
 		filter: func(line string) bool {
 			return strings.HasPrefix(line, "--- SKIP: Test")
 		},
-		getter: func(execution *Execution) []TestCase {
+		getter: func(execution executionSummary) []TestCase {
 			return execution.Skipped()
 		},
 	}
