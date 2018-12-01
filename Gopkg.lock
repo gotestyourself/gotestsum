@@ -87,10 +87,12 @@
     "assert",
     "assert/cmp",
     "assert/opt",
+    "env",
     "golden",
     "internal/difflib",
     "internal/format",
-    "internal/source"
+    "internal/source",
+    "x/subtest"
   ]
   revision = "14eefd8766a1439cddfc295ecf6327cb422b4bb2"
   version = "v2.0.0"
@@ -98,6 +100,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "55536f1a7b24530c7fc586fad4340259293c570bb924ae0bfeb855314892b4a3"
+  inputs-digest = "552c8a2217a39dc7af8c93bc05a914c24c4b1ce338df4dfd972f9e436f2ef3bb"
   solver-name = "gps-cdcl"
   solver-version = 1

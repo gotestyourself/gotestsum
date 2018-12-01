@@ -2,11 +2,14 @@ package junitxml
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"io/ioutil"
+	"runtime"
 	"testing"
 
 	"gotest.tools/assert"
+	"gotest.tools/env"
 	"gotest.tools/golden"
 	"gotest.tools/gotestsum/testjson"
 )
@@ -15,7 +18,7 @@ func TestWrite(t *testing.T) {
 	out := new(bytes.Buffer)
 	exec := createExecution(t)
 
-	defer patchGoVersion("go7.7.7")()
+	defer env.Patch(t, "GOVERSION", "go7.7.7")()
 	err := Write(out, exec)
 	assert.NilError(t, err)
 	golden.Assert(t, out.String(), "junitxml-report.golden")
@@ -47,10 +50,14 @@ func (s *noopHandler) Err(string) error {
 	return nil
 }
 
-func patchGoVersion(version string) func() {
-	orig := goVersion
-	goVersion = version
-	return func() {
-		goVersion = orig
-	}
+func TestGoVersion(t *testing.T) {
+	t.Run("unknown", func(t *testing.T) {
+		defer env.Patch(t, "PATH", "/bogus")()
+		assert.Equal(t, goVersion(), "unknown")
+	})
+
+	t.Run("current version", func(t *testing.T) {
+		expected := fmt.Sprintf("%s %s/%s", runtime.Version(), runtime.GOOS, runtime.GOARCH)
+		assert.Equal(t, goVersion(), expected)
+	})
 }
