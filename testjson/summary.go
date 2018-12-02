@@ -24,19 +24,60 @@ const (
 	SummarizeAll = SummarizeSkipped | SummarizeFailed | SummarizeErrors | SummarizeOutput
 )
 
+var summaryValues = map[Summary]string{
+	SummarizeSkipped: "skipped",
+	SummarizeFailed:  "failed",
+	SummarizeErrors:  "errors",
+	SummarizeOutput:  "output",
+}
+
+var summaryFromValue = map[string]Summary{
+	"none":    SummarizeNone,
+	"skipped": SummarizeSkipped,
+	"failed":  SummarizeFailed,
+	"errors":  SummarizeErrors,
+	"output":  SummarizeOutput,
+	"all":     SummarizeAll,
+}
+
+func (s Summary) String() string {
+	if s == SummarizeNone {
+		return "none"
+	}
+	var result []string
+	for v := SummarizeNone; v <= s; v = v << 1 {
+		if s.Includes(v) {
+			result = append(result, summaryValues[v])
+		}
+	}
+	return strings.Join(result, ",")
+}
+
+// Includes returns true if Summary includes all the values set by other.
+func (s Summary) Includes(other Summary) bool {
+	return s&other == other
+}
+
+// NewSummary returns a new Summary from a string value. If the string does not
+// match any known values returns false for the second value.
+func NewSummary(value string) (Summary, bool) {
+	s, ok := summaryFromValue[value]
+	return s, ok
+}
+
 // PrintSummary of a test Execution. Prints a section for each summary type
 // followed by a DONE line.
 func PrintSummary(out io.Writer, execution *Execution, opts Summary) error {
 	execSummary := newExecSummary(execution, opts)
-	if opts&SummarizeSkipped != 0 {
+	if opts.Includes(SummarizeSkipped) {
 		writeTestCaseSummary(out, execSummary, formatSkipped())
 	}
-	if opts&SummarizeFailed != 0 {
+	if opts.Includes(SummarizeFailed) {
 		writeTestCaseSummary(out, execSummary, formatFailed())
 	}
 
 	errors := execution.Errors()
-	if opts&SummarizeErrors != 0 {
+	if opts.Includes(SummarizeErrors) {
 		writeErrorSummary(out, errors)
 	}
 
@@ -105,7 +146,7 @@ func (s *noOutputSummary) OutputLines(_, _ string) []string {
 }
 
 func newExecSummary(execution *Execution, opts Summary) executionSummary {
-	if opts&SummarizeOutput != 0 {
+	if opts.Includes(SummarizeOutput) {
 		return execution
 	}
 	return &noOutputSummary{Execution: *execution}
