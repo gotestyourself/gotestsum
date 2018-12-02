@@ -10,6 +10,40 @@ import (
 	"gotest.tools/assert"
 )
 
+func TestSummary_String(t *testing.T) {
+	var testcases = []struct {
+		name     string
+		summary  Summary
+		expected string
+	}{
+		{
+			name:     "none",
+			summary:  SummarizeNone,
+			expected: "none",
+		},
+		{
+			name:     "all",
+			summary:  SummarizeAll,
+			expected: "skipped,failed,errors,output",
+		},
+		{
+			name:     "one value",
+			summary:  SummarizeErrors,
+			expected: "errors",
+		},
+		{
+			name:     "a few values",
+			summary:  SummarizeOutput | SummarizeSkipped | SummarizeErrors,
+			expected: "skipped,errors,output",
+		},
+	}
+	for _, tc := range testcases {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.summary.String(), tc.expected)
+		})
+	}
+}
+
 func TestPrintSummary_NoFailures(t *testing.T) {
 	fake, reset := patchClock()
 	defer reset()
