@@ -54,20 +54,6 @@ func patchPkgPathPrefix(val string) func() {
 	return func() { pkgPathPrefix = oldVal }
 }
 
-func TestRelativePackagePath(t *testing.T) {
-	relPath := relativePackagePath(
-		"gotest.tools/gotestsum/testjson/extra/relpath")
-	assert.Equal(t, relPath, "extra/relpath")
-
-	relPath = relativePackagePath(
-		"gotest.tools/gotestsum/testjson")
-	assert.Equal(t, relPath, ".")
-}
-
-func TestGetPkgPathPrefix(t *testing.T) {
-	assert.Equal(t, pkgPathPrefix, "gotest.tools/gotestsum/testjson")
-}
-
 func TestScanTestOutputWithShortVerboseFormat(t *testing.T) {
 	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
 

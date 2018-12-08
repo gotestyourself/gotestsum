@@ -2,9 +2,6 @@ package testjson
 
 import (
 	"fmt"
-	"go/build"
-	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/fatih/color"
@@ -156,28 +153,6 @@ func colorEvent(event TestEvent) func(format string, a ...interface{}) string {
 	}
 	return color.WhiteString
 }
-
-func relativePackagePath(pkgpath string) string {
-	if pkgpath == pkgPathPrefix {
-		return "."
-	}
-	return strings.TrimPrefix(pkgpath, pkgPathPrefix+"/")
-}
-
-// TODO: might not work on windows
-func getPkgPathPrefix() string {
-	cwd, _ := os.Getwd()
-	gopaths := strings.Split(build.Default.GOPATH, string(filepath.ListSeparator))
-	for _, gopath := range gopaths {
-		gosrcpath := gopath + "/src/"
-		if strings.HasPrefix(cwd, gosrcpath) {
-			return strings.TrimPrefix(cwd, gosrcpath)
-		}
-	}
-	return ""
-}
-
-var pkgPathPrefix = getPkgPathPrefix()
 
 // NewEventFormatter returns a formatter for printing events.
 func NewEventFormatter(format string) EventFormatter {
