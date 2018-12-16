@@ -329,8 +329,10 @@ func readStderr(config ScanConfig, execution *Execution) error {
 
 func isGoModuleOutput(scannerText string) bool {
 	prefixes := []string{
-		"go: extracting",
+		"go: copying",
+		"go: creating",
 		"go: downloading",
+		"go: extracting",
 		"go: finding",
 	}
 
