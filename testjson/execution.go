@@ -165,7 +165,7 @@ func (e *Execution) add(event TestEvent) {
 			Elapsed: elapsedDuration(event.Elapsed),
 		})
 		// Remove test output once a test passes, it wont be used
-		pkg.output[event.Test] = nil
+		delete(pkg.output, event.Test)
 	}
 }
 

@@ -36,7 +36,7 @@ variable.
 gotestsum --format short-verbose
 ```
 
-The supported formats are:
+Supported formats:
  * `dots` - output one character per test.
  * `short` (default) - output a line for each test package.
  * `standard-quiet` - the default `go test` format.
@@ -47,10 +47,16 @@ Have a suggestion for some other format? Please open an issue!
 
 ### Summary
 
-After the tests are done a summary of the test run is printed.
+A summary of the test run is printed after the test output.
+
+```
+DONE 101 tests[, 3 skipped][, 2 failures][, 1 error] in 0.103s
+```
+
 The summary includes:
- * A count of the tests run, skipped, failed, build errors, and elapsed time.
- * Test output of all failed and skipped tests, and any build errors.
+ * A count of: tests run, tests skipped, tests failed, and package build errors.
+ * Elapsed time including time to build.
+ * Test output of all failed and skipped tests, and any package build errors.
 
 To disable parts of the summary use `--no-summary section`.
 
@@ -72,9 +78,9 @@ gotestsum --no-summary=output
 
 ### JUnit XML
 
-In addition to the normal test output you can write a JUnit XML file for
-integration with CI systems. Write a file using the `--junitfile` flag or
-the `GOTESTSUM_JUNITFILE` environment variable.
+When the `--junitfile` flag or `GOTESTSUM_JUNITFILE` environment variable are set
+to a file path `gotestsum` will write a test report, in JUnit XML format, to the file.
+This file can be used to integrate with CI systems.
 
 ```
 gotestsum --junitfile unit-tests.xml
@@ -82,10 +88,11 @@ gotestsum --junitfile unit-tests.xml
 
 ### JSON file output
 
-In addition to the normal test output you can write a line-delimited JSON
-file with all the [test2json](https://golang.org/cmd/test2json/#hdr-Output_Format)
-output that was written by `go test --json`. This file can be used to calculate
-statistics about the test run.
+When the `--jsonfile` flag or `GOTESTSUM_JSONFILE` environment variable are set
+to a file path `gotestsum` will write a line-delimited JSON file with all the
+[test2json](https://golang.org/cmd/test2json/#hdr-Output_Format)
+output that was written by `go test --json`. This file can be used to compare test
+runs, or find flaky tests.
 
 ```
 gotestsum --jsonfile test-output.log
@@ -93,8 +100,8 @@ gotestsum --jsonfile test-output.log
 
 ### Custom `go test` command
 
-By default `gotestsum` runs `go test --json ./...`. You can change this by
-specifying additional positional arguments after a `--`. You can change just the
+By default `gotestsum` runs tests using the command `go test --json ./...`. You
+can change the command with positional arguments after a `--`. You can change just the
 test directory value (which defaults to `./...`) by setting the `TEST_DIRECTORY`
 environment variable.
 
@@ -105,7 +112,7 @@ Example: set build tags
 gotestsum -- -tags=integration ./...
 ```
 
-Example: run only a single package
+Example: run tests in a single package
 ```
 gotestsum -- ./io/http
 ```
@@ -121,8 +128,10 @@ gotestsum --raw-command -- ./scripts/run_tests.sh
 ```
 
 Note: when using `--raw-command` you must ensure that the stdout produced by
-the script only contains the `test2json` output. Any stderr produced will
-be considered an error (to match the behaviour of `go test --json`).
+the script only contains the `test2json` output. Any stderr produced by the script
+will be considered an error (this behaviour is necessary because package build errors
+are only reported by writting to stderr, not the `test2json` stdout). Any stderr
+produced by tests is not considered an error (it will be in the `test2json` stdout).
 
 Example: using `TEST_DIRECTORY`
 ```
