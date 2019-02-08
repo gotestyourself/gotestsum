@@ -4,11 +4,13 @@ package junitxml
 
 import (
 	"encoding/xml"
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -74,7 +76,7 @@ func generate(exec *testjson.Execution) JUnitTestSuites {
 		junitpkg := JUnitTestSuite{
 			Name:       pkgname,
 			Tests:      pkg.Total,
-			Time:       testjson.FormatDurationAsSeconds(pkg.Elapsed(), 3),
+			Time:       formatDurationAsSeconds(pkg.Elapsed()),
 			Properties: packageProperties(version),
 			TestCases:  packageTestCases(pkg),
 			Failures:   len(pkg.Failed),
@@ -82,6 +84,10 @@ func generate(exec *testjson.Execution) JUnitTestSuites {
 		suites.Suites = append(suites.Suites, junitpkg)
 	}
 	return suites
+}
+
+func formatDurationAsSeconds(d time.Duration) string {
+	return fmt.Sprintf("%f", d.Seconds())
 }
 
 func packageProperties(goVersion string) []JUnitProperty {
@@ -150,7 +156,7 @@ func newJUnitTestCase(tc testjson.TestCase) JUnitTestCase {
 	return JUnitTestCase{
 		Classname: filepath.Base(tc.Package),
 		Name:      tc.Test,
-		Time:      testjson.FormatDurationAsSeconds(tc.Elapsed, 3),
+		Time:      formatDurationAsSeconds(tc.Elapsed),
 	}
 }
 
