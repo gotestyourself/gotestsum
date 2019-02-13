@@ -103,7 +103,7 @@ func formatTestCount(count int, category string, pluralize string) string {
 	return fmt.Sprintf(", %d %s", count, category)
 }
 
-// FormatDurationAsSeconds formats a time.Duration as a float.
+// FormatDurationAsSeconds formats a time.Duration as a float with an s suffix.
 func FormatDurationAsSeconds(d time.Duration, precision int) string {
 	return fmt.Sprintf("%.[2]*[1]fs", d.Seconds(), precision)
 }
