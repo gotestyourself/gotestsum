@@ -1,7 +1,9 @@
-version: 2
+version: 2.1
+
+orbs:
+  image-build: glenjamin/kaniko-publish@0.0.3
 
 jobs:
-
   lint:
     working_directory: /work
     docker: [{image: 'docker:18.03-git'}]
@@ -31,19 +33,16 @@ jobs:
             docker run --rm testsum-linter:$CIRCLE_BUILD_NUM
 
   test-golang-1.10:
-    working_directory: /work
-    docker: [{image: 'docker:17.06-git'}]
+    docker:
+      - image: 'gotesttools/gotestsum-ci:golang-1.10-${CIRCLE_SHA1}'
     steps:
-      - checkout
-      - setup_remote_docker
       - run:
           name: "Unit Test GO 1.10"
           command: |
-            scripts/ci/test 1.10.3-alpine
             mkdir -p junit/gotest
-            docker cp \
-                test-$CIRCLE_BUILD_NUM:/go/src/gotest.tools/gotestsum/junit.xml \
-                junit/gotest/junit.xml
+            dep ensure
+            scripts/build
+            scripts/test-unit
 
       - store_test_results:
           path: junit/
@@ -101,8 +100,16 @@ workflows:
   version: 2
   ci:
     jobs:
+      - image-build/publish:
+          name: ci-image-1.10
+          path: dobifiles
+          image: gotesttools/gotestsum-ci
+          tag: golang-1.10-${CIRCLE_SHA1}
+          extra_build_args: "--target dev-with-source --build-arg GOLANG_VERSION=1.10-alpine"
+
       - lint
-      - test-golang-1.10
+      - test-golang-1.10:
+          requires: [ci-image-1.10]
       - test-golang-1.11
       - test-golang-1.12
       - release:
