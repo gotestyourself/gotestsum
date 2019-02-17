@@ -32,7 +32,7 @@ jobs:
             --tag testsum-linter:$CIRCLE_BUILD_NUM .
             docker run --rm testsum-linter:$CIRCLE_BUILD_NUM
 
-  test-golang-1.10:
+  test-golang-1-10:
     docker:
       - image: 'gotesttools/gotestsum-ci:golang-1.10-${CIRCLE_SHA1}'
     steps:
@@ -47,7 +47,7 @@ jobs:
       - store_test_results:
           path: junit/
 
-  test-golang-1.11:
+  test-golang-1-11:
     working_directory: /work
     docker: [{image: 'docker:17.06-git'}]
     steps:
@@ -65,7 +65,7 @@ jobs:
       - store_test_results:
           path: junit/
 
-  test-golang-1.12:
+  test-golang-1-12:
     working_directory: /work
     docker: [{image: 'docker:17.06-git'}]
     steps:
@@ -108,10 +108,11 @@ workflows:
           extra_build_args: "--target dev-with-source --build-arg GOLANG_VERSION=1.10-alpine"
 
       - lint
-      - test-golang-1.10:
+      - test-golang-1-10:
+          name: test-golang-1.10
           requires: [ci-image-1.10]
-      - test-golang-1.11
-      - test-golang-1.12
+      - test-golang-1-11
+      - test-golang-1-12
       - release:
           filters:
             tags: {only: '/v[0-9]+(\.[0-9]+)*/'}
