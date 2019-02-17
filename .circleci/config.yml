@@ -125,14 +125,14 @@ workflows:
   ci:
     jobs:
       - image/build:
-          name: ci-image-1.10
+          name: ci-image-golang-1.10
 
-      - lint
+#      - lint
       - test-golang-1-10:
           name: test-golang-1.10
-          requires: [ci-image-1.10]
-      - test-golang-1-11
-      - test-golang-1-12
+          requires: [ci-image-golang-1.10]
+#      - test-golang-1-11
+#      - test-golang-1-12
       - release:
           filters:
             tags: {only: '/v[0-9]+(\.[0-9]+)*/'}
