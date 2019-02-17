@@ -8,7 +8,7 @@ import (
 
 func TestNoSummaryValue_SetAndString(t *testing.T) {
 	t.Run("none", func(t *testing.T) {
-		assert.Equal(t, newNoSummaryValue().String(), "")
+		assert.Equal(t, newNoSummaryValue().String(), "none")
 	})
 	t.Run("one", func(t *testing.T) {
 		value := newNoSummaryValue()
