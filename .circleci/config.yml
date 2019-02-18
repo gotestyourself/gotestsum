@@ -24,7 +24,7 @@ orbs:
               dockerfile: dobifiles/Dockerfile
               image: gotesttools/gotestsum-ci
               tag: golang-1.10-${CIRCLE_SHA1}
-              extra_build_args: "--target dev-with-source --build-arg GOLANG_VERSION=1.10-alpine"
+              extra_build_args: "--target dev --build-arg GOLANG_VERSION=1.10-alpine"
 
 jobs:
 
