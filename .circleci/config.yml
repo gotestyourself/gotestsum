@@ -59,6 +59,7 @@ jobs:
   test-golang-1-10:
     docker:
       - image: 'gotesttools/gotestsum-ci:golang-1.10-${CIRCLE_SHA1}'
+    working_directory: /go/src/gotest.tools/gotestsum
     steps:
       - run:
           name: "Unit Test GO 1.10"
