@@ -34,6 +34,38 @@ orbs:
               tag: golang-<< parameters.go_image >>-${CIRCLE_SHA1}
               extra_build_args: "--target << parameters.target >> --build-arg GOLANG_VERSION=<< parameters.go_image >>"
 
+  test:
+    executors:
+      golang:
+        parameters:
+          version:
+            type: string
+        docker:
+          - image: golang:<< parameters.version >>
+        working_directory: /work
+
+    jobs:
+      run:
+        parameters:
+          version:
+            type: string
+        executor:
+          name: golang
+          version: << parameters.version >>
+        steps:
+          - run: apk add --no-cache git bash
+          - checkout
+          - run:
+              name: "Unit Test << parameters.version >>"
+              command: |
+                go version
+                scripts/build
+                scripts/test-unit
+
+          - store_test_results:
+              path: junit/
+
+
 jobs:
 
   lint:
@@ -64,38 +96,6 @@ jobs:
       - store_test_results:
           path: junit/
 
-  test-golang-1-11:
-    docker:
-      - image: 'gotesttools/gotestsum-ci:golang-1.11-alpine-${CIRCLE_SHA1}'
-    working_directory: /go/src/gotest.tools/gotestsum
-    environment:
-      GO111MODULE: 'on'
-    steps:
-      - run:
-          name: "Unit Test GO 1.11"
-          command: |
-            scripts/build
-            scripts/test-unit
-
-      - store_test_results:
-          path: junit/
-
-  test-golang-1-12:
-    docker:
-      - image: 'gotesttools/gotestsum-ci:golang-1.12rc1-alpine-${CIRCLE_SHA1}'
-    working_directory: /go/src/gotest.tools/gotestsum
-    environment:
-      GO111MODULE: 'on'
-    steps:
-      - run:
-          name: "Unit Test GO 1.12"
-          command: |
-            scripts/build
-            scripts/test-unit
-
-      - store_test_results:
-          path: junit/
-
   release:
     docker: [{image: 'circleci/golang:1.11'}]
     working_directory: /go/src/gotest.tools/gotestsum
@@ -120,19 +120,13 @@ workflows:
           name: test-golang-1.10
           requires: [ci-image-golang-1.10]
 
-      - image/build:
-          go_image: 1.11-alpine
-          name: ci-image-golang-1.11
-      - test-golang-1-11:
+      - test/run:
           name: test-golang-1.11
-          requires: [ci-image-golang-1.11]
+          version: 1.11-alpine
 
-      - image/build:
-          go_image: 1.12rc1-alpine
-          name: ci-image-golang-1.12
-      - test-golang-1-12:
+      - test/run:
           name: test-golang-1.12
-          requires: [ci-image-golang-1.12]
+          version: 1.12rc1-alpine
 
       - image/build:
           go_image: 1.11-alpine
