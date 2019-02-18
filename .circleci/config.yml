@@ -7,6 +7,10 @@ orbs:
     jobs:
       build:
         executor: kaniko/kaniko
+        parameters:
+          go_image:
+            description: "Base golang image"
+            type: string
         steps:
           - checkout
           - run:
@@ -23,8 +27,8 @@ orbs:
           - kaniko/build_and_push:
               dockerfile: dobifiles/Dockerfile
               image: gotesttools/gotestsum-ci
-              tag: golang-1.10-${CIRCLE_SHA1}
-              extra_build_args: "--target dev-with-source --build-arg GOLANG_VERSION=1.10-alpine"
+              tag: golang-<< parameters.go_image >>-${CIRCLE_SHA1}
+              extra_build_args: "--target dev-with-source --build-arg GOLANG_VERSION=<< parameters.go_image >>"
 
 jobs:
 
@@ -58,12 +62,13 @@ jobs:
 
   test-golang-1-10:
     docker:
-      - image: 'gotesttools/gotestsum-ci:golang-1.10-${CIRCLE_SHA1}'
+      - image: 'gotesttools/gotestsum-ci:golang-1.10-alpine-${CIRCLE_SHA1}'
     working_directory: /go/src/gotest.tools/gotestsum
     steps:
       - run:
           name: "Unit Test GO 1.10"
           command: |
+            go version
             mkdir -p junit/gotest
             dep ensure
             scripts/build
@@ -126,6 +131,7 @@ workflows:
   ci:
     jobs:
       - image/build:
+          go_image: 1.10-alpine
           name: ci-image-golang-1.10
 
 #      - lint
