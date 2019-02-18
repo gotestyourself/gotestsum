@@ -15,6 +15,9 @@ orbs:
             description: "Dockerfile target"
             type: string
             default: "dev-with-source"
+          variant:
+            type: string
+            default: ""
         steps:
           - checkout
           - run:
@@ -31,7 +34,7 @@ orbs:
           - kaniko/build_and_push:
               dockerfile: dobifiles/Dockerfile
               image: gotesttools/gotestsum-ci
-              tag: golang-<< parameters.go_image >>-${CIRCLE_SHA1}
+              tag: golang-<< parameters.go_image >>-<< parameters.variant >>${CIRCLE_SHA1}
               extra_build_args: "--target << parameters.target >> --build-arg GOLANG_VERSION=<< parameters.go_image >>"
 
   test:
@@ -70,7 +73,7 @@ jobs:
 
   lint:
     docker:
-      - image: 'gotesttools/gotestsum-ci:golang-1.10-alpine-${CIRCLE_SHA1}'
+      - image: 'gotesttools/gotestsum-ci:golang-1.11-alpine-lint-${CIRCLE_SHA1}'
     working_directory: /go/src/gotest.tools/gotestsum
     steps:
       - run:
@@ -131,6 +134,7 @@ workflows:
       - image/build:
           go_image: 1.11-alpine
           target: linter-with-source
+          variant: lint-
           name: ci-image-lint
       - lint:
           requires: [ci-image-lint]
