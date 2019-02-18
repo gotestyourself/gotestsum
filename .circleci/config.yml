@@ -35,7 +35,7 @@ orbs:
               dockerfile: dobifiles/Dockerfile
               image: gotesttools/gotestsum-ci
               tag: golang-<< parameters.go_image >>-<< parameters.variant >>${CIRCLE_SHA1}
-              extra_build_args: "--target << parameters.target >> --build-arg GOLANG_VERSION=<< parameters.go_image >>"
+              extra_build_args: "--cache=true --target << parameters.target >> --build-arg GOLANG_VERSION=<< parameters.go_image >>"
 
   test:
     executors:
@@ -60,6 +60,8 @@ orbs:
           - checkout
           - run:
               name: "Unit Test << parameters.version >>"
+              environment:
+                CGO_ENABLED: '0'
               command: |
                 go version
                 scripts/build
@@ -79,7 +81,7 @@ jobs:
       - run:
           name: "Lint"
           command: |
-            dep ensure
+            GO111MODULE=on go mod vendor
             gometalinter --config=.gometalinter.json ./...
 
   test-golang-1-10:
