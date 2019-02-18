@@ -11,6 +11,10 @@ orbs:
           go_image:
             description: "Base golang image"
             type: string
+          target:
+            description: "Dockerfile target"
+            type: string
+            default: "dev-with-source"
         steps:
           - checkout
           - run:
@@ -28,7 +32,7 @@ orbs:
               dockerfile: dobifiles/Dockerfile
               image: gotesttools/gotestsum-ci
               tag: golang-<< parameters.go_image >>-${CIRCLE_SHA1}
-              extra_build_args: "--target dev-with-source --build-arg GOLANG_VERSION=<< parameters.go_image >>"
+              extra_build_args: "--target << parameters.target >> --build-arg GOLANG_VERSION=<< parameters.go_image >>"
 
 jobs:
 
@@ -78,37 +82,33 @@ jobs:
           path: junit/
 
   test-golang-1-11:
-    working_directory: /work
-    docker: [{image: 'docker:17.06-git'}]
+    docker:
+      - image: 'gotesttools/gotestsum-ci:golang-1.11-alpine-${CIRCLE_SHA1}'
+    working_directory: /go/src/gotest.tools/gotestsum
+    environment:
+      GO111MODULE: 'on'
     steps:
-      - checkout
-      - setup_remote_docker
       - run:
           name: "Unit Test GO 1.11"
           command: |
-            scripts/ci/test 1.11-alpine
-            mkdir -p junit/gotest
-            docker cp \
-                test-$CIRCLE_BUILD_NUM:/go/src/gotest.tools/gotestsum/junit.xml \
-                junit/gotest/junit.xml
+            scripts/build
+            scripts/test-unit
 
       - store_test_results:
           path: junit/
 
   test-golang-1-12:
-    working_directory: /work
-    docker: [{image: 'docker:17.06-git'}]
+    docker:
+      - image: 'gotesttools/gotestsum-ci:golang-1.12rc1-alpine-${CIRCLE_SHA1}'
+    working_directory: /go/src/gotest.tools/gotestsum
+    environment:
+      GO111MODULE: 'on'
     steps:
-      - checkout
-      - setup_remote_docker
       - run:
           name: "Unit Test GO 1.12"
           command: |
-            scripts/ci/test 1.12rc1-alpine
-            mkdir -p junit/gotest
-            docker cp \
-                test-$CIRCLE_BUILD_NUM:/go/src/gotest.tools/gotestsum/junit.xml \
-                junit/gotest/junit.xml
+            scripts/build
+            scripts/test-unit
 
       - store_test_results:
           path: junit/
@@ -133,13 +133,25 @@ workflows:
       - image/build:
           go_image: 1.10-alpine
           name: ci-image-golang-1.10
-
-#      - lint
       - test-golang-1-10:
           name: test-golang-1.10
           requires: [ci-image-golang-1.10]
-#      - test-golang-1-11
-#      - test-golang-1-12
+
+      - image/build:
+          go_image: 1.11-alpine
+          name: ci-image-golang-1.11
+      - test-golang-1-11:
+          name: test-golang-1.11
+          requires: [ci-image-golang-1.11]
+
+      - image/build:
+          go_image: 1.12rc1-alpine
+          name: ci-image-golang-1.12
+      - test-golang-1-12:
+          name: test-golang-1.12
+          requires: [ci-image-golang-1.12]
+
+#      - lint
       - release:
           filters:
             tags: {only: '/v[0-9]+(\.[0-9]+)*/'}
