@@ -37,32 +37,15 @@ orbs:
 jobs:
 
   lint:
-    working_directory: /work
-    docker: [{image: 'docker:18.03-git'}]
+    docker:
+      - image: 'gotesttools/gotestsum-ci:golang-1.10-alpine-${CIRCLE_SHA1}'
+    working_directory: /go/src/gotest.tools/gotestsum
     steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          command: docker version
-      - run:
-          name: "Install Dependencies"
-          command: |
-            docker build -f dobifiles/Dockerfile \
-              --target dev-with-source \
-              --tag testsum-builder:$CIRCLE_BUILD_NUM .
-            docker run --name \
-                deps-$CIRCLE_BUILD_NUM testsum-builder:$CIRCLE_BUILD_NUM \
-                dep ensure
-            docker cp \
-                deps-$CIRCLE_BUILD_NUM:/go/src/gotest.tools/gotestsum/vendor \
-                .
       - run:
           name: "Lint"
           command: |
-            docker build -f dobifiles/Dockerfile \
-            --target linter-with-source \
-            --tag testsum-linter:$CIRCLE_BUILD_NUM .
-            docker run --rm testsum-linter:$CIRCLE_BUILD_NUM
+            dep ensure
+            gometalinter --config=.gometalinter.json ./...
 
   test-golang-1-10:
     docker:
@@ -151,7 +134,13 @@ workflows:
           name: test-golang-1.12
           requires: [ci-image-golang-1.12]
 
-#      - lint
+      - image/build:
+          go_image: 1.11-alpine
+          target: linter-with-source
+          name: ci-image-lint
+      - lint:
+          requires: [ci-image-lint]
+
       - release:
           filters:
             tags: {only: '/v[0-9]+(\.[0-9]+)*/'}
