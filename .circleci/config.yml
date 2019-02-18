@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   image:
     orbs:
-      kaniko: glenjamin/kaniko-publish@0.0.3
+      kaniko: glenjamin/kaniko-publish@0.0.4
     jobs:
       build:
         executor: kaniko/kaniko
@@ -24,7 +24,7 @@ orbs:
               dockerfile: dobifiles/Dockerfile
               image: gotesttools/gotestsum-ci
               tag: golang-1.10-${CIRCLE_SHA1}
-              extra_build_args: "--target dev --build-arg GOLANG_VERSION=1.10-alpine"
+              extra_build_args: "--target dev-with-source --build-arg GOLANG_VERSION=1.10-alpine"
 
 jobs:
 
