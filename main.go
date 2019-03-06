@@ -73,6 +73,7 @@ Formats:
 	flags.StringVar(&opts.junitFile, "junitfile",
 		lookEnvWithDefault("GOTESTSUM_JUNITFILE", ""),
 		"write a JUnit XML file")
+	flags.BoolVar(&opts.noCache, "no-cache", false, "disable test caching")
 	flags.BoolVar(&opts.noColor, "no-color", false, "disable color output")
 	flags.Var(opts.noSummary, "no-summary",
 		fmt.Sprintf("do not print summary of: %s", testjson.SummarizeAll.String()))
@@ -94,6 +95,7 @@ type options struct {
 	jsonFile   string
 	junitFile  string
 	noColor    bool
+	noCache    bool
 	noSummary  *noSummaryValue
 }
 
@@ -153,6 +155,9 @@ func goTestCmdArgs(opts *options) []string {
 	}
 	if testPath := pathFromEnv(""); testPath != "" {
 		args = append(args, testPath)
+	}
+	if opts.noCache {
+		args = append(args, "-count=1")
 	}
 	return append(defaultArgs, args...)
 }
