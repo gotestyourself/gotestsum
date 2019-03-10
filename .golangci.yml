@@ -8,6 +8,7 @@ linters-settings:
     line-length: 100
   gocritic:
     enabled-tags:
+      - diagnostic
       - performance
       - style
       - experimental

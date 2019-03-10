@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  go: gotest/tools@dev:0.0.8
+  go: gotest/tools@0.0.8
 
 workflows:
   version: 2
