@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  go: gotest/tools@dev:0.0.8
+
 workflows:
   version: 2
   ci:
@@ -21,7 +24,7 @@ workflows:
             name: go/golang
             tag: 1.12-alpine
 
-      - lint
+      - go/lint
       - build
       - run
 
@@ -31,9 +34,6 @@ workflows:
           filters:
             tags: {only: '/v[0-9]+(\.[0-9]+)*/'}
             branches: {ignore: '/.*/'}
-
-orbs:
-  go: gotest/tools@0.0.7
 
 commands:
   install-deps:
@@ -58,34 +58,6 @@ commands:
             wget -O- -q https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
 
 jobs:
-
-  lint:
-    working_directory: /work
-    docker: [{image: 'docker:18.03-git'}]
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          command: docker version
-      - run:
-          name: "Install Dependencies"
-          command: |
-            docker build -f dobifiles/Dockerfile \
-              --target dev-with-source \
-              --tag testsum-builder:$CIRCLE_BUILD_NUM .
-            docker run --name \
-                deps-$CIRCLE_BUILD_NUM testsum-builder:$CIRCLE_BUILD_NUM \
-                dep ensure
-            docker cp \
-                deps-$CIRCLE_BUILD_NUM:/go/src/gotest.tools/gotestsum/vendor \
-                .
-      - run:
-          name: "Lint"
-          command: |
-            docker build -f dobifiles/Dockerfile \
-            --target linter-with-source \
-            --tag testsum-linter:$CIRCLE_BUILD_NUM .
-            docker run --rm testsum-linter:$CIRCLE_BUILD_NUM
 
   build:
     parameters:

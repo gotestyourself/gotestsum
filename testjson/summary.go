@@ -45,7 +45,7 @@ func (s Summary) String() string {
 		return "none"
 	}
 	var result []string
-	for v := Summary(1); v <= s; v = v << 1 {
+	for v := Summary(1); v <= s; v <<= 1 {
 		if s.Includes(v) {
 			result = append(result, summaryValues[v])
 		}
