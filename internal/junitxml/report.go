@@ -8,7 +8,6 @@ import (
 	"io"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -154,7 +153,7 @@ func packageTestCases(pkg *testjson.Package) []JUnitTestCase {
 
 func newJUnitTestCase(tc testjson.TestCase) JUnitTestCase {
 	return JUnitTestCase{
-		Classname: filepath.Base(tc.Package),
+		Classname: tc.Package,
 		Name:      tc.Test,
 		Time:      formatDurationAsSeconds(tc.Elapsed),
 	}
