@@ -85,7 +85,7 @@ func (p Package) Result() Action {
 func (p Package) Elapsed() time.Duration {
 	elapsed := time.Duration(0)
 	for _, testcase := range p.TestCases() {
-		elapsed = elapsed + testcase.Elapsed
+		elapsed += testcase.Elapsed
 	}
 	return elapsed
 }
@@ -217,7 +217,7 @@ func (e *Execution) Failed() []TestCase {
 }
 
 func sortedKeys(pkgs map[string]*Package) []string {
-	var keys []string
+	keys := make([]string, 0, len(pkgs))
 	for key := range pkgs {
 		keys = append(keys, key)
 	}
@@ -227,7 +227,7 @@ func sortedKeys(pkgs map[string]*Package) []string {
 
 // Skipped returns a list of all the skipped test cases.
 func (e *Execution) Skipped() []TestCase {
-	var skipped []TestCase
+	skipped := make([]TestCase, 0, len(e.packages))
 	for _, pkg := range sortedKeys(e.packages) {
 		skipped = append(skipped, e.packages[pkg].Skipped...)
 	}

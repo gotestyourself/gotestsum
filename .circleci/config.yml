@@ -1,111 +1,123 @@
-version: 2
+version: 2.1
 
-jobs:
-
-  lint:
-    working_directory: /work
-    docker: [{image: 'docker:18.03-git'}]
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          command: docker version
-      - run:
-          name: "Install Dependencies"
-          command: |
-            docker build -f dobifiles/Dockerfile \
-              --target dev-with-source \
-              --tag testsum-builder:$CIRCLE_BUILD_NUM .
-            docker run --name \
-                deps-$CIRCLE_BUILD_NUM testsum-builder:$CIRCLE_BUILD_NUM \
-                dep ensure
-            docker cp \
-                deps-$CIRCLE_BUILD_NUM:/go/src/gotest.tools/gotestsum/vendor \
-                .
-      - run:
-          name: "Lint"
-          command: |
-            docker build -f dobifiles/Dockerfile \
-            --target linter-with-source \
-            --tag testsum-linter:$CIRCLE_BUILD_NUM .
-            docker run --rm testsum-linter:$CIRCLE_BUILD_NUM
-
-  test-golang-1.10:
-    working_directory: /work
-    docker: [{image: 'docker:17.06-git'}]
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: "Unit Test GO 1.10"
-          command: |
-            scripts/ci/test 1.10.3-alpine
-            mkdir -p junit/gotest
-            docker cp \
-                test-$CIRCLE_BUILD_NUM:/go/src/gotest.tools/gotestsum/junit.xml \
-                junit/gotest/junit.xml
-
-      - store_test_results:
-          path: junit/
-
-  test-golang-1.11:
-    working_directory: /work
-    docker: [{image: 'docker:17.06-git'}]
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: "Unit Test GO 1.11"
-          command: |
-            scripts/ci/test 1.11-alpine
-            mkdir -p junit/gotest
-            docker cp \
-                test-$CIRCLE_BUILD_NUM:/go/src/gotest.tools/gotestsum/junit.xml \
-                junit/gotest/junit.xml
-
-      - store_test_results:
-          path: junit/
-
-  test-golang-1.12:
-    working_directory: /work
-    docker: [{image: 'docker:17.06-git'}]
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: "Unit Test GO 1.12"
-          command: |
-            scripts/ci/test 1.12rc1-alpine
-            mkdir -p junit/gotest
-            docker cp \
-                test-$CIRCLE_BUILD_NUM:/go/src/gotest.tools/gotestsum/junit.xml \
-                junit/gotest/junit.xml
-
-      - store_test_results:
-          path: junit/
-
-  release:
-    docker: [{image: 'circleci/golang:1.11'}]
-    working_directory: /go/src/gotest.tools/gotestsum
-    steps:
-      - checkout
-      - deploy:
-          name: "release"
-          command: |
-            curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-            dep ensure
-            go get github.com/goreleaser/goreleaser
-            goreleaser --rm-dist --skip-validate
+orbs:
+  go: gotest/tools@0.0.8
 
 workflows:
   version: 2
   ci:
     jobs:
-      - lint
-      - test-golang-1.10
-      - test-golang-1.11
-      - test-golang-1.12
-      - release:
+      - test-go-1-10:
+          name: test-go-1.10
+
+      - go/test:
+          name: test-go-1.11
+          gotestsum-format: short-verbose
+          executor:
+            name: go/golang
+            tag: 1.11-alpine
+
+      - go/test:
+          name: test-go-1.12
+          gotestsum-format: short-verbose
+          executor:
+            name: go/golang
+            tag: 1.12-alpine
+
+      - go/lint
+      - build
+      - run
+
+      - build:
+          name: release
+          publish: true
           filters:
             tags: {only: '/v[0-9]+(\.[0-9]+)*/'}
             branches: {ignore: '/.*/'}
+
+commands:
+  install-deps:
+    description: Install dep and dependencies
+    steps:
+      - run:
+          name: Install dep
+          command: |
+            command -v dep && exit
+            wget -O- -q https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+      - run:
+          name: Install dependencies
+          command: dep ensure
+
+  install-goreleaser:
+    description: Install goreleaser
+    steps:
+      - run:
+          name: Install goreleaser
+          command: |
+            command -v goreleaser && exit
+            wget -O- -q https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
+
+jobs:
+
+  build:
+    parameters:
+      publish:
+        type: boolean
+        default: false
+    executor: go/golang
+    steps:
+      - go/install-git
+      - go/install-ssh
+      - checkout
+      - go/mod-download
+      - go/mod-tidy-check
+      - install-goreleaser
+      - unless:
+          condition: << parameters.publish >>
+          steps:
+            run:
+              name: build binaries
+              command: bin/goreleaser --rm-dist --snapshot
+      - when:
+          condition: << parameters.publish >>
+          steps:
+            run:
+              name: build and publish binaries
+              command: bin/goreleaser --rm-dist --skip-validate
+      - store_artifacts:
+          path: ./dist
+          destination: dist
+
+  test-go-1-10:
+    executor:
+      name: go/golang
+      tag: 1.10-alpine
+    working_directory: /go/src/gotest.tools/gotestsum
+    steps:
+      - go/install-git
+      - go/install-ssh
+      - checkout
+      - go/install-gotestsum
+      - install-deps
+      - run:
+          name: go test
+          environment:
+            GOTESTSUM_JUNITFILE: /tmp/test-reports/unit/junit.xml
+            GOTESTSUM_FORMAT: short-verbose
+          command: |
+            mkdir -p /tmp/test-reports/unit
+            gotestsum
+      - store_test_results:
+          path: /tmp/test-reports
+
+  run:
+    executor: go/golang
+    steps:
+      - go/install-git
+      - go/install-ssh
+      - checkout
+      - go/mod-download
+      - run: |
+          mkdir -p dist
+          go build -o dist/gotestsum .
+      - run: dist/gotestsum
