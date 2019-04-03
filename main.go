@@ -15,6 +15,8 @@ import (
 	"gotest.tools/gotestsum/testjson"
 )
 
+var version = "master"
+
 func main() {
 	name := os.Args[0]
 	flags, opts := setupFlags(name)
@@ -28,6 +30,11 @@ func main() {
 	}
 	opts.args = flags.Args()
 	setupLogging(opts)
+
+	if opts.version {
+		fmt.Fprintf(os.Stdout, "gotestsum version %s\n", version)
+		os.Exit(0)
+	}
 
 	switch err := run(opts).(type) {
 	case nil:
@@ -76,6 +83,7 @@ Formats:
 	flags.BoolVar(&opts.noColor, "no-color", false, "disable color output")
 	flags.Var(opts.noSummary, "no-summary",
 		fmt.Sprintf("do not print summary of: %s", testjson.SummarizeAll.String()))
+	flags.BoolVar(&opts.version, "version", false, "show version and exit")
 	return flags, opts
 }
 
@@ -95,6 +103,7 @@ type options struct {
 	junitFile  string
 	noColor    bool
 	noSummary  *noSummaryValue
+	version    bool
 }
 
 func setupLogging(opts *options) {
