@@ -26,7 +26,7 @@ output.
 - [Summary](#summary)
 - [JUnit XML](#junit-xml)
 - [JSON file](#json-file-output)
-- [Custom command](#custom-go-test-command)
+- [Setting go test flags and using custom commands](#custom-go-test-command)
 
 ### Format
 
