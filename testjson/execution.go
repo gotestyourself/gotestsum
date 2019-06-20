@@ -69,6 +69,9 @@ type Package struct {
 	Skipped []TestCase
 	Passed  []TestCase
 	output  map[string][]string
+	// coverage stores the code coverage output for the package without the
+	// trailing newline (ex: coverage: 91.1% of statements).
+	coverage string
 	// action identifies if the package passed or failed. A package may fail
 	// with no test failures if an init() or TestMain exits non-zero.
 	// skip indicates there were no tests.
@@ -135,6 +138,9 @@ func (e *Execution) add(event TestEvent) {
 		case ActionPass, ActionFail:
 			pkg.action = event.Action
 		case ActionOutput:
+			if isCoverageOutput(event.Output) {
+				pkg.coverage = strings.TrimRight(event.Output, "\n")
+			}
 			pkg.output[""] = append(pkg.output[""], event.Output)
 		}
 		return
@@ -171,6 +177,12 @@ func (e *Execution) add(event TestEvent) {
 
 func elapsedDuration(elapsed float64) time.Duration {
 	return time.Duration(elapsed*1000) * time.Millisecond
+}
+
+func isCoverageOutput(output string) bool {
+	return all(
+		strings.HasPrefix(output, "coverage:"),
+		strings.HasSuffix(output, "% of statements\n"))
 }
 
 // Output returns the full test output for a test.
