@@ -134,18 +134,25 @@ func (e *Execution) add(event TestEvent) {
 		e.packages[event.Package] = pkg
 	}
 	if event.PackageEvent() {
-		switch event.Action {
-		case ActionPass, ActionFail:
-			pkg.action = event.Action
-		case ActionOutput:
-			if isCoverageOutput(event.Output) {
-				pkg.coverage = strings.TrimRight(event.Output, "\n")
-			}
-			pkg.output[""] = append(pkg.output[""], event.Output)
-		}
+		e.addPackageEvent(pkg, event)
 		return
 	}
+	e.addTestEvent(pkg, event)
+}
 
+func (e *Execution) addPackageEvent(pkg *Package, event TestEvent) {
+	switch event.Action {
+	case ActionPass, ActionFail:
+		pkg.action = event.Action
+	case ActionOutput:
+		if isCoverageOutput(event.Output) {
+			pkg.coverage = strings.TrimRight(event.Output, "\n")
+		}
+		pkg.output[""] = append(pkg.output[""], event.Output)
+	}
+}
+
+func (e *Execution) addTestEvent(pkg *Package, event TestEvent) {
 	switch event.Action {
 	case ActionRun:
 		pkg.Total++
