@@ -31,7 +31,10 @@ func standardVerboseFormat(event TestEvent, _ *Execution) (string, error) {
 
 // go test
 func standardQuietFormat(event TestEvent, _ *Execution) (string, error) {
-	if event.PackageEvent() && event.Output != "PASS\n" {
+	if !event.PackageEvent() {
+		return "", nil
+	}
+	if event.Output != "PASS\n" && !isCoverageOutput(event.Output) {
 		return event.Output, nil
 	}
 	return "", nil
@@ -96,7 +99,7 @@ func all(cond ...bool) bool {
 	return true
 }
 
-func shortFormat(event TestEvent, _ *Execution) (string, error) {
+func shortFormat(event TestEvent, exec *Execution) (string, error) {
 	if !event.PackageEvent() {
 		return "", nil
 	}
@@ -107,9 +110,20 @@ func shortFormat(event TestEvent, _ *Execution) (string, error) {
 		}
 		return fmt.Sprintf(" (%s)", d)
 	}
+	fmtCoverage := func() string {
+		pkg := exec.Package(event.Package)
+		if pkg.coverage == "" {
+			return ""
+		}
+		return "     (" + pkg.coverage + ")"
+	}
 	fmtEvent := func(action string) (string, error) {
-		return fmt.Sprintf("%s  %s%s\n",
-			action, relativePackagePath(event.Package), fmtElapsed()), nil
+		return fmt.Sprintf("%s  %s%s%s\n",
+			action,
+			relativePackagePath(event.Package),
+			fmtElapsed(),
+			fmtCoverage(),
+		), nil
 	}
 	withColor := colorEvent(event)
 	switch event.Action {

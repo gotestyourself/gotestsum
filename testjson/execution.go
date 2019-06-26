@@ -69,6 +69,9 @@ type Package struct {
 	Skipped []TestCase
 	Passed  []TestCase
 	output  map[string][]string
+	// coverage stores the code coverage output for the package without the
+	// trailing newline (ex: coverage: 91.1% of statements).
+	coverage string
 	// action identifies if the package passed or failed. A package may fail
 	// with no test failures if an init() or TestMain exits non-zero.
 	// skip indicates there were no tests.
@@ -131,15 +134,25 @@ func (e *Execution) add(event TestEvent) {
 		e.packages[event.Package] = pkg
 	}
 	if event.PackageEvent() {
-		switch event.Action {
-		case ActionPass, ActionFail:
-			pkg.action = event.Action
-		case ActionOutput:
-			pkg.output[""] = append(pkg.output[""], event.Output)
-		}
+		e.addPackageEvent(pkg, event)
 		return
 	}
+	e.addTestEvent(pkg, event)
+}
 
+func (e *Execution) addPackageEvent(pkg *Package, event TestEvent) {
+	switch event.Action {
+	case ActionPass, ActionFail:
+		pkg.action = event.Action
+	case ActionOutput:
+		if isCoverageOutput(event.Output) {
+			pkg.coverage = strings.TrimRight(event.Output, "\n")
+		}
+		pkg.output[""] = append(pkg.output[""], event.Output)
+	}
+}
+
+func (e *Execution) addTestEvent(pkg *Package, event TestEvent) {
 	switch event.Action {
 	case ActionRun:
 		pkg.Total++
@@ -171,6 +184,12 @@ func (e *Execution) add(event TestEvent) {
 
 func elapsedDuration(elapsed float64) time.Duration {
 	return time.Duration(elapsed*1000) * time.Millisecond
+}
+
+func isCoverageOutput(output string) bool {
+	return all(
+		strings.HasPrefix(output, "coverage:"),
+		strings.HasSuffix(output, "% of statements\n"))
 }
 
 // Output returns the full test output for a test.

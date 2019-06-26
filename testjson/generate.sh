@@ -26,3 +26,9 @@ go test -p 1 -json -tags 'stubpkg panic' ./internal/... \
     > testdata/go-test-json-with-panic.out \
     2> testdata/go-test-json-with-panic.err \
     | true
+
+
+go test -p 1 -json -tags stubpkg -cover ./internal/... \
+    > testdata/go-test-json-with-cover.out \
+    2> testdata/go-test-json-with-cover.err \
+    | true
