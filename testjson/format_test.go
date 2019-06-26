@@ -143,6 +143,18 @@ func TestScanTestOutputWithShortFormat(t *testing.T) {
 	assert.DeepEqual(t, exec, expectedExecution, cmpExecutionShallow)
 }
 
+func TestScanTestOutputWithShortFormat_WithCoverage(t *testing.T) {
+	defer patchPkgPathPrefix("gotest.tools")()
+
+	shim := newFakeHandler(shortFormat, "go-test-json-with-cover")
+	exec, err := ScanTestOutput(shim.Config(t))
+
+	assert.NilError(t, err)
+	golden.Assert(t, shim.out.String(), "short-format-coverage.out")
+	golden.Assert(t, shim.err.String(), "short-format-coverage.err")
+	assert.DeepEqual(t, exec, expectedCoverageExecution, cmpExecutionShallow)
+}
+
 func TestScanTestOutputWithStandardVerboseFormat(t *testing.T) {
 	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
 
@@ -165,4 +177,50 @@ func TestScanTestOutputWithStandardQuietFormat(t *testing.T) {
 	golden.Assert(t, shim.out.String(), "standard-quiet-format.out")
 	golden.Assert(t, shim.err.String(), "standard-quiet-format.err")
 	assert.DeepEqual(t, exec, expectedExecution, cmpExecutionShallow)
+}
+
+func TestScanTestOutputWithStandardQuietFormat_WithCoverage(t *testing.T) {
+	defer patchPkgPathPrefix("gotest.tools")()
+
+	shim := newFakeHandler(standardQuietFormat, "go-test-json-with-cover")
+	exec, err := ScanTestOutput(shim.Config(t))
+
+	assert.NilError(t, err)
+	golden.Assert(t, shim.out.String(), "standard-quiet-format-coverage.out")
+	golden.Assert(t, shim.err.String(), "standard-quiet-format-coverage.err")
+	assert.DeepEqual(t, exec, expectedCoverageExecution, cmpExecutionShallow)
+}
+
+var expectedCoverageExecution = &Execution{
+	started: time.Now(),
+	errors:  []string{"internal/broken/broken.go:5:21: undefined: somepackage"},
+	packages: map[string]*Package{
+		"gotest.tools/gotestsum/testjson/internal/good": {
+			Total: 18,
+			Skipped: []TestCase{
+				{Test: "TestSkipped"},
+				{Test: "TestSkippedWitLog"},
+			},
+			action:   ActionPass,
+			coverage: "coverage: 0.0% of statements",
+		},
+		"gotest.tools/gotestsum/testjson/internal/stub": {
+			Total: 28,
+			Failed: []TestCase{
+				{Test: "TestFailed"},
+				{Test: "TestFailedWithStderr"},
+				{Test: "TestNestedWithFailure/c"},
+				{Test: "TestNestedWithFailure"},
+			},
+			Skipped: []TestCase{
+				{Test: "TestSkipped"},
+				{Test: "TestSkippedWitLog"},
+			},
+			action:   ActionFail,
+			coverage: "coverage: 0.0% of statements",
+		},
+		"gotest.tools/gotestsum/testjson/internal/badmain": {
+			action: ActionFail,
+		},
+	},
 }

@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/go-cmp/cmp"
 	"gotest.tools/assert"
 )
 
@@ -22,3 +23,23 @@ func TestPackage_Elapsed(t *testing.T) {
 	}
 	assert.Equal(t, pkg.Elapsed(), 3100*time.Millisecond)
 }
+
+func TestExecution_Add_PackageCoverage(t *testing.T) {
+	exec := NewExecution()
+	exec.add(TestEvent{
+		Package: "mytestpkg",
+		Action:  ActionOutput,
+		Output:  "coverage: 33.1% of statements\n",
+	})
+
+	pkg := exec.Package("mytestpkg")
+	expected := &Package{
+		coverage: "coverage: 33.1% of statements",
+		output: map[string][]string{
+			"": {"coverage: 33.1% of statements\n"},
+		},
+	}
+	assert.DeepEqual(t, pkg, expected, cmpPackage)
+}
+
+var cmpPackage = cmp.AllowUnexported(Package{})
