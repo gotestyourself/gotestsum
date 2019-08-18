@@ -12,11 +12,11 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"gotest.tools/assert"
-	"gotest.tools/assert/cmp"
-	"gotest.tools/golden"
 	"gotest.tools/gotestsum/internal/dotwriter"
-	"gotest.tools/skip"
+	"gotest.tools/v3/assert"
+	"gotest.tools/v3/assert/cmp"
+	"gotest.tools/v3/golden"
+	"gotest.tools/v3/skip"
 )
 
 func TestScanTestOutput_WithDotsFormatter(t *testing.T) {

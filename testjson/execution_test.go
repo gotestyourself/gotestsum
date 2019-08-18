@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp"
-	"gotest.tools/assert"
+	"gotest.tools/v3/assert"
 )
 
 func TestPackage_Elapsed(t *testing.T) {

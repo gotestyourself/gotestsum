@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/jonboulle/clockwork"
-	"gotest.tools/assert"
+	"gotest.tools/v3/assert"
 )
 
 func TestSummary_String(t *testing.T) {
