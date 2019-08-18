@@ -77,6 +77,7 @@ var expectedExecution = &Execution{
 				{Test: "TestSkippedWitLog"},
 			},
 			action: ActionPass,
+			cached: true,
 		},
 		"github.com/gotestyourself/gotestyourself/testjson/internal/stub": {
 			Total: 28,

@@ -16,7 +16,7 @@ PASS testjson/internal/good.TestNestedSuccess (0.00s)
 PASS testjson/internal/good.TestParallelTheThird (0.00s)
 PASS testjson/internal/good.TestParallelTheSecond (0.01s)
 PASS testjson/internal/good.TestParallelTheFirst (0.01s)
-PASS testjson/internal/good
+PASS testjson/internal/good (cached)
 PASS testjson/internal/stub.TestPassed (0.00s)
 PASS testjson/internal/stub.TestPassedWithLog (0.00s)
 PASS testjson/internal/stub.TestPassedWithStdout (0.00s)

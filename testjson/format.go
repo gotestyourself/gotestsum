@@ -60,7 +60,14 @@ func shortVerboseFormat(event TestEvent, exec *Execution) (string, error) {
 			result = colorEvent(event)("EMPTY")
 			fallthrough
 		case ActionPass, ActionFail:
-			return fmt.Sprintf("%s %s\n", result, relativePackagePath(event.Package)), nil
+			var cached string
+			if exec.Package(event.Package).cached {
+				cached = cachedMessage
+			}
+			return fmt.Sprintf("%s %s%s\n",
+				result,
+				relativePackagePath(event.Package),
+				cached), nil
 		}
 
 	case event.Action == ActionFail:
@@ -99,11 +106,18 @@ func all(cond ...bool) bool {
 	return true
 }
 
+const cachedMessage = " (cached)"
+
 func shortFormat(event TestEvent, exec *Execution) (string, error) {
 	if !event.PackageEvent() {
 		return "", nil
 	}
+	pkg := exec.Package(event.Package)
+
 	fmtElapsed := func() string {
+		if pkg.cached {
+			return cachedMessage
+		}
 		d := elapsedDuration(event.Elapsed)
 		if d == 0 {
 			return ""
@@ -111,11 +125,10 @@ func shortFormat(event TestEvent, exec *Execution) (string, error) {
 		return fmt.Sprintf(" (%s)", d)
 	}
 	fmtCoverage := func() string {
-		pkg := exec.Package(event.Package)
 		if pkg.coverage == "" {
 			return ""
 		}
-		return "     (" + pkg.coverage + ")"
+		return " (" + pkg.coverage + ")"
 	}
 	fmtEvent := func(action string) (string, error) {
 		return fmt.Sprintf("%s  %s%s%s\n",

@@ -76,6 +76,8 @@ type Package struct {
 	// with no test failures if an init() or TestMain exits non-zero.
 	// skip indicates there were no tests.
 	action Action
+	// cached is true if the package was marked as (cached)
+	cached bool
 }
 
 // Result returns if the package passed, failed, or was skipped because there
@@ -148,6 +150,9 @@ func (e *Execution) addPackageEvent(pkg *Package, event TestEvent) {
 		if isCoverageOutput(event.Output) {
 			pkg.coverage = strings.TrimRight(event.Output, "\n")
 		}
+		if isCachedOutput(event.Output) {
+			pkg.cached = true
+		}
 		pkg.output[""] = append(pkg.output[""], event.Output)
 	}
 }
@@ -190,6 +195,10 @@ func isCoverageOutput(output string) bool {
 	return all(
 		strings.HasPrefix(output, "coverage:"),
 		strings.HasSuffix(output, "% of statements\n"))
+}
+
+func isCachedOutput(output string) bool {
+	return strings.Contains(output, "\t(cached)")
 }
 
 // Output returns the full test output for a test.
