@@ -110,9 +110,7 @@ func setupLogging(opts *options) {
 	if opts.debug {
 		log.SetLevel(log.DebugLevel)
 	}
-	if opts.noColor {
-		color.NoColor = true
-	}
+	color.NoColor = opts.noColor
 }
 
 // TODO: add flag --max-failures
