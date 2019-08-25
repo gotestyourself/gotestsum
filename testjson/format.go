@@ -43,9 +43,20 @@ func standardQuietFormat(event TestEvent, _ *Execution) (string, error) {
 func shortVerboseFormat(event TestEvent, exec *Execution) (string, error) {
 	result := colorEvent(event)(strings.ToUpper(string(event.Action)))
 	formatTest := func() string {
-		return fmt.Sprintf("%s %s.%s %s\n",
+		pkgPath := relativePackagePath(event.Package)
+		// If the package path isn't the current directory, we add
+		// a period to separate the test name and the package path.
+		// If it is the current directory, we don't show it at all.
+		// This prevents output like ..MyTest when the test
+		// is in the current directory.
+		if pkgPath == "." {
+			pkgPath = ""
+		} else {
+			pkgPath += "."
+		}
+		return fmt.Sprintf("%s %s%s %s\n",
 			result,
-			relativePackagePath(event.Package),
+			pkgPath,
 			event.Test,
 			event.ElapsedFormatted())
 	}
