@@ -153,9 +153,14 @@ func packageTestCases(pkg *testjson.Package) []JUnitTestCase {
 
 func newJUnitTestCase(tc testjson.TestCase) JUnitTestCase {
 	return JUnitTestCase{
-		Classname: tc.Package,
-		Name:      tc.Test,
-		Time:      formatDurationAsSeconds(tc.Elapsed),
+		Classname: func(fullPkg string) string {
+			// Get short package name and set it as "classname" property
+			// see https://github.com/gotestyourself/gotestsum/issues/68
+			split := strings.Split(fullPkg, "/")
+			return split[len(split)-1]
+		}(tc.Package),
+		Name: tc.Test,
+		Time: formatDurationAsSeconds(tc.Elapsed),
 	}
 }
 
