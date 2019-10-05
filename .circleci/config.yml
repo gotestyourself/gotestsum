@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  go: gotest/tools@0.0.8
+  go: gotest/tools@0.0.11
 
 workflows:
   version: 2
@@ -23,6 +23,13 @@ workflows:
           executor:
             name: go/golang
             tag: 1.12-alpine
+
+      - go/test:
+          name: test-go-1.13
+          gotestsum-format: short-verbose
+          executor:
+            name: go/golang
+            tag: 1.13-alpine
 
       - go/lint
       - build
@@ -66,7 +73,7 @@ jobs:
         default: false
     executor: go/golang
     steps:
-      - go/install-git
+      - go/install: {package: git}
       - go/install-ssh
       - checkout
       - go/mod-download
@@ -94,7 +101,7 @@ jobs:
       tag: 1.10-alpine
     working_directory: /go/src/gotest.tools/gotestsum
     steps:
-      - go/install-git
+      - go/install: {package: git}
       - go/install-ssh
       - checkout
       - go/install-gotestsum
@@ -113,7 +120,7 @@ jobs:
   run:
     executor: go/golang
     steps:
-      - go/install-git
+      - go/install: {package: git}
       - go/install-ssh
       - checkout
       - go/mod-download
