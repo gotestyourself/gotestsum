@@ -87,9 +87,9 @@ Formats:
 	flags.BoolVar(&opts.noColor, "no-color", false, "disable color output")
 	flags.Var(opts.noSummary, "no-summary",
 		"do not print summary of: "+testjson.SummarizeAll.String())
-	flags.Var(opts.junitTestSuiteNameFormat, "junitfile-testsuite-name-format",
+	flags.Var(opts.junitTestSuiteNameFormat, "junitfile-testsuite-name",
 		"format the testsuite name field as: "+junitFieldFormatValues)
-	flags.Var(opts.junitTestCaseClassnameFormat, "junitfile-testcase-classname-format",
+	flags.Var(opts.junitTestCaseClassnameFormat, "junitfile-testcase-classname",
 		"format the testcase classname field as: "+junitFieldFormatValues)
 	flags.BoolVar(&opts.version, "version", false, "show version and exit")
 	return flags, opts

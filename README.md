@@ -86,6 +86,17 @@ This file can be used to integrate with CI systems.
 gotestsum --junitfile unit-tests.xml
 ```
 
+If the package names in the `testsuite.name` or `testcase.classname` fields do not
+work with your CI system these values can be customized using the
+`--junitfile-testsuite-name`, or `--junitfile-testcase-classname` flags. These flags
+accept the following values:
+
+* `short` - the base name of the package (the single term specified by the 
+  package statement).
+* `relative` - a package path relative to the root of the repository
+* `full` - the full package path (default)
+
+
 ### JSON file output
 
 When the `--jsonfile` flag or `GOTESTSUM_JSONFILE` environment variable are set
