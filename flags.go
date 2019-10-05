@@ -2,9 +2,11 @@ package main
 
 import (
 	"encoding/csv"
+	"path"
 	"strings"
 
 	"github.com/pkg/errors"
+	"gotest.tools/gotestsum/internal/junitxml"
 	"gotest.tools/gotestsum/testjson"
 )
 
@@ -46,4 +48,39 @@ func (s *noSummaryValue) Type() string {
 func (s *noSummaryValue) String() string {
 	// flip all the bits, since the flag value is the negative of what is stored
 	return (testjson.SummarizeAll ^ s.value).String()
+}
+
+var junitFieldFormatValues = "full, relative, short"
+
+type junitFieldFormatValue struct {
+	value junitxml.FormatFunc
+}
+
+func (f *junitFieldFormatValue) Set(val string) error {
+	switch val {
+	case "full":
+		return nil
+	case "relative":
+		f.value = testjson.RelativePackagePath
+		return nil
+	case "short":
+		f.value = path.Base
+		return nil
+	}
+	return errors.Errorf("invalid value: %v, must be one of: "+junitFieldFormatValues, val)
+}
+
+func (f *junitFieldFormatValue) Type() string {
+	return "field-format"
+}
+
+func (f *junitFieldFormatValue) String() string {
+	return "full"
+}
+
+func (f *junitFieldFormatValue) Value() junitxml.FormatFunc {
+	if f == nil {
+		return nil
+	}
+	return f.value
 }

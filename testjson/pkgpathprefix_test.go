@@ -10,10 +10,10 @@ import (
 func TestRelativePackagePath(t *testing.T) {
 	prefix := "gotest.tools/gotestsum/testjson"
 	defer patchPkgPathPrefix(prefix)()
-	relPath := relativePackagePath(prefix + "/extra/relpath")
+	relPath := RelativePackagePath(prefix + "/extra/relpath")
 	assert.Equal(t, relPath, "extra/relpath")
 
-	relPath = relativePackagePath(prefix)
+	relPath = RelativePackagePath(prefix)
 	assert.Equal(t, relPath, ".")
 }
 

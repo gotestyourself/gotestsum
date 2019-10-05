@@ -49,7 +49,11 @@ func main() {
 }
 
 func setupFlags(name string) (*pflag.FlagSet, *options) {
-	opts := &options{noSummary: newNoSummaryValue()}
+	opts := &options{
+		noSummary:                    newNoSummaryValue(),
+		junitTestCaseClassnameFormat: &junitFieldFormatValue{},
+		junitTestSuiteNameFormat:     &junitFieldFormatValue{},
+	}
 	flags := pflag.NewFlagSet(name, pflag.ContinueOnError)
 	flags.SetInterspersed(false)
 	flags.Usage = func() {
@@ -82,7 +86,11 @@ Formats:
 		"write a JUnit XML file")
 	flags.BoolVar(&opts.noColor, "no-color", false, "disable color output")
 	flags.Var(opts.noSummary, "no-summary",
-		fmt.Sprintf("do not print summary of: %s", testjson.SummarizeAll.String()))
+		"do not print summary of: "+testjson.SummarizeAll.String())
+	flags.Var(opts.junitTestSuiteNameFormat, "junitfile-testsuite-name-format",
+		"format the testsuite name field as: "+junitFieldFormatValues)
+	flags.Var(opts.junitTestCaseClassnameFormat, "junitfile-testcase-classname-format",
+		"format the testcase classname field as: "+junitFieldFormatValues)
 	flags.BoolVar(&opts.version, "version", false, "show version and exit")
 	return flags, opts
 }
@@ -95,15 +103,17 @@ func lookEnvWithDefault(key, defValue string) string {
 }
 
 type options struct {
-	args       []string
-	format     string
-	debug      bool
-	rawCommand bool
-	jsonFile   string
-	junitFile  string
-	noColor    bool
-	noSummary  *noSummaryValue
-	version    bool
+	args                         []string
+	format                       string
+	debug                        bool
+	rawCommand                   bool
+	jsonFile                     string
+	junitFile                    string
+	noColor                      bool
+	noSummary                    *noSummaryValue
+	junitTestSuiteNameFormat     *junitFieldFormatValue
+	junitTestCaseClassnameFormat *junitFieldFormatValue
+	version                      bool
 }
 
 func setupLogging(opts *options) {
@@ -141,7 +151,7 @@ func run(opts *options) error {
 	if err := testjson.PrintSummary(out, exec, opts.noSummary.value); err != nil {
 		return err
 	}
-	if err := writeJUnitFile(opts.junitFile, exec); err != nil {
+	if err := writeJUnitFile(opts, exec); err != nil {
 		return err
 	}
 	return goTestProc.cmd.Wait()

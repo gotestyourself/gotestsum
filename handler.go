@@ -69,11 +69,11 @@ func newEventHandler(opts *options, wout io.Writer, werr io.Writer) (*eventHandl
 	return handler, nil
 }
 
-func writeJUnitFile(filename string, execution *testjson.Execution) error {
-	if filename == "" {
+func writeJUnitFile(opts *options, execution *testjson.Execution) error {
+	if opts.junitFile == "" {
 		return nil
 	}
-	junitFile, err := os.Create(filename)
+	junitFile, err := os.Create(opts.junitFile)
 	if err != nil {
 		return errors.Wrap(err, "failed to open JUnit file")
 	}
@@ -83,5 +83,8 @@ func writeJUnitFile(filename string, execution *testjson.Execution) error {
 		}
 	}()
 
-	return junitxml.Write(junitFile, execution)
+	return junitxml.Write(junitFile, execution, junitxml.Config{
+		FormatTestSuiteName:     opts.junitTestSuiteNameFormat.Value(),
+		FormatTestCaseClassname: opts.junitTestCaseClassnameFormat.Value(),
+	})
 }
