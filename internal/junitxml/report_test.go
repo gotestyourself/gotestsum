@@ -19,7 +19,7 @@ func TestWrite(t *testing.T) {
 	exec := createExecution(t)
 
 	defer env.Patch(t, "GOVERSION", "go7.7.7")()
-	err := Write(out, exec)
+	err := Write(out, exec, Config{})
 	assert.NilError(t, err)
 	golden.Assert(t, out.String(), "junitxml-report.golden")
 }
