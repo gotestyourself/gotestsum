@@ -39,6 +39,8 @@ gotestsum --format short-verbose
 Supported formats:
  * `dots` - output one character per test.
  * `short` (default) - output a line for each test package.
+ * `short-with-failures` - like short, but prints test output as soon as a test
+   fails.
  * `standard-quiet` - the default `go test` format.
  * `short-verbose` - output a line for each test and package.
  * `standard-verbose` - the standard `go test -v` format.
