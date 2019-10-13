@@ -161,7 +161,7 @@ func writeTestCaseSummary(out io.Writer, execution executionSummary, conf testCa
 	for _, tc := range testCases {
 		fmt.Fprintf(out, "=== %s: %s %s (%s)\n",
 			conf.prefix,
-			relativePackagePath(tc.Package),
+			RelativePackagePath(tc.Package),
 			tc.Test,
 			FormatDurationAsSeconds(tc.Elapsed, 2))
 		for _, line := range execution.OutputLines(tc.Package, tc.Test) {

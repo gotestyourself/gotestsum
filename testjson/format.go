@@ -43,7 +43,7 @@ func standardQuietFormat(event TestEvent, _ *Execution) (string, error) {
 func shortVerboseFormat(event TestEvent, exec *Execution) (string, error) {
 	result := colorEvent(event)(strings.ToUpper(string(event.Action)))
 	formatTest := func() string {
-		pkgPath := relativePackagePath(event.Package)
+		pkgPath := RelativePackagePath(event.Package)
 		// If the package path isn't the current directory, we add
 		// a period to separate the test name and the package path.
 		// If it is the current directory, we don't show it at all.
@@ -77,7 +77,7 @@ func shortVerboseFormat(event TestEvent, exec *Execution) (string, error) {
 			}
 			return fmt.Sprintf("%s %s%s\n",
 				result,
-				relativePackagePath(event.Package),
+				RelativePackagePath(event.Package),
 				cached), nil
 		}
 
@@ -144,7 +144,7 @@ func shortFormat(event TestEvent, exec *Execution) (string, error) {
 	fmtEvent := func(action string) (string, error) {
 		return fmt.Sprintf("%s  %s%s%s\n",
 			action,
-			relativePackagePath(event.Package),
+			RelativePackagePath(event.Package),
 			fmtElapsed(),
 			fmtCoverage(),
 		), nil
@@ -169,7 +169,7 @@ func dotsFormat(event TestEvent, exec *Execution) (string, error) {
 	case event.PackageEvent():
 		return "", nil
 	case event.Action == ActionRun && pkg.Total == 1:
-		return "[" + relativePackagePath(event.Package) + "]", nil
+		return "[" + RelativePackagePath(event.Package) + "]", nil
 	case event.Action == ActionPass:
 		return withColor("·"), nil
 	case event.Action == ActionFail:

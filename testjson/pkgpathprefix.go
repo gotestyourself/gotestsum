@@ -11,7 +11,13 @@ import (
 	"strings"
 )
 
-func relativePackagePath(pkgpath string) string {
+// RelativePackagePath attempts to remove a common prefix from a package path.
+// The common prefix is determined either by looking at the GOPATH or reading
+// the package value from go.mod file.
+// If the pkgpath does not match the common prefix it will be returned
+// unmodified.
+// If the pkgpath matches the common prefix exactly then '.' will be returned.
+func RelativePackagePath(pkgpath string) string {
 	if pkgpath == pkgPathPrefix {
 		return "."
 	}
