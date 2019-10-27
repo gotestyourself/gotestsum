@@ -109,6 +109,8 @@ Formats:
 		"format the testsuite name field as: "+junitFieldFormatValues)
 	flags.Var(opts.junitTestCaseClassnameFormat, "junitfile-testcase-classname",
 		"format the testcase classname field as: "+junitFieldFormatValues)
+	flags.StringSliceVar(&opts.postRunHookCmd, "post-run-command",
+		nil, "run this command once the tests have completed")
 	flags.BoolVar(&opts.version, "version", false, "show version and exit")
 	return flags, opts
 }
@@ -127,6 +129,7 @@ type options struct {
 	rawCommand                   bool
 	jsonFile                     string
 	junitFile                    string
+	postRunHookCmd               []string
 	noColor                      bool
 	noSummary                    *noSummaryValue
 	junitTestSuiteNameFormat     *junitFieldFormatValue
@@ -167,6 +170,9 @@ func run(opts *options) error {
 	}
 	testjson.PrintSummary(out, exec, opts.noSummary.value)
 	if err := writeJUnitFile(opts, exec); err != nil {
+		return err
+	}
+	if err := postRunHook(opts, exec); err != nil {
 		return err
 	}
 	return goTestProc.cmd.Wait()
