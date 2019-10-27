@@ -123,6 +123,10 @@ func shortFormat(event TestEvent, exec *Execution) (string, error) {
 	if !event.PackageEvent() {
 		return "", nil
 	}
+	return shortFormatPackageEvent(event, exec)
+}
+
+func shortFormatPackageEvent(event TestEvent, exec *Execution) (string, error) {
 	pkg := exec.Package(event.Package)
 
 	fmtElapsed := func() string {
@@ -159,6 +163,16 @@ func shortFormat(event TestEvent, exec *Execution) (string, error) {
 		return fmtEvent(withColor("✖"))
 	}
 	return "", nil
+}
+
+func shortWithFailuresFormat(event TestEvent, exec *Execution) (string, error) {
+	if !event.PackageEvent() {
+		if event.Action == ActionFail {
+			return exec.Output(event.Package, event.Test), nil
+		}
+		return "", nil
+	}
+	return shortFormatPackageEvent(event, exec)
 }
 
 func dotsFormat(event TestEvent, exec *Execution) (string, error) {
@@ -207,6 +221,8 @@ func NewEventFormatter(format string) EventFormatter {
 		return shortVerboseFormat
 	case "short":
 		return shortFormat
+	case "short-with-failures":
+		return shortWithFailuresFormat
 	default:
 		return nil
 	}
