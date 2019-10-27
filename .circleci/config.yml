@@ -1,10 +1,9 @@
 version: 2.1
 
 orbs:
-  go: gotest/tools@0.0.11
+  go: gotest/tools@0.0.12
 
 workflows:
-  version: 2
   ci:
     jobs:
       - test-go-1-10:
@@ -31,6 +30,14 @@ workflows:
             name: go/golang
             tag: 1.13-alpine
 
+      - go/test:
+          name: test-windows-go1.12
+          executor: windows
+          pre-steps:
+            - run: |
+                git config --global core.autocrlf false
+                git config --global core.symlinks true
+
       - go/lint
       - build
       - run
@@ -41,6 +48,13 @@ workflows:
           filters:
             tags: {only: '/v[0-9]+(\.[0-9]+)*/'}
             branches: {ignore: '/.*/'}
+
+executors:
+  windows:
+    machine:
+      image: windows-server-2019-vs2019:201908-06
+      resource_class: windows.medium
+      shell: bash.exe
 
 commands:
   install-deps:
