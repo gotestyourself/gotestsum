@@ -12,7 +12,6 @@ import (
 
 type eventHandler struct {
 	formatter testjson.EventFormatter
-	out       io.Writer
 	err       io.Writer
 	jsonFile  io.WriteCloser
 }
@@ -30,12 +29,11 @@ func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execu
 		}
 	}
 
-	line, err := h.formatter(event, execution)
+	err := h.formatter.Format(event, execution)
 	if err != nil {
 		return errors.Wrap(err, "failed to format event")
 	}
-	_, err = h.out.Write([]byte(line))
-	return errors.Wrap(err, "failed to write event")
+	return nil
 }
 
 func (h *eventHandler) Close() error {
@@ -49,15 +47,14 @@ func (h *eventHandler) Close() error {
 
 var _ testjson.EventHandler = &eventHandler{}
 
-func newEventHandler(opts *options, wout io.Writer, werr io.Writer) (*eventHandler, error) {
-	formatter := testjson.NewEventFormatter(opts.format)
+func newEventHandler(opts *options, stdout io.Writer, stderr io.Writer) (*eventHandler, error) {
+	formatter := testjson.NewEventFormatter(stdout, opts.format)
 	if formatter == nil {
 		return nil, errors.Errorf("unknown format %s", opts.format)
 	}
 	handler := &eventHandler{
 		formatter: formatter,
-		out:       wout,
-		err:       werr,
+		err:       stderr,
 	}
 	var err error
 	if opts.jsonFile != "" {

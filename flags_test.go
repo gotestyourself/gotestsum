@@ -14,7 +14,6 @@ func TestNoSummaryValue_SetAndString(t *testing.T) {
 		value := newNoSummaryValue()
 		assert.NilError(t, value.Set("output"))
 		assert.Equal(t, value.String(), "output")
-
 	})
 	t.Run("some", func(t *testing.T) {
 		value := newNoSummaryValue()

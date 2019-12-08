@@ -97,7 +97,10 @@ func (p Package) Elapsed() time.Duration {
 
 // TestCases returns all the test cases.
 func (p Package) TestCases() []TestCase {
-	return append(append(p.Passed, p.Failed...), p.Skipped...)
+	tc := append([]TestCase{}, p.Passed...)
+	tc = append(tc, p.Failed...)
+	tc = append(tc, p.Skipped...)
+	return tc
 }
 
 // Output returns the full test output for a test.

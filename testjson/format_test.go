@@ -2,6 +2,7 @@ package testjson
 
 import (
 	"bytes"
+	"runtime"
 	"testing"
 	"time"
 
@@ -9,6 +10,7 @@ import (
 	"gotest.tools/assert"
 	"gotest.tools/assert/opt"
 	"gotest.tools/golden"
+	"gotest.tools/skip"
 )
 
 //go:generate ./generate.sh
@@ -28,19 +30,30 @@ func (s *fakeHandler) Config(t *testing.T) ScanConfig {
 	}
 }
 
-func newFakeHandler(handler EventFormatter, inputName string) *fakeHandler {
+func newFakeHandlerWithAdapter(
+	format func(event TestEvent, output *Execution) (string, error),
+	inputName string,
+) *fakeHandler {
+	out := new(bytes.Buffer)
 	return &fakeHandler{
 		inputName: inputName,
-		formatter: handler,
+		formatter: &formatAdapter{out: out, format: format},
+		out:       out,
+		err:       new(bytes.Buffer),
+	}
+}
+
+func newFakeHandler(formatter EventFormatter, inputName string) *fakeHandler {
+	return &fakeHandler{
+		inputName: inputName,
+		formatter: formatter,
 		out:       new(bytes.Buffer),
 		err:       new(bytes.Buffer),
 	}
 }
 
 func (s *fakeHandler) Event(event TestEvent, execution *Execution) error {
-	line, err := s.formatter(event, execution)
-	s.out.WriteString(line)
-	return err
+	return s.formatter.Format(event, execution)
 }
 
 func (s *fakeHandler) Err(text string) error {
@@ -57,7 +70,7 @@ func patchPkgPathPrefix(val string) func() {
 func TestScanTestOutputWithShortVerboseFormat(t *testing.T) {
 	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
 
-	shim := newFakeHandler(shortVerboseFormat, "go-test-json")
+	shim := newFakeHandlerWithAdapter(shortVerboseFormat, "go-test-json")
 	exec, err := ScanTestOutput(shim.Config(t))
 
 	assert.NilError(t, err)
@@ -120,22 +133,22 @@ func stringPath(spec string) func(gocmp.Path) bool {
 	}
 }
 
-func TestScanTestOutputWithDotsFormat(t *testing.T) {
+func TestScanTestOutputWithDotsFormatV1(t *testing.T) {
 	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
 
-	shim := newFakeHandler(dotsFormat, "go-test-json")
+	shim := newFakeHandlerWithAdapter(dotsFormatV1, "go-test-json")
 	exec, err := ScanTestOutput(shim.Config(t))
 
 	assert.NilError(t, err)
-	golden.Assert(t, shim.out.String(), "dots-format.out")
-	golden.Assert(t, shim.err.String(), "dots-format.err")
+	golden.Assert(t, shim.out.String(), "dots-v1-format.out")
+	golden.Assert(t, shim.err.String(), "dots-v1-format.err")
 	assert.DeepEqual(t, exec, expectedExecution, cmpExecutionShallow)
 }
 
 func TestScanTestOutputWithShortFormat(t *testing.T) {
 	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
 
-	shim := newFakeHandler(shortFormat, "go-test-json")
+	shim := newFakeHandlerWithAdapter(shortFormat, "go-test-json")
 	exec, err := ScanTestOutput(shim.Config(t))
 
 	assert.NilError(t, err)
@@ -147,7 +160,7 @@ func TestScanTestOutputWithShortFormat(t *testing.T) {
 func TestScanTestOutputWithShortFormat_WithCoverage(t *testing.T) {
 	defer patchPkgPathPrefix("gotest.tools")()
 
-	shim := newFakeHandler(shortFormat, "go-test-json-with-cover")
+	shim := newFakeHandlerWithAdapter(shortFormat, "go-test-json-with-cover")
 	exec, err := ScanTestOutput(shim.Config(t))
 
 	assert.NilError(t, err)
@@ -159,7 +172,7 @@ func TestScanTestOutputWithShortFormat_WithCoverage(t *testing.T) {
 func TestScanTestOutputWithStandardVerboseFormat(t *testing.T) {
 	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
 
-	shim := newFakeHandler(standardVerboseFormat, "go-test-json")
+	shim := newFakeHandlerWithAdapter(standardVerboseFormat, "go-test-json")
 	exec, err := ScanTestOutput(shim.Config(t))
 
 	assert.NilError(t, err)
@@ -171,7 +184,7 @@ func TestScanTestOutputWithStandardVerboseFormat(t *testing.T) {
 func TestScanTestOutputWithStandardQuietFormat(t *testing.T) {
 	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
 
-	shim := newFakeHandler(standardQuietFormat, "go-test-json")
+	shim := newFakeHandlerWithAdapter(standardQuietFormat, "go-test-json")
 	exec, err := ScanTestOutput(shim.Config(t))
 
 	assert.NilError(t, err)
@@ -183,7 +196,7 @@ func TestScanTestOutputWithStandardQuietFormat(t *testing.T) {
 func TestScanTestOutputWithStandardQuietFormat_WithCoverage(t *testing.T) {
 	defer patchPkgPathPrefix("gotest.tools")()
 
-	shim := newFakeHandler(standardQuietFormat, "go-test-json-with-cover")
+	shim := newFakeHandlerWithAdapter(standardQuietFormat, "go-test-json-with-cover")
 	exec, err := ScanTestOutput(shim.Config(t))
 
 	assert.NilError(t, err)
@@ -224,4 +237,18 @@ var expectedCoverageExecution = &Execution{
 			action: ActionFail,
 		},
 	},
+}
+
+func TestScanTestOutput_WithDotsFormatter(t *testing.T) {
+	skip.If(t, runtime.GOOS == "windows", "need a separate expected value for windows")
+	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
+
+	out := new(bytes.Buffer)
+	shim := newFakeHandler(newDotFormatter(out), "go-test-json")
+	exec, err := ScanTestOutput(shim.Config(t))
+
+	assert.NilError(t, err)
+	golden.Assert(t, out.String(), "dots-format.out")
+	golden.Assert(t, shim.err.String(), "dots-format.err")
+	assert.DeepEqual(t, exec, expectedExecution, cmpExecutionShallow)
 }

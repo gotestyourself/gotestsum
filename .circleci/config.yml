@@ -38,7 +38,9 @@ workflows:
                 git config --global core.autocrlf false
                 git config --global core.symlinks true
 
-      - go/lint
+      - go/lint:
+          golangci-lint-version: 1.21.0
+
       - build
       - run
 

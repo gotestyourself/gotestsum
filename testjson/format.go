@@ -2,14 +2,11 @@ package testjson
 
 import (
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/fatih/color"
 )
-
-// EventFormatter is a function which handles an event and returns a string to
-// output for the event.
-type EventFormatter func(event TestEvent, output *Execution) (string, error)
 
 func debugFormat(event TestEvent, _ *Execution) (string, error) {
 	return fmt.Sprintf("%s %s %s (%.3f) [%d] %s\n",
@@ -86,7 +83,6 @@ func shortVerboseFormat(event TestEvent, exec *Execution) (string, error) {
 
 	case event.Action == ActionPass:
 		return formatTest(), nil
-
 	}
 	return "", nil
 }
@@ -175,25 +171,6 @@ func shortWithFailuresFormat(event TestEvent, exec *Execution) (string, error) {
 	return shortFormatPackageEvent(event, exec)
 }
 
-func dotsFormat(event TestEvent, exec *Execution) (string, error) {
-	pkg := exec.Package(event.Package)
-	withColor := colorEvent(event)
-
-	switch {
-	case event.PackageEvent():
-		return "", nil
-	case event.Action == ActionRun && pkg.Total == 1:
-		return "[" + RelativePackagePath(event.Package) + "]", nil
-	case event.Action == ActionPass:
-		return withColor("·"), nil
-	case event.Action == ActionFail:
-		return withColor("✖"), nil
-	case event.Action == ActionSkip:
-		return withColor("↷"), nil
-	}
-	return "", nil
-}
-
 func colorEvent(event TestEvent) func(format string, a ...interface{}) string {
 	switch event.Action {
 	case ActionPass:
@@ -206,24 +183,44 @@ func colorEvent(event TestEvent) func(format string, a ...interface{}) string {
 	return color.WhiteString
 }
 
+// EventFormatter is a function which handles an event and returns a string to
+// output for the event.
+type EventFormatter interface {
+	Format(event TestEvent, output *Execution) error
+}
+
 // NewEventFormatter returns a formatter for printing events.
-func NewEventFormatter(format string) EventFormatter {
+func NewEventFormatter(out io.Writer, format string) EventFormatter {
 	switch format {
 	case "debug":
-		return debugFormat
+		return &formatAdapter{out, debugFormat}
 	case "standard-verbose":
-		return standardVerboseFormat
+		return &formatAdapter{out, standardVerboseFormat}
 	case "standard-quiet":
-		return standardQuietFormat
+		return &formatAdapter{out, standardQuietFormat}
 	case "dots":
-		return dotsFormat
+		return newDotFormatter(out)
 	case "short-verbose":
-		return shortVerboseFormat
+		return &formatAdapter{out, shortVerboseFormat}
 	case "short":
-		return shortFormat
+		return &formatAdapter{out, shortFormat}
 	case "short-with-failures":
-		return shortWithFailuresFormat
+		return &formatAdapter{out, shortWithFailuresFormat}
 	default:
 		return nil
 	}
+}
+
+type formatAdapter struct {
+	out    io.Writer
+	format func(TestEvent, *Execution) (string, error)
+}
+
+func (f *formatAdapter) Format(event TestEvent, exec *Execution) error {
+	o, err := f.format(event, exec)
+	if err != nil {
+		return err
+	}
+	_, err = f.out.Write([]byte(o))
+	return err
 }
