@@ -2,7 +2,6 @@ package testjson
 
 import (
 	"bytes"
-	"runtime"
 	"testing"
 	"time"
 
@@ -10,7 +9,6 @@ import (
 	"gotest.tools/assert"
 	"gotest.tools/assert/opt"
 	"gotest.tools/golden"
-	"gotest.tools/skip"
 )
 
 //go:generate ./generate.sh
@@ -237,18 +235,4 @@ var expectedCoverageExecution = &Execution{
 			action: ActionFail,
 		},
 	},
-}
-
-func TestScanTestOutput_WithDotsFormatter(t *testing.T) {
-	skip.If(t, runtime.GOOS == "windows", "need a separate expected value for windows")
-	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
-
-	out := new(bytes.Buffer)
-	shim := newFakeHandler(newDotFormatter(out), "go-test-json")
-	exec, err := ScanTestOutput(shim.Config(t))
-
-	assert.NilError(t, err)
-	golden.Assert(t, out.String(), "dots-format.out")
-	golden.Assert(t, shim.err.String(), "dots-format.err")
-	assert.DeepEqual(t, exec, expectedExecution, cmpExecutionShallow)
 }

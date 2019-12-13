@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh/terminal"
 	"gotest.tools/gotestsum/internal/dotwriter"
 )
@@ -23,39 +24,61 @@ func dotsFormatV1(event TestEvent, exec *Execution) (string, error) {
 	return fmtDot(event), nil
 }
 
+func fmtDot(event TestEvent) string {
+	withColor := colorEvent(event)
+	switch event.Action {
+	case ActionPass:
+		return withColor("·")
+	case ActionFail:
+		return withColor("✖")
+	case ActionSkip:
+		return withColor("↷")
+	}
+	return ""
+}
+
 type dotFormatter struct {
-	pkgs      map[string]*dotFmtPkg
+	pkgs      map[string]*dotLine
 	order     []string
 	writer    *dotwriter.Writer
 	termWidth int
 }
 
-type dotFmtPkg struct {
+type dotLine struct {
 	runes      int
 	builder    *strings.Builder
 	lastUpdate time.Time
-	atMaxWidth bool
+	full       bool
 }
 
-func (d *dotFmtPkg) update(dot string) {
-	if d.atMaxWidth || dot == "" {
+func (l *dotLine) update(dot string) {
+	if l.full || dot == "" {
 		return
 	}
-	d.builder.WriteString(dot)
-	d.runes++
+	l.builder.WriteString(dot)
+	l.runes++
 }
 
-func (d *dotFmtPkg) setAtMaxWidth() {
-	if !d.atMaxWidth {
-		d.builder.WriteString("↲")
-		d.atMaxWidth = true
+// checkWidth marks the line as full when the width of the line hits the
+// terminal width.
+func (l *dotLine) checkWidth(prefix, terminal int) {
+	// padding is the space required for the carriage return added when the line
+	// is full.
+	const padding = 1
+	if prefix+l.runes+padding >= terminal && !l.full {
+		l.builder.WriteString("↲")
+		l.full = true
 	}
 }
 
 func newDotFormatter(out io.Writer) EventFormatter {
 	w, _, _ := terminal.GetSize(int(os.Stdout.Fd()))
+	if w == 0 {
+		logrus.Warn("Failed to detect terminal width for dots format.")
+		return &formatAdapter{format: dotsFormatV1, out: out}
+	}
 	return &dotFormatter{
-		pkgs:      make(map[string]*dotFmtPkg),
+		pkgs:      make(map[string]*dotLine),
 		writer:    dotwriter.New(out),
 		termWidth: w,
 	}
@@ -63,33 +86,38 @@ func newDotFormatter(out io.Writer) EventFormatter {
 
 func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 	if d.pkgs[event.Package] == nil {
-		d.pkgs[event.Package] = &dotFmtPkg{builder: new(strings.Builder)}
+		d.pkgs[event.Package] = &dotLine{builder: new(strings.Builder)}
 		d.order = append(d.order, event.Package)
 	}
-	p := d.pkgs[event.Package]
-	p.lastUpdate = event.Time
+	line := d.pkgs[event.Package]
+	line.lastUpdate = event.Time
 
 	if !event.PackageEvent() {
-		p.update(fmtDot(event))
+		line.update(fmtDot(event))
+	}
+	switch event.Action {
+	case ActionOutput, ActionBench:
+		return nil
 	}
 
-	// move the most recently updated packages to the bottom
-	sort.Slice(d.order, func(i, j int) bool {
-		return d.pkgs[d.order[i]].lastUpdate.Before(d.pkgs[d.order[j]].lastUpdate)
-	})
+	sort.Slice(d.order, d.orderByLastUpdated)
 	for _, pkg := range d.order {
-		p := d.pkgs[pkg]
-		prefix, width := formatPkg(RelativePackagePath(pkg), exec.Package(pkg))
-		if width+p.runes+2 >= d.termWidth {
-			p.setAtMaxWidth()
-		}
-		fmt.Fprintf(d.writer, "%s %s\n", prefix, p.builder.String())
+		line := d.pkgs[pkg]
+		prefix, width := fmtDotPkgTime(RelativePackagePath(pkg), exec.Package(pkg))
+		line.checkWidth(width, d.termWidth)
+		fmt.Fprintf(d.writer, prefix+line.builder.String()+"\n")
 	}
 	return d.writer.Flush()
 }
 
+// orderByLastUpdated so that the most recently updated packages move to the
+// bottom of the list, leaving completed package in the same order at the top.
+func (d *dotFormatter) orderByLastUpdated(i, j int) bool {
+	return d.pkgs[d.order[i]].lastUpdate.Before(d.pkgs[d.order[j]].lastUpdate)
+}
+
 // TODO: test case for timing format
-func formatPkg(pkg string, p *Package) (string, int) {
+func fmtDotPkgTime(pkg string, p *Package) (string, int) {
 	elapsed := p.Elapsed()
 	var pkgTime string
 	switch {
@@ -104,18 +132,7 @@ func formatPkg(pkg string, p *Package) (string, int) {
 		pkgTime = elapsed.Truncate(time.Second).String()
 	}
 
-	return fmt.Sprintf("%6s %s", pkgTime, pkg), len(pkg) + 7
-}
-
-func fmtDot(event TestEvent) string {
-	withColor := colorEvent(event)
-	switch event.Action {
-	case ActionPass:
-		return withColor("·")
-	case ActionFail:
-		return withColor("✖")
-	case ActionSkip:
-		return withColor("↷")
-	}
-	return ""
+	// fixed is the width of the fixed size prefix, plus 2 spaces for padding.
+	const fixed = 8
+	return fmt.Sprintf("%6s %s ", pkgTime, pkg), len(pkg) + fixed
 }
