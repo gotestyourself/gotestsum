@@ -28,8 +28,9 @@ func TestScanTestOutput_WithDotsFormatter(t *testing.T) {
 	d.termWidth = 80
 	shim := newFakeHandler(dotfmt, "go-test-json")
 	exec, err := ScanTestOutput(shim.Config(t))
-
 	assert.NilError(t, err)
+
+	// TODO: remove in 0.\d\d\ds from out
 	golden.Assert(t, out.String(), "dots-format.out")
 	golden.Assert(t, shim.err.String(), "dots-format.err")
 	assert.DeepEqual(t, exec, expectedExecution, cmpExecutionShallow)

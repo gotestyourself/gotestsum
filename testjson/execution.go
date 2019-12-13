@@ -130,6 +130,7 @@ type Execution struct {
 	started  time.Time
 	packages map[string]*Package
 	errors   []string
+	done     bool
 }
 
 func (e *Execution) add(event TestEvent) {
@@ -321,7 +322,9 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 	group.Go(func() error {
 		return readStderr(config, execution)
 	})
-	return execution, group.Wait()
+	err := group.Wait()
+	execution.done = true
+	return execution, err
 }
 
 func readStdout(config ScanConfig, execution *Execution) error {

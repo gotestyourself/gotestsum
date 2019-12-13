@@ -67,7 +67,7 @@ func NewSummary(value string) (Summary, bool) {
 
 // PrintSummary of a test Execution. Prints a section for each summary type
 // followed by a DONE line.
-func PrintSummary(out io.Writer, execution *Execution, opts Summary) error {
+func PrintSummary(out io.Writer, execution *Execution, opts Summary) {
 	execSummary := newExecSummary(execution, opts)
 	if opts.Includes(SummarizeSkipped) {
 		writeTestCaseSummary(out, execSummary, formatSkipped())
@@ -82,14 +82,12 @@ func PrintSummary(out io.Writer, execution *Execution, opts Summary) error {
 	}
 
 	fmt.Fprintf(out, "\n%s %d tests%s%s%s in %s\n",
-		"DONE", // TODO: maybe color this?
+		formatExecStatus(execution.done),
 		execution.Total(),
 		formatTestCount(len(execution.Skipped()), "skipped", ""),
 		formatTestCount(len(execution.Failed()), "failure", "s"),
 		formatTestCount(countErrors(errors), "error", "s"),
 		FormatDurationAsSeconds(execution.Elapsed(), 3))
-
-	return nil
 }
 
 func formatTestCount(count int, category string, pluralize string) string {
@@ -101,6 +99,14 @@ func formatTestCount(count int, category string, pluralize string) string {
 		category += pluralize
 	}
 	return fmt.Sprintf(", %d %s", count, category)
+}
+
+// TODO: maybe color this?
+func formatExecStatus(done bool) string {
+	if done {
+		return "DONE"
+	}
+	return ""
 }
 
 // FormatDurationAsSeconds formats a time.Duration as a float with an s suffix.

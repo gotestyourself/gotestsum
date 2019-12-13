@@ -78,6 +78,7 @@ func TestScanTestOutputWithShortVerboseFormat(t *testing.T) {
 }
 
 var expectedExecution = &Execution{
+	done:    true,
 	started: time.Now(),
 	errors:  []string{"internal/broken/broken.go:5:21: undefined: somepackage"},
 	packages: map[string]*Package{
@@ -204,6 +205,7 @@ func TestScanTestOutputWithStandardQuietFormat_WithCoverage(t *testing.T) {
 }
 
 var expectedCoverageExecution = &Execution{
+	done:    true,
 	started: time.Now(),
 	errors:  []string{"internal/broken/broken.go:5:21: undefined: somepackage"},
 	packages: map[string]*Package{

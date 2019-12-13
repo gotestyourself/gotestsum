@@ -108,6 +108,7 @@ func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 		line.checkWidth(len(prefix+pkgname), d.termWidth)
 		fmt.Fprintf(d.writer, prefix+pkgname+line.builder.String()+"\n")
 	}
+	PrintSummary(d.writer, exec, SummarizeNone)
 	return d.writer.Flush()
 }
 
