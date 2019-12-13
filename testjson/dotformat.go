@@ -103,9 +103,10 @@ func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 	sort.Slice(d.order, d.orderByLastUpdated)
 	for _, pkg := range d.order {
 		line := d.pkgs[pkg]
-		prefix, width := fmtDotPkgTime(RelativePackagePath(pkg), exec.Package(pkg))
-		line.checkWidth(width, d.termWidth)
-		fmt.Fprintf(d.writer, prefix+line.builder.String()+"\n")
+		pkgname := RelativePackagePath(pkg) + " "
+		prefix := fmtDotElapsed(exec.Package(pkg))
+		line.checkWidth(len(prefix+pkgname), d.termWidth)
+		fmt.Fprintf(d.writer, prefix+pkgname+line.builder.String()+"\n")
 	}
 	return d.writer.Flush()
 }
@@ -116,23 +117,39 @@ func (d *dotFormatter) orderByLastUpdated(i, j int) bool {
 	return d.pkgs[d.order[i]].lastUpdate.Before(d.pkgs[d.order[j]].lastUpdate)
 }
 
-// TODO: test case for timing format
-func fmtDotPkgTime(pkg string, p *Package) (string, int) {
-	elapsed := p.Elapsed()
-	var pkgTime string
-	switch {
-	case p.cached:
-		pkgTime = "🖴"
-	case elapsed == 0:
-	case elapsed < time.Second:
-		pkgTime = elapsed.String()
-	case elapsed < 10*time.Second:
-		pkgTime = elapsed.Truncate(time.Millisecond).String()
-	case elapsed < time.Minute:
-		pkgTime = elapsed.Truncate(time.Second).String()
+func fmtDotElapsed(p *Package) string {
+	f := func(v string) string {
+		return fmt.Sprintf(" %5s ", v)
 	}
 
-	// fixed is the width of the fixed size prefix, plus 2 spaces for padding.
-	const fixed = 8
-	return fmt.Sprintf("%6s %s ", pkgTime, pkg), len(pkg) + fixed
+	elapsed := p.Elapsed()
+	switch {
+	case p.cached:
+		return f("🖴 ")
+	case elapsed <= 0:
+		return f("")
+	case elapsed >= time.Hour:
+		return f("⏳ ")
+	case elapsed < time.Second:
+		return f(elapsed.String())
+	}
+
+	const maxWidth = 7
+	var steps = []time.Duration{
+		time.Millisecond,
+		10 * time.Millisecond,
+		100 * time.Millisecond,
+		time.Second,
+		10 * time.Second,
+		time.Minute,
+		10 * time.Minute,
+	}
+
+	for _, trunc := range steps {
+		r := f(elapsed.Truncate(trunc).String())
+		if len(r) <= maxWidth {
+			return r
+		}
+	}
+	return f("")
 }
