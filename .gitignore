@@ -3,3 +3,4 @@ vendor/
 .depsources
 dist/
 junit.xml
+demo/

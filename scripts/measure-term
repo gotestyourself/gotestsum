@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#
+# Print the terminal wdith and height in a loop.
+#
+# Helps size the terminal correctly for ./record
+#
+
+set -eu -o pipefail
+
+while true; do
+  clear
+  echo "Width $(tput cols)"
+  echo "Height $(tput lines)"
+  sleep 0.2
+done

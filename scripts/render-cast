@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+#
+# Render an asciinema cast recordered by ./record as a gif
+#
+
+set -eu -o pipefail
+
+image=asciinema/asciicast2gif
+theme=asciinema
+width=100
+height=30
+speed=1
+scale=1
+
+docker pull $image 
+docker run --rm \
+    -v "$PWD:/data" \
+    $image \
+    -s $speed -S $scale -t $theme \
+    -w $width -h $height \
+    demo/demo.cast demo/demo.gif

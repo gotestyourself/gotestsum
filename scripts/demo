@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#
+# Run the demo, expected to be run from ./record
+#
+
+set -eu -o pipefail
+
+cd ../gotest.tools
+
+echo '$ gotestsum --format dots'
+gotestsum -f dots --no-summary=all -- --count=3 ./...

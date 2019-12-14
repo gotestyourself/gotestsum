@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#
+# Record a demo video for the README.
+#
+# Require https://asciinema.org/docs/installation
+# Run in a terminal of size: TDB
+#
+
+set -eu -o pipefail
+
+mkdir -p demo
+name="${1-demo.cast}"
+asciinema rec \
+    --overwrite \
+    -c scripts/demo \
+    "demo/$name"
