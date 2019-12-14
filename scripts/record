@@ -12,5 +12,6 @@ mkdir -p demo
 name="${1-demo.cast}"
 asciinema rec \
     --overwrite \
+    --idle-time-limit 2 \
     -c scripts/demo \
     "demo/$name"

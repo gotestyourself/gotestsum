@@ -9,3 +9,16 @@ cd ../gotest.tools
 
 echo '$ gotestsum --format dots'
 gotestsum -f dots --no-summary=all -- --count=3 ./...
+
+sleep 1.5
+clear
+echo '$ gotestsum'
+gotestsum -- --count=1 ./...
+
+sleep 2
+clear
+echo '$ gotestsum --format short-verbose'
+gotestsum -f short-verbose -- --count=1 ./golden ./icmd
+
+sleep 2
+echo "Let us see that again!"
