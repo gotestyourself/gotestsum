@@ -48,11 +48,10 @@ type dotLine struct {
 	runes      int
 	builder    *strings.Builder
 	lastUpdate time.Time
-	full       bool
 }
 
 func (l *dotLine) update(dot string) {
-	if l.full || dot == "" {
+	if dot == "" {
 		return
 	}
 	l.builder.WriteString(dot)
@@ -62,18 +61,16 @@ func (l *dotLine) update(dot string) {
 // checkWidth marks the line as full when the width of the line hits the
 // terminal width.
 func (l *dotLine) checkWidth(prefix, terminal int) {
-	// padding is the space required for the carriage return added when the line
-	// is full.
-	const padding = 1
-	if prefix+l.runes+padding >= terminal && !l.full {
-		l.builder.WriteString("↲")
-		l.full = true
+	if prefix+l.runes >= terminal {
+		l.builder.WriteString("\n" + strings.Repeat(" ", prefix))
+		l.runes = 0
 	}
 }
 
 func newDotFormatter(out io.Writer) EventFormatter {
-	w, _, _ := terminal.GetSize(int(os.Stdout.Fd()))
-	if w == 0 {
+	w, _, err := terminal.GetSize(int(os.Stdout.Fd()))
+	if err != nil || w == 0 {
+		logrus.Warn(err.Error())
 		logrus.Warn("Failed to detect terminal width for dots format.")
 		return &formatAdapter{format: dotsFormatV1, out: out}
 	}

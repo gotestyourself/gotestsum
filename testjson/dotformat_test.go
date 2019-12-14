@@ -1,13 +1,18 @@
 package testjson
 
 import (
+	"bufio"
 	"bytes"
+	"io"
 	"math/rand"
 	"runtime"
+	"strings"
 	"testing"
 	"testing/quick"
 	"time"
 	"unicode/utf8"
+
+	"gotest.tools/gotestsum/internal/dotwriter"
 
 	"gotest.tools/assert"
 	"gotest.tools/assert/cmp"
@@ -20,20 +25,35 @@ func TestScanTestOutput_WithDotsFormatter(t *testing.T) {
 	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
 
 	out := new(bytes.Buffer)
-	dotfmt := newDotFormatter(out)
-	d, ok := dotfmt.(*dotFormatter)
-	if !ok {
-		t.Skip("not the right formatter, missing terminal width?")
+	dotfmt := &dotFormatter{
+		pkgs:      make(map[string]*dotLine),
+		writer:    dotwriter.New(out),
+		termWidth: 80,
 	}
-	d.termWidth = 80
 	shim := newFakeHandler(dotfmt, "go-test-json")
 	exec, err := ScanTestOutput(shim.Config(t))
 	assert.NilError(t, err)
 
-	// TODO: remove in 0.\d\d\ds from out
-	golden.Assert(t, out.String(), "dots-format.out")
+	actual := removeSummaryTime(t, out)
+	golden.Assert(t, actual, "dots-format.out")
 	golden.Assert(t, shim.err.String(), "dots-format.err")
 	assert.DeepEqual(t, exec, expectedExecution, cmpExecutionShallow)
+}
+
+func removeSummaryTime(t *testing.T, r io.Reader) string {
+	t.Helper()
+	out := new(strings.Builder)
+	scan := bufio.NewScanner(r)
+	for scan.Scan() {
+		line := scan.Text()
+		if i := strings.Index(line, " in "); i > 0 {
+			out.WriteString(line[:i] + "\n")
+			continue
+		}
+		out.WriteString(line + "\n")
+	}
+	assert.NilError(t, scan.Err())
+	return out.String()
 }
 
 func TestFmtDotElapsed(t *testing.T) {

@@ -1,490 +1,490 @@
        testjson/internal/badmain 
 
- 0 tests, 1 failure, 1 error in 0.000s
+ 0 tests, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good 
 
- 1 tests, 1 failure, 1 error in 0.000s
+ 1 tests, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ·
 
- 1 tests, 1 failure, 1 error in 0.000s
+ 1 tests, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ·
 
- 2 tests, 1 failure, 1 error in 0.000s
+ 2 tests, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ··
 
- 2 tests, 1 failure, 1 error in 0.000s
+ 2 tests, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ··
 
- 3 tests, 1 failure, 1 error in 0.000s
+ 3 tests, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···
 
- 3 tests, 1 failure, 1 error in 0.000s
+ 3 tests, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···
 
- 4 tests, 1 failure, 1 error in 0.000s
+ 4 tests, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷
 
- 4 tests, 1 skipped, 1 failure, 1 error in 0.000s
+ 4 tests, 1 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷
 
- 5 tests, 1 skipped, 1 failure, 1 error in 0.000s
+ 5 tests, 1 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷
 
- 5 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 5 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷
 
- 6 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 6 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·
 
- 6 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 6 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·
 
- 7 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 7 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·
 
- 7 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 7 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·
 
- 8 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 8 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·
 
- 8 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 8 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·
 
- 9 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 9 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·
 
- 9 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 9 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·
 
- 10 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 10 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·
 
- 11 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 11 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·
 
- 12 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 12 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·
 
- 13 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 13 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·
 
- 14 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 14 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·
 
- 15 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 15 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·
 
- 16 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 16 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·
 
- 17 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 17 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷··
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷···
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷····
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·····
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.000s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷······
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·······
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷········
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷·········
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷··········
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷··········
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷··········
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷··········
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
        testjson/internal/good ···↷↷···········
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
   10ms testjson/internal/good ···↷↷············
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
   20ms testjson/internal/good ···↷↷·············
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
 
- 18 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 18 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub 
 
- 19 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 19 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ·
 
- 19 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 19 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ·
 
- 20 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 20 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ··
 
- 20 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 20 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ··
 
- 21 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 21 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···
 
- 21 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 21 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···
 
- 22 tests, 2 skipped, 1 failure, 1 error in 0.001s
+ 22 tests, 2 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷
 
- 22 tests, 3 skipped, 1 failure, 1 error in 0.001s
+ 22 tests, 3 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷
 
- 23 tests, 3 skipped, 1 failure, 1 error in 0.001s
+ 23 tests, 3 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷
 
- 23 tests, 4 skipped, 1 failure, 1 error in 0.001s
+ 23 tests, 4 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷
 
- 24 tests, 4 skipped, 1 failure, 1 error in 0.001s
+ 24 tests, 4 skipped, 1 failure, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖
 
- 24 tests, 4 skipped, 2 failures, 1 error in 0.001s
+ 24 tests, 4 skipped, 2 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖
 
- 25 tests, 4 skipped, 2 failures, 1 error in 0.001s
+ 25 tests, 4 skipped, 2 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·
 
- 25 tests, 4 skipped, 2 failures, 1 error in 0.001s
+ 25 tests, 4 skipped, 2 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·
 
- 26 tests, 4 skipped, 2 failures, 1 error in 0.001s
+ 26 tests, 4 skipped, 2 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖
 
- 26 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 26 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖
 
- 27 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 27 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖
 
- 27 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 27 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖
 
- 28 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 28 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖
 
- 28 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 28 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖
 
- 29 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 29 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖
 
- 29 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 29 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖
 
- 30 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 30 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖
 
- 31 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 31 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖
 
- 32 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 32 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖
 
- 33 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 33 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖
 
- 34 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 34 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖
 
- 35 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 35 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖
 
- 36 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 36 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖
 
- 37 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 37 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖·
 
- 37 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 37 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖··
 
- 37 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 37 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖···
 
- 37 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 37 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····
 
- 37 tests, 4 skipped, 3 failures, 1 error in 0.001s
+ 37 tests, 4 skipped, 3 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖
 
- 37 tests, 4 skipped, 4 failures, 1 error in 0.001s
+ 37 tests, 4 skipped, 4 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖·
 
- 37 tests, 4 skipped, 4 failures, 1 error in 0.001s
+ 37 tests, 4 skipped, 4 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··
 
- 37 tests, 4 skipped, 4 failures, 1 error in 0.001s
+ 37 tests, 4 skipped, 4 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖
 
- 37 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 37 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖
 
- 38 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 38 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖
 
- 39 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 39 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖
 
- 40 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 40 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖
 
- 41 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 41 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖
 
- 42 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 42 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖
 
- 43 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 43 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖
 
- 44 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 44 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖
 
- 45 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 45 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 46 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖·
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 46 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖··
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 46 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖···
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 46 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖····
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 46 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖·····
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 46 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖······
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 46 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖·······
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 46 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖········
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 46 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖·········
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 46 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖·········
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 46 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖·········
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 46 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖·········
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.001s
+ 46 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
        testjson/internal/stub ···↷↷✖·✖····✖··✖··········
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.002s
+ 46 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
   10ms testjson/internal/stub ···↷↷✖·✖····✖··✖···········
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.002s
+ 46 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
   20ms testjson/internal/stub ···↷↷✖·✖····✖··✖············
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.002s
+ 46 tests, 4 skipped, 5 failures, 1 error
 [1A[2K[1A[2K[1A[2K[1A[2K[1A[2K       testjson/internal/badmain 
     🖴  testjson/internal/good ···↷↷·············
   20ms testjson/internal/stub ···↷↷✖·✖····✖··✖············
 
- 46 tests, 4 skipped, 5 failures, 1 error in 0.002s
+ 46 tests, 4 skipped, 5 failures, 1 error
