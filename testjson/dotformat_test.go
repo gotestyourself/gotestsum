@@ -17,11 +17,9 @@ import (
 	"gotest.tools/assert"
 	"gotest.tools/assert/cmp"
 	"gotest.tools/golden"
-	"gotest.tools/skip"
 )
 
 func TestScanTestOutput_WithDotsFormatter(t *testing.T) {
-	skip.If(t, runtime.GOOS == "windows", "need a separate expected value for windows")
 	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
 
 	out := new(bytes.Buffer)
@@ -35,9 +33,16 @@ func TestScanTestOutput_WithDotsFormatter(t *testing.T) {
 	assert.NilError(t, err)
 
 	actual := removeSummaryTime(t, out)
-	golden.Assert(t, actual, "dots-format.out")
+	golden.Assert(t, actual, outFile("dots-format"))
 	golden.Assert(t, shim.err.String(), "dots-format.err")
 	assert.DeepEqual(t, exec, expectedExecution, cmpExecutionShallow)
+}
+
+func outFile(name string) string {
+	if runtime.GOOS == "windows" {
+		return name + "-windows.out"
+	}
+	return name + ".out"
 }
 
 func removeSummaryTime(t *testing.T, r io.Reader) string {
