@@ -7,7 +7,7 @@ set -eu -o pipefail
 
 image=asciinema/asciicast2gif
 theme=asciinema
-width=100
+width=120
 height=30
 speed=1
 scale=1
