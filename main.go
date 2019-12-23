@@ -149,9 +149,7 @@ func run(opts *options) error {
 	if err != nil {
 		return err
 	}
-	if err := testjson.PrintSummary(out, exec, opts.noSummary.value); err != nil {
-		return err
-	}
+	testjson.PrintSummary(out, exec, opts.noSummary.value)
 	if err := writeJUnitFile(opts, exec); err != nil {
 		return err
 	}

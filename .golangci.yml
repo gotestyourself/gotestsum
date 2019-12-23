@@ -5,7 +5,7 @@ linters-settings:
     min-len: 2
     min-occurrences: 4
   lll:
-    line-length: 100
+    line-length: 120
   gocritic:
     enabled-tags:
       - diagnostic
@@ -37,3 +37,6 @@ linters:
     - gosec
     - scopelint
     - maligned
+    - godox
+    - wsl
+    - funlen

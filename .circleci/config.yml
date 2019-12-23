@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  go: gotest/tools@0.0.12
+  go: gotest/tools@0.0.13
 
 workflows:
   ci:
@@ -38,7 +38,9 @@ workflows:
                 git config --global core.autocrlf false
                 git config --global core.symlinks true
 
-      - go/lint
+      - go/lint:
+          golangci-lint-version: 1.21.0
+
       - build
       - run
 
@@ -142,3 +144,19 @@ jobs:
           mkdir -p dist
           go build -o dist/gotestsum .
       - run: dist/gotestsum
+
+  update-windows-golden:
+    executor: windows
+    steps:
+      - checkout
+      - go/install-gotestsum
+      - run: |
+          git config --global core.autocrlf false
+          git config --global core.symlinks true
+
+      - run: |
+          /go/bin/gotestsum ./testjson ./internal/junitxml -test.update-golden
+
+      - store_artifacts:
+          path: testjson/testdata/
+          destination: golden

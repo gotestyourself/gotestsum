@@ -51,14 +51,14 @@ func TestPrintSummary_NoFailures(t *testing.T) {
 	out := new(bytes.Buffer)
 	exec := &Execution{
 		started: fake.Now(),
+		done:    true,
 		packages: map[string]*Package{
 			"foo":   {Total: 12},
 			"other": {Total: 1},
 		},
 	}
 	fake.Advance(34123111 * time.Microsecond)
-	err := PrintSummary(out, exec, SummarizeAll)
-	assert.NilError(t, err)
+	PrintSummary(out, exec, SummarizeAll)
 
 	expected := "\nDONE 13 tests in 34.123s\n"
 	assert.Equal(t, out.String(), expected)
@@ -71,6 +71,7 @@ func TestPrintSummary_WithFailures(t *testing.T) {
 
 	exec := &Execution{
 		started: fake.Now(),
+		done:    true,
 		packages: map[string]*Package{
 			"example.com/project/fs": {
 				Total: 12,
@@ -141,8 +142,7 @@ Some stdout/stderr here
 
 	t.Run("summarize all", func(t *testing.T) {
 		out := new(bytes.Buffer)
-		err := PrintSummary(out, exec, SummarizeAll)
-		assert.NilError(t, err)
+		PrintSummary(out, exec, SummarizeAll)
 
 		expected := `
 === Skipped
@@ -174,8 +174,7 @@ DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
 
 	t.Run("summarize no output", func(t *testing.T) {
 		out := new(bytes.Buffer)
-		err := PrintSummary(out, exec, SummarizeAll-SummarizeOutput)
-		assert.NilError(t, err)
+		PrintSummary(out, exec, SummarizeAll-SummarizeOutput)
 
 		expected := `
 === Skipped
@@ -202,8 +201,7 @@ DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
 
 	t.Run("summarize only errors", func(t *testing.T) {
 		out := new(bytes.Buffer)
-		err := PrintSummary(out, exec, SummarizeErrors)
-		assert.NilError(t, err)
+		PrintSummary(out, exec, SummarizeErrors)
 
 		expected := `
 === Errors

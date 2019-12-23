@@ -97,7 +97,10 @@ func (p Package) Elapsed() time.Duration {
 
 // TestCases returns all the test cases.
 func (p Package) TestCases() []TestCase {
-	return append(append(p.Passed, p.Failed...), p.Skipped...)
+	tc := append([]TestCase{}, p.Passed...)
+	tc = append(tc, p.Failed...)
+	tc = append(tc, p.Skipped...)
+	return tc
 }
 
 // Output returns the full test output for a test.
@@ -127,6 +130,7 @@ type Execution struct {
 	started  time.Time
 	packages map[string]*Package
 	errors   []string
+	done     bool
 }
 
 func (e *Execution) add(event TestEvent) {
@@ -318,7 +322,9 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 	group.Go(func() error {
 		return readStderr(config, execution)
 	})
-	return execution, group.Wait()
+	err := group.Wait()
+	execution.done = true
+	return execution, err
 }
 
 func readStdout(config ScanConfig, execution *Execution) error {
