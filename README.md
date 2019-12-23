@@ -4,12 +4,14 @@
 
 ## Install
 
-Download a binary from [releases](https://github.com/gotestyourself/gotestsum/releases), or get the
-source with `go get gotest.tools/gotestsum` (you may need to run `dep ensure`).
+Download a binary from [releases](https://github.com/gotestyourself/gotestsum/releases), or from
+source with `go get gotest.tools/gotestsum` (you may need to run `dep ensure` if your version of Go
+does not support modules).
 
 ## Demo
 
-![Demo](https://raw.githubusercontent.com/gotestyourself/gotestsum/master/docs/demo.gif)
+![Demo](https://i.ibb.co/jrxyrcQ/demo.gif)
+<br />[Source](https://github.com/gotestyourself/gotestsum/tree/readme-demo/scripts)
 
 ## Docs
 
