@@ -85,7 +85,7 @@ Formats:
 	flags.StringVar(&opts.junitFile, "junitfile",
 		lookEnvWithDefault("GOTESTSUM_JUNITFILE", ""),
 		"write a JUnit XML file")
-	flags.BoolVar(&opts.noColor, "no-color", false, "disable color output")
+	flags.BoolVar(&opts.noColor, "no-color", color.NoColor, "disable color output")
 	flags.Var(opts.noSummary, "no-summary",
 		"do not print summary of: "+testjson.SummarizeAll.String())
 	flags.Var(opts.junitTestSuiteNameFormat, "junitfile-testsuite-name",
