@@ -12,11 +12,11 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"gotest.tools/gotestsum/internal/dotwriter"
-
 	"gotest.tools/assert"
 	"gotest.tools/assert/cmp"
 	"gotest.tools/golden"
+	"gotest.tools/gotestsum/internal/dotwriter"
+	"gotest.tools/skip"
 )
 
 func TestScanTestOutput_WithDotsFormatter(t *testing.T) {
@@ -151,4 +151,13 @@ func TestFmtDotElapsed_RuneCountProperty(t *testing.T) {
 		MaxCountScale: 2000,
 		Rand:          rand.New(rand.NewSource(seed)),
 	}))
+}
+
+func TestNewDotFormatter(t *testing.T) {
+	buf := new(bytes.Buffer)
+	ef := newDotFormatter(buf)
+
+	d, ok := ef.(*dotFormatter)
+	skip.If(t, !ok, "no terminal width")
+	assert.Assert(t, d.termWidth != 0)
 }
