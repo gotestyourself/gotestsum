@@ -70,8 +70,7 @@ func (l *dotLine) checkWidth(prefix, terminal int) {
 func newDotFormatter(out io.Writer) EventFormatter {
 	w, _, err := terminal.GetSize(int(os.Stdout.Fd()))
 	if err != nil || w == 0 {
-		logrus.Warn(err.Error())
-		logrus.Warn("Failed to detect terminal width for dots format.")
+		logrus.Warnf("Failed to detect terminal width for dots format, error: %v", err)
 		return &formatAdapter{format: dotsFormatV1, out: out}
 	}
 	return &dotFormatter{
