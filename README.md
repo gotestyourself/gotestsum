@@ -29,6 +29,7 @@ output.
 - [JUnit XML](#junit-xml)
 - [JSON file](#json-file-output)
 - [Setting go test flags and using custom commands](#custom-go-test-command)
+- [Executing Test Binary](#executing-test-binary)
 
 ### Format
 
@@ -162,6 +163,41 @@ Example: run tests for a package when any file in that package is saved
 ```
 filewatcher gotestsum
 ```
+
+### Executing Test Binary
+
+`gotestsum` supports executing against a compiled test binary with a custom command. It can do so both with or with `go` available.
+
+Example: with `go` installed
+
+```
+gotestsum --raw-command -- go tool test2json -p pkgname ./binary.test -test.v
+```
+
+The `-json` flag is handled by `go test` itself, it is not available when using a compiled test binary, so you'll need to call `go tool test2json` to get the output that `gotestsum` expects.
+
+If it is not desirable to install `go` in this environment, you can compile the `test2json` tool without using `go`. 
+
+```dockerfile
+# example script in alpine
+RUN curl -Lo go.zip "https://github.com/golang/go/archive/go1.13.5.zip" && \
+    unzip go.zip && \
+    rm -f go.zip && \
+    cd go-go1.13.5/src/cmd/test2json/ && \
+    env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" . && \
+    mv test2json /usr/local/bin/test2json && \
+    rm -rf /go-go1.13.5
+```
+
+and then execute `gotestsum`
+
+```
+export GOVERSION=1.13
+gotestsum --raw-command -- test2json -p pkgname ./binary.test -test.v
+```
+
+> NOTE: setting the `GOVERSION` environment variable avoids this error: `level=warning msg="failed to lookup go version for junit xml" error="exec: \"go\": executable file not found in $PATH"`
+
 
 ## Thanks
 
