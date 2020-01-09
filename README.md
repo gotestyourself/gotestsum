@@ -28,7 +28,8 @@ output.
 - [Summary](#summary)
 - [JUnit XML](#junit-xml)
 - [JSON file](#json-file-output)
-- [Setting go test flags and using custom commands](#custom-go-test-command)
+- [Using go test flags and custom commands](#custom-go-test-command)
+- [Executing a compiled test binary](#executing-a-compiled-test-binary)
 
 ### Format
 
@@ -100,6 +101,10 @@ accept the following values:
 * `full` - the full package path (default)
 
 
+Note: If Go is not installed, or the `go` binary is not in `PATH`, the `GOVERSION`
+environment variable can be set to remove the "failed to lookup go version for junit xml"
+warning.
+
 ### JSON file output
 
 When the `--jsonfile` flag or `GOTESTSUM_JSONFILE` environment variable are set
@@ -151,6 +156,29 @@ Example: using `TEST_DIRECTORY`
 ```
 TEST_DIRECTORY=./io/http gotestsum
 ```
+
+### Executing a compiled test binary
+
+`gotestsum` supports executing a compiled test binary (created with `go test -c`) by running
+it as a custom command.
+
+The `-json` flag is handled by `go test` itself, it is not available when using a
+compiled test binary, so `go tool test2json` must be used to get the output
+that `gotestsum` expects.
+
+Example:
+
+```
+gotestsum --raw-command -- go tool test2json -p pkgname ./binary.test -test.v
+```
+
+`pkgname` is the name of the package being tested, it will show up in the test
+output. `./binary.test` is the path to the compiled test binary. The `-test.v`
+must be included so that `go tool test2json` receives all the output.
+
+To execute a test binary without installing Go, see
+[running without go](./docs/running-without-go.md).
+
 
 ### Run tests when a file is modified
 
