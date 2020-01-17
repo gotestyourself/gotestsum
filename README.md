@@ -9,6 +9,7 @@ source with `go get gotest.tools/gotestsum` (you may need to run `dep ensure` if
 does not support modules).
 
 ## Demo
+A demonstration of three `--format` options.
 
 ![Demo](https://i.ibb.co/jrxyrcQ/demo.gif)
 <br />[Source](https://github.com/gotestyourself/gotestsum/tree/readme-demo/scripts)
