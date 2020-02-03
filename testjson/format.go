@@ -200,11 +200,11 @@ func NewEventFormatter(out io.Writer, format string) EventFormatter {
 		return &formatAdapter{out, standardQuietFormat}
 	case "dots":
 		return newDotFormatter(out)
-	case "short-verbose":
+	case "testname", "short-verbose":
 		return &formatAdapter{out, shortVerboseFormat}
-	case "short":
+	case "pkgname", "short":
 		return &formatAdapter{out, shortFormat}
-	case "short-with-failures":
+	case "pkgname-and-test-fails", "short-with-failures":
 		return &formatAdapter{out, shortWithFailuresFormat}
 	default:
 		return nil

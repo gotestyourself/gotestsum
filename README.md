@@ -11,7 +11,7 @@ does not support modules).
 ## Demo
 A demonstration of three `--format` options.
 
-![Demo](https://i.ibb.co/jrxyrcQ/demo.gif)
+![Demo](https://i.ibb.co/XZfhmXq/demo.gif)
 <br />[Source](https://github.com/gotestyourself/gotestsum/tree/readme-demo/scripts)
 
 ## Docs
@@ -42,9 +42,9 @@ gotestsum --format short-verbose
 
 Supported formats:
  * `dots` - print a character for each test.
- * `short` (default) - print a line for each package.
- * `short-with-failures` - print a line for each package and failed test output.
- * `short-verbose` - print a line for each test and package.
+ * `pkgname` (default) - print a line for each package.
+ * `pkgname-and-test-fails` - print a line for each package, and failed test output.
+ * `testname` - print a line for each test and package.
  * `standard-quiet` - the standard `go test` format.
  * `standard-verbose` - the standard `go test -v` format.
 
