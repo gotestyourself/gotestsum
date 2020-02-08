@@ -24,7 +24,7 @@ func TestSummary_String(t *testing.T) {
 		{
 			name:     "all",
 			summary:  SummarizeAll,
-			expected: "skipped,failed,errors,output",
+			expected: "skipped,failed,errors,output,slowest",
 		},
 		{
 			name:     "one value",
@@ -58,7 +58,7 @@ func TestPrintSummary_NoFailures(t *testing.T) {
 		},
 	}
 	fake.Advance(34123111 * time.Microsecond)
-	PrintSummary(out, exec, SummarizeAll)
+	PrintSummary(out, exec, SummaryOptions{Summary: SummarizeAll})
 
 	expected := "\nDONE 13 tests in 34.123s\n"
 	assert.Equal(t, out.String(), expected)
@@ -142,12 +142,19 @@ Some stdout/stderr here
 
 	t.Run("summarize all", func(t *testing.T) {
 		out := new(bytes.Buffer)
-		PrintSummary(out, exec, SummarizeAll)
+		PrintSummary(out, exec, SummaryOptions{
+			Summary:           SummarizeAll,
+			SlowTestThreshold: 100 * time.Millisecond,
+		})
 
 		expected := `
 === Skipped
 === SKIP: project/pkg/more TestOnlySometimes (0.00s)
 	good_test.go:27: the skip message
+
+
+=== Slowest
+    example.com/project/fs TestFileDo (1.411s)
 
 
 === Failed
@@ -167,14 +174,14 @@ Some stdout/stderr here
 === Errors
 pkg/file.go:99:12: missing ',' before newline
 
-DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
+DONE 13 tests, 1 skipped, 1 slow, 4 failures, 1 error in 34.123s
 `
 		assert.Equal(t, out.String(), expected)
 	})
 
 	t.Run("summarize no output", func(t *testing.T) {
 		out := new(bytes.Buffer)
-		PrintSummary(out, exec, SummarizeAll-SummarizeOutput)
+		PrintSummary(out, exec, SummaryOptions{Summary: SummarizeAll - SummarizeOutput})
 
 		expected := `
 === Skipped
@@ -201,7 +208,7 @@ DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
 
 	t.Run("summarize only errors", func(t *testing.T) {
 		out := new(bytes.Buffer)
-		PrintSummary(out, exec, SummarizeErrors)
+		PrintSummary(out, exec, SummaryOptions{Summary: SummarizeErrors})
 
 		expected := `
 === Errors

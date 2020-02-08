@@ -23,18 +23,19 @@ A demonstration of three `--format` options.
 `gotestsum` works by running `go test --json ./...` and reading the JSON
 output.
 
-### TOC
+### Features
 
-- [Format](#format)
+- [Formats](#formats)
 - [Summary](#summary)
 - [JUnit XML](#junit-xml)
 - [JSON file](#json-file-output)
+- [Identifying slow tests](#identifying-slow-tests)
 - [Using go test flags and custom commands](#custom-go-test-command)
 - [Executing a compiled test binary](#executing-a-compiled-test-binary)
 
-### Format
+### Formats
 
-Set a format with the `--format` flag or the `GOTESTSUM_FORMAT` environment
+Set the output format with the `--format` flag or the `GOTESTSUM_FORMAT` environment
 variable.
 ```
 gotestsum --format short-verbose
@@ -55,13 +56,14 @@ Have a suggestion for some other format? Please open an issue!
 A summary of the test run is printed after the test output.
 
 ```
-DONE 101 tests[, 3 skipped][, 2 failures][, 1 error] in 0.103s
+DONE 101 tests[, 3 skipped][, 5 slow][, 2 failures][, 1 error] in 0.103s
 ```
 
 The summary includes:
- * A count of: tests run, tests skipped, tests failed, and package build errors.
+ * A count of: tests run, skipped, slow, failed, and package build errors.
  * Elapsed time including time to build.
  * Test output of all failed and skipped tests, and any package build errors.
+ * The name of the 5 slowest tests above the slow test threshold, and their elapsed time.
 
 To disable parts of the summary use `--no-summary section`.
 
@@ -117,6 +119,17 @@ runs, or find flaky tests.
 ```
 gotestsum --jsonfile test-output.log
 ```
+
+### Identifying slow tests
+
+The `--slow-test-threshold` flag can be set to a duration value to identify slow
+tests (defaults to `100ms`). A count of the number of tests with elapsed time
+longer than this threshold is added to the summary line. The 5 slowest tests
+above this threshold are printed in the summary output.
+
+To disable both the printing of slow tests and the slow test count set
+`--slow-test-threshold=0`. To disable just the list of the slowest tests set
+`--no-summary=slowest`.
 
 ### Custom `go test` command
 

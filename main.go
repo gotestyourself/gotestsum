@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/pkg/errors"
@@ -92,6 +93,9 @@ Formats:
 		"format the testsuite name field as: "+junitFieldFormatValues)
 	flags.Var(opts.junitTestCaseClassnameFormat, "junitfile-testcase-classname",
 		"format the testcase classname field as: "+junitFieldFormatValues)
+	flags.DurationVar(&opts.slowTestThreshold, "slow-test-threshold",
+		100*time.Millisecond,
+		"tests with elapsed time longer than the threshold are considered slow")
 	flags.BoolVar(&opts.version, "version", false, "show version and exit")
 	return flags, opts
 }
@@ -114,6 +118,7 @@ type options struct {
 	noSummary                    *noSummaryValue
 	junitTestSuiteNameFormat     *junitFieldFormatValue
 	junitTestCaseClassnameFormat *junitFieldFormatValue
+	slowTestThreshold            time.Duration
 	version                      bool
 }
 
@@ -124,7 +129,6 @@ func setupLogging(opts *options) {
 	color.NoColor = opts.noColor
 }
 
-// TODO: add flag --max-failures
 func run(opts *options) error {
 	ctx := context.Background()
 	goTestProc, err := startGoTest(ctx, goTestCmdArgs(opts))
@@ -149,7 +153,10 @@ func run(opts *options) error {
 	if err != nil {
 		return err
 	}
-	testjson.PrintSummary(out, exec, opts.noSummary.value)
+	testjson.PrintSummary(out, exec, testjson.SummaryOptions{
+		Summary:           opts.noSummary.value,
+		SlowTestThreshold: opts.slowTestThreshold,
+	})
 	if err := writeJUnitFile(opts, exec); err != nil {
 		return err
 	}

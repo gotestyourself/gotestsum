@@ -3,6 +3,7 @@ package testjson
 import (
 	"fmt"
 	"io"
+	"sort"
 	"strings"
 	"time"
 	"unicode"
@@ -21,14 +22,20 @@ const (
 	SummarizeFailed
 	SummarizeErrors
 	SummarizeOutput
-	SummarizeAll = SummarizeSkipped | SummarizeFailed | SummarizeErrors | SummarizeOutput
+	SummarizeSlowestTests
+	SummarizeAll = SummarizeSkipped |
+		SummarizeFailed |
+		SummarizeErrors |
+		SummarizeOutput |
+		SummarizeSlowestTests
 )
 
 var summaryValues = map[Summary]string{
-	SummarizeSkipped: "skipped",
-	SummarizeFailed:  "failed",
-	SummarizeErrors:  "errors",
-	SummarizeOutput:  "output",
+	SummarizeSkipped:      "skipped",
+	SummarizeFailed:       "failed",
+	SummarizeErrors:       "errors",
+	SummarizeOutput:       "output",
+	SummarizeSlowestTests: "slowest",
 }
 
 var summaryFromValue = map[string]Summary{
@@ -37,6 +44,7 @@ var summaryFromValue = map[string]Summary{
 	"failed":  SummarizeFailed,
 	"errors":  SummarizeErrors,
 	"output":  SummarizeOutput,
+	"slowest": SummarizeSlowestTests,
 	"all":     SummarizeAll,
 }
 
@@ -65,28 +73,42 @@ func NewSummary(value string) (Summary, bool) {
 	return s, ok
 }
 
+// SummaryOptions used to configure the behaviour of PrintSummary.
+type SummaryOptions struct {
+	Summary           Summary
+	SlowTestThreshold time.Duration
+}
+
 // PrintSummary of a test Execution. Prints a section for each summary type
 // followed by a DONE line.
-func PrintSummary(out io.Writer, execution *Execution, opts Summary) {
-	execSummary := newExecSummary(execution, opts)
-	if opts.Includes(SummarizeSkipped) {
+func PrintSummary(out io.Writer, execution *Execution, opts SummaryOptions) {
+	sum := opts.Summary
+	execSummary := newExecSummary(execution, sum)
+	slowTests := slowTestCases(execution, opts.SlowTestThreshold)
+
+	if sum.Includes(SummarizeSkipped) {
 		writeTestCaseSummary(out, execSummary, formatSkipped())
 	}
-	if opts.Includes(SummarizeFailed) {
+	if sum.Includes(SummarizeSlowestTests) {
+		writeSlowestTests(out, slowTests)
+	}
+	if sum.Includes(SummarizeFailed) {
 		writeTestCaseSummary(out, execSummary, formatFailed())
 	}
-
-	errors := execution.Errors()
-	if opts.Includes(SummarizeErrors) {
-		writeErrorSummary(out, errors)
+	if sum.Includes(SummarizeErrors) {
+		writeErrorSummary(out, execution.Errors())
 	}
+	printSummaryLine(out, execution, slowTests)
+}
 
-	fmt.Fprintf(out, "\n%s %d tests%s%s%s in %s\n",
+func printSummaryLine(out io.Writer, execution *Execution, slowTests []TestCase) {
+	fmt.Fprintf(out, "\n%s %d tests%s%s%s%s in %s\n",
 		formatExecStatus(execution.done),
 		execution.Total(),
 		formatTestCount(len(execution.Skipped()), "skipped", ""),
+		formatTestCount(len(slowTests), "slow", ""),
 		formatTestCount(len(execution.Failed()), "failure", "s"),
-		formatTestCount(countErrors(errors), "error", "s"),
+		formatTestCount(countErrors(execution.Errors()), "error", "s"),
 		FormatDurationAsSeconds(execution.Elapsed(), 3))
 }
 
@@ -217,4 +239,41 @@ func formatSkipped() testCaseFormatConfig {
 
 func isRunLine(line string) bool {
 	return strings.HasPrefix(line, "=== RUN   Test")
+}
+
+// slowTestCases returns a slice of all tests with an elapsed time greater than
+// threshold. The slice is sorted by Elapsed time in descending order (slowest
+// test first).
+func slowTestCases(exec *Execution, threshold time.Duration) []TestCase {
+	if threshold == 0 {
+		return nil
+	}
+	tests := make([]TestCase, 0, len(exec.packages))
+	for _, tc := range exec.packages {
+		tests = append(tests, tc.TestCases()...)
+	}
+	sort.Slice(tests, func(i, j int) bool {
+		return tests[i].Elapsed > tests[j].Elapsed
+	})
+	end := sort.Search(len(tests), func(i int) bool {
+		return tests[i].Elapsed < threshold
+	})
+	return tests[:end]
+}
+
+func writeSlowestTests(out io.Writer, tests []TestCase) {
+	if len(tests) == 0 {
+		return
+	}
+	// TODO make max configurable
+	const maxSlowTests = 5
+	end := len(tests)
+	if end > maxSlowTests {
+		end = maxSlowTests
+	}
+	fmt.Fprintln(out, "\n=== Slowest")
+	for _, tc := range tests[:end] {
+		fmt.Fprintf(out, "    %s %s (%v)\n", tc.Package, tc.Test, tc.Elapsed)
+	}
+	fmt.Fprintln(out)
 }
