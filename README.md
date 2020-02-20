@@ -9,7 +9,7 @@ source with `go get gotest.tools/gotestsum` (you may need to run `dep ensure`).
 
 ## Demo
 
-![Demo](https://i.ibb.co/FwjSYtY/demo.gif)
+![Demo](https://i.ibb.co/XZfhmXq/demo.gif)
 <br />[Source](https://github.com/gotestyourself/gotestsum/tree/readme-demo/scripts)
 
 ## Docs

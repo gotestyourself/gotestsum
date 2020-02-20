@@ -2,12 +2,14 @@
 #
 # Record a demo video for the README.
 #
-# Require https://asciinema.org/docs/installation
-# Run in a terminal of size: TDB
+# Requires https://asciinema.org/docs/installation
+# Run in a terminal of size: 120 width, 30 height to match the
+# size specified in render-cast.
 #
 
 set -eu -o pipefail
 
+export PS1="$ "
 mkdir -p demo
 name="${1-demo.cast}"
 asciinema rec \

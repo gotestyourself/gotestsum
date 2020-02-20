@@ -7,18 +7,20 @@ set -eu -o pipefail
 
 cd ../gotest.tools
 
+pkgs=$(go list ./... | grep -v migrate-from-testify)
+
 echo '$ gotestsum --format dots'
-gotestsum -f dots --no-summary=all -- --count=3 ./...
+gotestsum -f dots --no-summary=all -- --count=3 $pkgs
 
 sleep 1.5
 clear
-echo '$ gotestsum'
-gotestsum -- --count=1 ./...
+echo '$ gotestsum --format pkgname'
+gotestsum -- --count=1 $pkgs
 
 sleep 2
 clear
-echo '$ gotestsum --format short-verbose'
-gotestsum -f short-verbose -- --count=1 ./golden ./icmd
+echo '$ gotestsum --format testname'
+gotestsum -f testname -- --count=1 ./golden ./icmd
 
 sleep 2
 echo "Let us see that again!"
