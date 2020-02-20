@@ -65,12 +65,12 @@ Flags:
 		flags.PrintDefaults()
 		fmt.Fprint(os.Stderr, `
 Formats:
-    dots                print a character for each test
-    short               print a line for each package
-    short-with-failures print a line for each package and failed test output
-    short-verbose       print a line for each test and package
-    standard-quiet      standard go test format
-    standard-verbose    standard go test -v format
+    dots                    print a character for each test
+    pkgname                 print a line for each package
+    pkgname-and-test-fails  print a line for each package and failed test output
+    testname                print a line for each test and package
+    standard-quiet          standard go test format
+    standard-verbose        standard go test -v format
 `)
 	}
 	flags.BoolVar(&opts.debug, "debug", false, "enabled debug")
