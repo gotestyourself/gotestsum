@@ -5,8 +5,7 @@
 ## Install
 
 Download a binary from [releases](https://github.com/gotestyourself/gotestsum/releases), or from
-source with `go get gotest.tools/gotestsum` (you may need to run `dep ensure` if your version of Go
-does not support modules).
+source with `go get gotest.tools/gotestsum`.
 
 ## Demo
 A demonstration of three `--format` options.

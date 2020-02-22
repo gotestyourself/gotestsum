@@ -40,7 +40,7 @@ job=test-unit:
   use: builder
   mounts: [source, buildcache, modcache]
   interactive: true
-  command: scripts/test-unit
+  command: ./dist/gotestsum -f testname
 
 job=lint:
   use: builder

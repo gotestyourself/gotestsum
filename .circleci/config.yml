@@ -6,9 +6,6 @@ orbs:
 workflows:
   ci:
     jobs:
-      - test-go-1-10:
-          name: test-go-1.10
-
       - go/test:
           name: test-go-1.11
           gotestsum-format: short-verbose
@@ -35,7 +32,7 @@ workflows:
           gotestsum-format: short-verbose
           executor:
             name: go/golang
-            tag: 1.14rc1-alpine
+            tag: 1.14-alpine
 
       - go/test:
           name: test-windows-go1.12
@@ -70,18 +67,6 @@ executors:
       shell: bash.exe
 
 commands:
-  install-deps:
-    description: Install dep and dependencies
-    steps:
-      - run:
-          name: Install dep
-          command: |
-            command -v dep && exit
-            wget -O- -q https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-      - run:
-          name: Install dependencies
-          command: dep ensure
-
   install-goreleaser:
     description: Install goreleaser
     steps:
@@ -121,28 +106,6 @@ jobs:
       - store_artifacts:
           path: ./dist
           destination: dist
-
-  test-go-1-10:
-    executor:
-      name: go/golang
-      tag: 1.10-alpine
-    working_directory: /go/src/gotest.tools/gotestsum
-    steps:
-      - go/install: {package: git}
-      - go/install-ssh
-      - checkout
-      - go/install-gotestsum
-      - install-deps
-      - run:
-          name: go test
-          environment:
-            GOTESTSUM_JUNITFILE: /tmp/test-reports/unit/junit.xml
-            GOTESTSUM_FORMAT: short-verbose
-          command: |
-            mkdir -p /tmp/test-reports/unit
-            gotestsum
-      - store_test_results:
-          path: /tmp/test-reports
 
   run:
     executor: go/golang
