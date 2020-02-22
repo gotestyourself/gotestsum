@@ -31,6 +31,13 @@ workflows:
             tag: 1.13-alpine
 
       - go/test:
+          name: test-go-1.14
+          gotestsum-format: short-verbose
+          executor:
+            name: go/golang
+            tag: 1.14rc1-alpine
+
+      - go/test:
           name: test-windows-go1.12
           executor: windows
           pre-steps:
