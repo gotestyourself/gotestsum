@@ -198,10 +198,10 @@ func NewEventFormatter(out io.Writer, format string) EventFormatter {
 		return &formatAdapter{out, standardVerboseFormat}
 	case "standard-quiet":
 		return &formatAdapter{out, standardQuietFormat}
-	case "dots":
-		return newDotFormatter(out)
-	case "dots-compact":
+	case "dots", "dots-v1":
 		return &formatAdapter{out, dotsFormatV1}
+	case "dots-v2":
+		return newDotFormatter(out)
 	case "testname", "short-verbose":
 		return &formatAdapter{out, shortVerboseFormat}
 	case "pkgname", "short":

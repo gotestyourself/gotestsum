@@ -66,7 +66,7 @@ Flags:
 		fmt.Fprint(os.Stderr, `
 Formats:
     dots                    print a character for each test
-    dots-compact            dots, without the newlines
+    dots-v2                 experimental dots format, one package per line
     pkgname                 print a line for each package
     pkgname-and-test-fails  print a line for each package and failed test output
     testname                print a line for each test and package

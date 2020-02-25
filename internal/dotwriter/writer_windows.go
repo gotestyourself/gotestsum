@@ -52,20 +52,20 @@ type fdWriter interface {
 	Fd() uintptr
 }
 
-func (w *Writer) clearLines() {
+func (w *Writer) clearLines(count int) {
 	f, ok := w.out.(fdWriter)
 	if ok && !isatty.IsTerminal(f.Fd()) {
 		ok = false
 	}
 	if !ok {
-		_, _ = fmt.Fprint(w.out, strings.Repeat(clear, w.lineCount))
+		_, _ = fmt.Fprint(w.out, strings.Repeat(clear, count))
 		return
 	}
 	fd := f.Fd()
 	var csbi consoleScreenBufferInfo
 	_, _, _ = procGetConsoleScreenBufferInfo.Call(fd, uintptr(unsafe.Pointer(&csbi)))
 
-	for i := 0; i < w.lineCount; i++ {
+	for i := 0; i < count; i++ {
 		// move the cursor up
 		csbi.cursorPosition.y--
 		_, _, _ = procSetConsoleCursorPosition.Call(fd, uintptr(*(*int32)(unsafe.Pointer(&csbi.cursorPosition))))
