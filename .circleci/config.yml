@@ -44,6 +44,10 @@ workflows:
       - build
       - run
 
+      - update-windows-golden:
+          filters:
+            branches: {ignore: '/.*/'}
+
       - build:
           name: release
           publish: true

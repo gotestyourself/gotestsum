@@ -96,6 +96,9 @@ func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 		return nil
 	}
 
+	// Add an empty header to work around incorrect line counting
+	fmt.Fprint(d.writer, "\n\n")
+
 	sort.Slice(d.order, d.orderByLastUpdated)
 	for _, pkg := range d.order {
 		line := d.pkgs[pkg]
