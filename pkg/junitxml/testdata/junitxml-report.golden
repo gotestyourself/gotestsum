@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+	<testsuite tests="0" failures="0" time="0.000000" name="github.com/gotestyourself/gotestyourself/testjson/internal/badmain">
+		<properties>
+			<property name="go.version" value="go7.7.7"></property>
+		</properties>
+		<testcase classname="" name="TestMain" time="0.000000">
+			<failure message="Failed" type="">sometimes main can exit 2&#xA;FAIL&#x9;github.com/gotestyourself/gotestyourself/testjson/internal/badmain&#x9;0.010s&#xA;</failure>
+		</testcase>
+	</testsuite>
+	<testsuite tests="18" failures="0" time="0.020000" name="github.com/gotestyourself/gotestyourself/testjson/internal/good">
+		<properties>
+			<property name="go.version" value="go7.7.7"></property>
+		</properties>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestSkipped" time="0.000000">
+			<skipped message="=== RUN   TestSkipped&#xA;--- SKIP: TestSkipped (0.00s)&#xA;&#x9;good_test.go:23: &#xA;"></skipped>
+		</testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestSkippedWitLog" time="0.000000">
+			<skipped message="=== RUN   TestSkippedWitLog&#xA;--- SKIP: TestSkippedWitLog (0.00s)&#xA;&#x9;good_test.go:27: the skip message&#xA;"></skipped>
+		</testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestPassed" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestPassedWithLog" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestPassedWithStdout" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestWithStderr" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestNestedSuccess/a/sub" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestNestedSuccess/a" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestNestedSuccess/b/sub" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestNestedSuccess/b" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestNestedSuccess/c/sub" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestNestedSuccess/c" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestNestedSuccess/d/sub" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestNestedSuccess/d" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestNestedSuccess" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestParallelTheThird" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestParallelTheSecond" time="0.010000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestParallelTheFirst" time="0.010000"></testcase>
+	</testsuite>
+	<testsuite tests="28" failures="4" time="0.020000" name="github.com/gotestyourself/gotestyourself/testjson/internal/stub">
+		<properties>
+			<property name="go.version" value="go7.7.7"></property>
+		</properties>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestFailed" time="0.000000">
+			<failure message="Failed" type="">=== RUN   TestFailed&#xA;--- FAIL: TestFailed (0.00s)&#xA;&#x9;stub_test.go:34: this failed&#xA;</failure>
+		</testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestFailedWithStderr" time="0.000000">
+			<failure message="Failed" type="">=== RUN   TestFailedWithStderr&#xA;this is stderr&#xA;--- FAIL: TestFailedWithStderr (0.00s)&#xA;&#x9;stub_test.go:43: also failed&#xA;</failure>
+		</testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedWithFailure/c" time="0.000000">
+			<failure message="Failed" type="">=== RUN   TestNestedWithFailure/c&#xA;    --- FAIL: TestNestedWithFailure/c (0.00s)&#xA;    &#x9;stub_test.go:65: failed&#xA;</failure>
+		</testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedWithFailure" time="0.000000">
+			<failure message="Failed" type="">=== RUN   TestNestedWithFailure&#xA;--- FAIL: TestNestedWithFailure (0.00s)&#xA;</failure>
+		</testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestSkipped" time="0.000000">
+			<skipped message="=== RUN   TestSkipped&#xA;--- SKIP: TestSkipped (0.00s)&#xA;&#x9;stub_test.go:26: &#xA;"></skipped>
+		</testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestSkippedWitLog" time="0.000000">
+			<skipped message="=== RUN   TestSkippedWitLog&#xA;--- SKIP: TestSkippedWitLog (0.00s)&#xA;&#x9;stub_test.go:30: the skip message&#xA;"></skipped>
+		</testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestPassed" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestPassedWithLog" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestPassedWithStdout" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestWithStderr" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedWithFailure/a/sub" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedWithFailure/a" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedWithFailure/b/sub" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedWithFailure/b" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedWithFailure/d/sub" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedWithFailure/d" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedSuccess/a/sub" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedSuccess/a" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedSuccess/b/sub" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedSuccess/b" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedSuccess/c/sub" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedSuccess/c" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedSuccess/d/sub" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedSuccess/d" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestNestedSuccess" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestParallelTheThird" time="0.000000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestParallelTheSecond" time="0.010000"></testcase>
+		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestParallelTheFirst" time="0.010000"></testcase>
+	</testsuite>
+</testsuites>

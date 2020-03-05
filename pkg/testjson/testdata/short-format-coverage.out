@@ -1,0 +1,3 @@
+✖  gotestsum/testjson/internal/badmain (1ms)
+✓  gotestsum/testjson/internal/good (12ms) (coverage: 0.0% of statements)
+✖  gotestsum/testjson/internal/stub (11ms) (coverage: 0.0% of statements)

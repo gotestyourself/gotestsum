@@ -1,0 +1,5 @@
+sometimes main can exit 2
+FAIL	github.com/gotestyourself/gotestyourself/testjson/internal/badmain	0.010s
+ok  	github.com/gotestyourself/gotestyourself/testjson/internal/good	(cached)
+FAIL
+FAIL	github.com/gotestyourself/gotestyourself/testjson/internal/stub	0.011s
