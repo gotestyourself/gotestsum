@@ -1,5 +1,0 @@
-sometimes main can exit 2
-FAIL	gotest.tools/gotestsum/testjson/internal/badmain	0.001s
-ok  	gotest.tools/gotestsum/testjson/internal/good	0.011s	coverage: 0.0% of statements
-FAIL
-FAIL	gotest.tools/gotestsum/testjson/internal/stub	0.011s

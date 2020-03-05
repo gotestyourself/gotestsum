@@ -1,3 +1,0 @@
-// +build stubpkg
-
-package empty
