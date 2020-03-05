@@ -1,9 +1,10 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/astralkn/gotestmng/pkg/gotestsum"
-	"github.com/astralkn/gotestmng/pkg/inspector"
+	"github.com/astralkn/gotestmng/pkg/operator"
 	"github.com/astralkn/gotestmng/pkg/options"
 	"github.com/fatih/color"
 	log "github.com/sirupsen/logrus"
@@ -14,6 +15,14 @@ import (
 )
 
 var version = "master"
+
+type TestFailError struct {
+	message string
+}
+
+func (t *TestFailError) Error() string {
+	return t.message
+}
 
 func main() {
 	name := os.Args[0]
@@ -37,6 +46,9 @@ func main() {
 	case nil:
 	case *exec.ExitError:
 		os.Exit(0)
+	case *TestFailError:
+		fmt.Fprintln(os.Stderr, name+": Error :"+err.Error())
+		os.Exit(1)
 	default:
 		fmt.Fprintln(os.Stderr, name+": Error :"+err.Error())
 		os.Exit(3)
@@ -88,17 +100,57 @@ Formats:
 
 func run(opts *options.Options) error {
 	err := gotestsum.GoTestSum(opts)
-	//if err != nil {
-	//	return err
-	//}
-	inspector.NewJunitInspector().Inspect(opts)
-	//ins := inspector.NewGitInspector(context.Background(), opts.Token, opts.Owner, opts.Repo)
-	//err = ins.Inspect(opts)
-	//if err != nil {
-	//	log.Error(err)
-	//	os.Exit(3)
-	//}
-	return err
+	junitOperator := &operator.JUnitOperator{}
+	failedTests := junitOperator.GetFailedTests(opts)
+	if len(*failedTests) == 0 && err != nil {
+		return err
+	}
+	gitOperator := operator.NewGitOperator(opts.Owner, opts.Repo, opts.Token, context.Background())
+	knownIssues, err := gitOperator.GetTestIssues()
+	if err != nil {
+		return err
+	}
+
+	newIssues := &[]operator.FailedTest{}
+	solvedIssues := &[]operator.FailedTest{}
+
+	for _, t := range *failedTests {
+		if !contains(*knownIssues, t) {
+			*newIssues = append(*newIssues, t)
+		}
+	}
+
+	for _, t := range *knownIssues {
+		if !contains(*failedTests, t) {
+			*solvedIssues = append(*solvedIssues, t)
+		}
+	}
+	for _, t := range *newIssues {
+		log.Printf("NEW Failed Test found : %v", t)
+	}
+
+	if opts.Post {
+		for _, i := range *newIssues {
+			err = gitOperator.PostNewIssue(&i)
+			if err != nil {
+				break
+			}
+			log.Info("New issue created on git")
+		}
+		for _, i := range *solvedIssues {
+			err = gitOperator.CloseSolvedIssue(&i)
+			if err != nil {
+				break
+			}
+			log.Info("Issue closed on git", i)
+		}
+	}
+
+	if len(*newIssues) > 0 {
+		return &TestFailError{message: "New failing test(s) found"}
+	}
+
+	return nil
 }
 
 func lookEnvWithDefault(key, defValue string) string {
@@ -113,4 +165,13 @@ func setupLogging(opts *options.Options) {
 		log.SetLevel(log.DebugLevel)
 	}
 	color.NoColor = opts.NoColor
+}
+
+func contains(s []operator.FailedTest, e operator.FailedTest) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
