@@ -3,8 +3,8 @@ package testjson
 import (
 	"testing"
 
-	"gotest.tools/assert"
-	"gotest.tools/skip"
+	"gotest.tools/v3/assert"
+	"gotest.tools/v3/skip"
 )
 
 func TestRelativePackagePath(t *testing.T) {

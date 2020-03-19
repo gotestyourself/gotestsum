@@ -1,5 +1,4 @@
 vendor/
 .dobi/
-.depsources
 dist/
 junit.xml
