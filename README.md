@@ -169,7 +169,7 @@ that `gotestsum` expects.
 Example:
 
 ```
-gotestsum --raw-command -- go tool test2json -p pkgname ./binary.test -test.v
+gotestsum --raw-command -- go tool test2json -t -p pkgname ./binary.test -test.v
 ```
 
 `pkgname` is the name of the package being tested, it will show up in the test
