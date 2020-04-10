@@ -66,7 +66,7 @@ func NewSummary(value string) (Summary, bool) {
 }
 
 // PrintSummary of a test Execution. Prints a section for each summary type
-// followed by a DONE line.
+// followed by a DONE line to out.
 func PrintSummary(out io.Writer, execution *Execution, opts Summary) {
 	execSummary := newExecSummary(execution, opts)
 	if opts.Includes(SummarizeSkipped) {
@@ -111,6 +111,9 @@ func formatExecStatus(done bool) string {
 
 // FormatDurationAsSeconds formats a time.Duration as a float with an s suffix.
 func FormatDurationAsSeconds(d time.Duration, precision int) string {
+	if d == neverFinished {
+		return "panic"
+	}
 	return fmt.Sprintf("%.[2]*[1]fs", d.Seconds(), precision)
 }
 

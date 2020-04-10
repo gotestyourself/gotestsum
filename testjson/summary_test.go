@@ -8,6 +8,7 @@ import (
 
 	"github.com/jonboulle/clockwork"
 	"gotest.tools/v3/assert"
+	"gotest.tools/v3/golden"
 )
 
 func TestSummary_String(t *testing.T) {
@@ -221,4 +222,29 @@ func patchClock() (clockwork.FakeClock, func()) {
 
 func multiLine(s string) []string {
 	return strings.SplitAfter(s, "\n")
+}
+
+func TestPrintSummary_MissingTestFailEvent(t *testing.T) {
+	_, reset := patchClock()
+	defer reset()
+	exec, err := ScanTestOutput(ScanConfig{
+		Stdout:  bytes.NewReader(golden.Get(t, "go-test-json-missing-test-fail.out")),
+		Stderr:  bytes.NewReader(nil),
+		Handler: noopHandler{},
+	})
+	assert.NilError(t, err)
+
+	buf := new(bytes.Buffer)
+	PrintSummary(buf, exec, SummarizeAll)
+	golden.Assert(t, buf.String(), "summary-missing-test-fail-event")
+}
+
+type noopHandler struct{}
+
+func (s noopHandler) Event(TestEvent, *Execution) error {
+	return nil
+}
+
+func (s noopHandler) Err(string) error {
+	return nil
 }

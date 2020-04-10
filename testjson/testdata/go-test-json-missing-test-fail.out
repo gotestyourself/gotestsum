@@ -1,0 +1,21 @@
+{"Time":"2020-04-10T14:52:44.192693974-04:00","Action":"run","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare"}
+{"Time":"2020-04-10T14:52:44.192822137-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"=== RUN   TestWaitOn_WithCompare\n"}
+{"Time":"2020-04-10T14:52:44.1950981-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"panic: runtime error: index out of range [1] with length 1\n"}
+{"Time":"2020-04-10T14:52:44.195110282-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"\n"}
+{"Time":"2020-04-10T14:52:44.195116665-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"goroutine 7 [running]:\n"}
+{"Time":"2020-04-10T14:52:44.195120587-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"gotest.tools/v3/internal/assert.ArgsFromComparisonCall(0xc0000552a0, 0x1, 0x1, 0x1, 0x0, 0x0)\n"}
+{"Time":"2020-04-10T14:52:44.195301254-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"\t/home/daniel/pers/code/gotest.tools/internal/assert/result.go:102 +0x9f\n"}
+{"Time":"2020-04-10T14:52:44.195332206-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"gotest.tools/v3/internal/assert.runComparison(0x6bcb80, 0xc00000e180, 0x67dee8, 0xc00007a9f0, 0x0, 0x0, 0x0, 0x7f7f4fb6d108)\n"}
+{"Time":"2020-04-10T14:52:44.19533807-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"\t/home/daniel/pers/code/gotest.tools/internal/assert/result.go:34 +0x2b1\n"}
+{"Time":"2020-04-10T14:52:44.195342341-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"gotest.tools/v3/internal/assert.Eval(0x6bcb80, 0xc00000e180, 0x67dee8, 0x627660, 0xc00007a9f0, 0x0, 0x0, 0x0, 0x642c60)\n"}
+{"Time":"2020-04-10T14:52:44.195346449-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"\t/home/daniel/pers/code/gotest.tools/internal/assert/assert.go:56 +0x2e4\n"}
+{"Time":"2020-04-10T14:52:44.195350377-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"gotest.tools/v3/poll.Compare(0xc00007a9f0, 0x6b74a0, 0x618a60)\n"}
+{"Time":"2020-04-10T14:52:44.195356946-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"\t/home/daniel/pers/code/gotest.tools/poll/poll.go:151 +0x81\n"}
+{"Time":"2020-04-10T14:52:44.195360761-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"gotest.tools/v3/poll.TestWaitOn_WithCompare.func1(0x6be4c0, 0xc00016c240, 0xc00016c240, 0x6be4c0)\n"}
+{"Time":"2020-04-10T14:52:44.195367482-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"\t/home/daniel/pers/code/gotest.tools/poll/poll_test.go:81 +0x58\n"}
+{"Time":"2020-04-10T14:52:44.195371319-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"gotest.tools/v3/poll.WaitOn.func1(0xc00001e3c0, 0x67df50, 0x6c1960, 0xc00016c240)\n"}
+{"Time":"2020-04-10T14:52:44.195375766-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"\t/home/daniel/pers/code/gotest.tools/poll/poll.go:125 +0x62\n"}
+{"Time":"2020-04-10T14:52:44.195379421-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"created by gotest.tools/v3/poll.WaitOn\n"}
+{"Time":"2020-04-10T14:52:44.195384493-04:00","Action":"output","Package":"gotest.tools/v3/poll","Test":"TestWaitOn_WithCompare","Output":"\t/home/daniel/pers/code/gotest.tools/poll/poll.go:124 +0x16f\n"}
+{"Time":"2020-04-10T14:52:44.195785223-04:00","Action":"output","Package":"gotest.tools/v3/poll","Output":"FAIL\tgotest.tools/v3/poll\t0.005s\n"}
+{"Time":"2020-04-10T14:52:44.195796081-04:00","Action":"fail","Package":"gotest.tools/v3/poll","Elapsed":0.005}
