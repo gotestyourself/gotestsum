@@ -91,11 +91,11 @@ func TestPrintSummary_WithFailures(t *testing.T) {
 				output: map[string]map[string][]string{
 					"TestFileDo": multiLine(`=== RUN   TestFileDo
 Some stdout/stderr here
---- FAIL: TestFailDo (1.41s)
+--- FAIL: TestFileDo (1.41s)
 	do_test.go:33 assertion failed
 `),
 					"TestFileDoError": multiLine(`=== RUN   TestFileDoError
---- FAIL: TestFailDoError (0.01s)
+--- FAIL: TestFileDoError (0.01s)
 	do_test.go:50 assertion failed: expected nil error, got WHAT!
 `),
 					"": multiLine("FAIL\n"),

@@ -174,7 +174,7 @@ func writeTestCaseSummary(out io.Writer, execution executionSummary, conf testCa
 			tc.Test,
 			FormatDurationAsSeconds(tc.Elapsed, 2))
 		for _, line := range execution.OutputLines(tc.Package, tc.Test) {
-			if isRunLine(line) || conf.filter(line) {
+			if isRunLine(line) || conf.filter(tc.Test, line) {
 				continue
 			}
 			fmt.Fprint(out, line)
@@ -186,7 +186,7 @@ func writeTestCaseSummary(out io.Writer, execution executionSummary, conf testCa
 type testCaseFormatConfig struct {
 	header string
 	prefix string
-	filter func(string) bool
+	filter func(testName string, line string) bool
 	getter func(executionSummary) []TestCase
 }
 
@@ -195,8 +195,8 @@ func formatFailed() testCaseFormatConfig {
 	return testCaseFormatConfig{
 		header: withColor("Failed"),
 		prefix: withColor("FAIL"),
-		filter: func(line string) bool {
-			return strings.HasPrefix(line, "--- FAIL: Test")
+		filter: func(testName string, line string) bool {
+			return strings.HasPrefix(line, "--- FAIL: "+testName+" ")
 		},
 		getter: func(execution executionSummary) []TestCase {
 			return execution.Failed()
@@ -209,8 +209,8 @@ func formatSkipped() testCaseFormatConfig {
 	return testCaseFormatConfig{
 		header: withColor("Skipped"),
 		prefix: withColor("SKIP"),
-		filter: func(line string) bool {
-			return strings.HasPrefix(line, "--- SKIP: Test")
+		filter: func(testName string, line string) bool {
+			return strings.HasPrefix(line, "--- SKIP: "+testName+" ")
 		},
 		getter: func(execution executionSummary) []TestCase {
 			return execution.Skipped()
