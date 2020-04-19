@@ -43,7 +43,7 @@ workflows:
                 git config --global core.symlinks true
 
       - go/lint:
-          golangci-lint-version: 1.21.0
+          golangci-lint-version: 1.24.0
 
       - build
       - run
