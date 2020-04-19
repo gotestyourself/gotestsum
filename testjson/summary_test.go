@@ -229,6 +229,7 @@ func multiLine(s string) map[string][]string {
 func TestPrintSummary_MissingTestFailEvent(t *testing.T) {
 	_, reset := patchClock()
 	defer reset()
+
 	exec, err := ScanTestOutput(ScanConfig{
 		Stdout:  bytes.NewReader(golden.Get(t, "go-test-json-missing-test-fail.out")),
 		Stderr:  bytes.NewReader(nil),
@@ -249,4 +250,36 @@ func (s noopHandler) Event(TestEvent, *Execution) error {
 
 func (s noopHandler) Err(string) error {
 	return nil
+}
+
+func TestPrintSummary_WithMisattributedOutput(t *testing.T) {
+	_, reset := patchClock()
+	defer reset()
+
+	exec, err := ScanTestOutput(ScanConfig{
+		Stdout:  bytes.NewReader(golden.Get(t, "go-test-json-misattributed.out")),
+		Stderr:  bytes.NewBuffer(nil),
+		Handler: noopHandler{},
+	})
+	assert.NilError(t, err)
+
+	buf := new(bytes.Buffer)
+	PrintSummary(buf, exec, SummarizeAll)
+	golden.Assert(t, buf.String(), "summary-misattributed-output")
+}
+
+func TestPrintSummary_WithSubtestFailures(t *testing.T) {
+	_, reset := patchClock()
+	defer reset()
+
+	exec, err := ScanTestOutput(ScanConfig{
+		Stdout:  bytes.NewReader(golden.Get(t, "go-test-json.out")),
+		Stderr:  bytes.NewBuffer(nil),
+		Handler: noopHandler{},
+	})
+	assert.NilError(t, err)
+
+	buf := new(bytes.Buffer)
+	PrintSummary(buf, exec, SummarizeAll)
+	golden.Assert(t, buf.String(), "summary-root-test-has-subtest-failures")
 }

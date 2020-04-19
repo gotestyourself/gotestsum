@@ -143,14 +143,14 @@ func countErrors(errors []string) int {
 type executionSummary interface {
 	Failed() []TestCase
 	Skipped() []TestCase
-	OutputLines(pkg, test string) []string
+	OutputLines(TestCase) []string
 }
 
 type noOutputSummary struct {
 	Execution
 }
 
-func (s *noOutputSummary) OutputLines(_, _ string) []string {
+func (s *noOutputSummary) OutputLines(_ TestCase) []string {
 	return nil
 }
 
@@ -173,7 +173,7 @@ func writeTestCaseSummary(out io.Writer, execution executionSummary, conf testCa
 			RelativePackagePath(tc.Package),
 			tc.Test,
 			FormatDurationAsSeconds(tc.Elapsed, 2))
-		for _, line := range execution.OutputLines(tc.Package, tc.Test) {
+		for _, line := range execution.OutputLines(tc) {
 			if isRunLine(line) || conf.filter(tc.Test, line) {
 				continue
 			}
