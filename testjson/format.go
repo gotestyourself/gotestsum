@@ -79,7 +79,7 @@ func shortVerboseFormat(event TestEvent, exec *Execution) (string, error) {
 		}
 
 	case event.Action == ActionFail:
-		return exec.Output(event.Package, event.Test) + formatTest(), nil
+		return exec.Package(event.Package).Output(event.Test) + formatTest(), nil
 
 	case event.Action == ActionPass:
 		return formatTest(), nil
@@ -164,7 +164,7 @@ func shortFormatPackageEvent(event TestEvent, exec *Execution) (string, error) {
 func shortWithFailuresFormat(event TestEvent, exec *Execution) (string, error) {
 	if !event.PackageEvent() {
 		if event.Action == ActionFail {
-			return exec.Output(event.Package, event.Test), nil
+			return exec.Package(event.Package).Output(event.Test), nil
 		}
 		return "", nil
 	}

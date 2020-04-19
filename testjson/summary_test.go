@@ -88,7 +88,7 @@ func TestPrintSummary_WithFailures(t *testing.T) {
 						Elapsed: 12 * time.Millisecond,
 					},
 				},
-				output: map[string][]string{
+				output: map[string]map[string][]string{
 					"TestFileDo": multiLine(`=== RUN   TestFileDo
 Some stdout/stderr here
 --- FAIL: TestFailDo (1.41s)
@@ -98,7 +98,7 @@ Some stdout/stderr here
 --- FAIL: TestFailDoError (0.01s)
 	do_test.go:50 assertion failed: expected nil error, got WHAT!
 `),
-					"": {"FAIL\n"},
+					"": multiLine("FAIL\n"),
 				},
 				action: ActionFail,
 			},
@@ -118,7 +118,7 @@ Some stdout/stderr here
 						Elapsed: 0,
 					},
 				},
-				output: map[string][]string{
+				output: map[string]map[string][]string{
 					"TestAlbatross": multiLine(`=== RUN   TestAlbatross
 --- FAIL: TestAlbatross (0.04s)
 `),
@@ -130,8 +130,8 @@ Some stdout/stderr here
 			},
 			"example.com/project/badmain": {
 				action: ActionFail,
-				output: map[string][]string{
-					"": {"sometimes main can exit 2\n"},
+				output: map[string]map[string][]string{
+					"": multiLine("sometimes main can exit 2\n"),
 				},
 			},
 		},
@@ -220,8 +220,10 @@ func patchClock() (clockwork.FakeClock, func()) {
 	return fake, func() { clock = clockwork.NewRealClock() }
 }
 
-func multiLine(s string) []string {
-	return strings.SplitAfter(s, "\n")
+func multiLine(s string) map[string][]string {
+	return map[string][]string{
+		"": strings.SplitAfter(s, "\n"),
+	}
 }
 
 func TestPrintSummary_MissingTestFailEvent(t *testing.T) {
