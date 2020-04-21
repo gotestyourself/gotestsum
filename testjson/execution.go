@@ -69,7 +69,11 @@ type Package struct {
 	Failed  []TestCase
 	Skipped []TestCase
 	Passed  []TestCase
-	output  map[string][]string
+	// output printed by test cases. Output is stored first by root TestCase
+	// name, then by subtest name to mitigate github.com/golang/go/issues/29755.
+	// In the future when that bug is fixed this can be reverted to store all
+	// output by full test name.
+	output map[string]map[string][]string
 	// coverage stores the code coverage output for the package without the
 	// trailing newline (ex: coverage: 91.1% of statements).
 	coverage string
@@ -105,8 +109,68 @@ func (p Package) TestCases() []TestCase {
 }
 
 // Output returns the full test output for a test.
+//
+// Unlike OutputLines() it does not return any extra lines in some cases.
 func (p Package) Output(test string) string {
-	return strings.Join(p.output[test], "")
+	root, sub := splitTestName(test)
+	return strings.Join(p.output[root][sub], "")
+}
+
+// OutputLines returns the full test output for a test as a slice of strings.
+//
+// As a workaround for test output being attributed to the wrong subtest, if:
+//   - the requested test output only contains framing lines (ex: --- FAIL: ), and
+//   - the TestCase is a root TestCase (not a subtest), and
+//   - the TestCase has no subtest failures;
+// then all output for every subtest under the root test is returned.
+// See https://github.com/golang/go/issues/29755.
+func (p Package) OutputLines(tc TestCase) []string {
+	root, sub := splitTestName(tc.Test)
+	lines := p.output[root][sub]
+	// every test will have 2 framing lines, === RUN, and --- {PASS,FAIL}
+	if len(lines) > 2 {
+		return lines
+	}
+
+	// If this is a subtest, or a root test case with subtest failures the
+	// subtest failure output should contain the relevant lines, so we don't need
+	// extra lines.
+	if sub != "" || tc.subTestFailed {
+		return lines
+	}
+	//
+	result := make([]string, 0, len(p.output[root])*2)
+	for _, sub := range testNamesSorted(p.output[root]) {
+		result = append(result, p.output[root][sub]...)
+	}
+	return result
+}
+
+func testNamesSorted(subs map[string][]string) []string {
+	names := make([]string, 0, len(subs))
+	for name := range subs {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	return names
+}
+
+func (p Package) addOutput(test string, output string) {
+	root, sub := splitTestName(test)
+	if p.output[root] == nil {
+		p.output[root] = make(map[string][]string)
+	}
+	// TODO: limit size of buffered test output
+	p.output[root][sub] = append(p.output[root][sub], output)
+}
+
+// splitTestName into root test name and any subtest names.
+func splitTestName(name string) (root, sub string) {
+	parts := strings.SplitN(name, "/", 2)
+	if len(parts) < 2 {
+		return name, ""
+	}
+	return parts[0], parts[1]
 }
 
 // TestMainFailed returns true if the package failed, but there were no tests.
@@ -130,11 +194,14 @@ type TestCase struct {
 	Package string
 	Test    string
 	Elapsed time.Duration
+	// subTestFailed is true when a subtest of this TestCase has failed. It is
+	// used to find root TestCases which have no failing subtests.
+	subTestFailed bool
 }
 
 func newPackage() *Package {
 	return &Package{
-		output:  make(map[string][]string),
+		output:  make(map[string]map[string][]string),
 		running: make(map[string]TestCase),
 	}
 }
@@ -171,7 +238,7 @@ func (e *Execution) addPackageEvent(pkg *Package, event TestEvent) {
 		if isCachedOutput(event.Output) {
 			pkg.cached = true
 		}
-		pkg.output[""] = append(pkg.output[""], event.Output)
+		pkg.addOutput("", event.Output)
 	}
 }
 
@@ -185,8 +252,7 @@ func (e *Execution) addTestEvent(pkg *Package, event TestEvent) {
 		}
 		return
 	case ActionOutput, ActionBench:
-		// TODO: limit size of buffered test output
-		pkg.output[event.Test] = append(pkg.output[event.Test], event.Output)
+		pkg.addOutput(event.Test, event.Output)
 		return
 	case ActionPause, ActionCont:
 		return
@@ -199,6 +265,14 @@ func (e *Execution) addTestEvent(pkg *Package, event TestEvent) {
 	switch event.Action {
 	case ActionFail:
 		pkg.Failed = append(pkg.Failed, tc)
+
+		// If this is a subtest, mark the root test as having subtests.
+		root, subTest := splitTestName(event.Test)
+		if subTest != "" {
+			rootTestCase := pkg.running[root]
+			rootTestCase.subTestFailed = true
+			pkg.running[root] = rootTestCase
+		}
 	case ActionSkip:
 		pkg.Skipped = append(pkg.Skipped, tc)
 	case ActionPass:
@@ -222,14 +296,13 @@ func isCachedOutput(output string) bool {
 	return strings.Contains(output, "\t(cached)")
 }
 
-// Output returns the full test output for a test.
-func (e *Execution) Output(pkg, test string) string {
-	return strings.Join(e.packages[pkg].output[test], "")
-}
-
-// OutputLines returns the full test output for a test as an array of lines.
-func (e *Execution) OutputLines(pkg, test string) []string {
-	return e.packages[pkg].output[test]
+// OutputLines returns the full test output for a test as an slice of lines.
+// This function is a convenient wrapper around Package.OutputLines() to
+// support the hiding of output in the summary.
+//
+// See Package.OutLines() for more details.
+func (e *Execution) OutputLines(tc TestCase) []string {
+	return e.packages[tc.Package].OutputLines(tc)
 }
 
 // Package returns the Package by name.

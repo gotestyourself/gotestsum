@@ -155,14 +155,16 @@ func packageTestCases(pkg *testjson.Package, formatClassname FormatFunc) []JUnit
 		jtc := newJUnitTestCase(tc, formatClassname)
 		jtc.Failure = &JUnitFailure{
 			Message:  "Failed",
-			Contents: pkg.Output(tc.Test),
+			Contents: strings.Join(pkg.OutputLines(tc), ""),
 		}
 		cases = append(cases, jtc)
 	}
 
 	for _, tc := range pkg.Skipped {
 		jtc := newJUnitTestCase(tc, formatClassname)
-		jtc.SkipMessage = &JUnitSkipMessage{Message: pkg.Output(tc.Test)}
+		jtc.SkipMessage = &JUnitSkipMessage{
+			Message: strings.Join(pkg.OutputLines(tc), ""),
+		}
 		cases = append(cases, jtc)
 	}
 
