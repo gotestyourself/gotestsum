@@ -1,0 +1,23 @@
+
+=== Failed
+=== FAIL: gotest.tools/v3/poll TestWaitOn_WithCompare (panic)
+panic: runtime error: index out of range [1] with length 1
+
+goroutine 7 [running]:
+gotest.tools/v3/internal/assert.ArgsFromComparisonCall(0xc0000552a0, 0x1, 0x1, 0x1, 0x0, 0x0)
+	/home/daniel/pers/code/gotest.tools/internal/assert/result.go:102 +0x9f
+gotest.tools/v3/internal/assert.runComparison(0x6bcb80, 0xc00000e180, 0x67dee8, 0xc00007a9f0, 0x0, 0x0, 0x0, 0x7f7f4fb6d108)
+	/home/daniel/pers/code/gotest.tools/internal/assert/result.go:34 +0x2b1
+gotest.tools/v3/internal/assert.Eval(0x6bcb80, 0xc00000e180, 0x67dee8, 0x627660, 0xc00007a9f0, 0x0, 0x0, 0x0, 0x642c60)
+	/home/daniel/pers/code/gotest.tools/internal/assert/assert.go:56 +0x2e4
+gotest.tools/v3/poll.Compare(0xc00007a9f0, 0x6b74a0, 0x618a60)
+	/home/daniel/pers/code/gotest.tools/poll/poll.go:151 +0x81
+gotest.tools/v3/poll.TestWaitOn_WithCompare.func1(0x6be4c0, 0xc00016c240, 0xc00016c240, 0x6be4c0)
+	/home/daniel/pers/code/gotest.tools/poll/poll_test.go:81 +0x58
+gotest.tools/v3/poll.WaitOn.func1(0xc00001e3c0, 0x67df50, 0x6c1960, 0xc00016c240)
+	/home/daniel/pers/code/gotest.tools/poll/poll.go:125 +0x62
+created by gotest.tools/v3/poll.WaitOn
+	/home/daniel/pers/code/gotest.tools/poll/poll.go:124 +0x16f
+
+
+DONE 1 tests, 1 failure in 0.000s

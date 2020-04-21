@@ -65,6 +65,7 @@ func (e TestEvent) Bytes() []byte {
 type Package struct {
 	// TODO: this could be Total()
 	Total   int
+	running map[string]TestCase
 	Failed  []TestCase
 	Skipped []TestCase
 	Passed  []TestCase
@@ -114,6 +115,16 @@ func (p Package) TestMainFailed() bool {
 	return p.action == ActionFail && len(p.Failed) == 0
 }
 
+const neverFinished time.Duration = -1
+
+func (p *Package) end() {
+	// Add tests that were missing an ActionFail event to Failed
+	for _, tc := range p.running {
+		tc.Elapsed = neverFinished
+		p.Failed = append(p.Failed, tc)
+	}
+}
+
 // TestCase stores the name and elapsed time for a test case.
 type TestCase struct {
 	Package string
@@ -122,7 +133,10 @@ type TestCase struct {
 }
 
 func newPackage() *Package {
-	return &Package{output: make(map[string][]string)}
+	return &Package{
+		output:  make(map[string][]string),
+		running: make(map[string]TestCase),
+	}
 }
 
 // Execution of one or more test packages
@@ -165,27 +179,30 @@ func (e *Execution) addTestEvent(pkg *Package, event TestEvent) {
 	switch event.Action {
 	case ActionRun:
 		pkg.Total++
-	case ActionFail:
-		pkg.Failed = append(pkg.Failed, TestCase{
+		pkg.running[event.Test] = TestCase{
 			Package: event.Package,
 			Test:    event.Test,
-			Elapsed: elapsedDuration(event.Elapsed),
-		})
-	case ActionSkip:
-		pkg.Skipped = append(pkg.Skipped, TestCase{
-			Package: event.Package,
-			Test:    event.Test,
-			Elapsed: elapsedDuration(event.Elapsed),
-		})
+		}
+		return
 	case ActionOutput, ActionBench:
 		// TODO: limit size of buffered test output
 		pkg.output[event.Test] = append(pkg.output[event.Test], event.Output)
+		return
+	case ActionPause, ActionCont:
+		return
+	}
+
+	tc := pkg.running[event.Test]
+	delete(pkg.running, event.Test)
+	tc.Elapsed = elapsedDuration(event.Elapsed)
+
+	switch event.Action {
+	case ActionFail:
+		pkg.Failed = append(pkg.Failed, tc)
+	case ActionSkip:
+		pkg.Skipped = append(pkg.Skipped, tc)
 	case ActionPass:
-		pkg.Passed = append(pkg.Passed, TestCase{
-			Package: event.Package,
-			Test:    event.Test,
-			Elapsed: elapsedDuration(event.Elapsed),
-		})
+		pkg.Passed = append(pkg.Passed, tc)
 		// Remove test output once a test passes, it wont be used
 		delete(pkg.output, event.Test)
 	}
@@ -234,16 +251,15 @@ func (e *Execution) Elapsed() time.Duration {
 
 // Failed returns a list of all the failed test cases.
 func (e *Execution) Failed() []TestCase {
-	var failed []TestCase
+	var failed []TestCase //nolint:prealloc
 	for _, name := range sortedKeys(e.packages) {
 		pkg := e.packages[name]
 
 		// Add package-level failure output if there were no failed tests.
 		if pkg.TestMainFailed() {
 			failed = append(failed, TestCase{Package: name})
-		} else {
-			failed = append(failed, pkg.Failed...)
 		}
+		failed = append(failed, pkg.Failed...)
 	}
 	return failed
 }
@@ -289,11 +305,18 @@ func (e *Execution) Errors() []string {
 	return e.errors
 }
 
+func (e *Execution) end() {
+	e.done = true
+	for _, pkg := range e.packages {
+		pkg.end()
+	}
+}
+
 // NewExecution returns a new Execution and records the current time as the
 // time the test execution started.
 func NewExecution() *Execution {
 	return &Execution{
-		started:  time.Now(),
+		started:  clock.Now(),
 		packages: make(map[string]*Package),
 	}
 }
@@ -323,7 +346,7 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 		return readStderr(config, execution)
 	})
 	err := group.Wait()
-	execution.done = true
+	execution.end()
 	return execution, err
 }
 
@@ -340,6 +363,7 @@ func readStdout(config ScanConfig, execution *Execution) error {
 		case err != nil:
 			return errors.Wrapf(err, "failed to parse test output: %s", string(raw))
 		}
+
 		execution.add(event)
 		if err := config.Handler.Event(event, execution); err != nil {
 			return err

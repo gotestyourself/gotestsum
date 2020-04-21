@@ -38,6 +38,7 @@ func TestExecution_Add_PackageCoverage(t *testing.T) {
 		output: map[string][]string{
 			"": {"coverage: 33.1% of statements\n"},
 		},
+		running: map[string]TestCase{},
 	}
 	assert.DeepEqual(t, pkg, expected, cmpPackage)
 }

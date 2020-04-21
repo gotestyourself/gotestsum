@@ -88,8 +88,9 @@ var expectedExecution = &Execution{
 				{Test: "TestSkipped"},
 				{Test: "TestSkippedWitLog"},
 			},
-			action: ActionPass,
-			cached: true,
+			action:  ActionPass,
+			cached:  true,
+			running: map[string]TestCase{},
 		},
 		"github.com/gotestyourself/gotestyourself/testjson/internal/stub": {
 			Total: 28,
@@ -103,10 +104,12 @@ var expectedExecution = &Execution{
 				{Test: "TestSkipped"},
 				{Test: "TestSkippedWitLog"},
 			},
-			action: ActionFail,
+			action:  ActionFail,
+			running: map[string]TestCase{},
 		},
 		"github.com/gotestyourself/gotestyourself/testjson/internal/badmain": {
-			action: ActionFail,
+			action:  ActionFail,
+			running: map[string]TestCase{},
 		},
 	},
 }
@@ -217,6 +220,7 @@ var expectedCoverageExecution = &Execution{
 			},
 			action:   ActionPass,
 			coverage: "coverage: 0.0% of statements",
+			running:  map[string]TestCase{},
 		},
 		"gotest.tools/gotestsum/testjson/internal/stub": {
 			Total: 28,
@@ -232,9 +236,11 @@ var expectedCoverageExecution = &Execution{
 			},
 			action:   ActionFail,
 			coverage: "coverage: 0.0% of statements",
+			running:  map[string]TestCase{},
 		},
 		"gotest.tools/gotestsum/testjson/internal/badmain": {
-			action: ActionFail,
+			action:  ActionFail,
+			running: map[string]TestCase{},
 		},
 	},
 }
