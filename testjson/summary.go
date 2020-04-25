@@ -112,7 +112,7 @@ func formatExecStatus(done bool) string {
 // FormatDurationAsSeconds formats a time.Duration as a float with an s suffix.
 func FormatDurationAsSeconds(d time.Duration, precision int) string {
 	if d == neverFinished {
-		return "panic"
+		return "unknown"
 	}
 	return fmt.Sprintf("%.[2]*[1]fs", d.Seconds(), precision)
 }
