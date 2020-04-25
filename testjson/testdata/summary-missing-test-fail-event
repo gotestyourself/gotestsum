@@ -1,6 +1,6 @@
 
 === Failed
-=== FAIL: gotest.tools/v3/poll TestWaitOn_WithCompare (panic)
+=== FAIL: gotest.tools/v3/poll TestWaitOn_WithCompare (unknown)
 panic: runtime error: index out of range [1] with length 1
 
 goroutine 7 [running]:
