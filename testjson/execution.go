@@ -119,7 +119,6 @@ func (p Package) Output(test string) string {
 // OutputLines returns the full test output for a test as a slice of strings.
 //
 // As a workaround for test output being attributed to the wrong subtest, if:
-//   - the requested test output only contains framing lines (ex: --- FAIL: ), and
 //   - the TestCase is a root TestCase (not a subtest), and
 //   - the TestCase has no subtest failures;
 // then all output for every subtest under the root test is returned.
@@ -127,10 +126,6 @@ func (p Package) Output(test string) string {
 func (p Package) OutputLines(tc TestCase) []string {
 	root, sub := splitTestName(tc.Test)
 	lines := p.output[root][sub]
-	// every test will have 2 framing lines, === RUN, and --- {PASS,FAIL}
-	if len(lines) > 2 {
-		return lines
-	}
 
 	// If this is a subtest, or a root test case with subtest failures the
 	// subtest failure output should contain the relevant lines, so we don't need
