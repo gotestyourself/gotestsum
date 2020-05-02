@@ -64,6 +64,8 @@ func writeFile(path string, file *ast.File, fset *token.FileSet) error {
 	return format.Node(fh, fset, file)
 }
 
+// TODO: support preset values. Maybe that will help with the problem
+// of strange indentation described on writeFile.
 func parseSkipStatement(text string) (ast.Stmt, error) {
 	// Add some required boilerplate around the statement to make it a valid file
 	text = "package stub\nfunc Stub() {\n" + text + "\n}\n"

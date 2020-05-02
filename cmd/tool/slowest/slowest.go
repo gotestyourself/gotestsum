@@ -3,6 +3,8 @@ package slowest
 import (
 	"bytes"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"os"
 	"sort"
 	"time"
@@ -33,6 +35,9 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		fmt.Fprintf(os.Stderr, `Usage:
     %s [flags]
 
+Read a json file and print or update tests which are slower than threshold.
+The json file can be created by 'gotestsum --jsonfile' or 'go test -json'.
+
 By default this command will print the list of tests slower than threshold to stdout.
 If --skip-stmt is set, instead of printing the list of stdout, the AST for the
 Go source code in the working directory tree will be modified. The --skip-stmt
@@ -48,6 +53,8 @@ Flags:
 `, name, name)
 		flags.PrintDefaults()
 	}
+	flags.StringVar(&opts.jsonfile, "jsonfile", "",
+		"path to test2json output, defaults to stdin")
 	flags.DurationVar(&opts.threshold, "threshold", 100*time.Millisecond,
 		"tests faster than this threshold will be omitted from the output")
 	flags.StringVar(&opts.skipStatement, "skip-stmt", "",
@@ -59,6 +66,7 @@ Flags:
 
 type options struct {
 	threshold     time.Duration
+	jsonfile      string
 	skipStatement string
 	debug         bool
 }
@@ -67,8 +75,14 @@ func run(opts *options) error {
 	if opts.debug {
 		log.SetLevel(log.DebugLevel)
 	}
+	in, err := jsonfileReader(opts.jsonfile)
+	if err != nil {
+		return fmt.Errorf("failed to read jsonfile: %w", err)
+	}
+	defer in.Close()
+
 	exec, err := testjson.ScanTestOutput(testjson.ScanConfig{
-		Stdout: os.Stdin,
+		Stdout: in,
 		Stderr: bytes.NewReader(nil),
 	})
 	if err != nil {
@@ -110,4 +124,13 @@ func slowTestCases(exec *testjson.Execution, threshold time.Duration) []testjson
 		return tests[i].Elapsed < threshold
 	})
 	return tests[:end]
+}
+
+func jsonfileReader(v string) (io.ReadCloser, error) {
+	switch v {
+	case "", "-":
+		return ioutil.NopCloser(os.Stdin), nil
+	default:
+		return os.Open(v)
+	}
 }
