@@ -11,6 +11,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/pkg/errors"
 	"github.com/spf13/pflag"
+	"gotest.tools/gotestsum/cmd"
 	"gotest.tools/gotestsum/cmd/tool"
 	"gotest.tools/gotestsum/log"
 	"gotest.tools/gotestsum/testjson"
@@ -20,14 +21,10 @@ var version = "master"
 
 func main() {
 	err := route(os.Args)
-	if err == pflag.ErrHelp || err == nil {
+	if err == nil {
 		return
 	}
 	switch err.(type) {
-	// TODO: on parse error print usage
-	//log.Error(err.Error())
-	//flags.Usage()
-	//os.Exit(1)
 	case *exec.ExitError:
 		// go test should already report the error to stderr, exit with
 		// the same status code
@@ -39,19 +36,23 @@ func main() {
 }
 
 func route(args []string) error {
-	if len(args) == 1 {
-		return runMain(args[0], args[1:])
-	}
-	switch args[1] {
+	name := args[0]
+	next, rest := cmd.Next(args[1:])
+	switch next {
 	case "tool":
-		return tool.Run(args[0]+" "+args[1], args[2:])
+		return tool.Run(name+" "+next, rest)
+	default:
+		return runMain(name, args[1:])
 	}
-	return runMain(args[0], args[1:])
 }
 
 func runMain(name string, args []string) error {
 	flags, opts := setupFlags(name)
-	if err := flags.Parse(args); err != nil {
+	switch err := flags.Parse(args); {
+	case err == pflag.ErrHelp:
+		return nil
+	case err != nil:
+		flags.Usage()
 		return err
 	}
 	opts.args = flags.Args()

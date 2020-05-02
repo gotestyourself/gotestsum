@@ -404,7 +404,12 @@ type EventHandler interface {
 
 // ScanTestOutput reads lines from stdout and stderr, creates an Execution,
 // calls the Handler for each event, and returns the Execution.
+//
+// If config.Handler is nil, a default no-op handler will be used.
 func ScanTestOutput(config ScanConfig) (*Execution, error) {
+	if config.Handler == nil {
+		config.Handler = noopHandler{}
+	}
 	execution := NewExecution()
 	var group errgroup.Group
 	group.Go(func() error {
@@ -484,3 +489,13 @@ func parseEvent(raw []byte) (TestEvent, error) {
 }
 
 var errBadEvent = errors.New("bad output from test2json")
+
+type noopHandler struct{}
+
+func (s noopHandler) Event(TestEvent, *Execution) error {
+	return nil
+}
+
+func (s noopHandler) Err(string) error {
+	return nil
+}
