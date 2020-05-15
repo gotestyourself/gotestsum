@@ -2,3 +2,4 @@ vendor/
 .dobi/
 dist/
 junit.xml
+.plsdo/
