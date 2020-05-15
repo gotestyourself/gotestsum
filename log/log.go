@@ -58,3 +58,13 @@ func Errorf(format string, args ...interface{}) {
 	out.WriteString(fmt.Sprintf(format, args...))
 	out.WriteString("\n")
 }
+
+// Error prints the message to stderr, with a red ERROR prefix.
+func Error(msg string) {
+	if level < ErrorLevel {
+		return
+	}
+	out.WriteString(color.RedString("ERROR "))
+	out.WriteString(msg)
+	out.WriteString("\n")
+}

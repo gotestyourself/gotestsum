@@ -231,9 +231,8 @@ func TestPrintSummary_MissingTestFailEvent(t *testing.T) {
 	defer reset()
 
 	exec, err := ScanTestOutput(ScanConfig{
-		Stdout:  bytes.NewReader(golden.Get(t, "go-test-json-missing-test-fail.out")),
-		Stderr:  bytes.NewReader(nil),
-		Handler: noopHandler{},
+		Stdout: bytes.NewReader(golden.Get(t, "go-test-json-missing-test-fail.out")),
+		Stderr: bytes.NewReader(nil),
 	})
 	assert.NilError(t, err)
 
@@ -242,24 +241,13 @@ func TestPrintSummary_MissingTestFailEvent(t *testing.T) {
 	golden.Assert(t, buf.String(), "summary-missing-test-fail-event")
 }
 
-type noopHandler struct{}
-
-func (s noopHandler) Event(TestEvent, *Execution) error {
-	return nil
-}
-
-func (s noopHandler) Err(string) error {
-	return nil
-}
-
 func TestPrintSummary_WithMisattributedOutput(t *testing.T) {
 	_, reset := patchClock()
 	defer reset()
 
 	exec, err := ScanTestOutput(ScanConfig{
-		Stdout:  bytes.NewReader(golden.Get(t, "go-test-json-misattributed.out")),
-		Stderr:  bytes.NewBuffer(nil),
-		Handler: noopHandler{},
+		Stdout: bytes.NewReader(golden.Get(t, "go-test-json-misattributed.out")),
+		Stderr: bytes.NewBuffer(nil),
 	})
 	assert.NilError(t, err)
 
@@ -273,9 +261,8 @@ func TestPrintSummary_WithSubtestFailures(t *testing.T) {
 	defer reset()
 
 	exec, err := ScanTestOutput(ScanConfig{
-		Stdout:  bytes.NewReader(golden.Get(t, "go-test-json.out")),
-		Stderr:  bytes.NewBuffer(nil),
-		Handler: noopHandler{},
+		Stdout: bytes.NewReader(golden.Get(t, "go-test-json.out")),
+		Stderr: bytes.NewBuffer(nil),
 	})
 	assert.NilError(t, err)
 
