@@ -10,8 +10,8 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 	"github.com/spf13/pflag"
+	"gotest.tools/gotestsum/log"
 	"gotest.tools/gotestsum/testjson"
 )
 
@@ -24,7 +24,7 @@ func main() {
 	case err == pflag.ErrHelp:
 		os.Exit(0)
 	case err != nil:
-		log.Error(err.Error())
+		log.Errorf(err.Error())
 		flags.Usage()
 		os.Exit(1)
 	}
@@ -43,7 +43,7 @@ func main() {
 		// the same status code
 		os.Exit(ExitCodeWithDefault(err))
 	default:
-		fmt.Fprintln(os.Stderr, name+": Error: "+err.Error())
+		log.Errorf(err.Error())
 		os.Exit(3)
 	}
 }
@@ -125,7 +125,6 @@ func setupLogging(opts *options) {
 	color.NoColor = opts.noColor
 }
 
-// TODO: add flag --max-failures
 func run(opts *options) error {
 	ctx := context.Background()
 	goTestProc, err := startGoTest(ctx, goTestCmdArgs(opts))

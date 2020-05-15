@@ -12,8 +12,8 @@ import (
 
 	"github.com/jonboulle/clockwork"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
+	"gotest.tools/gotestsum/log"
 )
 
 // Action of TestEvent
@@ -473,7 +473,7 @@ func isGoModuleOutput(scannerText string) bool {
 func parseEvent(raw []byte) (TestEvent, error) {
 	// TODO: this seems to be a bug in the `go test -json` output
 	if bytes.HasPrefix(raw, []byte("FAIL")) {
-		logrus.Warn(string(raw))
+		log.Warnf(string(raw))
 		return TestEvent{}, errBadEvent
 	}
 
