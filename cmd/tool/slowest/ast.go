@@ -61,8 +61,6 @@ func normalizePkgName(name string) string {
 	return strings.TrimSuffix(name, "_test")
 }
 
-// TODO: sometimes this writes the new AST with strange indentation. It appears
-// to be non-deterministic. Given the same input, it only happens sometimes.
 func writeFile(path string, file *ast.File, fset *token.FileSet) error {
 	fh, err := os.Create(path)
 	if err != nil {
@@ -72,9 +70,15 @@ func writeFile(path string, file *ast.File, fset *token.FileSet) error {
 	return format.Node(fh, fset, file)
 }
 
-// TODO: support preset values. Maybe that will help with the problem
-// of strange indentation described on writeFile.
 func parseSkipStatement(text string) (ast.Stmt, error) {
+	switch text {
+	case "default", "testing.Short":
+		text = `
+	if testing.Short() {
+		t.Skip("too slow for testing.Short")
+	}
+`
+	}
 	// Add some required boilerplate around the statement to make it a valid file
 	text = "package stub\nfunc Stub() {\n" + text + "\n}\n"
 	file, err := parser.ParseFile(token.NewFileSet(), "fragment", text, 0)

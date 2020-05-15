@@ -36,7 +36,7 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
     %s [flags]
 
 Read a json file and print or update tests which are slower than threshold.
-The json file can be created by 'gotestsum --jsonfile' or 'go test -json'.
+The json file can be created with 'gotestsum --jsonfile' or 'go test -json'.
 
 By default this command will print the list of tests slower than threshold to stdout.
 If --skip-stmt is set, instead of printing the list of stdout, the AST for the
@@ -44,10 +44,25 @@ Go source code in the working directory tree will be modified. The --skip-stmt
 will be added to Go test files as the first statement in all the test functions
 which are slower than threshold.
 
-Example - use testing.Short():
+The --skip-stmt flag may be set to the name of a predefine statement, or a
+source code which will be parsed as a go/ast.Stmt. Currently there is only one
+predefined statement: testing.Short:
 
-    skip_stmt='if testing.Short() { t.Skip("too slow for short run") }'
+    if testing.Short() {
+        t.Skip("too slow for testing.Short")
+    }
+
+Example - using a custom --skip-stmt:
+
+    skip_stmt='
+        if os.Getenv("TEST_FAST") {
+            t.Skip("too slow for TEST_FAST")
+        }
+    '
     go test -json -short ./... | %s --skip-stmt "$skip_stmt"
+
+Note that this tool does not add imports, so using a custom statement may require
+you to add any necessary imports to the file.
 
 Flags:
 `, name, name)
