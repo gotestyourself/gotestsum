@@ -21,10 +21,9 @@ var version = "master"
 
 func main() {
 	err := route(os.Args)
-	if err == nil {
-		return
-	}
 	switch err.(type) {
+	case nil:
+		return
 	case *exec.ExitError:
 		// go test should already report the error to stderr, exit with
 		// the same status code

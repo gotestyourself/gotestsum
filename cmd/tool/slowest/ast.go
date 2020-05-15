@@ -98,12 +98,19 @@ func rewriteAST(file *ast.File, testNames set, skipStmt ast.Stmt) bool {
 
 type set map[string]struct{}
 
-// FIXME: this should drop subtests from the index, so that errTestCasesNotFound
-// does not report an error when we can't find the test function.
+// testNamesByPkgName removes subtests from the list of TestCases, then builds
+// and returns a slice of all the packages names, and a mapping of package name
+// to set of failed tests in that package.
+//
+// subtests are removed because the AST lookup currently only works for top-level
+// functions, not t.Run subtests.
 func testNamesByPkgName(tcs []testjson.TestCase) ([]string, map[string]set) {
-	pkgs := make([]string, 0, len(tcs))
+	var pkgs []string
 	index := make(map[string]set)
 	for _, tc := range tcs {
+		if isSubTest(tc.Test) {
+			continue
+		}
 		if len(index[tc.Package]) == 0 {
 			pkgs = append(pkgs, tc.Package)
 			index[tc.Package] = make(map[string]struct{})
@@ -111,6 +118,10 @@ func testNamesByPkgName(tcs []testjson.TestCase) ([]string, map[string]set) {
 		index[tc.Package][tc.Test] = struct{}{}
 	}
 	return pkgs, index
+}
+
+func isSubTest(name string) bool {
+	return strings.Index(name, "/") > -1
 }
 
 func errPkgLoad(pkg *packages.Package) error {
@@ -131,7 +142,7 @@ func errTestCasesNotFound(index map[string]set) error {
 	if len(missed) == 0 {
 		return nil
 	}
-	return fmt.Errorf("failed to find source for test cases: %v", strings.Join(missed, ","))
+	return fmt.Errorf("failed to find source for test cases:\n%v", strings.Join(missed, "\n"))
 }
 
 func modeAll() packages.LoadMode {
