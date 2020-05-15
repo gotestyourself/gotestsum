@@ -9,10 +9,18 @@ linters-settings:
 
 issues:
   exclude-use-default: false
-  exclude:
-    # unparam
-    - 'result .* is always'
-    - 'always receives'
+  exclude-rules:
+    - linters: [golint]
+      text: 'should have comment .*or be unexported'
+    - linters: [stylecheck]
+      text: 'ST1000: at least one file in a package should have a package comment'
+    - linters: [errcheck]
+      path: log/
+      text: 'Error return value of `out.WriteString` is not checked'
+    - linters: [unparam]
+      text: 'result .* is always'
+    - linters: [unparam]
+      text: 'always receives'
 
 linters:
   disable-all: true

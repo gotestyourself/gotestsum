@@ -1,12 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"os"
 
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 	"gotest.tools/gotestsum/internal/junitxml"
+	"gotest.tools/gotestsum/log"
 	"gotest.tools/gotestsum/testjson"
 )
 
@@ -39,7 +40,7 @@ func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execu
 func (h *eventHandler) Close() error {
 	if h.jsonFile != nil {
 		if err := h.jsonFile.Close(); err != nil {
-			log.WithError(err).Error("failed to close JSON file")
+			log.Errorf("Failed to close JSON file: %v", err)
 		}
 	}
 	return nil
@@ -72,11 +73,11 @@ func writeJUnitFile(opts *options, execution *testjson.Execution) error {
 	}
 	junitFile, err := os.Create(opts.junitFile)
 	if err != nil {
-		return errors.Wrap(err, "failed to open JUnit file")
+		return fmt.Errorf("failed to open JUnit file: %v", err)
 	}
 	defer func() {
 		if err := junitFile.Close(); err != nil {
-			log.WithError(err).Error("failed to close JUnit file")
+			log.Errorf("Failed to close JUnit file: %v", err)
 		}
 	}()
 

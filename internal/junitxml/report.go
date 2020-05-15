@@ -11,8 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
+	"gotest.tools/gotestsum/log"
 	"gotest.tools/gotestsum/testjson"
 )
 
@@ -73,7 +72,10 @@ type FormatFunc func(string) string
 
 // Write creates an XML document and writes it to out.
 func Write(out io.Writer, exec *testjson.Execution, cfg Config) error {
-	return errors.Wrap(write(out, generate(exec, cfg)), "failed to write JUnit XML")
+	if err := write(out, generate(exec, cfg)); err != nil {
+		return fmt.Errorf("failed to write JUnit XML: %v", err)
+	}
+	return nil
 }
 
 func generate(exec *testjson.Execution, cfg Config) JUnitTestSuites {
@@ -129,11 +131,11 @@ func goVersion() string {
 	if version, ok := os.LookupEnv("GOVERSION"); ok {
 		return version
 	}
-	logrus.Debugf("exec: go version")
+	log.Debugf("exec: go version")
 	cmd := exec.Command("go", "version")
 	out, err := cmd.Output()
 	if err != nil {
-		logrus.WithError(err).Warn("failed to lookup go version for junit xml")
+		log.Warnf("Failed to lookup go version for junit xml: %v", err)
 		return "unknown"
 	}
 	return strings.TrimPrefix(strings.TrimSpace(string(out)), "go version ")

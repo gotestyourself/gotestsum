@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh/terminal"
 	"gotest.tools/gotestsum/internal/dotwriter"
+	"gotest.tools/gotestsum/log"
 )
 
 func dotsFormatV1(event TestEvent, exec *Execution) (string, error) {
@@ -70,7 +70,7 @@ func (l *dotLine) checkWidth(prefix, terminal int) {
 func newDotFormatter(out io.Writer) EventFormatter {
 	w, _, err := terminal.GetSize(int(os.Stdout.Fd()))
 	if err != nil || w == 0 {
-		logrus.Warnf("Failed to detect terminal width for dots format, error: %v", err)
+		log.Warnf("Failed to detect terminal width for dots format, error: %v", err)
 		return &formatAdapter{format: dotsFormatV1, out: out}
 	}
 	return &dotFormatter{
