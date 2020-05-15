@@ -16,6 +16,7 @@ func TestParseSkipStatement_Preset_testingShort(t *testing.T) {
 	t.Skip("too slow for testing.Short")
 }`
 	buf := new(bytes.Buffer)
-	format.Node(buf, token.NewFileSet(), stmt)
+	err = format.Node(buf, token.NewFileSet(), stmt)
+	assert.NilError(t, err)
 	assert.DeepEqual(t, buf.String(), expected)
 }

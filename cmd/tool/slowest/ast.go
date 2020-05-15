@@ -25,7 +25,7 @@ func writeTestSkip(tcs []testjson.TestCase, skipStmt ast.Stmt) error {
 	pkgNames, index := testNamesByPkgName(tcs)
 	pkgs, err := packages.Load(&cfg, pkgNames...)
 	if err != nil {
-		return fmt.Errorf("failed to load packages: %w", err)
+		return fmt.Errorf("failed to load packages: %v", err)
 	}
 
 	for _, pkg := range pkgs {
@@ -46,7 +46,7 @@ func writeTestSkip(tcs []testjson.TestCase, skipStmt ast.Stmt) error {
 				continue
 			}
 			if err := writeFile(path, file, fset); err != nil {
-				return fmt.Errorf("failed to write ast to file %v: %w", path, err)
+				return fmt.Errorf("failed to write ast to file %v: %v", path, err)
 			}
 		}
 	}
@@ -66,7 +66,11 @@ func writeFile(path string, file *ast.File, fset *token.FileSet) error {
 	if err != nil {
 		return err
 	}
-	defer fh.Close()
+	defer func() {
+		if err := fh.Close(); err != nil {
+			log.Errorf("Failed to close file %v: %v", path, err)
+		}
+	}()
 	return format.Node(fh, fset, file)
 }
 
@@ -133,7 +137,7 @@ func testNamesByPkgName(tcs []testjson.TestCase) ([]string, map[string]set) {
 }
 
 func isSubTest(name string) bool {
-	return strings.Index(name, "/") > -1
+	return strings.Contains(name, "/")
 }
 
 func errPkgLoad(pkg *packages.Package) error {

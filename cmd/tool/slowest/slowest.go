@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"math"
 	"os"
 	"sort"
 	"time"
@@ -93,23 +92,27 @@ func run(opts *options) error {
 	}
 	in, err := jsonfileReader(opts.jsonfile)
 	if err != nil {
-		return fmt.Errorf("failed to read jsonfile: %w", err)
+		return fmt.Errorf("failed to read jsonfile: %v", err)
 	}
-	defer in.Close()
+	defer func() {
+		if err := in.Close(); err != nil {
+			log.Errorf("Failed to close file %v: %v", opts.jsonfile, err)
+		}
+	}()
 
 	exec, err := testjson.ScanTestOutput(testjson.ScanConfig{
 		Stdout: in,
 		Stderr: bytes.NewReader(nil),
 	})
 	if err != nil {
-		return fmt.Errorf("failed to scan testjson: %w", err)
+		return fmt.Errorf("failed to scan testjson: %v", err)
 	}
 
 	tcs := slowTestCases(exec, opts.threshold)
 	if opts.skipStatement != "" {
 		skipStmt, err := parseSkipStatement(opts.skipStatement)
 		if err != nil {
-			return fmt.Errorf("failed to parse skip expr: %w", err)
+			return fmt.Errorf("failed to parse skip expr: %v", err)
 		}
 		return writeTestSkip(tcs, skipStmt)
 	}
@@ -154,11 +157,12 @@ func aggregateTestCases(cases []testjson.TestCase) []testjson.TestCase {
 		return cases
 	}
 	pkg := cases[0].Package
+	// nolint: prealloc // size is not predictable
 	m := make(map[string][]time.Duration)
 	for _, tc := range cases {
 		m[tc.Test] = append(m[tc.Test], tc.Elapsed)
 	}
-	var result []testjson.TestCase
+	result := make([]testjson.TestCase, 0, len(m))
 	for name, timing := range m {
 		result = append(result, testjson.TestCase{
 			Package: pkg,
@@ -179,7 +183,7 @@ func median(times []time.Duration) time.Duration {
 	sort.Slice(times, func(i, j int) bool {
 		return times[i] < times[j]
 	})
-	return times[int(math.Ceil(float64(len(times)/2)))]
+	return times[len(times)/2]
 }
 
 func jsonfileReader(v string) (io.ReadCloser, error) {
