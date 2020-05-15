@@ -64,6 +64,10 @@ Example - using a custom --skip-stmt:
 Note that this tool does not add imports, so using a custom statement may require
 you to add any necessary imports to the file.
 
+Go build flags, such as build tags, may be set using the GOFLAGS environment
+variable, following the same rules as the go toolchain. See
+https://golang.org/cmd/go/#hdr-Environment_variables.
+
 Flags:
 `, name, name)
 		flags.PrintDefaults()

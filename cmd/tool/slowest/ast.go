@@ -17,10 +17,10 @@ import (
 func writeTestSkip(tcs []testjson.TestCase, skipStmt ast.Stmt) error {
 	fset := token.NewFileSet()
 	cfg := packages.Config{
-		Mode:  modeAll(),
-		Tests: true,
-		Fset:  fset,
-		// FIXME: BuildFlags: strings.Split(os.Getenv("GOFLAGS"), " "),
+		Mode:       modeAll(),
+		Tests:      true,
+		Fset:       fset,
+		BuildFlags: buildFlags(),
 	}
 	pkgNames, index := testNamesByPkgName(tcs)
 	pkgs, err := packages.Load(&cfg, pkgNames...)
@@ -167,4 +167,12 @@ func modeAll() packages.LoadMode {
 	mode = mode | packages.NeedTypes | packages.NeedTypesSizes
 	mode = mode | packages.NeedSyntax | packages.NeedTypesInfo
 	return mode
+}
+
+func buildFlags() []string {
+	flags := os.Getenv("GOFLAGS")
+	if len(flags) == 0 {
+		return nil
+	}
+	return strings.Split(os.Getenv("GOFLAGS"), " ")
 }
