@@ -29,7 +29,7 @@ func main() {
 		// the same status code
 		os.Exit(ExitCodeWithDefault(err))
 	default:
-		log.Errorf(err.Error())
+		log.Error(err.Error())
 		os.Exit(3)
 	}
 }

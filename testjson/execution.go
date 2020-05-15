@@ -478,7 +478,7 @@ func isGoModuleOutput(scannerText string) bool {
 func parseEvent(raw []byte) (TestEvent, error) {
 	// TODO: this seems to be a bug in the `go test -json` output
 	if bytes.HasPrefix(raw, []byte("FAIL")) {
-		log.Warnf(string(raw))
+		log.Warnf("invalid TestEvent: %v", string(raw))
 		return TestEvent{}, errBadEvent
 	}
 
