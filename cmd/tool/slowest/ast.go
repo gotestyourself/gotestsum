@@ -32,7 +32,7 @@ func writeTestSkip(tcs []testjson.TestCase, skipStmt ast.Stmt) error {
 		if len(pkg.Errors) > 0 {
 			return errPkgLoad(pkg)
 		}
-		tcs, ok := index[pkg.PkgPath]
+		tcs, ok := index[normalizePkgName(pkg.PkgPath)]
 		if !ok {
 			log.Debugf("skipping %v, no slow tests", pkg.PkgPath)
 			continue
@@ -51,6 +51,14 @@ func writeTestSkip(tcs []testjson.TestCase, skipStmt ast.Stmt) error {
 		}
 	}
 	return errTestCasesNotFound(index)
+}
+
+// normalizePkgName removes the _test suffix from a package name. External test
+// packages (those named package_test) may contain tests, but the test2json output
+// always uses the non-external package name. The _test suffix must be removed
+// so that any slow tests in an external test package can be found.
+func normalizePkgName(name string) string {
+	return strings.TrimSuffix(name, "_test")
 }
 
 // TODO: sometimes this writes the new AST with strange indentation. It appears
