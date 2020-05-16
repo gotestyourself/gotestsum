@@ -20,24 +20,31 @@ go-mod-tidy() {
     git diff --stat --exit-code go.mod go.sum
 }
 
+help[shell]='Run a shell in a golang docker container.
+
+Env vars:
+
+GOLANG_VERSION - the docker image tag used to build the image.
+'
 shell() {
-    local tag; tag="$(_docker-build-dev)"
+    local image; image="$(_docker-build-dev)"
     docker run \
         --tty --interactive --rm \
         -v "$PWD:/work" \
         -v ~/.cache/go-build:/root/.cache/go-build \
         -v ~/go/pkg/mod:/go/pkg/mod \
         -w /work \
-        "$tag" bash
+        "$image" \
+        "${@-bash}"
 }
 
 _docker-build-dev() {
     set -e
-    local idfile=.plsdo/docker-build-dev-image-id
+    local idfile=".plsdo/docker-build-dev-image-id-${GOLANG_VERSION-default}"
     local dockerfile=Dockerfile
     local tag=gotest.tools/gotestsum/builder
     if [ -f "$idfile" ] && [ "$dockerfile" -ot "$idfile" ]; then
-        echo "$tag"
+        cat "$idfile"
         return 0
     fi
 
@@ -45,11 +52,11 @@ _docker-build-dev() {
     >&2 docker build \
         --iidfile "$idfile"  \
         --file "$dockerfile" \
-        --tag "$tag" \
         --build-arg "UID=$UID" \
+        --build-arg GOLANG_VERSION \
         --target "dev" \
         .plsdo
-    echo "$tag"
+    cat "$idfile"
 }
 
 _plsdo_run "$@"
