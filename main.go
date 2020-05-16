@@ -69,6 +69,9 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		noSummary:                    newNoSummaryValue(),
 		junitTestCaseClassnameFormat: &junitFieldFormatValue{},
 		junitTestSuiteNameFormat:     &junitFieldFormatValue{},
+		postRunHookCmd:               &commandValue{},
+		stdout:                       os.Stdout,
+		stderr:                       os.Stderr,
 	}
 	flags := pflag.NewFlagSet(name, pflag.ContinueOnError)
 	flags.SetInterspersed(false)
@@ -109,6 +112,8 @@ Formats:
 		"format the testsuite name field as: "+junitFieldFormatValues)
 	flags.Var(opts.junitTestCaseClassnameFormat, "junitfile-testcase-classname",
 		"format the testcase classname field as: "+junitFieldFormatValues)
+	flags.Var(opts.postRunHookCmd, "post-run-command",
+		"command to run after the tests have completed")
 	flags.BoolVar(&opts.version, "version", false, "show version and exit")
 	return flags, opts
 }
@@ -127,11 +132,16 @@ type options struct {
 	rawCommand                   bool
 	jsonFile                     string
 	junitFile                    string
+	postRunHookCmd               *commandValue
 	noColor                      bool
 	noSummary                    *noSummaryValue
 	junitTestSuiteNameFormat     *junitFieldFormatValue
 	junitTestCaseClassnameFormat *junitFieldFormatValue
 	version                      bool
+
+	// shims for testing
+	stdout io.Writer
+	stderr io.Writer
 }
 
 func setupLogging(opts *options) {
@@ -151,8 +161,7 @@ func run(opts *options) error {
 	}
 	defer goTestProc.cancel()
 
-	out := os.Stdout
-	handler, err := newEventHandler(opts, out, os.Stderr)
+	handler, err := newEventHandler(opts)
 	if err != nil {
 		return err
 	}
@@ -165,8 +174,11 @@ func run(opts *options) error {
 	if err != nil {
 		return err
 	}
-	testjson.PrintSummary(out, exec, opts.noSummary.value)
+	testjson.PrintSummary(opts.stdout, exec, opts.noSummary.value)
 	if err := writeJUnitFile(opts, exec); err != nil {
+		return err
+	}
+	if err := postRunHook(opts, exec); err != nil {
 		return err
 	}
 	return goTestProc.cmd.Wait()
