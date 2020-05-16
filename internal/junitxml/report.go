@@ -148,7 +148,7 @@ func packageTestCases(pkg *testjson.Package, formatClassname FormatFunc) []JUnit
 		jtc := newJUnitTestCase(testjson.TestCase{Test: "TestMain"}, formatClassname)
 		jtc.Failure = &JUnitFailure{
 			Message:  "Failed",
-			Contents: pkg.Output(""),
+			Contents: pkg.Output(0),
 		}
 		cases = append(cases, jtc)
 	}
