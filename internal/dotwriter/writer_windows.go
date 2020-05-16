@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	isatty "github.com/mattn/go-isatty"
+	"golang.org/x/sys/windows"
 )
 
 var kernel32 = syscall.NewLazyDLL("kernel32.dll")
@@ -54,7 +54,7 @@ type fdWriter interface {
 
 func (w *Writer) clearLines(count int) {
 	f, ok := w.out.(fdWriter)
-	if ok && !isatty.IsTerminal(f.Fd()) {
+	if ok && !isConsole(f.Fd()) {
 		ok = false
 	}
 	if !ok {
@@ -78,4 +78,10 @@ func (w *Writer) clearLines(count int) {
 		count = dword(csbi.size.x)
 		_, _, _ = procFillConsoleOutputCharacter.Call(fd, uintptr(' '), uintptr(count), *(*uintptr)(unsafe.Pointer(&cursor)), uintptr(unsafe.Pointer(&w)))
 	}
+}
+
+func isConsole(fd uintptr) bool {
+	var mode uint32
+	err := windows.GetConsoleMode(windows.Handle(fd), &mode)
+	return err == nil
 }
