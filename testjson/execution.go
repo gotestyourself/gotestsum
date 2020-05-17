@@ -364,7 +364,6 @@ func (e *Execution) addError(err string) {
 	if strings.HasPrefix(err, "# ") {
 		return
 	}
-	// TODO: may need locking, or use a channel
 	e.errors = append(e.errors, err)
 }
 
@@ -380,37 +379,51 @@ func (e *Execution) end() {
 	}
 }
 
-// NewExecution returns a new Execution and records the current time as the
+// newExecution returns a new Execution and records the current time as the
 // time the test execution started.
-func NewExecution() *Execution {
+func newExecution() *Execution {
 	return &Execution{
 		started:  clock.Now(),
 		packages: make(map[string]*Package),
 	}
 }
 
-// ScanConfig used by ScanTestOutput
+// ScanConfig used by ScanTestOutput.
 type ScanConfig struct {
-	Stdout  io.Reader
-	Stderr  io.Reader
+	// Stdout is a reader that yields the test2json output stream.
+	Stdout io.Reader
+	// Stderr is a reader that yields stderr from the 'go test' process. Often
+	// it contains build errors, or panics. Stderr may be nil.
+	Stderr io.Reader
+	// Handler is a set of callbacks for receiving TestEvents and stderr text.
 	Handler EventHandler
 }
 
 // EventHandler is called by ScanTestOutput for each event and write to stderr.
 type EventHandler interface {
+	// Event is called for every TestEvent, with the current value of Execution.
+	// It may return an error to stop scanning.
 	Event(event TestEvent, execution *Execution) error
+	// Err is called for every line from the Stderr reader and may return an
+	// error to stop scanning.
 	Err(text string) error
 }
 
-// ScanTestOutput reads lines from stdout and stderr, creates an Execution,
-// calls the Handler for each event, and returns the Execution.
+// ScanTestOutput reads lines from config.Stdout and config.Stderr, creates an
+// Execution, calls the Handler for each event, and returns the Execution.
 //
 // If config.Handler is nil, a default no-op handler will be used.
 func ScanTestOutput(config ScanConfig) (*Execution, error) {
 	if config.Handler == nil {
 		config.Handler = noopHandler{}
 	}
-	execution := NewExecution()
+	if config.Stderr == nil {
+		config.Stderr = new(bytes.Reader)
+	}
+	if config.Stdout == nil {
+		return nil, fmt.Errorf("stdout reader must be non-nil")
+	}
+	execution := newExecution()
 	var group errgroup.Group
 	group.Go(func() error {
 		return readStdout(config, execution)
@@ -449,13 +462,18 @@ func readStderr(config ScanConfig, execution *Execution) error {
 	scanner := bufio.NewScanner(config.Stderr)
 	for scanner.Scan() {
 		line := scanner.Text()
-		config.Handler.Err(line) // nolint: errcheck
+		if err := config.Handler.Err(line); err != nil {
+			return fmt.Errorf("failed to handle stderr: %v", err)
+		}
 		if isGoModuleOutput(line) {
 			continue
 		}
 		execution.addError(line)
 	}
-	return errors.Wrap(scanner.Err(), "failed to scan test stderr")
+	if err := scanner.Err(); err != nil {
+		return fmt.Errorf("failed to scan stderr: %v", err)
+	}
+	return nil
 }
 
 func isGoModuleOutput(scannerText string) bool {

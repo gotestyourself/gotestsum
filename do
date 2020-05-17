@@ -59,4 +59,12 @@ _docker-build-dev() {
     cat "$idfile"
 }
 
+help[godoc]="Run godoc locally to preview package documentation."
+godoc() {
+    local url; url="http://localhost:6060/pkg/$(go list)/"
+    command -v xdg-open && xdg-open "$url" &
+    command -v open && open "$url" &
+    command godoc -http=:6060
+}
+
 _plsdo_run "$@"

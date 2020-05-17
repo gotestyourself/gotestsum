@@ -19,8 +19,9 @@ type eventHandler struct {
 }
 
 func (h *eventHandler) Err(text string) error {
-	_, err := h.err.Write([]byte(text + "\n"))
-	return err
+	_, _ = h.err.Write([]byte(text + "\n"))
+	// always return nil, no need to stop scanning if the stderr write fails
+	return nil
 }
 
 func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execution) error {

@@ -1,7 +1,6 @@
 package slowest
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -104,10 +103,7 @@ func run(opts *options) error {
 		}
 	}()
 
-	exec, err := testjson.ScanTestOutput(testjson.ScanConfig{
-		Stdout: in,
-		Stderr: bytes.NewReader(nil),
-	})
+	exec, err := testjson.ScanTestOutput(testjson.ScanConfig{Stdout: in})
 	if err != nil {
 		return fmt.Errorf("failed to scan testjson: %v", err)
 	}
