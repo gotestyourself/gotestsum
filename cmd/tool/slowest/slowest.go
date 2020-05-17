@@ -35,23 +35,28 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
     %s [flags]
 
 Read a json file and print or update tests which are slower than threshold.
-The json file can be created with 'gotestsum --jsonfile' or 'go test -json'.
+The json file may be created with 'gotestsum --jsonfile' or 'go test -json'.
+If a TestCase appears more than once in the json file, it will only appear once
+in the output, and the median value of all the elapsed times will be used.
 
 By default this command will print the list of tests slower than threshold to stdout.
-If --skip-stmt is set, instead of printing the list of stdout, the AST for the
-Go source code in the working directory tree will be modified. The --skip-stmt
-will be added to Go test files as the first statement in all the test functions
-which are slower than threshold.
+The list will be sorted from slowest to fastest.
 
-The --skip-stmt flag may be set to the name of a predefine statement, or a
-source code which will be parsed as a go/ast.Stmt. Currently there is only one
-predefined statement: testing.Short:
+If --skip-stmt is set, instead of printing the list to stdout, the AST for the
+Go source code in the working directory tree will be modified. The value of
+--skip-stmt will be added to Go test files as the first statement in all the test
+functions which are slower than threshold.
+
+The --skip-stmt flag may be set to the name of a predefined statement, or to
+Go source code which will be parsed as a go/ast.Stmt. Currently there is only one
+predefined statement, --skip-stmt=testing.Short, which uses this Go statement:
 
     if testing.Short() {
         t.Skip("too slow for testing.Short")
     }
 
-Example - using a custom --skip-stmt:
+
+Alternatively, a custom --skip-stmt may be provided as a string:
 
     skip_stmt='
         if os.Getenv("TEST_FAST") {
@@ -61,7 +66,7 @@ Example - using a custom --skip-stmt:
     go test -json -short ./... | %s --skip-stmt "$skip_stmt"
 
 Note that this tool does not add imports, so using a custom statement may require
-you to add any necessary imports to the file.
+you to add imports to the file.
 
 Go build flags, such as build tags, may be set using the GOFLAGS environment
 variable, following the same rules as the go toolchain. See
@@ -71,10 +76,10 @@ Flags:
 `, name, name)
 		flags.PrintDefaults()
 	}
-	flags.StringVar(&opts.jsonfile, "jsonfile", "",
+	flags.StringVar(&opts.jsonfile, "jsonfile", os.Getenv("GOTESTSUM_JSONFILE"),
 		"path to test2json output, defaults to stdin")
 	flags.DurationVar(&opts.threshold, "threshold", 100*time.Millisecond,
-		"tests faster than this threshold will be omitted from the output")
+		"test cases with elapsed time greater than threshold are slow tests")
 	flags.StringVar(&opts.skipStatement, "skip-stmt", "",
 		"add this go statement to slow tests, instead of printing the list of slow tests")
 	flags.BoolVar(&opts.debug, "debug", false,
