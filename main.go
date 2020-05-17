@@ -93,7 +93,6 @@ Formats:
     standard-verbose        standard go test -v format
 `)
 	}
-	flags.BoolVar(&opts.debug, "debug", false, "enabled debug")
 	flags.StringVarP(&opts.format, "format", "f",
 		lookEnvWithDefault("GOTESTSUM_FORMAT", "short"),
 		"print format of test input")
@@ -102,18 +101,28 @@ Formats:
 	flags.StringVar(&opts.jsonFile, "jsonfile",
 		lookEnvWithDefault("GOTESTSUM_JSONFILE", ""),
 		"write all TestEvents to file")
-	flags.StringVar(&opts.junitFile, "junitfile",
-		lookEnvWithDefault("GOTESTSUM_JUNITFILE", ""),
-		"write a JUnit XML file")
 	flags.BoolVar(&opts.noColor, "no-color", color.NoColor, "disable color output")
 	flags.Var(opts.noSummary, "no-summary",
 		"do not print summary of: "+testjson.SummarizeAll.String())
+	flags.Var(opts.postRunHookCmd, "post-run-command",
+		"command to run after the tests have completed")
+
+	flags.StringVar(&opts.junitFile, "junitfile",
+		lookEnvWithDefault("GOTESTSUM_JUNITFILE", ""),
+		"write a JUnit XML file")
 	flags.Var(opts.junitTestSuiteNameFormat, "junitfile-testsuite-name",
 		"format the testsuite name field as: "+junitFieldFormatValues)
 	flags.Var(opts.junitTestCaseClassnameFormat, "junitfile-testcase-classname",
 		"format the testcase classname field as: "+junitFieldFormatValues)
-	flags.Var(opts.postRunHookCmd, "post-run-command",
-		"command to run after the tests have completed")
+
+	flags.IntVar(&opts.rerunFailsMaxAttempts, "rerun-fails-max-attempts", 0,
+		"rerun failed tests until each one passes once, or attempts exceeds max")
+	flags.IntVar(&opts.rerunFailsMaxInitialFailures, "rerun-fails-max-failures", 10,
+		"do not rerun any tests if the initial run has more than this number of failures")
+	flags.Var((*stringSlice)(&opts.packages), "packages",
+		"space separated list of package to test")
+
+	flags.BoolVar(&opts.debug, "debug", false, "enabled debug logging")
 	flags.BoolVar(&opts.version, "version", false, "show version and exit")
 	return flags, opts
 }
@@ -137,11 +146,23 @@ type options struct {
 	noSummary                    *noSummaryValue
 	junitTestSuiteNameFormat     *junitFieldFormatValue
 	junitTestCaseClassnameFormat *junitFieldFormatValue
+	rerunFailsMaxAttempts        int
+	rerunFailsMaxInitialFailures int
+	packages                     []string
 	version                      bool
 
 	// shims for testing
 	stdout io.Writer
 	stderr io.Writer
+}
+
+func (o options) Validate() error {
+	if o.rerunFailsMaxAttempts > 0 && len(o.args) > 0 && !o.rawCommand && len(o.packages) == 0 {
+		return fmt.Errorf(
+			"when go test args are used with --rerun-fails-max-attempts " +
+				"the list of packages to test must be specified by the --packages flag")
+	}
+	return nil
 }
 
 func setupLogging(opts *options) {
@@ -152,28 +173,38 @@ func setupLogging(opts *options) {
 }
 
 func run(opts *options) error {
-	ctx := context.Background()
-	goTestProc, err := startGoTest(ctx, goTestCmdArgs(opts))
-	if err != nil {
-		return errors.Wrapf(err, "failed to run %s %s",
-			goTestProc.cmd.Path,
-			strings.Join(goTestProc.cmd.Args, " "))
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	if err := opts.Validate(); err != nil {
+		return err
 	}
-	defer goTestProc.cancel()
+
+	goTestProc, err := startGoTest(ctx, goTestCmdArgs(opts, rerunOpts{}))
+	if err != nil {
+		return errors.Wrapf(err, "failed to run %s", strings.Join(goTestProc.cmd.Args, " "))
+	}
 
 	handler, err := newEventHandler(opts)
 	if err != nil {
 		return err
 	}
 	defer handler.Close() // nolint: errcheck
-	exec, err := testjson.ScanTestOutput(testjson.ScanConfig{
+	cfg := testjson.ScanConfig{
 		Stdout:  goTestProc.stdout,
 		Stderr:  goTestProc.stderr,
 		Handler: handler,
-	})
+	}
+	exec, err := testjson.ScanTestOutput(cfg)
 	if err != nil {
 		return err
 	}
+	goTestExitErr := goTestProc.cmd.Wait()
+	if opts.rerunFailsMaxAttempts > 0 {
+		cfg := testjson.ScanConfig{Execution: exec, Handler: handler}
+		goTestExitErr = rerunFailed(ctx, opts, cfg)
+	}
+
 	testjson.PrintSummary(opts.stdout, exec, opts.noSummary.value)
 	if err := writeJUnitFile(opts, exec); err != nil {
 		return err
@@ -181,44 +212,100 @@ func run(opts *options) error {
 	if err := postRunHook(opts, exec); err != nil {
 		return err
 	}
-	return goTestProc.cmd.Wait()
+	return goTestExitErr
 }
 
-func goTestCmdArgs(opts *options) []string {
+func goTestCmdArgs(opts *options, rerunOpts rerunOpts) []string {
+	if opts.rawCommand {
+		var result []string
+		result = append(result, opts.args...)
+		result = append(result, rerunOpts.Args()...)
+		return result
+	}
+
 	args := opts.args
-	defaultArgs := []string{"go", "test"}
+	result := []string{"go", "test"}
+
+	if len(args) == 0 {
+		result = append(result, "-json")
+		if rerunOpts.runFlag != "" {
+			result = append(result, rerunOpts.runFlag)
+		}
+		return append(result, cmdArgPackageList(opts, rerunOpts, "./...")...)
+	}
+
+	if boolArgIndex("json", args) < 0 {
+		result = append(result, "-json")
+	}
+
+	if rerunOpts.runFlag != "" {
+		// Remove any existing run arg, it needs to be replaced with our new one
+		// and duplicate args are not allowed by 'go test'.
+		runIndex, runIndexEnd := argIndex("run", args)
+		if runIndex >= 0 && runIndexEnd < len(args) {
+			args = append(args[:runIndex], args[runIndexEnd+1:]...)
+		}
+		result = append(result, rerunOpts.runFlag)
+	}
+
+	pkgArgIndex := findPkgArgPosition(args)
+	result = append(result, args[:pkgArgIndex]...)
+	result = append(result, cmdArgPackageList(opts, rerunOpts)...)
+	result = append(result, args[pkgArgIndex:]...)
+	return result
+}
+
+func cmdArgPackageList(opts *options, rerunOpts rerunOpts, defPkgList ...string) []string {
 	switch {
-	case opts.rawCommand:
-		return args
-	case len(args) == 0:
-		return append(defaultArgs, "-json", pathFromEnv("./..."))
-	case !hasJSONArg(args):
-		defaultArgs = append(defaultArgs, "-json")
+	case rerunOpts.pkg != "":
+		return []string{rerunOpts.pkg}
+	case len(opts.packages) > 0:
+		return opts.packages
+	case os.Getenv("TEST_DIRECTORY") != "":
+		return []string{os.Getenv("TEST_DIRECTORY")}
+	default:
+		return defPkgList
 	}
-	if testPath := pathFromEnv(""); testPath != "" {
-		args = append(args, testPath)
-	}
-	return append(defaultArgs, args...)
 }
 
-func pathFromEnv(defaultPath string) string {
-	return lookEnvWithDefault("TEST_DIRECTORY", defaultPath)
-}
-
-func hasJSONArg(args []string) bool {
-	for _, arg := range args {
-		if arg == "-json" || arg == "--json" {
-			return true
+func boolArgIndex(flag string, args []string) int {
+	for i, arg := range args {
+		if arg == "-"+flag || arg == "--"+flag {
+			return i
 		}
 	}
-	return false
+	return -1
+}
+
+func argIndex(flag string, args []string) (start, end int) {
+	for i, arg := range args {
+		if arg == "-"+flag || arg == "--"+flag {
+			return i, i + 1
+		}
+		if strings.HasPrefix(arg, "-"+flag+"=") || strings.HasPrefix(arg, "--"+flag+"=") {
+			return i, i
+		}
+	}
+	return -1, -1
+}
+
+// The package list is before the -args flag, or at the end of the args list
+// if the -args flag is not in args.
+// The -args flag is a 'go test' flag that indicates that all subsequent
+// args should be passed to the test binary. It requires that the list of
+// packages comes before -args, so we re-use it as a placeholder in the case
+// where some args must be passed to the test binary.
+func findPkgArgPosition(args []string) int {
+	if i := boolArgIndex("args", args); i >= 0 {
+		return i
+	}
+	return len(args)
 }
 
 type proc struct {
 	cmd    *exec.Cmd
 	stdout io.Reader
 	stderr io.Reader
-	cancel func()
 }
 
 func startGoTest(ctx context.Context, args []string) (proc, error) {
@@ -226,10 +313,8 @@ func startGoTest(ctx context.Context, args []string) (proc, error) {
 		return proc{}, errors.New("missing command to run")
 	}
 
-	ctx, cancel := context.WithCancel(ctx)
 	p := proc{
-		cmd:    exec.CommandContext(ctx, args[0], args[1:]...),
-		cancel: cancel,
+		cmd: exec.CommandContext(ctx, args[0], args[1:]...),
 	}
 	log.Debugf("exec: %s", p.cmd.Args)
 	var err error

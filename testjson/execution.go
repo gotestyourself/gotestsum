@@ -371,6 +371,9 @@ func (e *Execution) Elapsed() time.Duration {
 
 // Failed returns a list of all the failed test cases.
 func (e *Execution) Failed() []TestCase {
+	if e == nil {
+		return nil
+	}
 	var failed []TestCase //nolint:prealloc
 	for _, name := range sortedKeys(e.packages) {
 		pkg := e.packages[name]
@@ -449,6 +452,9 @@ type ScanConfig struct {
 	Stderr io.Reader
 	// Handler is a set of callbacks for receiving TestEvents and stderr text.
 	Handler EventHandler
+	// Execution to populate while scanning. If nil a new one will be created
+	// and returned from ScanTestOutput.
+	Execution *Execution
 }
 
 // EventHandler is called by ScanTestOutput for each event and write to stderr.
@@ -461,21 +467,26 @@ type EventHandler interface {
 	Err(text string) error
 }
 
-// ScanTestOutput reads lines from config.Stdout and config.Stderr, creates an
+// ScanTestOutput reads lines from config.Stdout and config.Stderr, populates an
 // Execution, calls the Handler for each event, and returns the Execution.
 //
 // If config.Handler is nil, a default no-op handler will be used.
+//
+// TODO: should the Execution return value be removed
 func ScanTestOutput(config ScanConfig) (*Execution, error) {
+	if config.Stdout == nil {
+		return nil, fmt.Errorf("stdout reader must be non-nil")
+	}
 	if config.Handler == nil {
 		config.Handler = noopHandler{}
 	}
 	if config.Stderr == nil {
 		config.Stderr = new(bytes.Reader)
 	}
-	if config.Stdout == nil {
-		return nil, fmt.Errorf("stdout reader must be non-nil")
+	execution := config.Execution
+	if execution == nil {
+		execution = newExecution()
 	}
-	execution := newExecution()
 	var group errgroup.Group
 	group.Go(func() error {
 		return readStdout(config, execution)
