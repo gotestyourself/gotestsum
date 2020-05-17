@@ -1,11 +1,13 @@
 package testjson
 
 import (
+	"bytes"
 	"testing"
 	"time"
 
 	"github.com/google/go-cmp/cmp"
 	"gotest.tools/v3/assert"
+	"gotest.tools/v3/golden"
 )
 
 func TestPackage_Elapsed(t *testing.T) {
@@ -25,7 +27,7 @@ func TestPackage_Elapsed(t *testing.T) {
 }
 
 func TestExecution_Add_PackageCoverage(t *testing.T) {
-	exec := NewExecution()
+	exec := newExecution()
 	exec.add(TestEvent{
 		Package: "mytestpkg",
 		Action:  ActionOutput,
@@ -46,3 +48,11 @@ func TestExecution_Add_PackageCoverage(t *testing.T) {
 }
 
 var cmpPackage = cmp.AllowUnexported(Package{})
+
+func TestScanTestOutput_MinimalConfig(t *testing.T) {
+	in := bytes.NewReader(golden.Get(t, "go-test-json.out"))
+	exec, err := ScanTestOutput(ScanConfig{Stdout: in})
+	assert.NilError(t, err)
+	// a weak check to show that all the stdout was scanned
+	assert.Equal(t, exec.Total(), 46)
+}
