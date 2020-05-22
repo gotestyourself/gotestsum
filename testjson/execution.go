@@ -130,7 +130,7 @@ func (p Package) OutputLines(tc TestCase) []string {
 	// If this is a subtest, or a root test case with subtest failures the
 	// subtest failure output should contain the relevant lines, so we don't need
 	// extra lines.
-	if sub != "" || tc.subTestFailed {
+	if sub != "" || tc.hasSubTestFailed {
 		return lines
 	}
 	//
@@ -189,9 +189,12 @@ type TestCase struct {
 	Package string
 	Test    string
 	Elapsed time.Duration
-	// subTestFailed is true when a subtest of this TestCase has failed. It is
+	// hasSubTestFailed is true when a subtest of this TestCase has failed. It is
 	// used to find root TestCases which have no failing subtests.
-	subTestFailed bool
+	hasSubTestFailed bool
+	// hasSubTestFailed is true when a subtest of this TestCase was skipped. It is
+	// used to find root TestCases which have skipped tests.
+	hasSubTestSkipped bool
 }
 
 func newPackage() *Package {
@@ -257,23 +260,35 @@ func (e *Execution) addTestEvent(pkg *Package, event TestEvent) {
 	delete(pkg.running, event.Test)
 	tc.Elapsed = elapsedDuration(event.Elapsed)
 
+	root, subTest := splitTestName(event.Test)
+
 	switch event.Action {
 	case ActionFail:
 		pkg.Failed = append(pkg.Failed, tc)
 
-		// If this is a subtest, mark the root test as having subtests.
-		root, subTest := splitTestName(event.Test)
+		// If this is a subtest, mark the root test as having a failed subtest
 		if subTest != "" {
 			rootTestCase := pkg.running[root]
-			rootTestCase.subTestFailed = true
+			rootTestCase.hasSubTestFailed = true
 			pkg.running[root] = rootTestCase
 		}
 	case ActionSkip:
 		pkg.Skipped = append(pkg.Skipped, tc)
+
+		// If this is a subtest, mark the root test as having a skipped subtest
+		if subTest != "" {
+			rootTestCase := pkg.running[root]
+			rootTestCase.hasSubTestSkipped = true
+			pkg.running[root] = rootTestCase
+		}
 	case ActionPass:
 		pkg.Passed = append(pkg.Passed, tc)
-		// Remove test output once a test passes, it wont be used
-		delete(pkg.output, event.Test)
+
+		// Remove test output once a test passes, it wont be used. But do not
+		// remove output if there is a skipped subtest. That output will be used.
+		if !tc.hasSubTestSkipped {
+			delete(pkg.output, event.Test)
+		}
 	}
 }
 

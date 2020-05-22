@@ -232,7 +232,6 @@ func TestPrintSummary_MissingTestFailEvent(t *testing.T) {
 
 	exec, err := ScanTestOutput(ScanConfig{
 		Stdout: bytes.NewReader(golden.Get(t, "go-test-json-missing-test-fail.out")),
-		Stderr: bytes.NewReader(nil),
 	})
 	assert.NilError(t, err)
 
@@ -247,7 +246,6 @@ func TestPrintSummary_WithMisattributedOutput(t *testing.T) {
 
 	exec, err := ScanTestOutput(ScanConfig{
 		Stdout: bytes.NewReader(golden.Get(t, "go-test-json-misattributed.out")),
-		Stderr: bytes.NewBuffer(nil),
 	})
 	assert.NilError(t, err)
 
@@ -262,11 +260,25 @@ func TestPrintSummary_WithSubtestFailures(t *testing.T) {
 
 	exec, err := ScanTestOutput(ScanConfig{
 		Stdout: bytes.NewReader(golden.Get(t, "go-test-json.out")),
-		Stderr: bytes.NewBuffer(nil),
 	})
 	assert.NilError(t, err)
 
 	buf := new(bytes.Buffer)
 	PrintSummary(buf, exec, SummarizeAll)
 	golden.Assert(t, buf.String(), "summary-root-test-has-subtest-failures")
+}
+
+func TestPrintSummary_WithMissingSkipMessage(t *testing.T) {
+	_, reset := patchClock()
+	defer reset()
+
+	exec, err := ScanTestOutput(ScanConfig{
+		Stdout: bytes.NewReader(golden.Get(t, "go-test-json-missing-skip-msg.out")),
+	})
+	assert.NilError(t, err)
+
+	buf := new(bytes.Buffer)
+	PrintSummary(buf, exec, SummarizeAll)
+	//q.Q(exec)
+	golden.Assert(t, buf.String(), "bug-missing-skip-message-summary.out")
 }
