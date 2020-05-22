@@ -1,5 +1,7 @@
 module gotest.tools/gotestsum
 
+replace github.com/spf13/pflag => github.com/dnephin/pflag v0.0.0-20200521001137-0f09ccd3add8
+
 require (
 	github.com/fatih/color v1.9.0
 	github.com/google/go-cmp v0.3.0
