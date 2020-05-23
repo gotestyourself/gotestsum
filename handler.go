@@ -25,7 +25,8 @@ func (h *eventHandler) Err(text string) error {
 }
 
 func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execution) error {
-	if h.jsonFile != nil {
+	// ignore artificial events with no raw Bytes()
+	if h.jsonFile != nil && len(event.Bytes()) > 0 {
 		_, err := h.jsonFile.Write(append(event.Bytes(), '\n'))
 		if err != nil {
 			return errors.Wrap(err, "failed to write JSON file")

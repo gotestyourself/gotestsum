@@ -200,12 +200,25 @@ func (p *Package) TestMainFailed() bool {
 
 const neverFinished time.Duration = -1
 
-func (p *Package) end() {
-	// Add tests that were missing an ActionFail event to Failed
+// end adds any tests that were missing an ActionFail TestEvent to the list of
+// Failed, and returns a slice of artificial TestEvent for the missing ones.
+//
+// This is done to work around 'go test' not sending the ActionFail TestEvents
+// in some cases, when a test panics.
+func (p *Package) end() []TestEvent {
+	result := make([]TestEvent, 0, len(p.running))
 	for _, tc := range p.running {
 		tc.Elapsed = neverFinished
 		p.Failed = append(p.Failed, tc)
+
+		result = append(result, TestEvent{
+			Action:  ActionFail,
+			Package: tc.Package,
+			Test:    tc.Test,
+			Elapsed: float64(neverFinished),
+		})
 	}
+	return result
 }
 
 // TestCase stores the name and elapsed time for a test case.
@@ -427,11 +440,13 @@ func (e *Execution) Errors() []string {
 	return e.errors
 }
 
-func (e *Execution) end() {
+func (e *Execution) end() []TestEvent {
 	e.done = true
+	var result []TestEvent // nolint: prealloc
 	for _, pkg := range e.packages {
-		pkg.end()
+		result = append(result, pkg.end()...)
 	}
+	return result
 }
 
 // newExecution returns a new Execution and records the current time as the
@@ -471,8 +486,6 @@ type EventHandler interface {
 // Execution, calls the Handler for each event, and returns the Execution.
 //
 // If config.Handler is nil, a default no-op handler will be used.
-//
-// TODO: should the Execution return value be removed
 func ScanTestOutput(config ScanConfig) (*Execution, error) {
 	if config.Stdout == nil {
 		return nil, fmt.Errorf("stdout reader must be non-nil")
@@ -494,9 +507,16 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 	group.Go(func() error {
 		return readStderr(config, execution)
 	})
-	err := group.Wait()
-	execution.end()
-	return execution, err
+	if err := group.Wait(); err != nil {
+		return execution, err
+	}
+	for _, event := range execution.end() {
+		if err := config.Handler.Event(event, execution); err != nil {
+			return execution, err
+		}
+	}
+
+	return execution, nil
 }
 
 func readStdout(config ScanConfig, execution *Execution) error {
