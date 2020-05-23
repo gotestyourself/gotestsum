@@ -1,0 +1,12 @@
+
+=== Skipped
+=== SKIP: testjson TestNewDotFormatter (0.00s)
+WARN Failed to detect terminal width for dots format, error: inappropriate ioctl for device
+    TestNewDotFormatter: dotformat_test.go:161: !ok: no terminal width
+
+=== SKIP: testjson TestGetPkgPathPrefix/with_go_path (0.00s)
+    TestGetPkgPathPrefix/with_go_path: pkgpathprefix_test.go:22: isGoModuleEnabled()
+    --- SKIP: TestGetPkgPathPrefix/with_go_path (0.00s)
+
+
+DONE 42 tests, 2 skipped in 0.000s

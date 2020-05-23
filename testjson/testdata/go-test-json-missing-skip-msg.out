@@ -1,0 +1,175 @@
+{"Time":"2020-05-17T21:06:45.371590661-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutput_WithDotsFormatter"}
+{"Time":"2020-05-17T21:06:45.371755428-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutput_WithDotsFormatter","Output":"=== RUN   TestScanTestOutput_WithDotsFormatter\n"}
+{"Time":"2020-05-17T21:06:45.426093306-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutput_WithDotsFormatter","Output":"--- PASS: TestScanTestOutput_WithDotsFormatter (0.05s)\n"}
+{"Time":"2020-05-17T21:06:45.426124191-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutput_WithDotsFormatter","Elapsed":0.05}
+{"Time":"2020-05-17T21:06:45.426131287-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed"}
+{"Time":"2020-05-17T21:06:45.426134719-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed","Output":"=== RUN   TestFmtDotElapsed\n"}
+{"Time":"2020-05-17T21:06:45.42613898-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_999µs_"}
+{"Time":"2020-05-17T21:06:45.426144034-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_999µs_","Output":"=== RUN   TestFmtDotElapsed/_999µs_\n"}
+{"Time":"2020-05-17T21:06:45.426155975-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/___7ms_"}
+{"Time":"2020-05-17T21:06:45.426160373-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/___7ms_","Output":"=== RUN   TestFmtDotElapsed/___7ms_\n"}
+{"Time":"2020-05-17T21:06:45.426166742-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/____🖴__"}
+{"Time":"2020-05-17T21:06:45.426170156-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/____🖴__","Output":"=== RUN   TestFmtDotElapsed/____🖴__\n"}
+{"Time":"2020-05-17T21:06:45.426189174-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/____⏳__"}
+{"Time":"2020-05-17T21:06:45.426212792-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/____⏳__","Output":"=== RUN   TestFmtDotElapsed/____⏳__\n"}
+{"Time":"2020-05-17T21:06:45.426227048-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/__14ms_"}
+{"Time":"2020-05-17T21:06:45.426234018-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/__14ms_","Output":"=== RUN   TestFmtDotElapsed/__14ms_\n"}
+{"Time":"2020-05-17T21:06:45.426243766-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_333ms_"}
+{"Time":"2020-05-17T21:06:45.42624722-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_333ms_","Output":"=== RUN   TestFmtDotElapsed/_333ms_\n"}
+{"Time":"2020-05-17T21:06:45.426260359-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_1.33s_"}
+{"Time":"2020-05-17T21:06:45.426267551-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_1.33s_","Output":"=== RUN   TestFmtDotElapsed/_1.33s_\n"}
+{"Time":"2020-05-17T21:06:45.426298022-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_14.8s_"}
+{"Time":"2020-05-17T21:06:45.426312244-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_14.8s_","Output":"=== RUN   TestFmtDotElapsed/_14.8s_\n"}
+{"Time":"2020-05-17T21:06:45.426321045-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_1m59s_"}
+{"Time":"2020-05-17T21:06:45.426326396-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_1m59s_","Output":"=== RUN   TestFmtDotElapsed/_1m59s_\n"}
+{"Time":"2020-05-17T21:06:45.426350409-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_59m0s_"}
+{"Time":"2020-05-17T21:06:45.426362648-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_59m0s_","Output":"=== RUN   TestFmtDotElapsed/_59m0s_\n"}
+{"Time":"2020-05-17T21:06:45.426377077-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_2m28s_"}
+{"Time":"2020-05-17T21:06:45.42638404-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_2m28s_","Output":"=== RUN   TestFmtDotElapsed/_2m28s_\n"}
+{"Time":"2020-05-17T21:06:45.426411764-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_24m0s_"}
+{"Time":"2020-05-17T21:06:45.426420961-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_24m0s_","Output":"=== RUN   TestFmtDotElapsed/_24m0s_\n"}
+{"Time":"2020-05-17T21:06:45.426438769-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed","Output":"--- PASS: TestFmtDotElapsed (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.426449379-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_999µs_","Output":"    --- PASS: TestFmtDotElapsed/_999µs_ (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.426454125-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_999µs_","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.426458284-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/___7ms_","Output":"    --- PASS: TestFmtDotElapsed/___7ms_ (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.426461846-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/___7ms_","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.426464826-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/____🖴__","Output":"    --- PASS: TestFmtDotElapsed/____🖴__ (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.42647425-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/____🖴__","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.426480557-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/____⏳__","Output":"    --- PASS: TestFmtDotElapsed/____⏳__ (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.426488798-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/____⏳__","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.426495202-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/__14ms_","Output":"    --- PASS: TestFmtDotElapsed/__14ms_ (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.426500985-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/__14ms_","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.426506198-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_333ms_","Output":"    --- PASS: TestFmtDotElapsed/_333ms_ (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.42651225-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_333ms_","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.426518337-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_1.33s_","Output":"    --- PASS: TestFmtDotElapsed/_1.33s_ (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.426525447-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_1.33s_","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.426529931-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_14.8s_","Output":"    --- PASS: TestFmtDotElapsed/_14.8s_ (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.426535502-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_14.8s_","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.426538826-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_1m59s_","Output":"    --- PASS: TestFmtDotElapsed/_1m59s_ (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.426548603-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_1m59s_","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.426552043-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_59m0s_","Output":"    --- PASS: TestFmtDotElapsed/_59m0s_ (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.426555165-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_59m0s_","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.426558054-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_2m28s_","Output":"    --- PASS: TestFmtDotElapsed/_2m28s_ (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.426562065-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_2m28s_","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.426565127-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_24m0s_","Output":"    --- PASS: TestFmtDotElapsed/_24m0s_ (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.426571505-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed/_24m0s_","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.426574497-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.426577198-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed_RuneCountProperty"}
+{"Time":"2020-05-17T21:06:45.426579938-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed_RuneCountProperty","Output":"=== RUN   TestFmtDotElapsed_RuneCountProperty\n"}
+{"Time":"2020-05-17T21:06:45.42658341-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed_RuneCountProperty","Output":"    TestFmtDotElapsed_RuneCountProperty: dotformat_test.go:149: seed 1589764005\n"}
+{"Time":"2020-05-17T21:06:45.561329225-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed_RuneCountProperty","Output":"--- PASS: TestFmtDotElapsed_RuneCountProperty (0.13s)\n"}
+{"Time":"2020-05-17T21:06:45.561369929-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestFmtDotElapsed_RuneCountProperty","Elapsed":0.13}
+{"Time":"2020-05-17T21:06:45.561379872-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestNewDotFormatter"}
+{"Time":"2020-05-17T21:06:45.561384356-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestNewDotFormatter","Output":"=== RUN   TestNewDotFormatter\n"}
+{"Time":"2020-05-17T21:06:45.561388744-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestNewDotFormatter","Output":"WARN Failed to detect terminal width for dots format, error: inappropriate ioctl for device\n"}
+{"Time":"2020-05-17T21:06:45.561702233-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestNewDotFormatter","Output":"    TestNewDotFormatter: dotformat_test.go:161: !ok: no terminal width\n"}
+{"Time":"2020-05-17T21:06:45.561719682-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestNewDotFormatter","Output":"--- SKIP: TestNewDotFormatter (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.561724743-04:00","Action":"skip","Package":"gotest.tools/gotestsum/testjson","Test":"TestNewDotFormatter","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.561728367-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestPackage_Elapsed"}
+{"Time":"2020-05-17T21:06:45.56173296-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPackage_Elapsed","Output":"=== RUN   TestPackage_Elapsed\n"}
+{"Time":"2020-05-17T21:06:45.561737792-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPackage_Elapsed","Output":"--- PASS: TestPackage_Elapsed (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.56175039-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestPackage_Elapsed","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.561754009-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestExecution_Add_PackageCoverage"}
+{"Time":"2020-05-17T21:06:45.561757327-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestExecution_Add_PackageCoverage","Output":"=== RUN   TestExecution_Add_PackageCoverage\n"}
+{"Time":"2020-05-17T21:06:45.561813733-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestExecution_Add_PackageCoverage","Output":"--- PASS: TestExecution_Add_PackageCoverage (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.561823792-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestExecution_Add_PackageCoverage","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.561827819-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithShortVerboseFormat"}
+{"Time":"2020-05-17T21:06:45.561830844-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithShortVerboseFormat","Output":"=== RUN   TestScanTestOutputWithShortVerboseFormat\n"}
+{"Time":"2020-05-17T21:06:45.601170618-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithShortVerboseFormat","Output":"--- PASS: TestScanTestOutputWithShortVerboseFormat (0.04s)\n"}
+{"Time":"2020-05-17T21:06:45.601216224-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithShortVerboseFormat","Elapsed":0.04}
+{"Time":"2020-05-17T21:06:45.601229736-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithDotsFormatV1"}
+{"Time":"2020-05-17T21:06:45.601237404-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithDotsFormatV1","Output":"=== RUN   TestScanTestOutputWithDotsFormatV1\n"}
+{"Time":"2020-05-17T21:06:45.603375104-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithDotsFormatV1","Output":"--- PASS: TestScanTestOutputWithDotsFormatV1 (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.603410002-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithDotsFormatV1","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.603419866-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithShortFormat"}
+{"Time":"2020-05-17T21:06:45.60342642-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithShortFormat","Output":"=== RUN   TestScanTestOutputWithShortFormat\n"}
+{"Time":"2020-05-17T21:06:45.604830164-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithShortFormat","Output":"--- PASS: TestScanTestOutputWithShortFormat (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.604846658-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithShortFormat","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.604855068-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithShortFormat_WithCoverage"}
+{"Time":"2020-05-17T21:06:45.60486112-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithShortFormat_WithCoverage","Output":"=== RUN   TestScanTestOutputWithShortFormat_WithCoverage\n"}
+{"Time":"2020-05-17T21:06:45.607016671-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithShortFormat_WithCoverage","Output":"--- PASS: TestScanTestOutputWithShortFormat_WithCoverage (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.607042817-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithShortFormat_WithCoverage","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.607054403-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithStandardVerboseFormat"}
+{"Time":"2020-05-17T21:06:45.607069956-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithStandardVerboseFormat","Output":"=== RUN   TestScanTestOutputWithStandardVerboseFormat\n"}
+{"Time":"2020-05-17T21:06:45.608906022-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithStandardVerboseFormat","Output":"--- PASS: TestScanTestOutputWithStandardVerboseFormat (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.608930307-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithStandardVerboseFormat","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.608941847-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithStandardQuietFormat"}
+{"Time":"2020-05-17T21:06:45.608948827-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithStandardQuietFormat","Output":"=== RUN   TestScanTestOutputWithStandardQuietFormat\n"}
+{"Time":"2020-05-17T21:06:45.610294664-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithStandardQuietFormat","Output":"--- PASS: TestScanTestOutputWithStandardQuietFormat (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.610311949-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithStandardQuietFormat","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.610317541-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithStandardQuietFormat_WithCoverage"}
+{"Time":"2020-05-17T21:06:45.610320721-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithStandardQuietFormat_WithCoverage","Output":"=== RUN   TestScanTestOutputWithStandardQuietFormat_WithCoverage\n"}
+{"Time":"2020-05-17T21:06:45.693697524-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithStandardQuietFormat_WithCoverage","Output":"--- PASS: TestScanTestOutputWithStandardQuietFormat_WithCoverage (0.08s)\n"}
+{"Time":"2020-05-17T21:06:45.693787837-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestScanTestOutputWithStandardQuietFormat_WithCoverage","Elapsed":0.08}
+{"Time":"2020-05-17T21:06:45.693824555-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestRelativePackagePath"}
+{"Time":"2020-05-17T21:06:45.693841809-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestRelativePackagePath","Output":"=== RUN   TestRelativePackagePath\n"}
+{"Time":"2020-05-17T21:06:45.693859328-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestRelativePackagePath","Output":"--- PASS: TestRelativePackagePath (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.693872368-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestRelativePackagePath","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.693888465-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestGetPkgPathPrefix"}
+{"Time":"2020-05-17T21:06:45.693907566-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestGetPkgPathPrefix","Output":"=== RUN   TestGetPkgPathPrefix\n"}
+{"Time":"2020-05-17T21:06:45.693929153-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestGetPkgPathPrefix/with_go_path"}
+{"Time":"2020-05-17T21:06:45.693940574-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestGetPkgPathPrefix/with_go_path","Output":"=== RUN   TestGetPkgPathPrefix/with_go_path\n"}
+{"Time":"2020-05-17T21:06:45.694298339-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestGetPkgPathPrefix/with_go_path","Output":"    TestGetPkgPathPrefix/with_go_path: pkgpathprefix_test.go:22: isGoModuleEnabled()\n"}
+{"Time":"2020-05-17T21:06:45.6943652-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestGetPkgPathPrefix/with_go_modules"}
+{"Time":"2020-05-17T21:06:45.694413291-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestGetPkgPathPrefix/with_go_modules","Output":"=== RUN   TestGetPkgPathPrefix/with_go_modules\n"}
+{"Time":"2020-05-17T21:06:45.694569635-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestGetPkgPathPrefix","Output":"--- PASS: TestGetPkgPathPrefix (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.694612647-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestGetPkgPathPrefix/with_go_path","Output":"    --- SKIP: TestGetPkgPathPrefix/with_go_path (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.694639191-04:00","Action":"skip","Package":"gotest.tools/gotestsum/testjson","Test":"TestGetPkgPathPrefix/with_go_path","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.694664109-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestGetPkgPathPrefix/with_go_modules","Output":"    --- PASS: TestGetPkgPathPrefix/with_go_modules (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.694689546-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestGetPkgPathPrefix/with_go_modules","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.69470311-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestGetPkgPathPrefix","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.694715971-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String"}
+{"Time":"2020-05-17T21:06:45.694730714-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String","Output":"=== RUN   TestSummary_String\n"}
+{"Time":"2020-05-17T21:06:45.694752392-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String/none"}
+{"Time":"2020-05-17T21:06:45.694769485-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String/none","Output":"=== RUN   TestSummary_String/none\n"}
+{"Time":"2020-05-17T21:06:45.694785705-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String/all"}
+{"Time":"2020-05-17T21:06:45.694796767-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String/all","Output":"=== RUN   TestSummary_String/all\n"}
+{"Time":"2020-05-17T21:06:45.694807987-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String/one_value"}
+{"Time":"2020-05-17T21:06:45.694822381-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String/one_value","Output":"=== RUN   TestSummary_String/one_value\n"}
+{"Time":"2020-05-17T21:06:45.694895269-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String/a_few_values"}
+{"Time":"2020-05-17T21:06:45.694934921-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String/a_few_values","Output":"=== RUN   TestSummary_String/a_few_values\n"}
+{"Time":"2020-05-17T21:06:45.695006022-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String","Output":"--- PASS: TestSummary_String (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.695052861-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String/none","Output":"    --- PASS: TestSummary_String/none (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.695081352-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String/none","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.695105034-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String/all","Output":"    --- PASS: TestSummary_String/all (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.695128571-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String/all","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.695150363-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String/one_value","Output":"    --- PASS: TestSummary_String/one_value (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.695189799-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String/one_value","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.695209356-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String/a_few_values","Output":"    --- PASS: TestSummary_String/a_few_values (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.695237549-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String/a_few_values","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.695257433-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestSummary_String","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.695269567-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_NoFailures"}
+{"Time":"2020-05-17T21:06:45.6952803-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_NoFailures","Output":"=== RUN   TestPrintSummary_NoFailures\n"}
+{"Time":"2020-05-17T21:06:45.69529853-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_NoFailures","Output":"--- PASS: TestPrintSummary_NoFailures (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.695319891-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_NoFailures","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.695340098-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithFailures"}
+{"Time":"2020-05-17T21:06:45.695360601-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithFailures","Output":"=== RUN   TestPrintSummary_WithFailures\n"}
+{"Time":"2020-05-17T21:06:45.695387925-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithFailures/summarize_all"}
+{"Time":"2020-05-17T21:06:45.695408199-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithFailures/summarize_all","Output":"=== RUN   TestPrintSummary_WithFailures/summarize_all\n"}
+{"Time":"2020-05-17T21:06:45.695548542-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithFailures/summarize_no_output"}
+{"Time":"2020-05-17T21:06:45.695577885-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithFailures/summarize_no_output","Output":"=== RUN   TestPrintSummary_WithFailures/summarize_no_output\n"}
+{"Time":"2020-05-17T21:06:45.695740373-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithFailures/summarize_only_errors"}
+{"Time":"2020-05-17T21:06:45.695766268-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithFailures/summarize_only_errors","Output":"=== RUN   TestPrintSummary_WithFailures/summarize_only_errors\n"}
+{"Time":"2020-05-17T21:06:45.695875272-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithFailures","Output":"--- PASS: TestPrintSummary_WithFailures (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.695894246-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithFailures/summarize_all","Output":"    --- PASS: TestPrintSummary_WithFailures/summarize_all (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.695908276-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithFailures/summarize_all","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.695921682-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithFailures/summarize_no_output","Output":"    --- PASS: TestPrintSummary_WithFailures/summarize_no_output (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.695933945-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithFailures/summarize_no_output","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.695944263-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithFailures/summarize_only_errors","Output":"    --- PASS: TestPrintSummary_WithFailures/summarize_only_errors (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.695973669-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithFailures/summarize_only_errors","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.695987799-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithFailures","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.695996109-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_MissingTestFailEvent"}
+{"Time":"2020-05-17T21:06:45.69600455-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_MissingTestFailEvent","Output":"=== RUN   TestPrintSummary_MissingTestFailEvent\n"}
+{"Time":"2020-05-17T21:06:45.696433387-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_MissingTestFailEvent","Output":"--- PASS: TestPrintSummary_MissingTestFailEvent (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.696453447-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_MissingTestFailEvent","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.696460708-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithMisattributedOutput"}
+{"Time":"2020-05-17T21:06:45.696473682-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithMisattributedOutput","Output":"=== RUN   TestPrintSummary_WithMisattributedOutput\n"}
+{"Time":"2020-05-17T21:06:45.696868368-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithMisattributedOutput","Output":"--- PASS: TestPrintSummary_WithMisattributedOutput (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.69688868-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithMisattributedOutput","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.69689641-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithSubtestFailures"}
+{"Time":"2020-05-17T21:06:45.696901733-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithSubtestFailures","Output":"=== RUN   TestPrintSummary_WithSubtestFailures\n"}
+{"Time":"2020-05-17T21:06:45.698494542-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithSubtestFailures","Output":"--- PASS: TestPrintSummary_WithSubtestFailures (0.00s)\n"}
+{"Time":"2020-05-17T21:06:45.698518242-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Test":"TestPrintSummary_WithSubtestFailures","Elapsed":0}
+{"Time":"2020-05-17T21:06:45.698531164-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Output":"PASS\n"}
+{"Time":"2020-05-17T21:06:45.69935265-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson","Output":"ok  \tgotest.tools/gotestsum/testjson\t0.329s\n"}
+{"Time":"2020-05-17T21:06:45.699390055-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson","Elapsed":0.329}
