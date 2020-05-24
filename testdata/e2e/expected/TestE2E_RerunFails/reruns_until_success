@@ -1,0 +1,76 @@
+PASS testdata/e2e/flaky.TestAlwaysPasses
+=== RUN   TestFailsRarely
+SEED:  0
+--- FAIL: TestFailsRarely
+    flaky_test.go:51: not this time
+FAIL testdata/e2e/flaky.TestFailsRarely
+=== RUN   TestFailsSometimes
+SEED:  0
+--- FAIL: TestFailsSometimes
+    flaky_test.go:58: not this time
+FAIL testdata/e2e/flaky.TestFailsSometimes
+=== RUN   TestFailsOften
+SEED:  0
+--- FAIL: TestFailsOften
+    flaky_test.go:65: not this time
+FAIL testdata/e2e/flaky.TestFailsOften
+FAIL testdata/e2e/flaky
+PASS testdata/e2e/flaky.TestFailsRarely
+=== RUN   TestFailsSometimes
+SEED:  1
+--- FAIL: TestFailsSometimes
+    flaky_test.go:58: not this time
+FAIL testdata/e2e/flaky.TestFailsSometimes
+=== RUN   TestFailsOften
+SEED:  1
+--- FAIL: TestFailsOften
+    flaky_test.go:65: not this time
+FAIL testdata/e2e/flaky.TestFailsOften
+FAIL testdata/e2e/flaky
+PASS testdata/e2e/flaky.TestFailsSometimes
+=== RUN   TestFailsOften
+SEED:  2
+--- FAIL: TestFailsOften
+    flaky_test.go:65: not this time
+FAIL testdata/e2e/flaky.TestFailsOften
+FAIL testdata/e2e/flaky
+=== RUN   TestFailsOften
+SEED:  3
+--- FAIL: TestFailsOften
+    flaky_test.go:65: not this time
+FAIL testdata/e2e/flaky.TestFailsOften
+FAIL testdata/e2e/flaky
+PASS testdata/e2e/flaky.TestFailsOften
+PASS testdata/e2e/flaky
+
+=== Failed
+=== FAIL: testdata/e2e/flaky TestFailsRarely
+SEED:  0
+    flaky_test.go:51: not this time
+
+=== FAIL: testdata/e2e/flaky TestFailsSometimes
+SEED:  0
+    flaky_test.go:58: not this time
+
+=== FAIL: testdata/e2e/flaky TestFailsOften
+SEED:  0
+    flaky_test.go:65: not this time
+
+=== FAIL: testdata/e2e/flaky TestFailsSometimes
+SEED:  1
+    flaky_test.go:58: not this time
+
+=== FAIL: testdata/e2e/flaky TestFailsOften
+SEED:  1
+    flaky_test.go:65: not this time
+
+=== FAIL: testdata/e2e/flaky TestFailsOften
+SEED:  2
+    flaky_test.go:65: not this time
+
+=== FAIL: testdata/e2e/flaky TestFailsOften
+SEED:  3
+    flaky_test.go:65: not this time
+
+
+DONE 11 tests, 7 failures
