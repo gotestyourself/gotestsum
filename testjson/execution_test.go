@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/golden"
 )
@@ -45,7 +46,10 @@ func TestExecution_Add_PackageCoverage(t *testing.T) {
 	assert.DeepEqual(t, pkg, expected, cmpPackage)
 }
 
-var cmpPackage = cmp.AllowUnexported(Package{})
+var cmpPackage = cmp.Options{
+	cmp.AllowUnexported(Package{}),
+	cmpopts.EquateEmpty(),
+}
 
 func TestScanTestOutput_MinimalConfig(t *testing.T) {
 	in := bytes.NewReader(golden.Get(t, "go-test-json.out"))
