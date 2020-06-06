@@ -128,7 +128,7 @@ func (p *Package) LastFailedByName(name string) TestCase {
 
 // Output returns the full test output for a test.
 //
-// Unlike OutputLines() it does not return any extra lines in some cases.
+// Unlike OutputLines() it does not return lines from subtests in some cases.
 func (p *Package) Output(id int) string {
 	return strings.Join(p.output[id], "")
 }
@@ -140,7 +140,6 @@ func (p *Package) Output(id int) string {
 //   - the TestCase has no subtest failures;
 // then all output for every subtest under the root test is returned.
 // See https://github.com/golang/go/issues/29755.
-// TODO: accept ID and name ?
 func (p *Package) OutputLines(tc TestCase) []string {
 	_, sub := splitTestName(tc.Test)
 	lines := p.output[tc.ID]
@@ -174,6 +173,25 @@ func splitTestName(name string) (root, sub string) {
 	return parts[0], parts[1]
 }
 
+func (p *Package) removeOutput(id int) {
+	delete(p.output, id)
+
+	skipped := tcIDSet(p.Skipped)
+	for _, sub := range p.subTests[id] {
+		if _, isSkipped := skipped[sub]; !isSkipped {
+			delete(p.output, sub)
+		}
+	}
+}
+
+func tcIDSet(skipped []TestCase) map[int]struct{} {
+	result := make(map[int]struct{})
+	for _, tc := range skipped {
+		result[tc.ID] = struct{}{}
+	}
+	return result
+}
+
 // TestMainFailed returns true if the package failed, but there were no tests.
 // This may occur if the package init() or TestMain exited non-zero.
 func (p *Package) TestMainFailed() bool {
@@ -203,9 +221,6 @@ type TestCase struct {
 	// hasSubTestFailed is true when a subtest of this TestCase has failed. It is
 	// used to find root TestCases which have no failing subtests.
 	hasSubTestFailed bool
-	// hasSubTestFailed is true when a subtest of this TestCase was skipped. It is
-	// used to find root TestCases which have skipped tests.
-	hasSubTestSkipped bool
 }
 
 func newPackage() *Package {
@@ -297,12 +312,6 @@ func (p *Package) addTestEvent(event TestEvent) {
 	case ActionSkip:
 		p.Skipped = append(p.Skipped, tc)
 
-		// If this is a subtest, mark the root test as having a skipped subtest
-		if subTest != "" {
-			rootTestCase := p.running[root]
-			rootTestCase.hasSubTestSkipped = true
-			p.running[root] = rootTestCase
-		}
 	case ActionPass:
 		p.Passed = append(p.Passed, tc)
 
@@ -314,14 +323,9 @@ func (p *Package) addTestEvent(event TestEvent) {
 		}
 
 		// Remove test output once a test passes, it wont be used.
-		delete(p.output, tc.ID)
-
-		if !tc.hasSubTestSkipped {
-			for _, sub := range p.subTests[tc.ID] {
-				delete(p.output, sub)
-			}
-			delete(p.subTests, tc.ID)
-		}
+		p.removeOutput(tc.ID)
+		// Remove subtest mapping, it is only used when a test fails.
+		delete(p.subTests, tc.ID)
 	}
 }
 
