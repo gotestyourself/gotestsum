@@ -2,6 +2,7 @@ package testjson
 
 import (
 	"bytes"
+	"io"
 	"strings"
 	"testing"
 	"time"
@@ -81,24 +82,26 @@ func TestPrintSummary_WithFailures(t *testing.T) {
 						Package: "example.com/project/fs",
 						Test:    "TestFileDo",
 						Elapsed: 1411 * time.Millisecond,
+						ID:      1,
 					},
 					{
 						Package: "example.com/project/fs",
 						Test:    "TestFileDoError",
 						Elapsed: 12 * time.Millisecond,
+						ID:      2,
 					},
 				},
-				output: map[string]map[string][]string{
-					"TestFileDo": multiLine(`=== RUN   TestFileDo
+				output: map[int][]string{
+					1: multiLine(`=== RUN   TestFileDo
 Some stdout/stderr here
 --- FAIL: TestFileDo (1.41s)
 	do_test.go:33 assertion failed
 `),
-					"TestFileDoError": multiLine(`=== RUN   TestFileDoError
+					2: multiLine(`=== RUN   TestFileDoError
 --- FAIL: TestFileDoError (0.01s)
 	do_test.go:50 assertion failed: expected nil error, got WHAT!
 `),
-					"": multiLine("FAIL\n"),
+					0: multiLine("FAIL\n"),
 				},
 				action: ActionFail,
 			},
@@ -109,6 +112,7 @@ Some stdout/stderr here
 						Package: "example.com/project/pkg/more",
 						Test:    "TestAlbatross",
 						Elapsed: 40 * time.Millisecond,
+						ID:      1,
 					},
 				},
 				Skipped: []TestCase{
@@ -116,13 +120,14 @@ Some stdout/stderr here
 						Package: "example.com/project/pkg/more",
 						Test:    "TestOnlySometimes",
 						Elapsed: 0,
+						ID:      2,
 					},
 				},
-				output: map[string]map[string][]string{
-					"TestAlbatross": multiLine(`=== RUN   TestAlbatross
+				output: map[int][]string{
+					1: multiLine(`=== RUN   TestAlbatross
 --- FAIL: TestAlbatross (0.04s)
 `),
-					"TestOnlySometimes": multiLine(`=== RUN   TestOnlySometimes
+					2: multiLine(`=== RUN   TestOnlySometimes
 --- SKIP: TestOnlySometimes (0.00s)
 	good_test.go:27: the skip message
 `),
@@ -130,8 +135,8 @@ Some stdout/stderr here
 			},
 			"example.com/project/badmain": {
 				action: ActionFail,
-				output: map[string]map[string][]string{
-					"": multiLine("sometimes main can exit 2\n"),
+				output: map[int][]string{
+					0: multiLine("sometimes main can exit 2\n"),
 				},
 			},
 		},
@@ -220,10 +225,8 @@ func patchClock() (clockwork.FakeClock, func()) {
 	return fake, func() { clock = clockwork.NewRealClock() }
 }
 
-func multiLine(s string) map[string][]string {
-	return map[string][]string{
-		"": strings.SplitAfter(s, "\n"),
-	}
+func multiLine(s string) []string {
+	return strings.SplitAfter(s, "\n")
 }
 
 func TestPrintSummary_MissingTestFailEvent(t *testing.T) {
@@ -279,6 +282,23 @@ func TestPrintSummary_WithMissingSkipMessage(t *testing.T) {
 
 	buf := new(bytes.Buffer)
 	PrintSummary(buf, exec, SummarizeAll)
-	//q.Q(exec)
 	golden.Assert(t, buf.String(), "bug-missing-skip-message-summary.out")
+}
+
+func TestPrintSummary_WithRepeatedTestCases(t *testing.T) {
+	_, reset := patchClock()
+	defer reset()
+
+	in := golden.Get(t, "go-test-json.out")
+	exec, err := ScanTestOutput(ScanConfig{
+		Stdout: io.MultiReader(
+			bytes.NewReader(in),
+			bytes.NewReader(in),
+			bytes.NewReader(in)),
+	})
+	assert.NilError(t, err)
+
+	buf := new(bytes.Buffer)
+	PrintSummary(buf, exec, SummarizeAll)
+	golden.Assert(t, buf.String(), "bug-repeated-test-case-output.out")
 }

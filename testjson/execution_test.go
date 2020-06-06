@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/golden"
 )
@@ -37,17 +38,18 @@ func TestExecution_Add_PackageCoverage(t *testing.T) {
 	pkg := exec.Package("mytestpkg")
 	expected := &Package{
 		coverage: "coverage: 33.1% of statements",
-		output: map[string]map[string][]string{
-			"": {
-				"": {"coverage: 33.1% of statements\n"},
-			},
+		output: map[int][]string{
+			0: {"coverage: 33.1% of statements\n"},
 		},
 		running: map[string]TestCase{},
 	}
 	assert.DeepEqual(t, pkg, expected, cmpPackage)
 }
 
-var cmpPackage = cmp.AllowUnexported(Package{})
+var cmpPackage = cmp.Options{
+	cmp.AllowUnexported(Package{}),
+	cmpopts.EquateEmpty(),
+}
 
 func TestScanTestOutput_MinimalConfig(t *testing.T) {
 	in := bytes.NewReader(golden.Get(t, "go-test-json.out"))

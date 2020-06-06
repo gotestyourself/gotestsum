@@ -6,6 +6,7 @@ import (
 	"time"
 
 	gocmp "github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/opt"
 	"gotest.tools/v3/golden"
@@ -117,13 +118,14 @@ var expectedExecution = &Execution{
 var cmpExecutionShallow = gocmp.Options{
 	gocmp.AllowUnexported(Execution{}, Package{}),
 	gocmp.FilterPath(stringPath("started"), opt.TimeWithThreshold(10*time.Second)),
+	cmpopts.EquateEmpty(),
 	cmpPackageShallow,
 }
 
 var cmpPackageShallow = gocmp.Options{
-	// TODO: use opt.PathField(Package{}, "output")
-	gocmp.FilterPath(stringPath("packages.output"), gocmp.Ignore()),
-	gocmp.FilterPath(stringPath("packages.Passed"), gocmp.Ignore()),
+	gocmp.FilterPath(opt.PathField(Package{}, "output"), gocmp.Ignore()),
+	gocmp.FilterPath(opt.PathField(Package{}, "Passed"), gocmp.Ignore()),
+	gocmp.FilterPath(opt.PathField(Package{}, "subTests"), gocmp.Ignore()),
 	gocmp.Comparer(func(x, y TestCase) bool {
 		return x.Test == y.Test
 	}),

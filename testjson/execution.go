@@ -63,17 +63,20 @@ func (e TestEvent) Bytes() []byte {
 
 // Package is the set of TestEvents for a single go package
 type Package struct {
-	// TODO: this could be Total()
 	Total   int
 	running map[string]TestCase
 	Failed  []TestCase
 	Skipped []TestCase
 	Passed  []TestCase
-	// output printed by test cases. Output is stored first by root TestCase
-	// name, then by subtest name to mitigate github.com/golang/go/issues/29755.
-	// In the future when that bug is fixed this can be reverted to store all
-	// output by full test name.
-	output map[string]map[string][]string
+
+	// mapping of root TestCase ID to all sub test IDs. Used to mitigate
+	// github.com/golang/go/issues/29755.
+	// In the future when that bug is fixed this mapping can likely be removed.
+	subTests map[int][]int
+
+	// output printed by test cases, indexed by TestCase.ID. Package output is
+	// saved with key 0.
+	output map[int][]string
 	// coverage stores the code coverage output for the package without the
 	// trailing newline (ex: coverage: 91.1% of statements).
 	coverage string
@@ -87,12 +90,12 @@ type Package struct {
 
 // Result returns if the package passed, failed, or was skipped because there
 // were no tests.
-func (p Package) Result() Action {
+func (p *Package) Result() Action {
 	return p.action
 }
 
 // Elapsed returns the sum of the elapsed time for all tests in the package.
-func (p Package) Elapsed() time.Duration {
+func (p *Package) Elapsed() time.Duration {
 	elapsed := time.Duration(0)
 	for _, testcase := range p.TestCases() {
 		elapsed += testcase.Elapsed
@@ -101,19 +104,33 @@ func (p Package) Elapsed() time.Duration {
 }
 
 // TestCases returns all the test cases.
-func (p Package) TestCases() []TestCase {
+func (p *Package) TestCases() []TestCase {
 	tc := append([]TestCase{}, p.Passed...)
 	tc = append(tc, p.Failed...)
 	tc = append(tc, p.Skipped...)
 	return tc
 }
 
+// LastFailedByName returns the most recent test with name in the list of Failed
+// tests. If no TestCase is found with that name, an empty TestCase is returned.
+//
+// LastFailedByName may be used by formatters to find the TestCase.ID for the current
+// failing TestEvent. It is very likely the last TestCase in Failed, but this method
+// provides a little more safety if that ever changes.
+func (p *Package) LastFailedByName(name string) TestCase {
+	for i := len(p.Failed) - 1; i >= 0; i-- {
+		if p.Failed[i].Test == name {
+			return p.Failed[i]
+		}
+	}
+	return TestCase{}
+}
+
 // Output returns the full test output for a test.
 //
-// Unlike OutputLines() it does not return any extra lines in some cases.
-func (p Package) Output(test string) string {
-	root, sub := splitTestName(test)
-	return strings.Join(p.output[root][sub], "")
+// Unlike OutputLines() it does not return lines from subtests in some cases.
+func (p *Package) Output(id int) string {
+	return strings.Join(p.output[id], "")
 }
 
 // OutputLines returns the full test output for a test as a slice of strings.
@@ -123,9 +140,9 @@ func (p Package) Output(test string) string {
 //   - the TestCase has no subtest failures;
 // then all output for every subtest under the root test is returned.
 // See https://github.com/golang/go/issues/29755.
-func (p Package) OutputLines(tc TestCase) []string {
-	root, sub := splitTestName(tc.Test)
-	lines := p.output[root][sub]
+func (p *Package) OutputLines(tc TestCase) []string {
+	_, sub := splitTestName(tc.Test)
+	lines := p.output[tc.ID]
 
 	// If this is a subtest, or a root test case with subtest failures the
 	// subtest failure output should contain the relevant lines, so we don't need
@@ -133,30 +150,18 @@ func (p Package) OutputLines(tc TestCase) []string {
 	if sub != "" || tc.hasSubTestFailed {
 		return lines
 	}
-	//
-	result := make([]string, 0, len(p.output[root])*2)
-	for _, sub := range testNamesSorted(p.output[root]) {
-		result = append(result, p.output[root][sub]...)
+
+	result := make([]string, 0, len(lines)+1)
+	result = append(result, lines...)
+	for _, sub := range p.subTests[tc.ID] {
+		result = append(result, p.output[sub]...)
 	}
 	return result
 }
 
-func testNamesSorted(subs map[string][]string) []string {
-	names := make([]string, 0, len(subs))
-	for name := range subs {
-		names = append(names, name)
-	}
-	sort.Strings(names)
-	return names
-}
-
-func (p Package) addOutput(test string, output string) {
-	root, sub := splitTestName(test)
-	if p.output[root] == nil {
-		p.output[root] = make(map[string][]string)
-	}
+func (p *Package) addOutput(id int, output string) {
 	// TODO: limit size of buffered test output
-	p.output[root][sub] = append(p.output[root][sub], output)
+	p.output[id] = append(p.output[id], output)
 }
 
 // splitTestName into root test name and any subtest names.
@@ -168,9 +173,28 @@ func splitTestName(name string) (root, sub string) {
 	return parts[0], parts[1]
 }
 
+func (p *Package) removeOutput(id int) {
+	delete(p.output, id)
+
+	skipped := tcIDSet(p.Skipped)
+	for _, sub := range p.subTests[id] {
+		if _, isSkipped := skipped[sub]; !isSkipped {
+			delete(p.output, sub)
+		}
+	}
+}
+
+func tcIDSet(skipped []TestCase) map[int]struct{} {
+	result := make(map[int]struct{})
+	for _, tc := range skipped {
+		result[tc.ID] = struct{}{}
+	}
+	return result
+}
+
 // TestMainFailed returns true if the package failed, but there were no tests.
 // This may occur if the package init() or TestMain exited non-zero.
-func (p Package) TestMainFailed() bool {
+func (p *Package) TestMainFailed() bool {
 	return p.action == ActionFail && len(p.Failed) == 0
 }
 
@@ -186,21 +210,24 @@ func (p *Package) end() {
 
 // TestCase stores the name and elapsed time for a test case.
 type TestCase struct {
+	// ID is unique ID for each test case. A test run may include multiple instances
+	// of the same Package and Name if -count is used, or if the input comes from
+	// multiple runs. The ID can be used to uniquely reference an instance of a
+	// test case.
+	ID      int
 	Package string
 	Test    string
 	Elapsed time.Duration
 	// hasSubTestFailed is true when a subtest of this TestCase has failed. It is
 	// used to find root TestCases which have no failing subtests.
 	hasSubTestFailed bool
-	// hasSubTestFailed is true when a subtest of this TestCase was skipped. It is
-	// used to find root TestCases which have skipped tests.
-	hasSubTestSkipped bool
 }
 
 func newPackage() *Package {
 	return &Package{
-		output:  make(map[string]map[string][]string),
-		running: make(map[string]TestCase),
+		output:   make(map[int][]string),
+		running:  make(map[string]TestCase),
+		subTests: make(map[int][]int),
 	}
 }
 
@@ -222,7 +249,7 @@ func (e *Execution) add(event TestEvent) {
 		e.addPackageEvent(pkg, event)
 		return
 	}
-	e.addTestEvent(pkg, event)
+	pkg.addTestEvent(event)
 }
 
 func (e *Execution) addPackageEvent(pkg *Package, event TestEvent) {
@@ -236,59 +263,69 @@ func (e *Execution) addPackageEvent(pkg *Package, event TestEvent) {
 		if isCachedOutput(event.Output) {
 			pkg.cached = true
 		}
-		pkg.addOutput("", event.Output)
+		pkg.addOutput(0, event.Output)
 	}
 }
 
-func (e *Execution) addTestEvent(pkg *Package, event TestEvent) {
+// nolint: gocyclo
+func (p *Package) addTestEvent(event TestEvent) {
+	tc := p.running[event.Test]
+	root, subTest := splitTestName(event.Test)
+
 	switch event.Action {
 	case ActionRun:
-		pkg.Total++
-		pkg.running[event.Test] = TestCase{
+		// Incremental total before using it as the ID, because ID 0 is used for
+		// the package output
+		p.Total++
+		tc := TestCase{
 			Package: event.Package,
 			Test:    event.Test,
+			ID:      p.Total,
+		}
+		p.running[event.Test] = tc
+
+		if subTest != "" {
+			rootID := p.running[root].ID
+			p.subTests[rootID] = append(p.subTests[rootID], tc.ID)
 		}
 		return
 	case ActionOutput, ActionBench:
-		pkg.addOutput(event.Test, event.Output)
+		p.addOutput(tc.ID, event.Output)
 		return
 	case ActionPause, ActionCont:
 		return
 	}
 
-	tc := pkg.running[event.Test]
-	delete(pkg.running, event.Test)
+	delete(p.running, event.Test)
 	tc.Elapsed = elapsedDuration(event.Elapsed)
-
-	root, subTest := splitTestName(event.Test)
 
 	switch event.Action {
 	case ActionFail:
-		pkg.Failed = append(pkg.Failed, tc)
+		p.Failed = append(p.Failed, tc)
 
 		// If this is a subtest, mark the root test as having a failed subtest
 		if subTest != "" {
-			rootTestCase := pkg.running[root]
+			rootTestCase := p.running[root]
 			rootTestCase.hasSubTestFailed = true
-			pkg.running[root] = rootTestCase
+			p.running[root] = rootTestCase
 		}
 	case ActionSkip:
-		pkg.Skipped = append(pkg.Skipped, tc)
+		p.Skipped = append(p.Skipped, tc)
 
-		// If this is a subtest, mark the root test as having a skipped subtest
-		if subTest != "" {
-			rootTestCase := pkg.running[root]
-			rootTestCase.hasSubTestSkipped = true
-			pkg.running[root] = rootTestCase
-		}
 	case ActionPass:
-		pkg.Passed = append(pkg.Passed, tc)
+		p.Passed = append(p.Passed, tc)
 
-		// Remove test output once a test passes, it wont be used. But do not
-		// remove output if there is a skipped subtest. That output will be used.
-		if !tc.hasSubTestSkipped {
-			delete(pkg.output, event.Test)
+		// Do not immediately remove output for subtests, to work around a bug
+		// in 'go test' where output is attributed to the wrong sub test.
+		// github.com/golang/go/issues/29755.
+		if subTest != "" {
+			return
 		}
+
+		// Remove test output once a test passes, it wont be used.
+		p.removeOutput(tc.ID)
+		// Remove subtest mapping, it is only used when a test fails.
+		delete(p.subTests, tc.ID)
 	}
 }
 
