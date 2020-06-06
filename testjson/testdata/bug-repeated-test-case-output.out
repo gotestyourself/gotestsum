@@ -1,0 +1,89 @@
+
+=== Skipped
+=== SKIP: github.com/gotestyourself/gotestyourself/testjson/internal/good TestSkipped (0.00s)
+	good_test.go:23: 
+
+=== SKIP: github.com/gotestyourself/gotestyourself/testjson/internal/good TestSkippedWitLog (0.00s)
+	good_test.go:27: the skip message
+
+=== SKIP: github.com/gotestyourself/gotestyourself/testjson/internal/good TestSkipped (0.00s)
+	good_test.go:23: 
+
+=== SKIP: github.com/gotestyourself/gotestyourself/testjson/internal/good TestSkippedWitLog (0.00s)
+	good_test.go:27: the skip message
+
+=== SKIP: github.com/gotestyourself/gotestyourself/testjson/internal/good TestSkipped (0.00s)
+	good_test.go:23: 
+
+=== SKIP: github.com/gotestyourself/gotestyourself/testjson/internal/good TestSkippedWitLog (0.00s)
+	good_test.go:27: the skip message
+
+=== SKIP: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestSkipped (0.00s)
+	stub_test.go:26: 
+
+=== SKIP: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestSkippedWitLog (0.00s)
+	stub_test.go:30: the skip message
+
+=== SKIP: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestSkipped (0.00s)
+	stub_test.go:26: 
+
+=== SKIP: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestSkippedWitLog (0.00s)
+	stub_test.go:30: the skip message
+
+=== SKIP: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestSkipped (0.00s)
+	stub_test.go:26: 
+
+=== SKIP: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestSkippedWitLog (0.00s)
+	stub_test.go:30: the skip message
+
+
+=== Failed
+=== FAIL: github.com/gotestyourself/gotestyourself/testjson/internal/badmain  (0.00s)
+sometimes main can exit 2
+FAIL	github.com/gotestyourself/gotestyourself/testjson/internal/badmain	0.010s
+sometimes main can exit 2
+FAIL	github.com/gotestyourself/gotestyourself/testjson/internal/badmain	0.010s
+sometimes main can exit 2
+FAIL	github.com/gotestyourself/gotestyourself/testjson/internal/badmain	0.010s
+
+=== FAIL: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestFailed (0.00s)
+	stub_test.go:34: this failed
+
+=== FAIL: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestFailedWithStderr (0.00s)
+this is stderr
+	stub_test.go:43: also failed
+
+=== FAIL: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestNestedWithFailure/c (0.00s)
+    --- FAIL: TestNestedWithFailure/c (0.00s)
+    	stub_test.go:65: failed
+
+=== FAIL: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestNestedWithFailure (0.00s)
+
+=== FAIL: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestFailed (0.00s)
+	stub_test.go:34: this failed
+
+=== FAIL: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestFailedWithStderr (0.00s)
+this is stderr
+	stub_test.go:43: also failed
+
+=== FAIL: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestNestedWithFailure/c (0.00s)
+    --- FAIL: TestNestedWithFailure/c (0.00s)
+    	stub_test.go:65: failed
+
+=== FAIL: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestNestedWithFailure (0.00s)
+
+=== FAIL: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestFailed (0.00s)
+	stub_test.go:34: this failed
+
+=== FAIL: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestFailedWithStderr (0.00s)
+this is stderr
+	stub_test.go:43: also failed
+
+=== FAIL: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestNestedWithFailure/c (0.00s)
+    --- FAIL: TestNestedWithFailure/c (0.00s)
+    	stub_test.go:65: failed
+
+=== FAIL: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestNestedWithFailure (0.00s)
+
+
+DONE 138 tests, 12 skipped, 13 failures in 0.000s

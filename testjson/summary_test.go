@@ -2,6 +2,7 @@ package testjson
 
 import (
 	"bytes"
+	"io"
 	"strings"
 	"testing"
 	"time"
@@ -281,4 +282,22 @@ func TestPrintSummary_WithMissingSkipMessage(t *testing.T) {
 	PrintSummary(buf, exec, SummarizeAll)
 	//q.Q(exec)
 	golden.Assert(t, buf.String(), "bug-missing-skip-message-summary.out")
+}
+
+func TestPrintSummary_WithRepeatedTestCases(t *testing.T) {
+	_, reset := patchClock()
+	defer reset()
+
+	in := golden.Get(t, "go-test-json.out")
+	exec, err := ScanTestOutput(ScanConfig{
+		Stdout: io.MultiReader(
+			bytes.NewReader(in),
+			bytes.NewReader(in),
+			bytes.NewReader(in)),
+	})
+	assert.NilError(t, err)
+
+	buf := new(bytes.Buffer)
+	PrintSummary(buf, exec, SummarizeAll)
+	golden.Assert(t, buf.String(), "bug-repeated-test-case-output.out")
 }
