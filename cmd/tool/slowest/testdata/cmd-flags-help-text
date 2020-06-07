@@ -1,0 +1,46 @@
+Usage:
+    gotestsum tool slowest [flags]
+
+Read a json file and print or update tests which are slower than threshold.
+The json file may be created with 'gotestsum --jsonfile' or 'go test -json'.
+If a TestCase appears more than once in the json file, it will only appear once
+in the output, and the median value of all the elapsed times will be used.
+
+By default this command will print the list of tests slower than threshold to stdout.
+The list will be sorted from slowest to fastest.
+
+If --skip-stmt is set, instead of printing the list to stdout, the AST for the
+Go source code in the working directory tree will be modified. The value of
+--skip-stmt will be added to Go test files as the first statement in all the test
+functions which are slower than threshold.
+
+The --skip-stmt flag may be set to the name of a predefined statement, or to
+Go source code which will be parsed as a go/ast.Stmt. Currently there is only one
+predefined statement, --skip-stmt=testing.Short, which uses this Go statement:
+
+    if testing.Short() {
+        t.Skip("too slow for testing.Short")
+    }
+
+
+Alternatively, a custom --skip-stmt may be provided as a string:
+
+    skip_stmt='
+        if os.Getenv("TEST_FAST") {
+            t.Skip("too slow for TEST_FAST")
+        }
+    '
+    go test -json -short ./... | gotestsum tool slowest --skip-stmt "$skip_stmt"
+
+Note that this tool does not add imports, so using a custom statement may require
+you to add imports to the file.
+
+Go build flags, such as build tags, may be set using the GOFLAGS environment
+variable, following the same rules as the go toolchain. See
+https://golang.org/cmd/go/#hdr-Environment_variables.
+
+Flags:
+      --debug                enable debug logging.
+      --jsonfile string      path to test2json output, defaults to stdin
+      --skip-stmt string     add this go statement to slow tests, instead of printing the list of slow tests
+      --threshold duration   test cases with elapsed time greater than threshold are slow tests (default 100ms)

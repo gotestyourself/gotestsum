@@ -51,7 +51,7 @@ func runMain(name string, args []string) error {
 	case err == pflag.ErrHelp:
 		return nil
 	case err != nil:
-		flags.Usage()
+		usage(os.Stderr, name, flags)
 		return err
 	}
 	opts.args = flags.Args()
@@ -76,22 +76,7 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags := pflag.NewFlagSet(name, pflag.ContinueOnError)
 	flags.SetInterspersed(false)
 	flags.Usage = func() {
-		fmt.Fprintf(os.Stderr, `Usage:
-    %s [flags] [--] [go test flags]
-
-Flags:
-`, name)
-		flags.PrintDefaults()
-		fmt.Fprint(os.Stderr, `
-Formats:
-    dots                    print a character for each test
-    dots-v2                 experimental dots format, one package per line
-    pkgname                 print a line for each package
-    pkgname-and-test-fails  print a line for each package and failed test output
-    testname                print a line for each test and package
-    standard-quiet          standard go test format
-    standard-verbose        standard go test -v format
-`)
+		usage(os.Stdout, name, flags)
 	}
 	flags.StringVarP(&opts.format, "format", "f",
 		lookEnvWithDefault("GOTESTSUM_FORMAT", "short"),
@@ -125,6 +110,30 @@ Formats:
 	flags.BoolVar(&opts.debug, "debug", false, "enabled debug logging")
 	flags.BoolVar(&opts.version, "version", false, "show version and exit")
 	return flags, opts
+}
+
+func usage(out io.Writer, name string, flags *pflag.FlagSet) {
+	fmt.Fprintf(out, `Usage:
+    %[1]s [flags] [--] [go test flags]
+    %[1]s [command]
+
+Flags:
+`, name)
+	flags.SetOutput(out)
+	flags.PrintDefaults()
+	fmt.Fprint(out, `
+Formats:
+    dots                    print a character for each test
+    dots-v2                 experimental dots format, one package per line
+    pkgname                 print a line for each package
+    pkgname-and-test-fails  print a line for each package and failed test output
+    testname                print a line for each test and package
+    standard-quiet          standard go test format
+    standard-verbose        standard go test -v format
+
+Commands:
+    tool                    tools for working with test2json output
+`)
 }
 
 func lookEnvWithDefault(key, defValue string) string {

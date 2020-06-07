@@ -1,11 +1,24 @@
 package main
 
 import (
+	"bytes"
 	"testing"
 
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/env"
+	"gotest.tools/v3/golden"
 )
+
+func TestUsage_WithFlagsFromSetupFlags(t *testing.T) {
+	defer env.PatchAll(t, nil)()
+
+	name := "gotestsum"
+	flags, _ := setupFlags(name)
+	buf := new(bytes.Buffer)
+	usage(buf, name, flags)
+
+	golden.Assert(t, buf.String(), "gotestsum-help-text")
+}
 
 func TestGoTestCmdArgs(t *testing.T) {
 	type testCase struct {

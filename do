@@ -8,7 +8,7 @@ binary() {
 }
 
 update-golden() {
-    gotestsum -- . ./testjson ./internal/junitxml -test.update-golden
+    gotestsum -- . ./testjson ./internal/junitxml ./cmd/tool/slowest -test.update-golden
 }
 
 lint() {

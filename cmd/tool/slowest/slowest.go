@@ -20,7 +20,7 @@ func Run(name string, args []string) error {
 	case err == pflag.ErrHelp:
 		return nil
 	case err != nil:
-		flags.Usage()
+		usage(os.Stderr, name, flags)
 		return err
 	}
 	return run(opts)
@@ -31,8 +31,22 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags := pflag.NewFlagSet(name, pflag.ContinueOnError)
 	flags.SetInterspersed(false)
 	flags.Usage = func() {
-		fmt.Fprintf(os.Stderr, `Usage:
-    %s [flags]
+		usage(os.Stdout, name, flags)
+	}
+	flags.StringVar(&opts.jsonfile, "jsonfile", os.Getenv("GOTESTSUM_JSONFILE"),
+		"path to test2json output, defaults to stdin")
+	flags.DurationVar(&opts.threshold, "threshold", 100*time.Millisecond,
+		"test cases with elapsed time greater than threshold are slow tests")
+	flags.StringVar(&opts.skipStatement, "skip-stmt", "",
+		"add this go statement to slow tests, instead of printing the list of slow tests")
+	flags.BoolVar(&opts.debug, "debug", false,
+		"enable debug logging.")
+	return flags, opts
+}
+
+func usage(out io.Writer, name string, flags *pflag.FlagSet) {
+	fmt.Fprintf(out, `Usage:
+    %[1]s [flags]
 
 Read a json file and print or update tests which are slower than threshold.
 The json file may be created with 'gotestsum --jsonfile' or 'go test -json'.
@@ -63,7 +77,7 @@ Alternatively, a custom --skip-stmt may be provided as a string:
             t.Skip("too slow for TEST_FAST")
         }
     '
-    go test -json -short ./... | %s --skip-stmt "$skip_stmt"
+    go test -json -short ./... | %[1]s --skip-stmt "$skip_stmt"
 
 Note that this tool does not add imports, so using a custom statement may require
 you to add imports to the file.
@@ -73,18 +87,9 @@ variable, following the same rules as the go toolchain. See
 https://golang.org/cmd/go/#hdr-Environment_variables.
 
 Flags:
-`, name, name)
-		flags.PrintDefaults()
-	}
-	flags.StringVar(&opts.jsonfile, "jsonfile", os.Getenv("GOTESTSUM_JSONFILE"),
-		"path to test2json output, defaults to stdin")
-	flags.DurationVar(&opts.threshold, "threshold", 100*time.Millisecond,
-		"test cases with elapsed time greater than threshold are slow tests")
-	flags.StringVar(&opts.skipStatement, "skip-stmt", "",
-		"add this go statement to slow tests, instead of printing the list of slow tests")
-	flags.BoolVar(&opts.debug, "debug", false,
-		"enable debug logging.")
-	return flags, opts
+`, name)
+	flags.SetOutput(out)
+	flags.PrintDefaults()
 }
 
 type options struct {
