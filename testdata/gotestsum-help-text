@@ -14,8 +14,8 @@ Flags:
       --packages list                               space separated list of package to test
       --post-run-command command                    command to run after the tests have completed
       --raw-command                                 don't prepend 'go test -json' to the 'go test' command
-      --rerun-fails-max-attempts int                rerun failed tests until each one passes once, or attempts exceeds max
-      --rerun-fails-max-failures int                avoid re-run if initial run had more than this number of failures (default 10)
+      --rerun-fails int[=2]                         rerun failed tests until they all pass, or attempts exceeds maximum. Defaults to max 2 reruns when enabled.
+      --rerun-fails-max-failures int                do not rerun any tests if the initial run has more than this number of failures (default 10)
       --version                                     show version and exit
 
 Formats:

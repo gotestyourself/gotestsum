@@ -20,6 +20,58 @@ func TestUsage_WithFlagsFromSetupFlags(t *testing.T) {
 	golden.Assert(t, buf.String(), "gotestsum-help-text")
 }
 
+func TestOptions_Validate_FromFlags(t *testing.T) {
+	type testCase struct {
+		name     string
+		args     []string
+		expected string
+	}
+	fn := func(t *testing.T, tc testCase) {
+		flags, opts := setupFlags("gotestsum")
+		err := flags.Parse(tc.args)
+		assert.NilError(t, err)
+		opts.args = flags.Args()
+
+		err = opts.Validate()
+		if tc.expected == "" {
+			assert.NilError(t, err)
+			return
+		}
+		assert.ErrorContains(t, err, tc.expected, "opts: %#v", opts)
+	}
+	var testCases = []testCase{
+		{
+			name: "no flags",
+		},
+		{
+			name: "rerun flag, raw command",
+			args: []string{"--rerun-fails", "--raw-command", "--", "./test-all"},
+		},
+		{
+			name: "rerun flag, no go-test args",
+			args: []string{"--rerun-fails", "--"},
+		},
+		{
+			name:     "rerun flag, go-test args, no packages flag",
+			args:     []string{"--rerun-fails", "--", "./..."},
+			expected: "the list of packages to test must be specified by the --packages flag",
+		},
+		{
+			name: "rerun flag, go-test args, with packages flag",
+			args: []string{"--rerun-fails", "--packages", "./...", "--", "--foo"},
+		},
+		{
+			name: "rerun flag, no go-test args, with packages flag",
+			args: []string{"--rerun-fails", "--packages", "./..."},
+		},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			fn(t, tc)
+		})
+	}
+}
+
 func TestGoTestCmdArgs(t *testing.T) {
 	type testCase struct {
 		opts      *options

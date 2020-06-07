@@ -100,8 +100,9 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags.Var(opts.junitTestCaseClassnameFormat, "junitfile-testcase-classname",
 		"format the testcase classname field as: "+junitFieldFormatValues)
 
-	flags.IntVar(&opts.rerunFailsMaxAttempts, "rerun-fails-max-attempts", 0,
-		"rerun failed tests until each one passes once, or attempts exceeds max")
+	flags.IntVar(&opts.rerunFailsMaxAttempts, "rerun-fails", 0,
+		"rerun failed tests until they all pass, or attempts exceeds maximum. Defaults to max 2 reruns when enabled.")
+	flags.Lookup("rerun-fails").NoOptDefVal = "2"
 	flags.IntVar(&opts.rerunFailsMaxInitialFailures, "rerun-fails-max-failures", 10,
 		"do not rerun any tests if the initial run has more than this number of failures")
 	flags.Var((*stringSlice)(&opts.packages), "packages",
