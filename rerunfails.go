@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"gotest.tools/gotestsum/log"
 	"gotest.tools/gotestsum/testjson"
 )
 
@@ -34,11 +35,13 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 	}
 
 	rec := newFailureRecorderFromExecution(scanConfig.Execution)
-
 	var lastErr error
 	for count := 0; rec.count() > 0 && count < opts.rerunFailsMaxAttempts; count++ {
-		nextRec := newFailureRecorder(scanConfig.Handler)
+		if len(scanConfig.Execution.Errors()) > 0 {
+			return fmt.Errorf("re-run cancelled because previous run had errors")
+		}
 
+		nextRec := newFailureRecorder(scanConfig.Handler)
 		for pkg, testCases := range rec.pkgFailures {
 			rerun := rerunOpts{
 				runFlag: goTestRunFlagFromTestCases(testCases),
@@ -59,6 +62,8 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 				return err
 			}
 			lastErr = goTestProc.cmd.Wait()
+			log.Warnf("go test exit code: %v", lastErr)
+			// TODO: will 'go test' exit with 2 if it panics? possibly error on that
 			rec = nextRec
 		}
 	}
