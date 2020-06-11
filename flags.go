@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/shlex"
 	"github.com/pkg/errors"
+	"github.com/spf13/pflag"
 	"gotest.tools/gotestsum/internal/junitxml"
 	"gotest.tools/gotestsum/testjson"
 )
@@ -111,4 +112,23 @@ func (c *commandValue) Value() []string {
 		return nil
 	}
 	return c.command
+}
+
+var _ pflag.Value = (*stringSlice)(nil)
+
+// stringSlice is a flag.Value which populates the string slice by splitting
+// the raw flag value on spaces.
+type stringSlice []string
+
+func (s *stringSlice) String() string {
+	return strings.Join(*s, " ")
+}
+
+func (s *stringSlice) Set(raw string) error {
+	*s = append(*s, strings.Split(raw, " ")...)
+	return nil
+}
+
+func (s *stringSlice) Type() string {
+	return "list"
 }

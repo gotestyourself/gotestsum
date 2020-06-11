@@ -46,3 +46,28 @@ func newExecFromTestData(t *testing.T) *testjson.Execution {
 	assert.NilError(t, err)
 	return exec
 }
+
+type bufferCloser struct {
+	bytes.Buffer
+}
+
+func (bufferCloser) Close() error { return nil }
+
+func TestEventHandler_Event_WithMissingActionFail(t *testing.T) {
+	buf := new(bufferCloser)
+	errBuf := new(bytes.Buffer)
+	format := testjson.NewEventFormatter(errBuf, "testname")
+
+	source := golden.Get(t, "../testjson/testdata/go-test-json-missing-test-fail.out")
+	cfg := testjson.ScanConfig{
+		Stdout:  bytes.NewReader(source),
+		Handler: &eventHandler{jsonFile: buf, formatter: format},
+	}
+	_, err := testjson.ScanTestOutput(cfg)
+	assert.NilError(t, err)
+
+	assert.Equal(t, buf.String(), string(source))
+	// confirm the artificial event was sent to the handler by checking the output
+	// of the formatter.
+	golden.Assert(t, errBuf.String(), "event-handler-missing-test-fail-expected")
+}

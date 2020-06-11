@@ -200,12 +200,25 @@ func (p *Package) TestMainFailed() bool {
 
 const neverFinished time.Duration = -1
 
-func (p *Package) end() {
-	// Add tests that were missing an ActionFail event to Failed
+// end adds any tests that were missing an ActionFail TestEvent to the list of
+// Failed, and returns a slice of artificial TestEvent for the missing ones.
+//
+// This is done to work around 'go test' not sending the ActionFail TestEvents
+// in some cases, when a test panics.
+func (p *Package) end() []TestEvent {
+	result := make([]TestEvent, 0, len(p.running))
 	for _, tc := range p.running {
 		tc.Elapsed = neverFinished
 		p.Failed = append(p.Failed, tc)
+
+		result = append(result, TestEvent{
+			Action:  ActionFail,
+			Package: tc.Package,
+			Test:    tc.Test,
+			Elapsed: float64(neverFinished),
+		})
 	}
+	return result
 }
 
 // TestCase stores the name and elapsed time for a test case.
@@ -371,6 +384,9 @@ func (e *Execution) Elapsed() time.Duration {
 
 // Failed returns a list of all the failed test cases.
 func (e *Execution) Failed() []TestCase {
+	if e == nil {
+		return nil
+	}
 	var failed []TestCase //nolint:prealloc
 	for _, name := range sortedKeys(e.packages) {
 		pkg := e.packages[name]
@@ -424,11 +440,13 @@ func (e *Execution) Errors() []string {
 	return e.errors
 }
 
-func (e *Execution) end() {
+func (e *Execution) end() []TestEvent {
 	e.done = true
+	var result []TestEvent // nolint: prealloc
 	for _, pkg := range e.packages {
-		pkg.end()
+		result = append(result, pkg.end()...)
 	}
+	return result
 }
 
 // newExecution returns a new Execution and records the current time as the
@@ -449,6 +467,9 @@ type ScanConfig struct {
 	Stderr io.Reader
 	// Handler is a set of callbacks for receiving TestEvents and stderr text.
 	Handler EventHandler
+	// Execution to populate while scanning. If nil a new one will be created
+	// and returned from ScanTestOutput.
+	Execution *Execution
 }
 
 // EventHandler is called by ScanTestOutput for each event and write to stderr.
@@ -461,21 +482,24 @@ type EventHandler interface {
 	Err(text string) error
 }
 
-// ScanTestOutput reads lines from config.Stdout and config.Stderr, creates an
+// ScanTestOutput reads lines from config.Stdout and config.Stderr, populates an
 // Execution, calls the Handler for each event, and returns the Execution.
 //
 // If config.Handler is nil, a default no-op handler will be used.
 func ScanTestOutput(config ScanConfig) (*Execution, error) {
+	if config.Stdout == nil {
+		return nil, fmt.Errorf("stdout reader must be non-nil")
+	}
 	if config.Handler == nil {
 		config.Handler = noopHandler{}
 	}
 	if config.Stderr == nil {
 		config.Stderr = new(bytes.Reader)
 	}
-	if config.Stdout == nil {
-		return nil, fmt.Errorf("stdout reader must be non-nil")
+	execution := config.Execution
+	if execution == nil {
+		execution = newExecution()
 	}
-	execution := newExecution()
 	var group errgroup.Group
 	group.Go(func() error {
 		return readStdout(config, execution)
@@ -483,9 +507,16 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 	group.Go(func() error {
 		return readStderr(config, execution)
 	})
-	err := group.Wait()
-	execution.end()
-	return execution, err
+	if err := group.Wait(); err != nil {
+		return execution, err
+	}
+	for _, event := range execution.end() {
+		if err := config.Handler.Event(event, execution); err != nil {
+			return execution, err
+		}
+	}
+
+	return execution, nil
 }
 
 func readStdout(config ScanConfig, execution *Execution) error {

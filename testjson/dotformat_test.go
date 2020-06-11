@@ -1,18 +1,16 @@
 package testjson
 
 import (
-	"bufio"
 	"bytes"
-	"io"
 	"math/rand"
 	"runtime"
-	"strings"
 	"testing"
 	"testing/quick"
 	"time"
 	"unicode/utf8"
 
 	"gotest.tools/gotestsum/internal/dotwriter"
+	"gotest.tools/gotestsum/internal/text"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
 	"gotest.tools/v3/golden"
@@ -32,7 +30,7 @@ func TestScanTestOutput_WithDotsFormatter(t *testing.T) {
 	exec, err := ScanTestOutput(shim.Config(t))
 	assert.NilError(t, err)
 
-	actual := removeSummaryTime(t, out)
+	actual := text.ProcessLines(t, out, text.OpRemoveSummaryLineElapsedTime)
 	golden.Assert(t, actual, outFile("dots-format"))
 	golden.Assert(t, shim.err.String(), "dots-format.err")
 	assert.DeepEqual(t, exec, expectedExecution, cmpExecutionShallow)
@@ -43,22 +41,6 @@ func outFile(name string) string {
 		return name + "-windows.out"
 	}
 	return name + ".out"
-}
-
-func removeSummaryTime(t *testing.T, r io.Reader) string {
-	t.Helper()
-	out := new(strings.Builder)
-	scan := bufio.NewScanner(r)
-	for scan.Scan() {
-		line := scan.Text()
-		if i := strings.Index(line, " in "); i > 0 {
-			out.WriteString(line[:i] + "\n")
-			continue
-		}
-		out.WriteString(line + "\n")
-	}
-	assert.NilError(t, scan.Err())
-	return out.String()
 }
 
 func TestFmtDotElapsed(t *testing.T) {
