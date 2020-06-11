@@ -102,12 +102,13 @@ func (r *failureRecorder) count() int {
 
 func goTestRunFlagFromTestCases(tcs []string) string {
 	buf := new(strings.Builder)
-	buf.WriteString("-run=")
+	buf.WriteString("-run=^(")
 	for i, tc := range tcs {
 		if i != 0 {
 			buf.WriteString("|")
 		}
 		buf.WriteString(tc)
 	}
+	buf.WriteString(")$")
 	return buf.String()
 }

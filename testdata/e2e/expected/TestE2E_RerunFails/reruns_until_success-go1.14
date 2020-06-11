@@ -14,6 +14,8 @@ SEED:  0
     TestFailsOften: flaky_test.go:65: not this time
 --- FAIL: TestFailsOften
 FAIL testdata/e2e/flaky.TestFailsOften
+PASS testdata/e2e/flaky.TestFailsOftenDoesNotPrefixMatch
+PASS testdata/e2e/flaky.TestFailsSometimesDoesNotPrefixMatch
 FAIL testdata/e2e/flaky
 PASS testdata/e2e/flaky.TestFailsRarely
 === RUN   TestFailsSometimes
@@ -73,4 +75,4 @@ SEED:  3
     TestFailsOften: flaky_test.go:65: not this time
 
 
-DONE 11 tests, 7 failures
+DONE 13 tests, 7 failures

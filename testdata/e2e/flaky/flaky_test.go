@@ -65,3 +65,7 @@ func TestFailsOften(t *testing.T) {
 		t.Fatal("not this time")
 	}
 }
+
+func TestFailsOftenDoesNotPrefixMatch(t *testing.T) {}
+
+func TestFailsSometimesDoesNotPrefixMatch(t *testing.T) {}
