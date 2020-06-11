@@ -210,7 +210,7 @@ func run(opts *options) error {
 		return err
 	}
 	goTestExitErr := goTestProc.cmd.Wait()
-	if opts.rerunFailsMaxAttempts > 0 {
+	if goTestExitErr != nil && opts.rerunFailsMaxAttempts > 0 {
 		cfg := testjson.ScanConfig{Execution: exec, Handler: handler}
 		goTestExitErr = rerunFailed(ctx, opts, cfg)
 	}
