@@ -17,6 +17,9 @@ FAIL testdata/e2e/flaky.TestFailsOften
 PASS testdata/e2e/flaky.TestFailsOftenDoesNotPrefixMatch
 PASS testdata/e2e/flaky.TestFailsSometimesDoesNotPrefixMatch
 FAIL testdata/e2e/flaky
+
+DONE 6 tests, 3 failures
+
 PASS testdata/e2e/flaky.TestFailsRarely
 === RUN   TestFailsSometimes
 SEED:  1
@@ -29,6 +32,9 @@ SEED:  1
     flaky_test.go:65: not this time
 FAIL testdata/e2e/flaky.TestFailsOften
 FAIL testdata/e2e/flaky
+
+DONE 9 tests, 5 failures
+
 PASS testdata/e2e/flaky.TestFailsSometimes
 === RUN   TestFailsOften
 SEED:  2

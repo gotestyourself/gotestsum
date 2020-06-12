@@ -41,6 +41,9 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 			return fmt.Errorf("re-run cancelled because previous run had errors")
 		}
 
+		testjson.PrintSummary(opts.stdout, scanConfig.Execution, testjson.SummarizeNone)
+		opts.stdout.Write([]byte("\n")) // nolint: errcheck
+
 		nextRec := newFailureRecorder(scanConfig.Handler)
 		for pkg, testCases := range rec.pkgFailures {
 			rerun := rerunOpts{
@@ -62,8 +65,11 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 				return err
 			}
 			lastErr = goTestProc.cmd.Wait()
-			log.Warnf("go test exit code: %v", lastErr)
-			// TODO: will 'go test' exit with 2 if it panics? possibly error on that
+			// 0 and 1 are expected.
+			if ExitCodeWithDefault(lastErr) > 1 {
+				log.Warnf("unexpected go test exit code: %v", lastErr)
+				// TODO: will 'go test' exit with 2 if it panics? maybe return err here.
+			}
 			rec = nextRec
 		}
 	}
