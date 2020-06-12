@@ -33,14 +33,13 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 			"number of test failures (%d) exceeds maximum (%d) set by --rerun-fails-max-failures",
 			failed, opts.rerunFailsMaxInitialFailures)
 	}
+	if err := hasErrors(scanConfig.Execution); err != nil {
+		return err
+	}
 
 	rec := newFailureRecorderFromExecution(scanConfig.Execution)
 	var lastErr error
-	for count := 0; rec.count() > 0 && count < opts.rerunFailsMaxAttempts; count++ {
-		if len(scanConfig.Execution.Errors()) > 0 {
-			return fmt.Errorf("re-run cancelled because previous run had errors")
-		}
-
+	for attempts := 0; rec.count() > 0 && attempts < opts.rerunFailsMaxAttempts; attempts++ {
 		testjson.PrintSummary(opts.stdout, scanConfig.Execution, testjson.SummarizeNone)
 		opts.stdout.Write([]byte("\n")) // nolint: errcheck
 
@@ -70,10 +69,20 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 				log.Warnf("unexpected go test exit code: %v", lastErr)
 				// TODO: will 'go test' exit with 2 if it panics? maybe return err here.
 			}
+			if err := hasErrors(scanConfig.Execution); err != nil {
+				return err
+			}
 			rec = nextRec
 		}
 	}
 	return lastErr
+}
+
+func hasErrors(exec *testjson.Execution) error {
+	if len(exec.Errors()) > 0 {
+		return fmt.Errorf("rerun aborted because previous run had errors")
+	}
+	return nil
 }
 
 type failureRecorder struct {
