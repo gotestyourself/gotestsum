@@ -117,7 +117,7 @@ func (c *commandValue) Value() []string {
 var _ pflag.Value = (*stringSlice)(nil)
 
 // stringSlice is a flag.Value which populates the string slice by splitting
-// the raw flag value on spaces.
+// the raw flag value on whitespace.
 type stringSlice []string
 
 func (s *stringSlice) String() string {
@@ -125,7 +125,7 @@ func (s *stringSlice) String() string {
 }
 
 func (s *stringSlice) Set(raw string) error {
-	*s = append(*s, strings.Split(raw, " ")...)
+	*s = append(*s, strings.Fields(raw)...)
 	return nil
 }
 

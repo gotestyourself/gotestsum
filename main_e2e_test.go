@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"testing"
@@ -18,7 +19,7 @@ func TestE2E_RerunFails(t *testing.T) {
 	type testCase struct {
 		name        string
 		args        []string
-		expectedErr bool
+		expectedErr string
 	}
 	fn := func(t *testing.T, tc testCase) {
 		tmpFile := fs.NewFile(t, t.Name()+"-seedfile", fs.WithContent("0"))
@@ -38,16 +39,17 @@ func TestE2E_RerunFails(t *testing.T) {
 		opts.stderr = bufStderr
 
 		err := run(opts)
-		if tc.expectedErr {
-			assert.Error(t, err, "exit status 1")
+		if tc.expectedErr != "" {
+			assert.Error(t, err, tc.expectedErr)
 		} else {
 			assert.NilError(t, err)
 		}
 		out := text.ProcessLines(t, bufStdout,
 			text.OpRemoveSummaryLineElapsedTime,
-			text.OpRemoveTestElapsedTime)
+			text.OpRemoveTestElapsedTime,
+			filepath.ToSlash, // for windows
+		)
 		golden.Assert(t, out, expectedFilename(t.Name()))
-		assert.Equal(t, bufStderr.String(), "")
 	}
 	var testCases = []testCase{
 		{
@@ -67,7 +69,17 @@ func TestE2E_RerunFails(t *testing.T) {
 				"--packages=./testdata/e2e/flaky/",
 				"--", "-count=1", "-tags=testdata",
 			},
-			expectedErr: true,
+			expectedErr: "exit status 1",
+		},
+		{
+			name: "first run has errors, abort rerun",
+			args: []string{
+				"-f=testname",
+				"--rerun-fails=2",
+				"--packages=./testjson/internal/broken",
+				"--", "-count=1", "-tags=stubpkg",
+			},
+			expectedErr: "rerun aborted because previous run had errors",
 		},
 	}
 	for _, tc := range testCases {

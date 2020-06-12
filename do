@@ -8,6 +8,11 @@ binary() {
 }
 
 update-golden() {
+    _update-golden
+    GOLANG_VERSION=1.13-alpine ./do shell bash -c 'go build; PATH=$PATH:. ./do _update-golden'
+}
+
+_update-golden() {
     gotestsum -- . ./testjson ./internal/junitxml ./cmd/tool/slowest -test.update-golden
 }
 

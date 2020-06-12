@@ -25,3 +25,11 @@ func TestNoSummaryValue_SetAndString(t *testing.T) {
 		assert.ErrorContains(t, value.Set("bogus"), "must be one or more of")
 	})
 }
+
+func TestStringSlice(t *testing.T) {
+	value := "one \ntwo  three\n\tfour\t five   \n"
+	var v []string
+	ss := (*stringSlice)(&v)
+	assert.NilError(t, ss.Set(value))
+	assert.DeepEqual(t, v, []string{"one", "two", "three", "four", "five"})
+}
