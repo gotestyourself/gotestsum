@@ -42,9 +42,10 @@ func testNameFormat(event TestEvent, exec *Execution) (string, error) {
 	formatTest := func() string {
 		pkgPath := RelativePackagePath(event.Package)
 
-		return fmt.Sprintf("%s %s %s\n",
+		return fmt.Sprintf("%s %s%s %s\n",
 			result,
 			joinPkgToTestName(pkgPath, event.Test),
+			formatRunID(event.RunID),
 			event.ElapsedFormatted())
 	}
 
@@ -89,6 +90,14 @@ func joinPkgToTestName(pkg string, test string) string {
 		return test
 	}
 	return pkg + "." + test
+}
+
+// formatRunID returns a formatted string of the runID.
+func formatRunID(runID int) string {
+	if runID <= 0 {
+		return ""
+	}
+	return fmt.Sprintf(" (re-run %d)", runID)
 }
 
 // isPkgFailureOutput returns true if the event is package output, and the output

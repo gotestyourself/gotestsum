@@ -44,6 +44,8 @@ type TestEvent struct {
 	Output string
 	// raw is the raw JSON bytes of the event
 	raw []byte
+	// RunID from the ScanConfig which produced this test event.
+	RunID int
 }
 
 // PackageEvent returns true if the event is a package start or end event
@@ -231,6 +233,8 @@ type TestCase struct {
 	Package string
 	Test    string
 	Elapsed time.Duration
+	// RunID from the ScanConfig which produced this test case.
+	RunID int
 	// hasSubTestFailed is true when a subtest of this TestCase has failed. It is
 	// used to find root TestCases which have no failing subtests.
 	hasSubTestFailed bool
@@ -294,6 +298,7 @@ func (p *Package) addTestEvent(event TestEvent) {
 			Package: event.Package,
 			Test:    event.Test,
 			ID:      p.Total,
+			RunID:   event.RunID,
 		}
 		p.running[event.Test] = tc
 
@@ -460,6 +465,9 @@ func newExecution() *Execution {
 
 // ScanConfig used by ScanTestOutput.
 type ScanConfig struct {
+	// RunID is a unique identifier for the run. It may be set to the pid of the
+	// process, or some other identifier. It will stored as the TestCase.RunID.
+	RunID int
 	// Stdout is a reader that yields the test2json output stream.
 	Stdout io.Reader
 	// Stderr is a reader that yields stderr from the 'go test' process. Often
@@ -533,6 +541,7 @@ func readStdout(config ScanConfig, execution *Execution) error {
 			return errors.Wrapf(err, "failed to parse test output: %s", string(raw))
 		}
 
+		event.RunID = config.RunID
 		execution.add(event)
 		if err := config.Handler.Event(event, execution); err != nil {
 			return err

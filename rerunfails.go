@@ -51,6 +51,7 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 			}
 
 			cfg := testjson.ScanConfig{
+				RunID:     attempts + 1,
 				Stdout:    goTestProc.stdout,
 				Stderr:    goTestProc.stderr,
 				Handler:   nextRec,

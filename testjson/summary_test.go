@@ -302,3 +302,18 @@ func TestPrintSummary_WithRepeatedTestCases(t *testing.T) {
 	PrintSummary(buf, exec, SummarizeAll)
 	golden.Assert(t, buf.String(), "bug-repeated-test-case-output.out")
 }
+
+func TestPrintSummary_WithRerunID(t *testing.T) {
+	_, reset := patchClock()
+	defer reset()
+
+	exec, err := ScanTestOutput(ScanConfig{
+		Stdout: bytes.NewReader(golden.Get(t, "go-test-json.out")),
+		RunID:  7,
+	})
+	assert.NilError(t, err)
+
+	buf := new(bytes.Buffer)
+	PrintSummary(buf, exec, SummarizeAll)
+	golden.Assert(t, buf.String(), "summary-with-run-id.out")
+}

@@ -168,10 +168,11 @@ func writeTestCaseSummary(out io.Writer, execution executionSummary, conf testCa
 	}
 	fmt.Fprintln(out, "\n=== "+conf.header)
 	for _, tc := range testCases {
-		fmt.Fprintf(out, "=== %s: %s %s (%s)\n",
+		fmt.Fprintf(out, "=== %s: %s %s%s (%s)\n",
 			conf.prefix,
 			RelativePackagePath(tc.Package),
 			tc.Test,
+			formatRunID(tc.RunID),
 			FormatDurationAsSeconds(tc.Elapsed, 2))
 		for _, line := range execution.OutputLines(tc) {
 			if isRunLine(line) || conf.filter(tc.Test, line) {
