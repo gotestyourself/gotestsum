@@ -1,0 +1,75 @@
+{"Time":"2020-06-21T21:12:10.815884042-04:00","Action":"run","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestAlwaysPasses"}
+{"Time":"2020-06-21T21:12:10.816009964-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestAlwaysPasses","Output":"=== RUN   TestAlwaysPasses\n"}
+{"Time":"2020-06-21T21:12:10.816024167-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestAlwaysPasses","Output":"--- PASS: TestAlwaysPasses (0.00s)\n"}
+{"Time":"2020-06-21T21:12:10.81603019-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestAlwaysPasses","Elapsed":0}
+{"Time":"2020-06-21T21:12:10.81604135-04:00","Action":"run","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsRarely"}
+{"Time":"2020-06-21T21:12:10.816045457-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsRarely","Output":"=== RUN   TestFailsRarely\n"}
+{"Time":"2020-06-21T21:12:10.816049373-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsRarely","Output":"SEED:  0\n"}
+{"Time":"2020-06-21T21:12:10.816063218-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsRarely","Output":"    TestFailsRarely: flaky_test.go:51: not this time\n"}
+{"Time":"2020-06-21T21:12:10.816068373-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsRarely","Output":"--- FAIL: TestFailsRarely (0.00s)\n"}
+{"Time":"2020-06-21T21:12:10.816072877-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsRarely","Elapsed":0}
+{"Time":"2020-06-21T21:12:10.81607599-04:00","Action":"run","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes"}
+{"Time":"2020-06-21T21:12:10.81607897-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes","Output":"=== RUN   TestFailsSometimes\n"}
+{"Time":"2020-06-21T21:12:10.816082575-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes","Output":"SEED:  0\n"}
+{"Time":"2020-06-21T21:12:10.816086165-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes","Output":"    TestFailsSometimes: flaky_test.go:58: not this time\n"}
+{"Time":"2020-06-21T21:12:10.8160903-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes","Output":"--- FAIL: TestFailsSometimes (0.00s)\n"}
+{"Time":"2020-06-21T21:12:10.816094667-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes","Elapsed":0}
+{"Time":"2020-06-21T21:12:10.816098149-04:00","Action":"run","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften"}
+{"Time":"2020-06-21T21:12:10.816101281-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Output":"=== RUN   TestFailsOften\n"}
+{"Time":"2020-06-21T21:12:10.81610482-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Output":"SEED:  0\n"}
+{"Time":"2020-06-21T21:12:10.816108597-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Output":"    TestFailsOften: flaky_test.go:65: not this time\n"}
+{"Time":"2020-06-21T21:12:10.816112698-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Output":"--- FAIL: TestFailsOften (0.00s)\n"}
+{"Time":"2020-06-21T21:12:10.816116235-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Elapsed":0}
+{"Time":"2020-06-21T21:12:10.816119536-04:00","Action":"run","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOftenDoesNotPrefixMatch"}
+{"Time":"2020-06-21T21:12:10.816122935-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOftenDoesNotPrefixMatch","Output":"=== RUN   TestFailsOftenDoesNotPrefixMatch\n"}
+{"Time":"2020-06-21T21:12:10.816127081-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOftenDoesNotPrefixMatch","Output":"--- PASS: TestFailsOftenDoesNotPrefixMatch (0.00s)\n"}
+{"Time":"2020-06-21T21:12:10.816131578-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOftenDoesNotPrefixMatch","Elapsed":0}
+{"Time":"2020-06-21T21:12:10.816135262-04:00","Action":"run","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimesDoesNotPrefixMatch"}
+{"Time":"2020-06-21T21:12:10.816139844-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimesDoesNotPrefixMatch","Output":"=== RUN   TestFailsSometimesDoesNotPrefixMatch\n"}
+{"Time":"2020-06-21T21:12:10.816149774-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimesDoesNotPrefixMatch","Output":"--- PASS: TestFailsSometimesDoesNotPrefixMatch (0.00s)\n"}
+{"Time":"2020-06-21T21:12:10.816155804-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimesDoesNotPrefixMatch","Elapsed":0}
+{"Time":"2020-06-21T21:12:10.816159612-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Output":"FAIL\n"}
+{"Time":"2020-06-21T21:12:10.816211999-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Output":"FAIL\tgotest.tools/gotestsum/testdata/e2e/flaky\t0.001s\n"}
+{"Time":"2020-06-21T21:12:10.816224311-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Elapsed":0.001}
+{"Time":"2020-06-21T21:12:10.985779906-04:00","Action":"run","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsRarely"}
+{"Time":"2020-06-21T21:12:10.985890459-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsRarely","Output":"=== RUN   TestFailsRarely\n"}
+{"Time":"2020-06-21T21:12:10.985902826-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsRarely","Output":"SEED:  1\n"}
+{"Time":"2020-06-21T21:12:10.985911982-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsRarely","Output":"--- PASS: TestFailsRarely (0.00s)\n"}
+{"Time":"2020-06-21T21:12:10.985916034-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsRarely","Elapsed":0}
+{"Time":"2020-06-21T21:12:10.985923087-04:00","Action":"run","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes"}
+{"Time":"2020-06-21T21:12:10.985926869-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes","Output":"=== RUN   TestFailsSometimes\n"}
+{"Time":"2020-06-21T21:12:10.985930857-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes","Output":"SEED:  1\n"}
+{"Time":"2020-06-21T21:12:10.985934726-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes","Output":"    TestFailsSometimes: flaky_test.go:58: not this time\n"}
+{"Time":"2020-06-21T21:12:10.985939499-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes","Output":"--- FAIL: TestFailsSometimes (0.00s)\n"}
+{"Time":"2020-06-21T21:12:10.985943642-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes","Elapsed":0}
+{"Time":"2020-06-21T21:12:10.985945782-04:00","Action":"run","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften"}
+{"Time":"2020-06-21T21:12:10.985947733-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Output":"=== RUN   TestFailsOften\n"}
+{"Time":"2020-06-21T21:12:10.985949865-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Output":"SEED:  1\n"}
+{"Time":"2020-06-21T21:12:10.985952001-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Output":"    TestFailsOften: flaky_test.go:65: not this time\n"}
+{"Time":"2020-06-21T21:12:10.985954479-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Output":"--- FAIL: TestFailsOften (0.00s)\n"}
+{"Time":"2020-06-21T21:12:10.985956607-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Elapsed":0}
+{"Time":"2020-06-21T21:12:10.985958719-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Output":"FAIL\n"}
+{"Time":"2020-06-21T21:12:10.986048472-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Output":"FAIL\tgotest.tools/gotestsum/testdata/e2e/flaky\t0.001s\n"}
+{"Time":"2020-06-21T21:12:10.986068802-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Elapsed":0.001}
+{"Time":"2020-06-21T21:12:11.147554767-04:00","Action":"run","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes"}
+{"Time":"2020-06-21T21:12:11.147676606-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes","Output":"=== RUN   TestFailsSometimes\n"}
+{"Time":"2020-06-21T21:12:11.14768948-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes","Output":"SEED:  2\n"}
+{"Time":"2020-06-21T21:12:11.147700275-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes","Output":"--- PASS: TestFailsSometimes (0.00s)\n"}
+{"Time":"2020-06-21T21:12:11.147705201-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsSometimes","Elapsed":0}
+{"Time":"2020-06-21T21:12:11.147710442-04:00","Action":"run","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften"}
+{"Time":"2020-06-21T21:12:11.147712827-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Output":"=== RUN   TestFailsOften\n"}
+{"Time":"2020-06-21T21:12:11.147715318-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Output":"SEED:  2\n"}
+{"Time":"2020-06-21T21:12:11.147717797-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Output":"    TestFailsOften: flaky_test.go:65: not this time\n"}
+{"Time":"2020-06-21T21:12:11.147721095-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Output":"--- FAIL: TestFailsOften (0.00s)\n"}
+{"Time":"2020-06-21T21:12:11.147723329-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Elapsed":0}
+{"Time":"2020-06-21T21:12:11.147725838-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Output":"FAIL\n"}
+{"Time":"2020-06-21T21:12:11.14783256-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Output":"FAIL\tgotest.tools/gotestsum/testdata/e2e/flaky\t0.001s\n"}
+{"Time":"2020-06-21T21:12:11.147849384-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Elapsed":0.001}
+{"Time":"2020-06-21T21:12:11.226137617-04:00","Action":"run","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften"}
+{"Time":"2020-06-21T21:12:11.226247164-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Output":"=== RUN   TestFailsOften\n"}
+{"Time":"2020-06-21T21:12:11.226256816-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Output":"SEED:  14\n"}
+{"Time":"2020-06-21T21:12:11.226264297-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Output":"--- PASS: TestFailsOften (0.00s)\n"}
+{"Time":"2020-06-21T21:12:11.226266905-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Test":"TestFailsOften","Elapsed":0}
+{"Time":"2020-06-21T21:12:11.22627268-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Output":"PASS\n"}
+{"Time":"2020-06-21T21:12:11.226275849-04:00","Action":"output","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Output":"ok  \tgotest.tools/gotestsum/testdata/e2e/flaky\t(cached)\n"}
+{"Time":"2020-06-21T21:12:11.226279592-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testdata/e2e/flaky","Elapsed":0}

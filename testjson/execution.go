@@ -285,7 +285,6 @@ func (e *Execution) addPackageEvent(pkg *Package, event TestEvent) {
 	}
 }
 
-// nolint: gocyclo
 func (p *Package) addTestEvent(event TestEvent) {
 	tc := p.running[event.Test]
 	root, subTest := splitTestName(event.Test)

@@ -1,0 +1,3 @@
+gotest.tools/gotestsum/testdata/e2e/flaky.TestFailsOften: 4 runs, 3 failures
+gotest.tools/gotestsum/testdata/e2e/flaky.TestFailsRarely: 2 runs, 1 failures
+gotest.tools/gotestsum/testdata/e2e/flaky.TestFailsSometimes: 3 runs, 2 failures
