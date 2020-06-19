@@ -210,9 +210,13 @@ func run(opts *options) error {
 		return err
 	}
 	goTestExitErr := goTestProc.cmd.Wait()
+
 	if goTestExitErr != nil && opts.rerunFailsMaxAttempts > 0 {
-		cfg := testjson.ScanConfig{Execution: exec, Handler: handler}
-		goTestExitErr = rerunFailed(ctx, opts, cfg)
+		goTestExitErr = hasErrors(goTestExitErr, exec)
+		if goTestExitErr == nil {
+			cfg := testjson.ScanConfig{Execution: exec, Handler: handler}
+			goTestExitErr = rerunFailed(ctx, opts, cfg)
+		}
 	}
 
 	testjson.PrintSummary(opts.stdout, exec, opts.noSummary.value)

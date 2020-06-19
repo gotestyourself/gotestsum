@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"gotest.tools/gotestsum/log"
 	"gotest.tools/gotestsum/testjson"
 )
 
@@ -32,9 +31,6 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 		return fmt.Errorf(
 			"number of test failures (%d) exceeds maximum (%d) set by --rerun-fails-max-failures",
 			failed, opts.rerunFailsMaxInitialFailures)
-	}
-	if err := hasErrors(scanConfig.Execution); err != nil {
-		return err
 	}
 
 	rec := newFailureRecorderFromExecution(scanConfig.Execution)
@@ -64,12 +60,7 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 				return err
 			}
 			lastErr = goTestProc.cmd.Wait()
-			// 0 and 1 are expected.
-			if ExitCodeWithDefault(lastErr) > 1 {
-				log.Warnf("unexpected go test exit code: %v", lastErr)
-				// TODO: will 'go test' exit with 2 if it panics? maybe return err here.
-			}
-			if err := hasErrors(scanConfig.Execution); err != nil {
+			if err := hasErrors(lastErr, scanConfig.Execution); err != nil {
 				return err
 			}
 			rec = nextRec
@@ -78,11 +69,16 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 	return lastErr
 }
 
-func hasErrors(exec *testjson.Execution) error {
-	if len(exec.Errors()) > 0 {
+func hasErrors(err error, exec *testjson.Execution) error {
+	switch {
+	case len(exec.Errors()) > 0:
 		return fmt.Errorf("rerun aborted because previous run had errors")
+	// Exit code 0 and 1 are expected.
+	case ExitCodeWithDefault(err) > 1:
+		return fmt.Errorf("unexpected go test exit code: %v", err)
+	default:
+		return nil
 	}
-	return nil
 }
 
 type failureRecorder struct {
