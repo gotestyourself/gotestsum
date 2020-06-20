@@ -250,10 +250,11 @@ func newPackage() *Package {
 
 // Execution of one or more test packages
 type Execution struct {
-	started  time.Time
-	packages map[string]*Package
-	errors   []string
-	done     bool
+	started   time.Time
+	packages  map[string]*Package
+	errors    []string
+	done      bool
+	lastRunID int
 }
 
 func (e *Execution) add(event TestEvent) {
@@ -508,6 +509,9 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 	if execution == nil {
 		execution = newExecution()
 	}
+	execution.done = false
+	execution.lastRunID = config.RunID
+
 	var group errgroup.Group
 	group.Go(func() error {
 		return readStdout(config, execution)

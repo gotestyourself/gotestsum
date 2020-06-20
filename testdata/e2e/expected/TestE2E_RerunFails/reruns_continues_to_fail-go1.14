@@ -33,7 +33,7 @@ SEED:  1
 FAIL testdata/e2e/flaky.TestFailsOften (re-run 1)
 FAIL testdata/e2e/flaky
 
-DONE 9 tests, 5 failures
+DONE 2 runs, 9 tests, 5 failures
 
 PASS testdata/e2e/flaky.TestFailsSometimes (re-run 2)
 === RUN   TestFailsOften
@@ -69,4 +69,4 @@ SEED:  2
     TestFailsOften: flaky_test.go:65: not this time
 
 
-DONE 11 tests, 6 failures
+DONE 3 runs, 11 tests, 6 failures

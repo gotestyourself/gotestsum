@@ -32,4 +32,4 @@ this is stderr
 === FAIL: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestNestedWithFailure (re-run 7) (0.00s)
 
 
-DONE 46 tests, 4 skipped, 5 failures in 0.000s
+DONE 8 runs, 46 tests, 4 skipped, 5 failures in 0.000s

@@ -82,7 +82,7 @@ func PrintSummary(out io.Writer, execution *Execution, opts Summary) {
 	}
 
 	fmt.Fprintf(out, "\n%s %d tests%s%s%s in %s\n",
-		formatExecStatus(execution.done),
+		formatExecStatus(execution),
 		execution.Total(),
 		formatTestCount(len(execution.Skipped()), "skipped", ""),
 		formatTestCount(len(execution.Failed()), "failure", "s"),
@@ -101,12 +101,15 @@ func formatTestCount(count int, category string, pluralize string) string {
 	return fmt.Sprintf(", %d %s", count, category)
 }
 
-// TODO: maybe color this?
-func formatExecStatus(done bool) string {
-	if done {
-		return "DONE"
+func formatExecStatus(exec *Execution) string {
+	if !exec.done {
+		return ""
 	}
-	return ""
+	var runs string
+	if exec.lastRunID > 0 {
+		runs = fmt.Sprintf(" %d runs,", exec.lastRunID+1)
+	}
+	return "DONE" + runs
 }
 
 // FormatDurationAsSeconds formats a time.Duration as a float with an s suffix.

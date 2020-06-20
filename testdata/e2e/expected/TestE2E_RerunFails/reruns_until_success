@@ -33,7 +33,7 @@ SEED:  1
 FAIL testdata/e2e/flaky.TestFailsOften (re-run 1)
 FAIL testdata/e2e/flaky
 
-DONE 9 tests, 5 failures
+DONE 2 runs, 9 tests, 5 failures
 
 PASS testdata/e2e/flaky.TestFailsSometimes (re-run 2)
 === RUN   TestFailsOften
@@ -43,7 +43,7 @@ SEED:  2
 FAIL testdata/e2e/flaky.TestFailsOften (re-run 2)
 FAIL testdata/e2e/flaky
 
-DONE 11 tests, 6 failures
+DONE 3 runs, 11 tests, 6 failures
 
 === RUN   TestFailsOften
 SEED:  3
@@ -52,7 +52,7 @@ SEED:  3
 FAIL testdata/e2e/flaky.TestFailsOften (re-run 3)
 FAIL testdata/e2e/flaky
 
-DONE 12 tests, 7 failures
+DONE 4 runs, 12 tests, 7 failures
 
 PASS testdata/e2e/flaky.TestFailsOften (re-run 4)
 PASS testdata/e2e/flaky
@@ -87,4 +87,4 @@ SEED:  3
     flaky_test.go:65: not this time
 
 
-DONE 13 tests, 7 failures
+DONE 5 runs, 13 tests, 7 failures
