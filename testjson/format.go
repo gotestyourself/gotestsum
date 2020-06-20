@@ -41,20 +41,10 @@ func testNameFormat(event TestEvent, exec *Execution) (string, error) {
 	result := colorEvent(event)(strings.ToUpper(string(event.Action)))
 	formatTest := func() string {
 		pkgPath := RelativePackagePath(event.Package)
-		// If the package path isn't the current directory, we add
-		// a period to separate the test name and the package path.
-		// If it is the current directory, we don't show it at all.
-		// This prevents output like ..MyTest when the test
-		// is in the current directory.
-		if pkgPath == "." {
-			pkgPath = ""
-		} else {
-			pkgPath += "."
-		}
-		return fmt.Sprintf("%s %s%s %s\n",
+
+		return fmt.Sprintf("%s %s %s\n",
 			result,
-			pkgPath,
-			event.Test,
+			joinPkgToTestName(pkgPath, event.Test),
 			event.ElapsedFormatted())
 	}
 
@@ -87,6 +77,18 @@ func testNameFormat(event TestEvent, exec *Execution) (string, error) {
 		return formatTest(), nil
 	}
 	return "", nil
+}
+
+// joinPkgToTestName for formatting.
+// If the package path isn't the current directory, we add a period to separate
+// the test name and the package path. If it is the current directory, we don't
+// show it at all. This prevents output like ..MyTest when the test is in the
+// current directory.
+func joinPkgToTestName(pkg string, test string) string {
+	if pkg == "." {
+		return test
+	}
+	return pkg + "." + test
 }
 
 // isPkgFailureOutput returns true if the event is package output, and the output
