@@ -37,24 +37,15 @@ func standardQuietFormat(event TestEvent, _ *Execution) (string, error) {
 	return "", nil
 }
 
-func shortVerboseFormat(event TestEvent, exec *Execution) (string, error) {
+func testNameFormat(event TestEvent, exec *Execution) (string, error) {
 	result := colorEvent(event)(strings.ToUpper(string(event.Action)))
 	formatTest := func() string {
 		pkgPath := RelativePackagePath(event.Package)
-		// If the package path isn't the current directory, we add
-		// a period to separate the test name and the package path.
-		// If it is the current directory, we don't show it at all.
-		// This prevents output like ..MyTest when the test
-		// is in the current directory.
-		if pkgPath == "." {
-			pkgPath = ""
-		} else {
-			pkgPath += "."
-		}
+
 		return fmt.Sprintf("%s %s%s %s\n",
 			result,
-			pkgPath,
-			event.Test,
+			joinPkgToTestName(pkgPath, event.Test),
+			formatRunID(event.RunID),
 			event.ElapsedFormatted())
 	}
 
@@ -89,6 +80,26 @@ func shortVerboseFormat(event TestEvent, exec *Execution) (string, error) {
 	return "", nil
 }
 
+// joinPkgToTestName for formatting.
+// If the package path isn't the current directory, we add a period to separate
+// the test name and the package path. If it is the current directory, we don't
+// show it at all. This prevents output like ..MyTest when the test is in the
+// current directory.
+func joinPkgToTestName(pkg string, test string) string {
+	if pkg == "." {
+		return test
+	}
+	return pkg + "." + test
+}
+
+// formatRunID returns a formatted string of the runID.
+func formatRunID(runID int) string {
+	if runID <= 0 {
+		return ""
+	}
+	return fmt.Sprintf(" (re-run %d)", runID)
+}
+
 // isPkgFailureOutput returns true if the event is package output, and the output
 // doesn't match any of the expected framing messages. Events which match this
 // pattern should be package-level failures (ex: exit(1) or panic in an init() or
@@ -117,7 +128,7 @@ func all(cond ...bool) bool {
 
 const cachedMessage = " (cached)"
 
-func shortFormat(event TestEvent, exec *Execution) (string, error) {
+func pkgNameFormat(event TestEvent, exec *Execution) (string, error) {
 	if !event.PackageEvent() {
 		return "", nil
 	}
@@ -163,7 +174,7 @@ func shortFormatPackageEvent(event TestEvent, exec *Execution) (string, error) {
 	return "", nil
 }
 
-func shortWithFailuresFormat(event TestEvent, exec *Execution) (string, error) {
+func pkgNameWithFailuresFormat(event TestEvent, exec *Execution) (string, error) {
 	if !event.PackageEvent() {
 		if event.Action == ActionFail {
 			pkg := exec.Package(event.Package)
@@ -207,11 +218,11 @@ func NewEventFormatter(out io.Writer, format string) EventFormatter {
 	case "dots-v2":
 		return newDotFormatter(out)
 	case "testname", "short-verbose":
-		return &formatAdapter{out, shortVerboseFormat}
+		return &formatAdapter{out, testNameFormat}
 	case "pkgname", "short":
-		return &formatAdapter{out, shortFormat}
+		return &formatAdapter{out, pkgNameFormat}
 	case "pkgname-and-test-fails", "short-with-failures":
-		return &formatAdapter{out, shortWithFailuresFormat}
+		return &formatAdapter{out, pkgNameWithFailuresFormat}
 	default:
 		return nil
 	}

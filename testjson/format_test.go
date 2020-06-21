@@ -66,10 +66,10 @@ func patchPkgPathPrefix(val string) func() {
 	return func() { pkgPathPrefix = oldVal }
 }
 
-func TestScanTestOutputWithShortVerboseFormat(t *testing.T) {
+func TestScanTestOutput_WithTestNameFormat(t *testing.T) {
 	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
 
-	shim := newFakeHandlerWithAdapter(shortVerboseFormat, "go-test-json")
+	shim := newFakeHandlerWithAdapter(testNameFormat, "go-test-json")
 	exec, err := ScanTestOutput(shim.Config(t))
 
 	assert.NilError(t, err)
@@ -149,10 +149,10 @@ func TestScanTestOutputWithDotsFormatV1(t *testing.T) {
 	assert.DeepEqual(t, exec, expectedExecution, cmpExecutionShallow)
 }
 
-func TestScanTestOutputWithShortFormat(t *testing.T) {
+func TestScanTestOutput_WithPkgNameFormat(t *testing.T) {
 	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
 
-	shim := newFakeHandlerWithAdapter(shortFormat, "go-test-json")
+	shim := newFakeHandlerWithAdapter(pkgNameFormat, "go-test-json")
 	exec, err := ScanTestOutput(shim.Config(t))
 
 	assert.NilError(t, err)
@@ -161,10 +161,10 @@ func TestScanTestOutputWithShortFormat(t *testing.T) {
 	assert.DeepEqual(t, exec, expectedExecution, cmpExecutionShallow)
 }
 
-func TestScanTestOutputWithShortFormat_WithCoverage(t *testing.T) {
+func TestScanTestOutput_WithPkgNameFormat_WithCoverage(t *testing.T) {
 	defer patchPkgPathPrefix("gotest.tools")()
 
-	shim := newFakeHandlerWithAdapter(shortFormat, "go-test-json-with-cover")
+	shim := newFakeHandlerWithAdapter(pkgNameFormat, "go-test-json-with-cover")
 	exec, err := ScanTestOutput(shim.Config(t))
 
 	assert.NilError(t, err)
