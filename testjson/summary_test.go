@@ -271,6 +271,20 @@ func TestPrintSummary_WithSubtestFailures(t *testing.T) {
 	golden.Assert(t, buf.String(), "summary-root-test-has-subtest-failures")
 }
 
+func TestPrintSummary_WithParallelFailures(t *testing.T) {
+	_, reset := patchClock()
+	defer reset()
+
+	exec, err := ScanTestOutput(ScanConfig{
+		Stdout: bytes.NewReader(golden.Get(t, "go-test-json-with-parallel-fails.out")),
+	})
+	assert.NilError(t, err)
+
+	buf := new(bytes.Buffer)
+	PrintSummary(buf, exec, SummarizeAll)
+	golden.Assert(t, buf.String(), "summary-parallel-failures.out")
+}
+
 func TestPrintSummary_WithMissingSkipMessage(t *testing.T) {
 	_, reset := patchClock()
 	defer reset()

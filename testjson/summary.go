@@ -178,7 +178,7 @@ func writeTestCaseSummary(out io.Writer, execution executionSummary, conf testCa
 			formatRunID(tc.RunID),
 			FormatDurationAsSeconds(tc.Elapsed, 2))
 		for _, line := range execution.OutputLines(tc) {
-			if isRunLine(line) || conf.filter(tc.Test, line) {
+			if isFramingLine(line) || conf.filter(tc.Test, line) {
 				continue
 			}
 			fmt.Fprint(out, line)
@@ -222,6 +222,8 @@ func formatSkipped() testCaseFormatConfig {
 	}
 }
 
-func isRunLine(line string) bool {
-	return strings.HasPrefix(line, "=== RUN   Test")
+func isFramingLine(line string) bool {
+	return strings.HasPrefix(line, "=== RUN   Test") ||
+		strings.HasPrefix(line, "=== PAUSE Test") ||
+		strings.HasPrefix(line, "=== CONT  Test")
 }
