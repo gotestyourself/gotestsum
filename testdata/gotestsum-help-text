@@ -16,6 +16,7 @@ Flags:
       --raw-command                                 don't prepend 'go test -json' to the 'go test' command
       --rerun-fails int[=2]                         rerun failed tests until they all pass, or attempts exceeds maximum. Defaults to max 2 reruns when enabled.
       --rerun-fails-max-failures int                do not rerun any tests if the initial run has more than this number of failures (default 10)
+      --rerun-fails-report string                   write a report to the file, of the tests that were rerun
       --version                                     show version and exit
 
 Formats:

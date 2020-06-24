@@ -107,6 +107,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		"do not rerun any tests if the initial run has more than this number of failures")
 	flags.Var((*stringSlice)(&opts.packages), "packages",
 		"space separated list of package to test")
+	flags.StringVar(&opts.rerunFailsReportFile, "rerun-fails-report", "",
+		"write a report to the file, of the tests that were rerun")
 
 	flags.BoolVar(&opts.debug, "debug", false, "enabled debug logging")
 	flags.BoolVar(&opts.version, "version", false, "show version and exit")
@@ -158,6 +160,7 @@ type options struct {
 	junitTestCaseClassnameFormat *junitFieldFormatValue
 	rerunFailsMaxAttempts        int
 	rerunFailsMaxInitialFailures int
+	rerunFailsReportFile         string
 	packages                     []string
 	version                      bool
 
@@ -221,6 +224,9 @@ func run(opts *options) error {
 
 	testjson.PrintSummary(opts.stdout, exec, opts.noSummary.value)
 	if err := writeJUnitFile(opts, exec); err != nil {
+		return err
+	}
+	if err := writeRerunFailsReport(opts, exec); err != nil {
 		return err
 	}
 	if err := postRunHook(opts, exec); err != nil {

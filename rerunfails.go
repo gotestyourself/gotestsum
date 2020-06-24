@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
+	"sort"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -128,4 +130,54 @@ func goTestRunFlagFromTestCases(tcs []string) string {
 	}
 	buf.WriteString(")$")
 	return buf.String()
+}
+
+func writeRerunFailsReport(opts *options, exec *testjson.Execution) error {
+	if opts.rerunFailsMaxAttempts == 0 || opts.rerunFailsReportFile == "" {
+		return nil
+	}
+
+	type testCaseCounts struct {
+		total  int
+		failed int
+	}
+
+	names := []string{}
+	results := map[string]testCaseCounts{}
+	for _, failure := range exec.Failed() {
+		name := failure.Package + "." + failure.Test
+		if _, ok := results[name]; ok {
+			continue
+		}
+		names = append(names, name)
+
+		pkg := exec.Package(failure.Package)
+		counts := testCaseCounts{}
+
+		for _, tc := range pkg.Failed {
+			if tc.Test == failure.Test {
+				counts.total++
+				counts.failed++
+			}
+		}
+		for _, tc := range pkg.Passed {
+			if tc.Test == failure.Test {
+				counts.total++
+			}
+		}
+		// Skipped tests are not counted, but presumably skipped tests can not fail
+		results[name] = counts
+	}
+
+	fh, err := os.Create(opts.rerunFailsReportFile)
+	if err != nil {
+		return err
+	}
+
+	sort.Strings(names)
+	for _, name := range names {
+		counts := results[name]
+		fmt.Fprintf(fh, "%s: %d runs, %d failures\n", name, counts.total, counts.failed)
+	}
+	return nil
 }
