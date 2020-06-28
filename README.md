@@ -255,32 +255,45 @@ To execute a test binary without installing Go, see
 
 ### Finding and skipping slow tests
 
-`gotestsum tool slowest` reads a jsonfile and prints the names of slow tests, or update
-tests which are slower than the threshold.
-The list of tests is sorted by slowest to fastest.
-The json filecan be created with `gotestsum --jsonfile` or `go test -json`.
+`gotestsum tool slowest` reads [test2json output][testjson],
+from a file or stdin, and prints the names and elapsed time of slow tests.
+The tests are sorted from slowest to fastest.
+
+`gotestsum tool slowest` can also rewrite the source of tests slower than the
+threshold, making it possible to optionally skip them.
+
+The [test2json output][testjson] can be created with `gotestsum --jsonfile` or `go test -json`.
 
 See `gotestsum tool slowest --help`.
 
-**Example: printing a list of tests slower than 50 milliseconds**
+**Example: printing a list of tests slower than 500 milliseconds**
 
 ```
-gotestsum --jsonfile json.log
-gotestsum tool slowest --jsonfile json.log --threshold 50ms
+$ gotestsum --format dots --jsonfile json.log
+[.]····↷··↷·
+$ gotestsum tool slowest --jsonfile json.log --threshold 500ms
+gotest.tools/example TestSomething 1.34s
+gotest.tools/example TestSomethingElse 810ms
 ```
 
 **Example: skipping slow tests with `go test --short`**
 
-Any test which runs longer than 200 milliseconds will be modified by adding a
-`t.Skip` when `testing.Short` is enabled.
+Any test slower than 200 milliseconds will be modified to add:
 
-```
-go test -json -short ./... | \
-  gotestsum tool slowest --skip-stmt "testing.Short" --threshold 200ms
+```go
+if testing.Short() {
+    t.Skip("too slow for testing.Short")
+}
 ```
 
-Use `git diff` to see the file changes, and `git add;git commit` to save them.
+```sh
+go test -json -short ./... | gotestsum tool slowest --skip-stmt "testing.Short" --threshold 200ms
+```
+
+Use `git diff` to see the file changes.
 The next time tests are run using `--short` all the slow tests will be skipped.
+
+[testjson]: https://golang.org/cmd/test2json/
 
 
 ### Run tests when a file is modified
