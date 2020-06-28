@@ -47,23 +47,27 @@ func TestAlwaysPasses(t *testing.T) {
 
 func TestFailsRarely(t *testing.T) {
 	setup(t)
-	if seed%10 != 1 {
+	if seed%20 != 1 {
 		t.Fatal("not this time")
 	}
 }
 
 func TestFailsSometimes(t *testing.T) {
 	setup(t)
-	if seed%10 != 2 {
+	if seed%4 != 2 {
 		t.Fatal("not this time")
 	}
 }
 
 func TestFailsOften(t *testing.T) {
 	setup(t)
-	if seed%10 != 4 {
-		t.Fatal("not this time")
-	}
+
+	t.Run("subtest always passes", func(t *testing.T) {})
+	t.Run("subtest may fail", func(t *testing.T) {
+		if seed%20 != 6 {
+			t.Fatal("not this time")
+		}
+	})
 }
 
 func TestFailsOftenDoesNotPrefixMatch(t *testing.T) {}

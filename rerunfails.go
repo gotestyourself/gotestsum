@@ -27,8 +27,18 @@ func (o rerunOpts) Args() []string {
 	return result
 }
 
+func newRerunOptsFromTestCase(tc testjson.TestCase) rerunOpts {
+	return rerunOpts{
+		runFlag: goTestRunFlagForTestCase(tc.Test),
+		pkg:     tc.Package,
+	}
+}
+
+type testCaseFilter func([]testjson.TestCase) []testjson.TestCase
+
 func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanConfig) error {
-	failed := len(scanConfig.Execution.Failed())
+	tcFilter := opts.rerunFailsFilter()
+	failed := len(tcFilter(scanConfig.Execution.Failed()))
 	if failed > opts.rerunFailsMaxInitialFailures {
 		return fmt.Errorf(
 			"number of test failures (%d) exceeds maximum (%d) set by --rerun-fails-max-failures",
@@ -42,12 +52,8 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 		opts.stdout.Write([]byte("\n")) // nolint: errcheck
 
 		nextRec := newFailureRecorder(scanConfig.Handler)
-		for pkg, testCases := range rec.pkgFailures {
-			rerun := rerunOpts{
-				runFlag: goTestRunFlagFromTestCases(testCases),
-				pkg:     pkg,
-			}
-			goTestProc, err := startGoTest(ctx, goTestCmdArgs(opts, rerun))
+		for _, tc := range tcFilter(rec.failures) {
+			goTestProc, err := startGoTest(ctx, goTestCmdArgs(opts, newRerunOptsFromTestCase(tc)))
 			if err != nil {
 				return errors.Wrapf(err, "failed to run %s", strings.Join(goTestProc.cmd.Args, " "))
 			}
@@ -66,8 +72,8 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 			if err := hasErrors(lastErr, scanConfig.Execution); err != nil {
 				return err
 			}
-			rec = nextRec
 		}
+		rec = nextRec
 	}
 	return lastErr
 }
@@ -86,50 +92,36 @@ func hasErrors(err error, exec *testjson.Execution) error {
 
 type failureRecorder struct {
 	testjson.EventHandler
-	pkgFailures map[string][]string
+	failures []testjson.TestCase
 }
 
 func newFailureRecorder(handler testjson.EventHandler) *failureRecorder {
-	return &failureRecorder{
-		EventHandler: handler,
-		pkgFailures:  make(map[string][]string),
-	}
+	return &failureRecorder{EventHandler: handler}
 }
 
 func newFailureRecorderFromExecution(exec *testjson.Execution) *failureRecorder {
-	r := newFailureRecorder(nil)
-	for _, tc := range exec.Failed() {
-		r.pkgFailures[tc.Package] = append(r.pkgFailures[tc.Package], tc.Test)
-	}
-	return r
+	return &failureRecorder{failures: exec.Failed()}
 }
 
 func (r *failureRecorder) Event(event testjson.TestEvent, execution *testjson.Execution) error {
 	if !event.PackageEvent() && event.Action == testjson.ActionFail {
-		r.pkgFailures[event.Package] = append(r.pkgFailures[event.Package], event.Test)
+		pkg := execution.Package(event.Package)
+		tc := pkg.LastFailedByName(event.Test)
+		r.failures = append(r.failures, tc)
 	}
 	return r.EventHandler.Event(event, execution)
 }
 
 func (r *failureRecorder) count() int {
-	total := 0
-	for _, tcs := range r.pkgFailures {
-		total += len(tcs)
-	}
-	return total
+	return len(r.failures)
 }
 
-func goTestRunFlagFromTestCases(tcs []string) string {
-	buf := new(strings.Builder)
-	buf.WriteString("-run=^(")
-	for i, tc := range tcs {
-		if i != 0 {
-			buf.WriteString("|")
-		}
-		buf.WriteString(tc)
+func goTestRunFlagForTestCase(name string) string {
+	root, sub := testjson.SplitTestName(name)
+	if sub == "" {
+		return "-run=^" + name + "$"
 	}
-	buf.WriteString(")$")
-	return buf.String()
+	return "-run=^" + root + "$/^" + sub + "$"
 }
 
 func writeRerunFailsReport(opts *options, exec *testjson.Execution) error {
