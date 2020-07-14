@@ -12,7 +12,9 @@ builds:
       - darwin
       - windows
       - linux
-    goarch: [amd64]
+    goarch:
+      - amd64
+      - arm64
     env: [CGO_ENABLED=0]
 
 checksum:
