@@ -241,6 +241,10 @@ func TestPrintSummary_MissingTestFailEvent(t *testing.T) {
 	buf := new(bytes.Buffer)
 	PrintSummary(buf, exec, SummarizeAll)
 	golden.Assert(t, buf.String(), "summary-missing-test-fail-event")
+
+	for name, pkg := range exec.packages {
+		assert.Equal(t, len(pkg.running), 0, "package %v still had tests in running", name)
+	}
 }
 
 func TestPrintSummary_WithMisattributedOutput(t *testing.T) {

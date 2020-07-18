@@ -209,7 +209,7 @@ const neverFinished time.Duration = -1
 // in some cases, when a test panics.
 func (p *Package) end() []TestEvent {
 	result := make([]TestEvent, 0, len(p.running))
-	for _, tc := range p.running {
+	for k, tc := range p.running {
 		tc.Elapsed = neverFinished
 		p.Failed = append(p.Failed, tc)
 
@@ -219,6 +219,7 @@ func (p *Package) end() []TestEvent {
 			Test:    tc.Test,
 			Elapsed: float64(neverFinished),
 		})
+		delete(p.running, k)
 	}
 	return result
 }

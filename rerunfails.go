@@ -36,8 +36,17 @@ func newRerunOptsFromTestCase(tc testjson.TestCase) rerunOpts {
 
 type testCaseFilter func([]testjson.TestCase) []testjson.TestCase
 
+func rerunFailsFilter(o *options) testCaseFilter {
+	if o.rerunFailsOnlyRootCases {
+		return func(tcs []testjson.TestCase) []testjson.TestCase {
+			return tcs
+		}
+	}
+	return testjson.FilterFailedUnique
+}
+
 func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanConfig) error {
-	tcFilter := opts.rerunFailsFilter()
+	tcFilter := rerunFailsFilter(opts)
 	failed := len(tcFilter(scanConfig.Execution.Failed()))
 	if failed > opts.rerunFailsMaxInitialFailures {
 		return fmt.Errorf(

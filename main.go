@@ -182,15 +182,6 @@ func (o options) Validate() error {
 	return nil
 }
 
-func (o options) rerunFailsFilter() testCaseFilter {
-	if o.rerunFailsOnlyRootCases {
-		return func(tcs []testjson.TestCase) []testjson.TestCase {
-			return tcs
-		}
-	}
-	return testjson.FilterFailedUnique
-}
-
 func setupLogging(opts *options) {
 	if opts.debug {
 		log.SetLevel(log.DebugLevel)
