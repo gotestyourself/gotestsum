@@ -7,13 +7,24 @@ binary() {
     go build -o dist/gotestsum .
 }
 
+binary-static() {
+    echo "building static binary: dist/gotestsum"
+    CGO_ENABLED=0 binary
+}
+
 update-golden() {
-    _update-golden
-    GOLANG_VERSION=1.13-alpine ./do shell bash -c 'go build; PATH=$PATH:. ./do _update-golden'
+    #_update-golden
+    if ldd ./dist/gotestsum > /dev/null 2>&1; then
+        binary-static
+    fi
+    GOLANG_VERSION=1.13-alpine ./do shell ./do _update-golden
+    GOLANG_VERSION=1.14.6-alpine ./do shell ./do _update-golden
 }
 
 _update-golden() {
-    gotestsum -- . ./testjson ./internal/junitxml ./cmd/tool/slowest -test.update-golden
+    PATH="$PWD/dist:$PATH" gotestsum -- \
+        . ./testjson ./internal/junitxml ./cmd/tool/slowest \
+        -test.update-golden
 }
 
 lint() {

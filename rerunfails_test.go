@@ -32,3 +32,30 @@ func TestWriteRerunFailsReport(t *testing.T) {
 	assert.NilError(t, err)
 	golden.Assert(t, string(raw), t.Name()+"-expected")
 }
+
+func TestGoTestRunFlagFromTestCases(t *testing.T) {
+	type testCase struct {
+		input    string
+		expected string
+	}
+	fn := func(t *testing.T, tc testCase) {
+		actual := goTestRunFlagForTestCase(tc.input)
+		assert.Equal(t, actual, tc.expected)
+	}
+
+	var testCases = map[string]testCase{
+		"root test case": {
+			input:    "TestOne",
+			expected: "-run=^TestOne$",
+		},
+		"sub test case": {
+			input:    "TestOne/SubtestA",
+			expected: "-run=^TestOne$/^SubtestA$",
+		},
+	}
+	for name := range testCases {
+		t.Run(name, func(t *testing.T) {
+			fn(t, testCases[name])
+		})
+	}
+}

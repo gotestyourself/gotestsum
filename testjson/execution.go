@@ -143,7 +143,7 @@ func (p *Package) Output(id int) string {
 // then all output for every subtest under the root test is returned.
 // See https://github.com/golang/go/issues/29755.
 func (p *Package) OutputLines(tc TestCase) []string {
-	_, sub := splitTestName(tc.Test)
+	_, sub := SplitTestName(tc.Test)
 	lines := p.output[tc.ID]
 
 	// If this is a subtest, or a root test case with subtest failures the
@@ -166,8 +166,8 @@ func (p *Package) addOutput(id int, output string) {
 	p.output[id] = append(p.output[id], output)
 }
 
-// splitTestName into root test name and any subtest names.
-func splitTestName(name string) (root, sub string) {
+// SplitTestName into root test name and any subtest names.
+func SplitTestName(name string) (root, sub string) {
 	parts := strings.SplitN(name, "/", 2)
 	if len(parts) < 2 {
 		return name, ""
@@ -209,7 +209,7 @@ const neverFinished time.Duration = -1
 // in some cases, when a test panics.
 func (p *Package) end() []TestEvent {
 	result := make([]TestEvent, 0, len(p.running))
-	for _, tc := range p.running {
+	for k, tc := range p.running {
 		tc.Elapsed = neverFinished
 		p.Failed = append(p.Failed, tc)
 
@@ -219,6 +219,7 @@ func (p *Package) end() []TestEvent {
 			Test:    tc.Test,
 			Elapsed: float64(neverFinished),
 		})
+		delete(p.running, k)
 	}
 	return result
 }
@@ -287,7 +288,7 @@ func (e *Execution) addPackageEvent(pkg *Package, event TestEvent) {
 
 func (p *Package) addTestEvent(event TestEvent) {
 	tc := p.running[event.Test]
-	root, subTest := splitTestName(event.Test)
+	root, subTest := SplitTestName(event.Test)
 
 	switch event.Action {
 	case ActionRun:
@@ -403,6 +404,18 @@ func (e *Execution) Failed() []TestCase {
 		failed = append(failed, pkg.Failed...)
 	}
 	return failed
+}
+
+// FilterFailedUnique filters a slice of failed TestCases by removing root test
+// case that have failed subtests.
+func FilterFailedUnique(tcs []TestCase) []TestCase {
+	var result []TestCase
+	for _, tc := range tcs {
+		if !tc.hasSubTestFailed {
+			result = append(result, tc)
+		}
+	}
+	return result
 }
 
 func sortedKeys(pkgs map[string]*Package) []string {
