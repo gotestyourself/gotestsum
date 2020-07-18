@@ -49,7 +49,7 @@ func TestE2E_RerunFails(t *testing.T) {
 			text.OpRemoveTestElapsedTime,
 			filepath.ToSlash, // for windows
 		)
-		golden.Assert(t, out, expectedFilename(t.Name()))
+		golden.Assert(t, out, "e2e/expected/"+expectedFilename(t.Name()))
 	}
 	var testCases = []testCase{
 		{
@@ -105,10 +105,26 @@ func osEnviron() map[string]string {
 }
 
 func expectedFilename(name string) string {
-	// go1.14 changed how it prints messages from tests. It may be changed back
-	// in go1.15, so special case this version for now.
-	if strings.HasPrefix(runtime.Version(), "go1.14.") {
-		name = name + "-go1.14"
+	ver := runtime.Version()
+	switch {
+	case isPreGo114(ver):
+		return name + "-go1.13"
+	default:
+		return name
 	}
-	return "e2e/expected/" + name
+}
+
+// go1.14.6 changed how it prints messages from tests. go1.14.{0-5} used a format
+// that was different from both go1.14.6 and previous versions of Go. These tests
+// no longer support that format.
+func isPreGo114(ver string) bool {
+	prefix := "go1.1"
+	if !strings.HasPrefix(ver, prefix) || len(ver) < len(prefix)+1 {
+		return false
+	}
+	switch ver[len(prefix)] {
+	case '0', '1', '2', '3':
+		return true
+	}
+	return false
 }
