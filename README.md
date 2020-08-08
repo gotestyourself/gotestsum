@@ -37,7 +37,7 @@ A demonstration of three `--format` options.
 Set a format with the `--format` flag or the `GOTESTSUM_FORMAT` environment
 variable.
 ```
-gotestsum --format short-verbose
+gotestsum --format testname
 ```
 
 Supported formats:
