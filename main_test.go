@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"os"
+	"strings"
 	"testing"
 
 	"gotest.tools/v3/assert"
@@ -285,4 +287,72 @@ func TestGoTestCmdArgs(t *testing.T) {
 			fn(t, tc)
 		})
 	}
+}
+
+func TestRun_RerunFails_WithTooManyInitialFailures(t *testing.T) {
+	jsonFailed := `{"Package": "pkg", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne", "Action": "fail"}
+{"Package": "pkg", "Test": "TestTwo", "Action": "run"}
+{"Package": "pkg", "Test": "TestTwo", "Action": "fail"}
+{"Package": "pkg", "Action": "fail"}
+`
+
+	fn := func(args []string) proc {
+		return proc{
+			cmd:    fakeWaiter{result: newExitCode("failed", 1)},
+			stdout: strings.NewReader(jsonFailed),
+			stderr: bytes.NewReader(nil),
+		}
+	}
+	reset := patchStartGoTestFn(fn)
+	defer reset()
+
+	out := new(bytes.Buffer)
+	opts := &options{
+		rawCommand:                   true,
+		args:                         []string{"./test.test"},
+		format:                       "testname",
+		rerunFailsMaxAttempts:        3,
+		rerunFailsMaxInitialFailures: 1,
+		stdout:                       out,
+		stderr:                       os.Stderr,
+		noSummary:                    newNoSummaryValue(),
+	}
+	err := run(opts)
+	assert.ErrorContains(t, err, "number of test failures (2) exceeds maximum (1)", out.String())
+}
+
+func TestRun_RerunFails_BuildErrorPreventsRerun(t *testing.T) {
+	jsonFailed := `{"Package": "pkg", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne", "Action": "fail"}
+{"Package": "pkg", "Test": "TestTwo", "Action": "run"}
+{"Package": "pkg", "Test": "TestTwo", "Action": "fail"}
+{"Package": "pkg", "Action": "fail"}
+`
+
+	fn := func(args []string) proc {
+		return proc{
+			cmd:    fakeWaiter{result: newExitCode("failed", 1)},
+			stdout: strings.NewReader(jsonFailed),
+			stderr: strings.NewReader("anything here is an error\n"),
+		}
+	}
+	reset := patchStartGoTestFn(fn)
+	defer reset()
+
+	out := new(bytes.Buffer)
+	opts := &options{
+		rawCommand:                   true,
+		args:                         []string{"./test.test"},
+		format:                       "testname",
+		rerunFailsMaxAttempts:        3,
+		rerunFailsMaxInitialFailures: 1,
+		stdout:                       out,
+		stderr:                       os.Stderr,
+		noSummary:                    newNoSummaryValue(),
+	}
+	err := run(opts)
+	assert.ErrorContains(t, err, "rerun aborted because previous run had errors", out.String())
 }

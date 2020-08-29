@@ -45,12 +45,6 @@ func rerunFailsFilter(o *options) testCaseFilter {
 
 func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanConfig) error {
 	tcFilter := rerunFailsFilter(opts)
-	failed := len(tcFilter(scanConfig.Execution.Failed()))
-	if failed > opts.rerunFailsMaxInitialFailures {
-		return fmt.Errorf(
-			"number of test failures (%d) exceeds maximum (%d) set by --rerun-fails-max-failures",
-			failed, opts.rerunFailsMaxInitialFailures)
-	}
 
 	rec := newFailureRecorderFromExecution(scanConfig.Execution)
 	for attempts := 0; rec.count() > 0 && attempts < opts.rerunFailsMaxAttempts; attempts++ {

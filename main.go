@@ -197,7 +197,7 @@ func run(opts *options) error {
 		return err
 	}
 
-	goTestProc, err := startGoTest(ctx, goTestCmdArgs(opts, rerunOpts{}))
+	goTestProc, err := startGoTestFn(ctx, goTestCmdArgs(opts, rerunOpts{}))
 	if err != nil {
 		return err
 	}
@@ -216,27 +216,40 @@ func run(opts *options) error {
 	if err != nil {
 		return err
 	}
-	goTestExitErr := goTestProc.cmd.Wait()
-
-	if goTestExitErr != nil && opts.rerunFailsMaxAttempts > 0 {
-		goTestExitErr = hasErrors(goTestExitErr, exec)
-		if goTestExitErr == nil {
-			cfg := testjson.ScanConfig{Execution: exec, Handler: handler}
-			goTestExitErr = rerunFailed(ctx, opts, cfg)
-		}
+	exitErr := goTestProc.cmd.Wait()
+	if exitErr == nil || opts.rerunFailsMaxAttempts == 0 {
+		return finishRun(opts, exec, exitErr)
+	}
+	if err := hasErrors(exitErr, exec); err != nil {
+		return finishRun(opts, exec, err)
 	}
 
-	testjson.PrintSummary(opts.stdout, exec, opts.noSummary.value)
-	if err := writeJUnitFile(opts, exec); err != nil {
+	failed := len(rerunFailsFilter(opts)(exec.Failed()))
+	if failed > opts.rerunFailsMaxInitialFailures {
+		err := fmt.Errorf(
+			"number of test failures (%d) exceeds maximum (%d) set by --rerun-fails-max-failures",
+			failed, opts.rerunFailsMaxInitialFailures)
+		return finishRun(opts, exec, err)
+	}
+
+	cfg = testjson.ScanConfig{Execution: exec, Handler: handler}
+	exitErr = rerunFailed(ctx, opts, cfg)
+	if err := writeRerunFailsReport(opts, exec); err != nil {
 		return err
 	}
-	if err := writeRerunFailsReport(opts, exec); err != nil {
+	return finishRun(opts, exec, exitErr)
+}
+
+func finishRun(opts *options, exec *testjson.Execution, exitErr error) error {
+	testjson.PrintSummary(opts.stdout, exec, opts.noSummary.value)
+
+	if err := writeJUnitFile(opts, exec); err != nil {
 		return err
 	}
 	if err := postRunHook(opts, exec); err != nil {
 		return err
 	}
-	return goTestExitErr
+	return exitErr
 }
 
 func goTestCmdArgs(opts *options, rerunOpts rerunOpts) []string {
