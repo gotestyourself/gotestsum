@@ -2,7 +2,10 @@ package main
 
 import (
 	"bytes"
+	"context"
+	"fmt"
 	"io/ioutil"
+	"strings"
 	"testing"
 
 	"gotest.tools/gotestsum/testjson"
@@ -58,4 +61,113 @@ func TestGoTestRunFlagFromTestCases(t *testing.T) {
 			fn(t, testCases[name])
 		})
 	}
+}
+
+func TestRerunFailed_ReturnsAnErrorWhenTheLastTestIsSuccessful(t *testing.T) {
+	type result struct {
+		out string
+		err error
+	}
+	jsonFailed := `{"Package": "pkg", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne", "Action": "fail"}
+{"Package": "pkg", "Action": "fail"}
+`
+	events := []result{
+		{out: jsonFailed, err: newExitCode("run-failed-1", 1)},
+		{out: jsonFailed, err: newExitCode("run-failed-2", 1)},
+		{out: jsonFailed, err: newExitCode("run-failed-3", 1)},
+		{
+			out: `{"Package": "pkg", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne", "Action": "pass"}
+{"Package": "pkg", "Action": "pass"}
+`,
+		},
+	}
+
+	fn := func(args []string) proc {
+		next := events[0]
+		events = events[1:]
+		return proc{
+			cmd:    fakeWaiter{result: next.err},
+			stdout: strings.NewReader(next.out),
+			stderr: bytes.NewReader(nil),
+		}
+	}
+	reset := patchStartGoTestFn(fn)
+	defer reset()
+
+	stdout := new(bytes.Buffer)
+	ctx := context.Background()
+	opts := &options{
+		rerunFailsMaxInitialFailures: 10,
+		rerunFailsMaxAttempts:        2,
+		stdout:                       stdout,
+	}
+	cfg := testjson.ScanConfig{
+		Execution: newExecutionWithTwoFailures(t),
+		Handler:   noopHandler{},
+	}
+	err := rerunFailed(ctx, opts, cfg)
+	assert.Error(t, err, "run-failed-3")
+}
+
+func patchStartGoTestFn(f func(args []string) proc) func() {
+	orig := startGoTestFn
+	startGoTestFn = func(ctx context.Context, args []string) (proc, error) {
+		return f(args), nil
+	}
+	return func() {
+		startGoTestFn = orig
+	}
+}
+
+func newExecutionWithTwoFailures(t *testing.T) *testjson.Execution {
+	t.Helper()
+
+	out := `{"Package": "pkg", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne", "Action": "fail"}
+{"Package": "pkg", "Test": "TestTwo", "Action": "run"}
+{"Package": "pkg", "Test": "TestTwo", "Action": "fail"}
+{"Package": "pkg", "Action": "fail"}
+`
+	exec, err := testjson.ScanTestOutput(testjson.ScanConfig{
+		Stdout: strings.NewReader(out),
+		Stderr: strings.NewReader(""),
+	})
+	assert.NilError(t, err)
+	return exec
+}
+
+type fakeWaiter struct {
+	result error
+}
+
+func (f fakeWaiter) Wait() error {
+	return f.result
+}
+
+type exitCodeError struct {
+	error
+	code int
+}
+
+func (e exitCodeError) ExitCode() int {
+	return e.code
+}
+
+func newExitCode(msg string, code int) error {
+	return exitCodeError{error: fmt.Errorf(msg), code: code}
+}
+
+type noopHandler struct{}
+
+func (s noopHandler) Event(testjson.TestEvent, *testjson.Execution) error {
+	return nil
+}
+
+func (s noopHandler) Err(string) error {
+	return nil
 }

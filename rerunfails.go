@@ -60,7 +60,7 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 
 		nextRec := newFailureRecorder(scanConfig.Handler)
 		for _, tc := range tcFilter(rec.failures) {
-			goTestProc, err := startGoTest(ctx, goTestCmdArgs(opts, newRerunOptsFromTestCase(tc)))
+			goTestProc, err := startGoTestFn(ctx, goTestCmdArgs(opts, newRerunOptsFromTestCase(tc)))
 			if err != nil {
 				return err
 			}
@@ -84,6 +84,9 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 	}
 	return lastErr
 }
+
+// startGoTestFn is a shim for testing
+var startGoTestFn = startGoTest
 
 func hasErrors(err error, exec *testjson.Execution) error {
 	switch {

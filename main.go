@@ -377,3 +377,5 @@ func exitCodeWithDefault(err error) int {
 type exitCoder interface {
 	ExitCode() int
 }
+
+var _ exitCoder = &exec.ExitError{}
