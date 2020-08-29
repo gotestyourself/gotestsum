@@ -27,7 +27,7 @@ func main() {
 	case *exec.ExitError:
 		// go test should already report the error to stderr, exit with
 		// the same status code
-		os.Exit(ExitCodeWithDefault(err))
+		os.Exit(exitCodeWithDefault(err))
 	default:
 		log.Error(err.Error())
 		os.Exit(3)
@@ -199,7 +199,7 @@ func run(opts *options) error {
 
 	goTestProc, err := startGoTest(ctx, goTestCmdArgs(opts, rerunOpts{}))
 	if err != nil {
-		return errors.Wrapf(err, "failed to run %s", strings.Join(goTestProc.cmd.Args, " "))
+		return err
 	}
 
 	handler, err := newEventHandler(opts)
@@ -327,9 +327,13 @@ func findPkgArgPosition(args []string) int {
 }
 
 type proc struct {
-	cmd    *exec.Cmd
+	cmd    waiter
 	stdout io.Reader
 	stderr io.Reader
+}
+
+type waiter interface {
+	Wait() error
 }
 
 func startGoTest(ctx context.Context, args []string) (proc, error) {
@@ -337,22 +341,39 @@ func startGoTest(ctx context.Context, args []string) (proc, error) {
 		return proc{}, errors.New("missing command to run")
 	}
 
-	p := proc{
-		cmd: exec.CommandContext(ctx, args[0], args[1:]...),
-	}
-	log.Debugf("exec: %s", p.cmd.Args)
+	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
+	p := proc{cmd: cmd}
+	log.Debugf("exec: %s", cmd.Args)
 	var err error
-	p.stdout, err = p.cmd.StdoutPipe()
+	p.stdout, err = cmd.StdoutPipe()
 	if err != nil {
 		return p, err
 	}
-	p.stderr, err = p.cmd.StderrPipe()
+	p.stderr, err = cmd.StderrPipe()
 	if err != nil {
 		return p, err
 	}
-	err = p.cmd.Start()
+	if err := cmd.Start(); err != nil {
+		return p, errors.Wrapf(err, "failed to run %s", strings.Join(cmd.Args, " "))
+	}
+	log.Debugf("go test pid: %d", cmd.Process.Pid)
+	return p, nil
+}
+
+// GetExitCode returns the ExitStatus of a process from the error returned by
+// exec.Run(). If the exit status is not available an error is returned.
+func exitCodeWithDefault(err error) int {
 	if err == nil {
-		log.Debugf("go test pid: %d", p.cmd.Process.Pid)
+		return 0
 	}
-	return p, err
+	if exiterr, ok := err.(exitCoder); ok {
+		if code := exiterr.ExitCode(); code != -1 {
+			return code
+		}
+	}
+	return 127
+}
+
+type exitCoder interface {
+	ExitCode() int
 }

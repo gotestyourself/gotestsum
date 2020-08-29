@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
-	"strings"
 
-	"github.com/pkg/errors"
 	"gotest.tools/gotestsum/testjson"
 )
 
@@ -64,7 +62,7 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 		for _, tc := range tcFilter(rec.failures) {
 			goTestProc, err := startGoTest(ctx, goTestCmdArgs(opts, newRerunOptsFromTestCase(tc)))
 			if err != nil {
-				return errors.Wrapf(err, "failed to run %s", strings.Join(goTestProc.cmd.Args, " "))
+				return err
 			}
 
 			cfg := testjson.ScanConfig{
@@ -92,7 +90,7 @@ func hasErrors(err error, exec *testjson.Execution) error {
 	case len(exec.Errors()) > 0:
 		return fmt.Errorf("rerun aborted because previous run had errors")
 	// Exit code 0 and 1 are expected.
-	case ExitCodeWithDefault(err) > 1:
+	case exitCodeWithDefault(err) > 1:
 		return fmt.Errorf("unexpected go test exit code: %v", err)
 	default:
 		return nil
