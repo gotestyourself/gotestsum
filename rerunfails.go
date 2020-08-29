@@ -53,7 +53,6 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 	}
 
 	rec := newFailureRecorderFromExecution(scanConfig.Execution)
-	var lastErr error
 	for attempts := 0; rec.count() > 0 && attempts < opts.rerunFailsMaxAttempts; attempts++ {
 		testjson.PrintSummary(opts.stdout, scanConfig.Execution, testjson.SummarizeNone)
 		opts.stdout.Write([]byte("\n")) // nolint: errcheck
@@ -75,14 +74,17 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 			if _, err := testjson.ScanTestOutput(cfg); err != nil {
 				return err
 			}
-			lastErr = goTestProc.cmd.Wait()
-			if err := hasErrors(lastErr, scanConfig.Execution); err != nil {
+			exitErr := goTestProc.cmd.Wait()
+			if exitErr != nil {
+				nextRec.lastErr = exitErr
+			}
+			if err := hasErrors(exitErr, scanConfig.Execution); err != nil {
 				return err
 			}
 		}
 		rec = nextRec
 	}
-	return lastErr
+	return rec.lastErr
 }
 
 // startGoTestFn is a shim for testing
@@ -103,6 +105,7 @@ func hasErrors(err error, exec *testjson.Execution) error {
 type failureRecorder struct {
 	testjson.EventHandler
 	failures []testjson.TestCase
+	lastErr  error
 }
 
 func newFailureRecorder(handler testjson.EventHandler) *failureRecorder {
