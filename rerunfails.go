@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
-	"strings"
 
-	"github.com/pkg/errors"
 	"gotest.tools/gotestsum/testjson"
 )
 
@@ -47,24 +45,17 @@ func rerunFailsFilter(o *options) testCaseFilter {
 
 func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanConfig) error {
 	tcFilter := rerunFailsFilter(opts)
-	failed := len(tcFilter(scanConfig.Execution.Failed()))
-	if failed > opts.rerunFailsMaxInitialFailures {
-		return fmt.Errorf(
-			"number of test failures (%d) exceeds maximum (%d) set by --rerun-fails-max-failures",
-			failed, opts.rerunFailsMaxInitialFailures)
-	}
 
 	rec := newFailureRecorderFromExecution(scanConfig.Execution)
-	var lastErr error
 	for attempts := 0; rec.count() > 0 && attempts < opts.rerunFailsMaxAttempts; attempts++ {
 		testjson.PrintSummary(opts.stdout, scanConfig.Execution, testjson.SummarizeNone)
 		opts.stdout.Write([]byte("\n")) // nolint: errcheck
 
 		nextRec := newFailureRecorder(scanConfig.Handler)
 		for _, tc := range tcFilter(rec.failures) {
-			goTestProc, err := startGoTest(ctx, goTestCmdArgs(opts, newRerunOptsFromTestCase(tc)))
+			goTestProc, err := startGoTestFn(ctx, goTestCmdArgs(opts, newRerunOptsFromTestCase(tc)))
 			if err != nil {
-				return errors.Wrapf(err, "failed to run %s", strings.Join(goTestProc.cmd.Args, " "))
+				return err
 			}
 
 			cfg := testjson.ScanConfig{
@@ -77,22 +68,28 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 			if _, err := testjson.ScanTestOutput(cfg); err != nil {
 				return err
 			}
-			lastErr = goTestProc.cmd.Wait()
-			if err := hasErrors(lastErr, scanConfig.Execution); err != nil {
+			exitErr := goTestProc.cmd.Wait()
+			if exitErr != nil {
+				nextRec.lastErr = exitErr
+			}
+			if err := hasErrors(exitErr, scanConfig.Execution); err != nil {
 				return err
 			}
 		}
 		rec = nextRec
 	}
-	return lastErr
+	return rec.lastErr
 }
+
+// startGoTestFn is a shim for testing
+var startGoTestFn = startGoTest
 
 func hasErrors(err error, exec *testjson.Execution) error {
 	switch {
 	case len(exec.Errors()) > 0:
 		return fmt.Errorf("rerun aborted because previous run had errors")
 	// Exit code 0 and 1 are expected.
-	case ExitCodeWithDefault(err) > 1:
+	case exitCodeWithDefault(err) > 1:
 		return fmt.Errorf("unexpected go test exit code: %v", err)
 	default:
 		return nil
@@ -102,6 +99,7 @@ func hasErrors(err error, exec *testjson.Execution) error {
 type failureRecorder struct {
 	testjson.EventHandler
 	failures []testjson.TestCase
+	lastErr  error
 }
 
 func newFailureRecorder(handler testjson.EventHandler) *failureRecorder {

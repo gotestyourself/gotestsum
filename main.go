@@ -27,7 +27,7 @@ func main() {
 	case *exec.ExitError:
 		// go test should already report the error to stderr, exit with
 		// the same status code
-		os.Exit(ExitCodeWithDefault(err))
+		os.Exit(exitCodeWithDefault(err))
 	default:
 		log.Error(err.Error())
 		os.Exit(3)
@@ -197,9 +197,9 @@ func run(opts *options) error {
 		return err
 	}
 
-	goTestProc, err := startGoTest(ctx, goTestCmdArgs(opts, rerunOpts{}))
+	goTestProc, err := startGoTestFn(ctx, goTestCmdArgs(opts, rerunOpts{}))
 	if err != nil {
-		return errors.Wrapf(err, "failed to run %s", strings.Join(goTestProc.cmd.Args, " "))
+		return err
 	}
 
 	handler, err := newEventHandler(opts)
@@ -216,27 +216,40 @@ func run(opts *options) error {
 	if err != nil {
 		return err
 	}
-	goTestExitErr := goTestProc.cmd.Wait()
-
-	if goTestExitErr != nil && opts.rerunFailsMaxAttempts > 0 {
-		goTestExitErr = hasErrors(goTestExitErr, exec)
-		if goTestExitErr == nil {
-			cfg := testjson.ScanConfig{Execution: exec, Handler: handler}
-			goTestExitErr = rerunFailed(ctx, opts, cfg)
-		}
+	exitErr := goTestProc.cmd.Wait()
+	if exitErr == nil || opts.rerunFailsMaxAttempts == 0 {
+		return finishRun(opts, exec, exitErr)
+	}
+	if err := hasErrors(exitErr, exec); err != nil {
+		return finishRun(opts, exec, err)
 	}
 
-	testjson.PrintSummary(opts.stdout, exec, opts.noSummary.value)
-	if err := writeJUnitFile(opts, exec); err != nil {
+	failed := len(rerunFailsFilter(opts)(exec.Failed()))
+	if failed > opts.rerunFailsMaxInitialFailures {
+		err := fmt.Errorf(
+			"number of test failures (%d) exceeds maximum (%d) set by --rerun-fails-max-failures",
+			failed, opts.rerunFailsMaxInitialFailures)
+		return finishRun(opts, exec, err)
+	}
+
+	cfg = testjson.ScanConfig{Execution: exec, Handler: handler}
+	exitErr = rerunFailed(ctx, opts, cfg)
+	if err := writeRerunFailsReport(opts, exec); err != nil {
 		return err
 	}
-	if err := writeRerunFailsReport(opts, exec); err != nil {
+	return finishRun(opts, exec, exitErr)
+}
+
+func finishRun(opts *options, exec *testjson.Execution, exitErr error) error {
+	testjson.PrintSummary(opts.stdout, exec, opts.noSummary.value)
+
+	if err := writeJUnitFile(opts, exec); err != nil {
 		return err
 	}
 	if err := postRunHook(opts, exec); err != nil {
 		return err
 	}
-	return goTestExitErr
+	return exitErr
 }
 
 func goTestCmdArgs(opts *options, rerunOpts rerunOpts) []string {
@@ -327,9 +340,13 @@ func findPkgArgPosition(args []string) int {
 }
 
 type proc struct {
-	cmd    *exec.Cmd
+	cmd    waiter
 	stdout io.Reader
 	stderr io.Reader
+}
+
+type waiter interface {
+	Wait() error
 }
 
 func startGoTest(ctx context.Context, args []string) (proc, error) {
@@ -337,22 +354,41 @@ func startGoTest(ctx context.Context, args []string) (proc, error) {
 		return proc{}, errors.New("missing command to run")
 	}
 
-	p := proc{
-		cmd: exec.CommandContext(ctx, args[0], args[1:]...),
-	}
-	log.Debugf("exec: %s", p.cmd.Args)
+	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
+	p := proc{cmd: cmd}
+	log.Debugf("exec: %s", cmd.Args)
 	var err error
-	p.stdout, err = p.cmd.StdoutPipe()
+	p.stdout, err = cmd.StdoutPipe()
 	if err != nil {
 		return p, err
 	}
-	p.stderr, err = p.cmd.StderrPipe()
+	p.stderr, err = cmd.StderrPipe()
 	if err != nil {
 		return p, err
 	}
-	err = p.cmd.Start()
-	if err == nil {
-		log.Debugf("go test pid: %d", p.cmd.Process.Pid)
+	if err := cmd.Start(); err != nil {
+		return p, errors.Wrapf(err, "failed to run %s", strings.Join(cmd.Args, " "))
 	}
-	return p, err
+	log.Debugf("go test pid: %d", cmd.Process.Pid)
+	return p, nil
 }
+
+// GetExitCode returns the ExitStatus of a process from the error returned by
+// exec.Run(). If the exit status is not available an error is returned.
+func exitCodeWithDefault(err error) int {
+	if err == nil {
+		return 0
+	}
+	if exiterr, ok := err.(exitCoder); ok {
+		if code := exiterr.ExitCode(); code != -1 {
+			return code
+		}
+	}
+	return 127
+}
+
+type exitCoder interface {
+	ExitCode() int
+}
+
+var _ exitCoder = &exec.ExitError{}
