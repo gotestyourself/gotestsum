@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"os"
+	"os/exec"
 	"strings"
 	"testing"
 
@@ -356,3 +357,7 @@ func TestRun_RerunFails_BuildErrorPreventsRerun(t *testing.T) {
 	err := run(opts)
 	assert.ErrorContains(t, err, "rerun aborted because previous run had errors", out.String())
 }
+
+// type checking of os/exec.ExitError is done in a test file so that users
+// installing from source can continue to use versions prior to go1.12.
+var _ exitCoder = &exec.ExitError{}
