@@ -35,7 +35,7 @@ func OpRemoveSummaryLineElapsedTime(line string) string {
 }
 
 func OpRemoveTestElapsedTime(line string) string {
-	if i := strings.Index(line, " (0.0"); i > 0 && i+8 == len(line) {
+	if i := strings.Index(line, " (0."); i > 0 && i+8 == len(line) {
 		return line[:i]
 	}
 	return line
