@@ -2,18 +2,30 @@ package main
 
 import (
 	"bytes"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync"
 	"testing"
+	"time"
 
 	"gotest.tools/gotestsum/internal/text"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/env"
 	"gotest.tools/v3/fs"
 	"gotest.tools/v3/golden"
+	"gotest.tools/v3/icmd"
+	"gotest.tools/v3/poll"
+	"gotest.tools/v3/skip"
 )
+
+func TestMain(m *testing.M) {
+	code := m.Run()
+	binaryFixture.Cleanup()
+	os.Exit(code)
+}
 
 func TestE2E_RerunFails(t *testing.T) {
 	type testCase struct {
@@ -127,4 +139,79 @@ func isPreGo114(ver string) bool {
 		return true
 	}
 	return false
+}
+
+var binaryFixture pkgFixtureFile
+
+type pkgFixtureFile struct {
+	filename string
+	once     sync.Once
+	cleanup  func()
+}
+
+func (p *pkgFixtureFile) Path() string {
+	return p.filename
+}
+
+func (p *pkgFixtureFile) Do(f func() string) {
+	p.once.Do(func() {
+		p.filename = f()
+		p.cleanup = func() {
+			os.RemoveAll(p.filename) // nolint: errcheck
+		}
+	})
+}
+
+func (p *pkgFixtureFile) Cleanup() {
+	if p.cleanup != nil {
+		p.cleanup()
+	}
+}
+
+// compileBinary once the first time this function is called. Subsequent calls
+// will return the path to the compiled binary. The binary is removed when all
+// the tests in this package have completed.
+func compileBinary(t *testing.T) string {
+	t.Helper()
+	if testing.Short() {
+		t.Skip("too slow for short run")
+	}
+
+	binaryFixture.Do(func() string {
+		tmpDir, err := ioutil.TempDir("", "gotestsum-binary")
+		assert.NilError(t, err)
+
+		path := filepath.Join(tmpDir, "gotestsum")
+		result := icmd.RunCommand("go", "build", "-o", path, ".")
+		result.Assert(t, icmd.Success)
+		return path
+	})
+
+	if binaryFixture.Path() == "" {
+		t.Skip("previous attempt to compile the binary failed")
+	}
+	return binaryFixture.Path()
+}
+
+func TestE2E_SignalHandler(t *testing.T) {
+	skip.If(t, runtime.GOOS == "windows", "test timeout waiting for pidfile")
+	bin := compileBinary(t)
+
+	tmpDir := fs.NewDir(t, t.Name())
+	defer tmpDir.Remove()
+
+	driver := tmpDir.Join("driver")
+	target := filepath.FromSlash("./internal/signalhandlerdriver/")
+	icmd.RunCommand("go", "build", "-o", driver, target).
+		Assert(t, icmd.Success)
+
+	pidFile := tmpDir.Join("pidfile")
+	args := []string{"--raw-command", "--", driver, pidFile}
+	result := icmd.StartCmd(icmd.Command(bin, args...))
+
+	poll.WaitOn(t, poll.FileExists(pidFile), poll.WithTimeout(time.Second))
+	assert.NilError(t, result.Cmd.Process.Signal(os.Interrupt))
+	icmd.WaitOnCmd(2*time.Second, result)
+
+	result.Assert(t, icmd.Expected{ExitCode: 102})
 }
