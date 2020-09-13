@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"os/signal"
 	"strings"
 
 	"github.com/fatih/color"
@@ -370,6 +371,10 @@ func startGoTest(ctx context.Context, args []string) (proc, error) {
 		return p, errors.Wrapf(err, "failed to run %s", strings.Join(cmd.Args, " "))
 	}
 	log.Debugf("go test pid: %d", cmd.Process.Pid)
+
+	ctx, cancel := context.WithCancel(ctx)
+	newSignalHandler(ctx, cmd.Process.Pid)
+	p.cmd = &cancelWaiter{cancel: cancel, wrapped: p.cmd}
 	return p, nil
 }
 
@@ -389,4 +394,41 @@ func exitCodeWithDefault(err error) int {
 
 type exitCoder interface {
 	ExitCode() int
+}
+
+func newSignalHandler(ctx context.Context, pid int) {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+
+	go func() {
+		defer signal.Stop(c)
+
+		select {
+		case <-ctx.Done():
+			return
+		case s := <-c:
+			proc, err := os.FindProcess(pid)
+			if err != nil {
+				log.Errorf("failed to find pid of 'go test': %v", err)
+				return
+			}
+			if err := proc.Signal(s); err != nil {
+				log.Errorf("failed to interrupt 'go test': %v", err)
+				return
+			}
+		}
+	}()
+}
+
+// cancelWaiter wraps a waiter to cancel the context after the wrapped
+// Wait exits.
+type cancelWaiter struct {
+	cancel  func()
+	wrapped waiter
+}
+
+func (w *cancelWaiter) Wait() error {
+	err := w.wrapped.Wait()
+	w.cancel()
+	return err
 }
