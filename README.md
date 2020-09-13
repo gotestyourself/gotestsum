@@ -166,7 +166,7 @@ Note that using `--rerun-fails` may require the use of other flags, depending on
 how you specify args to `go test`:
 
 * when used with `--raw-command` the re-run will pass additional arguments to
-  the command. The first arg is a `-run` flag with a regex that matches the test to re-run,
+  the command. The first arg is a `-test.run` flag with a regex that matches the test to re-run,
   and second is the name of a go package. These additional args can be passed to `go test`,
   or a test binary.
 * when used with any `go test` args (anything after `--` on the command line), the list of

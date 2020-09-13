@@ -49,11 +49,11 @@ func TestGoTestRunFlagFromTestCases(t *testing.T) {
 	var testCases = map[string]testCase{
 		"root test case": {
 			input:    "TestOne",
-			expected: "-run=^TestOne$",
+			expected: "-test.run=^TestOne$",
 		},
 		"sub test case": {
 			input:    "TestOne/SubtestA",
-			expected: "-run=^TestOne$/^SubtestA$",
+			expected: "-test.run=^TestOne$/^SubtestA$",
 		},
 	}
 	for name := range testCases {

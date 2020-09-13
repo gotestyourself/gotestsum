@@ -126,9 +126,9 @@ func (r *failureRecorder) count() int {
 func goTestRunFlagForTestCase(name string) string {
 	root, sub := testjson.SplitTestName(name)
 	if sub == "" {
-		return "-run=^" + name + "$"
+		return "-test.run=^" + name + "$"
 	}
-	return "-run=^" + root + "$/^" + sub + "$"
+	return "-test.run=^" + root + "$/^" + sub + "$"
 }
 
 func writeRerunFailsReport(opts *options, exec *testjson.Execution) error {
