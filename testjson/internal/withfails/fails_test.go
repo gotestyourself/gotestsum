@@ -1,8 +1,8 @@
 // +build stubpkg
 
-/*Package stub is used to generate testdata for the testjson package.
+/*Package withfails is used to generate testdata for the testjson package.
  */
-package stub
+package withfails
 
 import (
 	"fmt"
