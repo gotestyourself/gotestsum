@@ -1,9 +1,11 @@
 # gotestsum
 
-`gotestsum` runs tests using `go test --json`, prints friendly test output and a summary of the test run.
-It is designed for both local development, and running tests in a CI system.
+`gotestsum` runs tests using `go test --json`, prints formatted test output, and a summary of the test run.
+It is designed to work well for both local development, and for automation like CI.
+`gotest.tools/gotestsum/testjson` ([godoc](https://pkg.go.dev/gotest.tools/gotestsum/testjson)) is a library
+that can be used to read [`test2json`](https://golang.org/cmd/test2json/) output.
 
-See the complete list of [features](#features) below.
+See [documentation](#documentation).
 
 ## Install
 
@@ -14,69 +16,69 @@ source with `go get gotest.tools/gotestsum`.
 A demonstration of three `--format` options.
 
 ![Demo](https://i.ibb.co/XZfhmXq/demo.gif)
-<br />[Source](https://github.com/gotestyourself/gotestsum/tree/readme-demo/scripts)
+<br /><sup>[Source](https://github.com/gotestyourself/gotestsum/tree/readme-demo/scripts)</sup>
 
-## Features
+## Documentation 
 
-- [Format](#format) - custom output format
-- [Summary](#summary) - summary of the test run
-- [JUnit XML file](#junit-xml-output) - for integration with CI systems
-- [JSON file](#json-file-output) - may be used to get insights into test runs
-- [Post run command](#post-run-command) - may be used for desktop notification
-- [Re-running failed tests](#re-running-failed-tests) - to save time when dealing with flaky test suites
-- [Using go test flags and custom commands](#custom-go-test-command)
-- [Executing a compiled test binary](#executing-a-compiled-test-binary)
-- [Finding and skipping slow tests](#finding-and-skipping-slow-tests) - using `gotestsum tool slowest`
+- [Output Format](#output-format) from compact to verbose, with color highlighting.
+- [Summary](#summary) of the test run.
+- [JUnit XML file](#junit-xml-output) for integration with CI systems.
+- [JSON file](#json-file-output) to capture the `test2json` output in a file.
+- [Post run commands](#post-run-command) may be used for desktop notification.
+- [Re-run failed tests](#re-running-failed-tests) to save time when dealing with flaky test suites.
+- [Add `go test` flags](#custom-go-test-command), or 
+  [run a compiled test binary](#executing-a-compiled-test-binary).
+- [Find or skip slow tests](#finding-and-skipping-slow-tests) using `gotestsum tool slowest`.
+- [Run tests when a file is saved](#run-tests-when-a-file-is-saved) using
+  [filewatcher](https://github.com/dnephin/filewatcher).
 
-**Integrations**
-- [Run tests when a file is modified](#run-tests-when-a-file-is-modified) - using
-  [filewatcher](https://github.com/dnephin/filewatcher)
+### Output Format
 
-### Format
+The `--format` flag or `GOTESTSUM_FORMAT` environment variable set the format that
+is used to print the test names, and possibly test output, as the tests run. Most
+outputs use color to highlight pass, fail, or skip.
 
-Set a format with the `--format` flag or the `GOTESTSUM_FORMAT` environment
-variable.
-```
-gotestsum --format testname
-```
+Commonly used formats (see `--help` for a full list):
 
-Supported formats:
  * `dots` - print a character for each test.
  * `pkgname` (default) - print a line for each package.
- * `pkgname-and-test-fails` - print a line for each package, and failed test output.
  * `testname` - print a line for each test and package.
  * `standard-quiet` - the standard `go test` format.
  * `standard-verbose` - the standard `go test -v` format.
 
-Have a suggestion for some other format? Please open an issue!
+Have an idea for a new format?
+Please [share it on github](https://github.com/gotestyourself/gotestsum/issues/new)!
 
 ### Summary
 
-A summary of the test run is printed after the test output.
+Following the formatted output is a summary of the test run. The summary includes:
 
-```
-DONE 101 tests[, 3 skipped][, 2 failures][, 1 error] in 0.103s
-```
+ * The test output, and elapsed time, for any test that fails or is skipped.
+ * The build errors for any package that fails to build.
+ * A `DONE` line with a count of tests run, tests skipped, tests failed, package build errors,
+   and the elapsed time including time to build.
 
-The summary includes:
- * A count of: tests run, tests skipped, tests failed, and package build errors.
- * Elapsed time including time to build.
- * Test output of all failed and skipped tests, and any package build errors.
+   ```
+   DONE 101 tests[, 3 skipped][, 2 failures][, 1 error] in 0.103s
+   ```
 
 To disable parts of the summary use `--no-summary section`.
+
 
 **Example: hide skipped tests in the summary**
 ```
 gotestsum --no-summary=skipped
 ```
 
-**Example: hide failed and skipped**
+**Example: hide everything except the DONE line**
 ```
-gotestsum --no-summary=skipped,failed
+gotestsum --no-summary=skipped,failed,errors,output
+# or
+gotestsum --no-summary=all
 ```
 
-**Example: hide output in the summary, only print names of failed and skipped tests**
-and errors
+**Example: hide output in the summary, only print names of failed and skipped tests
+and errors**
 ```
 gotestsum --no-summary=output
 ```
@@ -120,7 +122,7 @@ gotestsum --jsonfile test-output.log
 
 ### Post Run Command
 
-The `--post-run-command` flag may be used to execute another command after the
+The `--post-run-command` flag may be used to execute a command after the
 test run has completed. The binary will be run with the following environment
 variables set:
 
@@ -296,11 +298,11 @@ The next time tests are run using `--short` all the slow tests will be skipped.
 [testjson]: https://golang.org/cmd/test2json/
 
 
-### Run tests when a file is modified
+### Run tests when a file is saved 
 
 [filewatcher](https://github.com/dnephin/filewatcher) will automatically set the
-`TEST_DIRECTORY` environment variable which makes it easy to integrate
-`gotestsum`.
+`TEST_DIRECTORY` environment variable to the directory if the file that was saved.
+`gotestsum` uses the environment variable to run only the tests in that directory.
 
 **Example: run tests for a package when any file in that package is saved**
 ```
@@ -309,7 +311,7 @@ filewatcher gotestsum --format testname
 
 ## Development
 
-[![GoDoc](https://godoc.org/gotest.tools/gotestsum?status.svg)](https://godoc.org/gotest.tools/gotestsum)
+[![Godoc](https://godoc.org/gotest.tools/gotestsum?status.svg)](https://pkg.go.dev/gotest.tools/gotestsum?tab=subdirectories)
 [![CircleCI](https://circleci.com/gh/gotestyourself/gotestsum/tree/master.svg?style=shield)](https://circleci.com/gh/gotestyourself/gotestsum/tree/master)
 [![Go Reportcard](https://goreportcard.com/badge/gotest.tools/gotestsum)](https://goreportcard.com/report/gotest.tools/gotestsum)
 
