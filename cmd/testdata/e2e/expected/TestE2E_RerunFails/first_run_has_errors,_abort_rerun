@@ -1,5 +1,5 @@
 
 === Errors
-testjson/internal/broken/broken.go:5:21: undefined: somepackage
+../testjson/internal/broken/broken.go:5:21: undefined: somepackage
 
 DONE 0 tests, 1 error
