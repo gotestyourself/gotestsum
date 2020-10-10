@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"bytes"
@@ -88,7 +88,7 @@ func TestE2E_RerunFails(t *testing.T) {
 			args: []string{
 				"-f=testname",
 				"--rerun-fails=2",
-				"--packages=./testjson/internal/broken",
+				"--packages=../testjson/internal/broken",
 				"--", "-count=1", "-tags=stubpkg",
 			},
 			expectedErr: "rerun aborted because previous run had errors",
@@ -182,7 +182,7 @@ func compileBinary(t *testing.T) string {
 		assert.NilError(t, err)
 
 		path := filepath.Join(tmpDir, "gotestsum")
-		result := icmd.RunCommand("go", "build", "-o", path, ".")
+		result := icmd.RunCommand("go", "build", "-o", path, "..")
 		result.Assert(t, icmd.Success)
 		return path
 	})

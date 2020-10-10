@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"context"
@@ -89,7 +89,7 @@ func hasErrors(err error, exec *testjson.Execution) error {
 	case len(exec.Errors()) > 0:
 		return fmt.Errorf("rerun aborted because previous run had errors")
 	// Exit code 0 and 1 are expected.
-	case exitCodeWithDefault(err) > 1:
+	case ExitCodeWithDefault(err) > 1:
 		return fmt.Errorf("unexpected go test exit code: %v", err)
 	default:
 		return nil

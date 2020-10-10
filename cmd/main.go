@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"context"
@@ -12,41 +12,13 @@ import (
 	"github.com/fatih/color"
 	"github.com/pkg/errors"
 	"github.com/spf13/pflag"
-	"gotest.tools/gotestsum/cmd"
-	"gotest.tools/gotestsum/cmd/tool"
 	"gotest.tools/gotestsum/log"
 	"gotest.tools/gotestsum/testjson"
 )
 
-var version = "master"
+var version = "dev"
 
-func main() {
-	err := route(os.Args)
-	switch err.(type) {
-	case nil:
-		return
-	case *exec.ExitError:
-		// go test should already report the error to stderr, exit with
-		// the same status code
-		os.Exit(exitCodeWithDefault(err))
-	default:
-		log.Error(err.Error())
-		os.Exit(3)
-	}
-}
-
-func route(args []string) error {
-	name := args[0]
-	next, rest := cmd.Next(args[1:])
-	switch next {
-	case "tool":
-		return tool.Run(name+" "+next, rest)
-	default:
-		return runMain(name, args[1:])
-	}
-}
-
-func runMain(name string, args []string) error {
+func Run(name string, args []string) error {
 	flags, opts := setupFlags(name)
 	switch err := flags.Parse(args); {
 	case err == pflag.ErrHelp:
@@ -378,9 +350,9 @@ func startGoTest(ctx context.Context, args []string) (proc, error) {
 	return p, nil
 }
 
-// GetExitCode returns the ExitStatus of a process from the error returned by
+// ExitCodeWithDefault returns the ExitStatus of a process from the error returned by
 // exec.Run(). If the exit status is not available an error is returned.
-func exitCodeWithDefault(err error) int {
+func ExitCodeWithDefault(err error) int {
 	if err == nil {
 		return 0
 	}
