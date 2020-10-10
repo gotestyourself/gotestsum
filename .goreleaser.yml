@@ -16,6 +16,7 @@ builds:
       - amd64
       - arm64
     env: [CGO_ENABLED=0]
+    ldflags: ["-s -w -X gotest.tools/gotestsum/cmd.version={{.Version}}"]
 
 checksum:
   name_template: '{{ .ProjectName }}-{{ .Version }}-checksums.txt'

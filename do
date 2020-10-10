@@ -23,7 +23,7 @@ update-golden() {
 
 _update-golden() {
     PATH="$PWD/dist:$PATH" gotestsum -- \
-        . ./testjson ./internal/junitxml ./cmd/tool/slowest \
+        ./cmd ./testjson ./internal/junitxml ./cmd/tool/slowest \
         -test.update-golden
 }
 

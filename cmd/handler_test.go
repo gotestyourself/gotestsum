@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"bytes"
@@ -35,7 +35,7 @@ func TestPostRunHook(t *testing.T) {
 
 func newExecFromTestData(t *testing.T) *testjson.Execution {
 	t.Helper()
-	f, err := os.Open("testjson/testdata/go-test-json.out")
+	f, err := os.Open("../testjson/testdata/go-test-json.out")
 	assert.NilError(t, err)
 	defer f.Close() // nolint: errcheck
 
@@ -58,7 +58,7 @@ func TestEventHandler_Event_WithMissingActionFail(t *testing.T) {
 	errBuf := new(bytes.Buffer)
 	format := testjson.NewEventFormatter(errBuf, "testname")
 
-	source := golden.Get(t, "../testjson/testdata/go-test-json-missing-test-fail.out")
+	source := golden.Get(t, "../../testjson/testdata/go-test-json-missing-test-fail.out")
 	cfg := testjson.ScanConfig{
 		Stdout:  bytes.NewReader(source),
 		Handler: &eventHandler{jsonFile: buf, formatter: format},
