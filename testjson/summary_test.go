@@ -186,16 +186,11 @@ DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
 === Skipped
 === SKIP: project/pkg/more TestOnlySometimes (0.00s)
 
-
 === Failed
 === FAIL: project/badmain  (0.00s)
-
 === FAIL: project/fs TestFileDo (1.41s)
-
 === FAIL: project/fs TestFileDoError (0.01s)
-
 === FAIL: project/pkg/more TestAlbatross (0.04s)
-
 
 === Errors
 pkg/file.go:99:12: missing ',' before newline

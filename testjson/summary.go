@@ -183,7 +183,9 @@ func writeTestCaseSummary(out io.Writer, execution executionSummary, conf testCa
 			}
 			fmt.Fprint(out, line)
 		}
-		fmt.Fprintln(out)
+		if _, isNoOutput := execution.(*noOutputSummary); !isNoOutput {
+			fmt.Fprintln(out)
+		}
 	}
 }
 
