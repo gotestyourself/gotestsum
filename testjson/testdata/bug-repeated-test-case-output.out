@@ -36,7 +36,6 @@
 === SKIP: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestSkippedWitLog (0.00s)
 	stub_test.go:30: the skip message
 
-
 === Failed
 === FAIL: github.com/gotestyourself/gotestyourself/testjson/internal/badmain  (0.00s)
 sometimes main can exit 2
@@ -84,6 +83,5 @@ this is stderr
     	stub_test.go:65: failed
 
 === FAIL: github.com/gotestyourself/gotestyourself/testjson/internal/stub TestNestedWithFailure (0.00s)
-
 
 DONE 138 tests, 12 skipped, 13 failures in 0.000s

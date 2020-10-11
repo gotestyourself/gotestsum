@@ -5,12 +5,12 @@ Usage:
 Flags:
       --debug                                       enabled debug logging
   -f, --format string                               print format of test input (default "short")
+      --hide-summary summary                        hide sections of the summary: skipped,failed,errors,output (default none)
       --jsonfile string                             write all TestEvents to file
       --junitfile string                            write a JUnit XML file
       --junitfile-testcase-classname field-format   format the testcase classname field as: full, relative, short (default full)
       --junitfile-testsuite-name field-format       format the testsuite name field as: full, relative, short (default full)
       --no-color                                    disable color output (default true)
-      --no-summary summary                          do not print summary of: skipped,failed,errors,output (default none)
       --packages list                               space separated list of package to test
       --post-run-command command                    command to run after the tests have completed
       --raw-command                                 don't prepend 'go test -json' to the 'go test' command

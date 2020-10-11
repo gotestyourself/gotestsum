@@ -155,7 +155,6 @@ Some stdout/stderr here
 === SKIP: project/pkg/more TestOnlySometimes (0.00s)
 	good_test.go:27: the skip message
 
-
 === Failed
 === FAIL: project/badmain  (0.00s)
 sometimes main can exit 2
@@ -168,7 +167,6 @@ Some stdout/stderr here
 	do_test.go:50 assertion failed: expected nil error, got WHAT!
 
 === FAIL: project/pkg/more TestAlbatross (0.04s)
-
 
 === Errors
 pkg/file.go:99:12: missing ',' before newline
@@ -186,16 +184,11 @@ DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
 === Skipped
 === SKIP: project/pkg/more TestOnlySometimes (0.00s)
 
-
 === Failed
 === FAIL: project/badmain  (0.00s)
-
 === FAIL: project/fs TestFileDo (1.41s)
-
 === FAIL: project/fs TestFileDoError (0.01s)
-
 === FAIL: project/pkg/more TestAlbatross (0.04s)
-
 
 === Errors
 pkg/file.go:99:12: missing ',' before newline

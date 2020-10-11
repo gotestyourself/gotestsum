@@ -105,5 +105,4 @@ SEED:  4
 === FAIL: cmd/testdata/e2e/flaky TestFailsOften (re-run 3)
 SEED:  5
 
-
 DONE 5 runs, 18 tests, 10 failures

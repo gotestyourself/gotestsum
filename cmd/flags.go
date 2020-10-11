@@ -12,12 +12,12 @@ import (
 	"gotest.tools/gotestsum/testjson"
 )
 
-type noSummaryValue struct {
+type hideSummaryValue struct {
 	value testjson.Summary
 }
 
-func newNoSummaryValue() *noSummaryValue {
-	return &noSummaryValue{value: testjson.SummarizeAll}
+func newHideSummaryValue() *hideSummaryValue {
+	return &hideSummaryValue{value: testjson.SummarizeAll}
 }
 
 func readAsCSV(val string) ([]string, error) {
@@ -27,7 +27,7 @@ func readAsCSV(val string) ([]string, error) {
 	return csv.NewReader(strings.NewReader(val)).Read()
 }
 
-func (s *noSummaryValue) Set(val string) error {
+func (s *hideSummaryValue) Set(val string) error {
 	v, err := readAsCSV(val)
 	if err != nil {
 		return err
@@ -43,11 +43,11 @@ func (s *noSummaryValue) Set(val string) error {
 	return nil
 }
 
-func (s *noSummaryValue) Type() string {
+func (s *hideSummaryValue) Type() string {
 	return "summary"
 }
 
-func (s *noSummaryValue) String() string {
+func (s *hideSummaryValue) String() string {
 	// flip all the bits, since the flag value is the negative of what is stored
 	return (testjson.SummarizeAll ^ s.value).String()
 }
