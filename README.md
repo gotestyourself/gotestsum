@@ -62,25 +62,25 @@ Following the formatted output is a summary of the test run. The summary include
    DONE 101 tests[, 3 skipped][, 2 failures][, 1 error] in 0.103s
    ```
 
-To disable parts of the summary use `--no-summary section`.
+To hide parts of the summary use `--hide-summary section`.
 
 
 **Example: hide skipped tests in the summary**
 ```
-gotestsum --no-summary=skipped
+gotestsum --hide-summary=skipped
 ```
 
 **Example: hide everything except the DONE line**
 ```
-gotestsum --no-summary=skipped,failed,errors,output
+gotestsum --hide-summary=skipped,failed,errors,output
 # or
-gotestsum --no-summary=all
+gotestsum --hide-summary=all
 ```
 
-**Example: hide output in the summary, only print names of failed and skipped tests
+**Example: hide test output in the summary, only print names of failed and skipped tests
 and errors**
 ```
-gotestsum --no-summary=output
+gotestsum --hide-summary=output
 ```
 
 ### JUnit XML output

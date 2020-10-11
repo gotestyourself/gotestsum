@@ -39,7 +39,7 @@ func Run(name string, args []string) error {
 
 func setupFlags(name string) (*pflag.FlagSet, *options) {
 	opts := &options{
-		noSummary:                    newNoSummaryValue(),
+		hideSummary:                  newHideSummaryValue(),
 		junitTestCaseClassnameFormat: &junitFieldFormatValue{},
 		junitTestSuiteNameFormat:     &junitFieldFormatValue{},
 		postRunHookCmd:               &commandValue{},
@@ -60,8 +60,12 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		lookEnvWithDefault("GOTESTSUM_JSONFILE", ""),
 		"write all TestEvents to file")
 	flags.BoolVar(&opts.noColor, "no-color", color.NoColor, "disable color output")
-	flags.Var(opts.noSummary, "no-summary",
+
+	flags.Var(opts.hideSummary, "no-summary",
 		"do not print summary of: "+testjson.SummarizeAll.String())
+	flags.Lookup("no-summary").Hidden = true
+	flags.Var(opts.hideSummary, "hide-summary",
+		"hide sections of the summary: "+testjson.SummarizeAll.String())
 	flags.Var(opts.postRunHookCmd, "post-run-command",
 		"command to run after the tests have completed")
 
@@ -131,7 +135,7 @@ type options struct {
 	junitFile                    string
 	postRunHookCmd               *commandValue
 	noColor                      bool
-	noSummary                    *noSummaryValue
+	hideSummary                  *hideSummaryValue
 	junitTestSuiteNameFormat     *junitFieldFormatValue
 	junitTestCaseClassnameFormat *junitFieldFormatValue
 	rerunFailsMaxAttempts        int
@@ -214,7 +218,7 @@ func run(opts *options) error {
 }
 
 func finishRun(opts *options, exec *testjson.Execution, exitErr error) error {
-	testjson.PrintSummary(opts.stdout, exec, opts.noSummary.value)
+	testjson.PrintSummary(opts.stdout, exec, opts.hideSummary.value)
 
 	if err := writeJUnitFile(opts, exec); err != nil {
 		return err

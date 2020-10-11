@@ -318,7 +318,7 @@ func TestRun_RerunFails_WithTooManyInitialFailures(t *testing.T) {
 		rerunFailsMaxInitialFailures: 1,
 		stdout:                       out,
 		stderr:                       os.Stderr,
-		noSummary:                    newNoSummaryValue(),
+		hideSummary:                  newHideSummaryValue(),
 	}
 	err := run(opts)
 	assert.ErrorContains(t, err, "number of test failures (2) exceeds maximum (1)", out.String())
@@ -352,7 +352,7 @@ func TestRun_RerunFails_BuildErrorPreventsRerun(t *testing.T) {
 		rerunFailsMaxInitialFailures: 1,
 		stdout:                       out,
 		stderr:                       os.Stderr,
-		noSummary:                    newNoSummaryValue(),
+		hideSummary:                  newHideSummaryValue(),
 	}
 	err := run(opts)
 	assert.ErrorContains(t, err, "rerun aborted because previous run had errors", out.String())
