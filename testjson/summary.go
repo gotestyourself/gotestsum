@@ -170,7 +170,7 @@ func writeTestCaseSummary(out io.Writer, execution executionSummary, conf testCa
 		return
 	}
 	fmt.Fprintln(out, "\n=== "+conf.header)
-	for _, tc := range testCases {
+	for idx, tc := range testCases {
 		fmt.Fprintf(out, "=== %s: %s %s%s (%s)\n",
 			conf.prefix,
 			RelativePackagePath(tc.Package),
@@ -183,7 +183,7 @@ func writeTestCaseSummary(out io.Writer, execution executionSummary, conf testCa
 			}
 			fmt.Fprint(out, line)
 		}
-		if _, isNoOutput := execution.(*noOutputSummary); !isNoOutput {
+		if _, isNoOutput := execution.(*noOutputSummary); !isNoOutput && idx+1 != len(testCases) {
 			fmt.Fprintln(out)
 		}
 	}

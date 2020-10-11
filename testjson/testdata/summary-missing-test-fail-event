@@ -19,5 +19,4 @@ gotest.tools/v3/poll.WaitOn.func1(0xc00001e3c0, 0x67df50, 0x6c1960, 0xc00016c240
 created by gotest.tools/v3/poll.WaitOn
 	/home/daniel/pers/code/gotest.tools/poll/poll.go:124 +0x16f
 
-
 DONE 1 tests, 1 failure in 0.000s
