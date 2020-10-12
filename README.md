@@ -29,8 +29,7 @@ A demonstration of three `--format` options.
 - [Add `go test` flags](#custom-go-test-command), or 
   [run a compiled test binary](#executing-a-compiled-test-binary).
 - [Find or skip slow tests](#finding-and-skipping-slow-tests) using `gotestsum tool slowest`.
-- [Run tests when a file is saved](#run-tests-when-a-file-is-saved) using
-  [filewatcher](https://github.com/dnephin/filewatcher).
+- [Run tests when a file is saved](#run-tests-when-a-file-is-saved).
 
 ### Output Format
 
@@ -300,13 +299,16 @@ The next time tests are run using `--short` all the slow tests will be skipped.
 
 ### Run tests when a file is saved 
 
-[filewatcher](https://github.com/dnephin/filewatcher) will automatically set the
-`TEST_DIRECTORY` environment variable to the directory if the file that was saved.
-`gotestsum` uses the environment variable to run only the tests in that directory.
+When the `--watch` flag is set, `gotestsum` will watch directories using
+[file system notifications](https://pkg.go.dev/github.com/fsnotify/fsnotify).
+When a Go file in one of those directories is modified, `gotestsum` will run the
+tests for the package which contains the changed file. By default all
+directories under the current directory will be watched. Use the `--packages` flag
+to specify a different list.
 
 **Example: run tests for a package when any file in that package is saved**
 ```
-filewatcher gotestsum --format testname
+gotestsum --watch --format testname
 ```
 
 ## Development
