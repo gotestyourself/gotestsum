@@ -76,6 +76,7 @@ func TestScanTestOutput_WithTestNameFormat(t *testing.T) {
 	golden.Assert(t, shim.out.String(), "short-verbose-format.out")
 	golden.Assert(t, shim.err.String(), "short-verbose-format.err")
 	assert.DeepEqual(t, exec, expectedExecution, cmpExecutionShallow)
+	t.Fail()
 }
 
 var expectedExecution = &Execution{

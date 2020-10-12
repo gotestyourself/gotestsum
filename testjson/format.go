@@ -38,6 +38,10 @@ func standardQuietFormat(event TestEvent, _ *Execution) (string, error) {
 }
 
 func testNameFormat(event TestEvent, exec *Execution) (string, error) {
+	if isPkgFailureOutput(event) {
+		return event.Output, nil
+	}
+
 	result := colorEvent(event)(strings.ToUpper(string(event.Action)))
 	formatTest := func() string {
 		pkgPath := RelativePackagePath(event.Package)
@@ -50,9 +54,6 @@ func testNameFormat(event TestEvent, exec *Execution) (string, error) {
 	}
 
 	switch {
-	case isPkgFailureOutput(event):
-		return event.Output, nil
-
 	case event.PackageEvent():
 		switch event.Action {
 		case ActionSkip:
@@ -219,6 +220,8 @@ func NewEventFormatter(out io.Writer, format string) EventFormatter {
 		return newDotFormatter(out)
 	case "testname", "short-verbose":
 		return &formatAdapter{out, testNameFormat}
+	case "testsource":
+		return newTestSourceFormatter(out)
 	case "pkgname", "short":
 		return &formatAdapter{out, pkgNameFormat}
 	case "pkgname-and-test-fails", "short-with-failures":

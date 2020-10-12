@@ -10,10 +10,10 @@ require (
 	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/pflag v1.0.3
-	golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
-	golang.org/x/sync v0.0.0-20190423024810-112230192c58
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208
 	golang.org/x/sys v0.0.0-20200515095857-1151b9dac4a9
-	golang.org/x/tools v0.0.0-20190624222133-a101b041ded4
+	golang.org/x/tools v0.0.0-20201012192620-5bd05386311b
 	gotest.tools/v3 v3.0.2
 )
 
