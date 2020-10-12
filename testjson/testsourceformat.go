@@ -6,6 +6,7 @@ import (
 	"go/printer"
 	"go/token"
 	"io"
+	"os"
 	"strings"
 
 	"golang.org/x/tools/go/packages"
@@ -44,8 +45,12 @@ func (t *testSourceFormatter) write(v string) error {
 	return err
 }
 
+// TODO: test with source that is not gofmt formatted
 func (t *testSourceFormatter) writeSource(src pkgSource, event TestEvent) error {
-	decl, ok := src.tests[event.Test]
+	root, _ := SplitTestName(event.Test)
+	// TODO: make it work with subtests
+
+	decl, ok := src.tests[root]
 	if !ok {
 		return fmt.Errorf("failed to locate source for %v", event.Test)
 	}
@@ -62,16 +67,18 @@ func (t *testSourceFormatter) writeSource(src pkgSource, event TestEvent) error 
 	return t.write("\n")
 }
 
-// TODO: test with external test package.
+// TODO: test with external test package
+// TODO: document how build tags need to be specified
 func (t *testSourceFormatter) loadSource(name string) (pkgSource, error) {
 	src, ok := t.astCache[name]
 	if ok {
 		return src, nil
 	}
 	cfg := &packages.Config{
-		Mode:  modeAll(),
-		Tests: true,
-		Fset:  token.NewFileSet(),
+		Mode:       modeAll(),
+		Tests:      true,
+		Fset:       token.NewFileSet(),
+		BuildFlags: buildFlags(),
 	}
 	pkgs, err := packages.Load(cfg, name)
 	if err != nil {
@@ -128,4 +135,12 @@ func modeAll() packages.LoadMode {
 	mode = mode | packages.NeedTypes | packages.NeedTypesSizes
 	mode = mode | packages.NeedSyntax | packages.NeedTypesInfo
 	return mode
+}
+
+func buildFlags() []string {
+	flags := os.Getenv("GOFLAGS")
+	if len(flags) == 0 {
+		return nil
+	}
+	return strings.Split(os.Getenv("GOFLAGS"), " ")
 }

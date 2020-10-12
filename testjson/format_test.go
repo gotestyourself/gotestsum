@@ -22,6 +22,7 @@ type fakeHandler struct {
 }
 
 func (s *fakeHandler) Config(t *testing.T) ScanConfig {
+	t.Helper()
 	return ScanConfig{
 		Stdout:  bytes.NewReader(golden.Get(t, s.inputName+".out")),
 		Stderr:  bytes.NewReader(golden.Get(t, s.inputName+".err")),
@@ -76,7 +77,6 @@ func TestScanTestOutput_WithTestNameFormat(t *testing.T) {
 	golden.Assert(t, shim.out.String(), "short-verbose-format.out")
 	golden.Assert(t, shim.err.String(), "short-verbose-format.err")
 	assert.DeepEqual(t, exec, expectedExecution, cmpExecutionShallow)
-	t.Fail()
 }
 
 var expectedExecution = &Execution{

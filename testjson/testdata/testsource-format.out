@@ -1,0 +1,211 @@
+PASS gotest.tools/gotestsum/testjson/internal/good.TestPassed (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/good.TestPassedWithLog (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/good.TestPassedWithStdout (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/good.TestWithStderr (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/good.TestNestedSuccess/a/sub (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/good.TestNestedSuccess/a (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/good.TestNestedSuccess/b/sub (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/good.TestNestedSuccess/b (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/good.TestNestedSuccess/c/sub (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/good.TestNestedSuccess/c (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/good.TestNestedSuccess/d/sub (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/good.TestNestedSuccess/d (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/good.TestNestedSuccess (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/good.TestParallelTheThird (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/good.TestParallelTheSecond (0.01s)
+PASS gotest.tools/gotestsum/testjson/internal/good.TestParallelTheFirst (0.01s)
+PASS gotest.tools/gotestsum/testjson/internal/good (cached)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestPassed (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestPassedWithLog (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestPassedWithStdout (0.00s)
+
+func TestFailed(t *testing.T) {
+    t.Fatal("this failed")
+}
+=== RUN   TestFailed
+    fails_test.go:34: this failed
+--- FAIL: TestFailed (0.00s)
+FAIL gotest.tools/gotestsum/testjson/internal/withfails.TestFailed (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestWithStderr (0.00s)
+
+func TestFailedWithStderr(t *testing.T) {
+    fmt.Fprintln(os.Stderr, "this is stderr")
+    t.Fatal("also failed")
+}
+=== RUN   TestFailedWithStderr
+this is stderr
+    fails_test.go:43: also failed
+--- FAIL: TestFailedWithStderr (0.00s)
+FAIL gotest.tools/gotestsum/testjson/internal/withfails.TestFailedWithStderr (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestNestedWithFailure/a/sub (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestNestedWithFailure/a (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestNestedWithFailure/b/sub (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestNestedWithFailure/b (0.00s)
+
+func TestNestedWithFailure(t *testing.T) {
+    for _, name := range []string{"a", "b", "c", "d"} {
+        t.Run(name, func(t *testing.T) {
+            if strings.HasSuffix(t.Name(), "c") {
+                t.Fatal("failed")
+            }
+            t.Run("sub", func(t *testing.T) {})
+        })
+    }
+}
+=== RUN   TestNestedWithFailure/c
+    fails_test.go:65: failed
+    --- FAIL: TestNestedWithFailure/c (0.00s)
+FAIL gotest.tools/gotestsum/testjson/internal/withfails.TestNestedWithFailure/c (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestNestedWithFailure/d/sub (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestNestedWithFailure/d (0.00s)
+
+func TestNestedWithFailure(t *testing.T) {
+    for _, name := range []string{"a", "b", "c", "d"} {
+        t.Run(name, func(t *testing.T) {
+            if strings.HasSuffix(t.Name(), "c") {
+                t.Fatal("failed")
+            }
+            t.Run("sub", func(t *testing.T) {})
+        })
+    }
+}
+=== RUN   TestNestedWithFailure
+--- FAIL: TestNestedWithFailure (0.00s)
+FAIL gotest.tools/gotestsum/testjson/internal/withfails.TestNestedWithFailure (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestNestedSuccess/a/sub (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestNestedSuccess/a (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestNestedSuccess/b/sub (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestNestedSuccess/b (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestNestedSuccess/c/sub (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestNestedSuccess/c (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestNestedSuccess/d/sub (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestNestedSuccess/d (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestNestedSuccess (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestParallelTheThird (0.00s)
+sometimes main can exit 2
+FAIL gotest.tools/gotestsum/testjson/internal/badmain
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestParallelTheSecond (0.01s)
+PASS gotest.tools/gotestsum/testjson/internal/withfails.TestParallelTheFirst (0.01s)
+FAIL gotest.tools/gotestsum/testjson/internal/withfails
+PASS gotest.tools/gotestsum/testjson/internal/parallelfails.TestPassed (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/parallelfails.TestPassedWithLog (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/parallelfails.TestPassedWithStdout (0.00s)
+PASS gotest.tools/gotestsum/testjson/internal/parallelfails.TestWithStderr (0.00s)
+
+func TestNestedParallelFailures(t *testing.T) {
+    for _, name := range []string{"a", "b", "c", "d"} {
+        name := name
+        t.Run(name, func(t *testing.T) {
+            t.Parallel()
+            t.Fatal("failed sub " + name)
+        })
+    }
+}
+=== RUN   TestNestedParallelFailures/a
+=== PAUSE TestNestedParallelFailures/a
+=== CONT  TestNestedParallelFailures/a
+    fails_test.go:50: failed sub a
+    --- FAIL: TestNestedParallelFailures/a (0.00s)
+FAIL gotest.tools/gotestsum/testjson/internal/parallelfails.TestNestedParallelFailures/a (0.00s)
+
+func TestNestedParallelFailures(t *testing.T) {
+    for _, name := range []string{"a", "b", "c", "d"} {
+        name := name
+        t.Run(name, func(t *testing.T) {
+            t.Parallel()
+            t.Fatal("failed sub " + name)
+        })
+    }
+}
+=== RUN   TestNestedParallelFailures/d
+=== PAUSE TestNestedParallelFailures/d
+=== CONT  TestNestedParallelFailures/d
+    fails_test.go:50: failed sub d
+    --- FAIL: TestNestedParallelFailures/d (0.00s)
+FAIL gotest.tools/gotestsum/testjson/internal/parallelfails.TestNestedParallelFailures/d (0.00s)
+
+func TestNestedParallelFailures(t *testing.T) {
+    for _, name := range []string{"a", "b", "c", "d"} {
+        name := name
+        t.Run(name, func(t *testing.T) {
+            t.Parallel()
+            t.Fatal("failed sub " + name)
+        })
+    }
+}
+=== RUN   TestNestedParallelFailures/b
+=== PAUSE TestNestedParallelFailures/b
+=== CONT  TestNestedParallelFailures/b
+    fails_test.go:50: failed sub b
+    --- FAIL: TestNestedParallelFailures/b (0.00s)
+FAIL gotest.tools/gotestsum/testjson/internal/parallelfails.TestNestedParallelFailures/b (0.00s)
+
+func TestNestedParallelFailures(t *testing.T) {
+    for _, name := range []string{"a", "b", "c", "d"} {
+        name := name
+        t.Run(name, func(t *testing.T) {
+            t.Parallel()
+            t.Fatal("failed sub " + name)
+        })
+    }
+}
+=== RUN   TestNestedParallelFailures/c
+=== PAUSE TestNestedParallelFailures/c
+=== CONT  TestNestedParallelFailures/c
+    fails_test.go:50: failed sub c
+    --- FAIL: TestNestedParallelFailures/c (0.00s)
+FAIL gotest.tools/gotestsum/testjson/internal/parallelfails.TestNestedParallelFailures/c (0.00s)
+
+func TestNestedParallelFailures(t *testing.T) {
+    for _, name := range []string{"a", "b", "c", "d"} {
+        name := name
+        t.Run(name, func(t *testing.T) {
+            t.Parallel()
+            t.Fatal("failed sub " + name)
+        })
+    }
+}
+=== RUN   TestNestedParallelFailures
+--- FAIL: TestNestedParallelFailures (0.00s)
+FAIL gotest.tools/gotestsum/testjson/internal/parallelfails.TestNestedParallelFailures (0.00s)
+
+func TestParallelTheThird(t *testing.T) {
+    t.Parallel()
+    time.Sleep(2 * time.Millisecond)
+    t.Fatal("failed the third")
+
+}
+=== RUN   TestParallelTheThird
+=== PAUSE TestParallelTheThird
+=== CONT  TestParallelTheThird
+=== CONT  TestParallelTheThird
+    fails_test.go:41: failed the third
+--- FAIL: TestParallelTheThird (0.00s)
+FAIL gotest.tools/gotestsum/testjson/internal/parallelfails.TestParallelTheThird (0.00s)
+
+func TestParallelTheSecond(t *testing.T) {
+    t.Parallel()
+    time.Sleep(6 * time.Millisecond)
+    t.Fatal("failed the second")
+}
+=== RUN   TestParallelTheSecond
+=== PAUSE TestParallelTheSecond
+=== CONT  TestParallelTheSecond
+=== CONT  TestParallelTheSecond
+    fails_test.go:35: failed the second
+--- FAIL: TestParallelTheSecond (0.01s)
+FAIL gotest.tools/gotestsum/testjson/internal/parallelfails.TestParallelTheSecond (0.01s)
+
+func TestParallelTheFirst(t *testing.T) {
+    t.Parallel()
+    time.Sleep(10 * time.Millisecond)
+    t.Fatal("failed the first")
+}
+=== RUN   TestParallelTheFirst
+=== PAUSE TestParallelTheFirst
+=== CONT  TestParallelTheFirst
+=== CONT  TestParallelTheFirst
+    fails_test.go:29: failed the first
+--- FAIL: TestParallelTheFirst (0.01s)
+FAIL gotest.tools/gotestsum/testjson/internal/parallelfails.TestParallelTheFirst (0.01s)
+FAIL gotest.tools/gotestsum/testjson/internal/parallelfails
