@@ -9,7 +9,9 @@ import (
 	"os"
 	"strings"
 
+	codes "github.com/fatih/color"
 	"golang.org/x/tools/go/packages"
+	"gotest.tools/gotestsum/internal/color"
 )
 
 func newTestSourceFormatter(out io.Writer) *testSourceFormatter {
@@ -43,28 +45,6 @@ func (t *testSourceFormatter) Format(event TestEvent, exec *Execution) error {
 func (t *testSourceFormatter) write(v string) error {
 	_, err := t.out.Write([]byte(v))
 	return err
-}
-
-// TODO: test with source that is not gofmt formatted
-func (t *testSourceFormatter) writeSource(src pkgSource, event TestEvent) error {
-	root, _ := SplitTestName(event.Test)
-	// TODO: make it work with subtests
-
-	decl, ok := src.tests[root]
-	if !ok {
-		return fmt.Errorf("failed to locate source for %v", event.Test)
-	}
-	if err := t.write("\n"); err != nil {
-		return err
-	}
-	cfg := &printer.Config{
-		Mode:     printer.UseSpaces,
-		Tabwidth: 4,
-	}
-	if err := cfg.Fprint(t.out, src.fileset, decl); err != nil {
-		return err
-	}
-	return t.write("\n")
 }
 
 // TODO: test with external test package
@@ -113,7 +93,103 @@ func (t *testSourceFormatter) loadSource(name string) (pkgSource, error) {
 	return src, nil
 }
 
+// TODO: test with source that is not gofmt formatted
+func (t *testSourceFormatter) writeSource(src pkgSource, event TestEvent) error {
+	root, _ := SplitTestName(event.Test)
+	// TODO: make it work with subtests
+
+	decl, ok := src.tests[root]
+	if !ok {
+		return fmt.Errorf("failed to locate source for %v", event.Test)
+	}
+	if err := t.write("\n"); err != nil {
+		return err
+	}
+	cfg := &printer.Config{Tabwidth: 4}
+	writer := &syntaxHighlighter{
+		out:   t.out,
+		index: newColorIndex(decl),
+	}
+	if err := cfg.Fprint(writer, src.fileset, decl); err != nil {
+		return err
+	}
+	return t.write("\n")
+}
+
 var _ EventFormatter = (*testSourceFormatter)(nil)
+
+type colorIndex map[token.Pos]func(w io.Writer) (int, error)
+
+func newColorIndex(node ast.Node) colorIndex {
+	index := make(colorIndex)
+	offset := node.Pos()
+	add := func(node ast.Node, fn func(w io.Writer) (int, error)) {
+		if node == nil || fn == nil {
+			return
+		}
+		index[node.Pos()-offset] = fn
+		end := node.End() - offset
+		if _, exists := index[end]; !exists {
+			index[end] = color.Unset
+		}
+	}
+	ast.Inspect(node, func(node ast.Node) bool {
+		if node == nil {
+			return true
+		}
+
+		switch n := node.(type) {
+		case *ast.FuncDecl:
+			add(n.Type, color.Color(172)) // Orange3
+			add(n.Name, color.Color(codes.FgYellow))
+
+		case *ast.SelectorExpr:
+			add(n.Sel, color.Color(codes.FgMagenta))
+			add(n.X, color.Color(codes.FgBlue))
+
+		case *ast.BasicLit:
+			add(n, color.Color(codes.FgGreen))
+
+		case *ast.UnaryExpr:
+			n.End()
+			switch n.Op {
+			case token.RANGE:
+				// TODO: does not work, maybe end is wrong
+				add(n, color.Color(codes.FgRed))
+			}
+		}
+		return true
+	})
+	return index
+}
+
+type syntaxHighlighter struct {
+	out   io.Writer
+	index colorIndex
+	pos   token.Pos
+}
+
+func (s *syntaxHighlighter) Write(raw []byte) (int, error) {
+	for i, b := range raw {
+		if fn := s.index[s.pos]; fn != nil {
+			if _, err := fn(s.out); err != nil {
+				return i, err
+			}
+		}
+		// replace tabs with 4 spaces here instead of the ast printer so that
+		// s.pos advances the correct number of bytes to match the positions
+		// in index.
+		next := []byte{b}
+		if b == '\t' {
+			next = []byte("    ")
+		}
+		if _, err := s.out.Write(next); err != nil {
+			return i, err
+		}
+		s.pos++
+	}
+	return len(raw), nil
+}
 
 type pkgSource struct {
 	fileset *token.FileSet
