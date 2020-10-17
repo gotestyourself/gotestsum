@@ -9,7 +9,6 @@ import (
 	"os"
 	"strings"
 
-	codes "github.com/fatih/color"
 	"golang.org/x/tools/go/packages"
 	"gotest.tools/gotestsum/internal/color"
 )
@@ -133,6 +132,7 @@ func newColorIndex(node ast.Node) colorIndex {
 			index[end] = color.Unset
 		}
 	}
+
 	ast.Inspect(node, func(node ast.Node) bool {
 		if node == nil {
 			return true
@@ -140,28 +140,41 @@ func newColorIndex(node ast.Node) colorIndex {
 
 		switch n := node.(type) {
 		case *ast.FuncDecl:
-			add(n.Type, color.Color(172)) // Orange3
-			add(n.Name, color.Color(codes.FgYellow))
+			add(n.Type, color.Color(color.Hex(orange)))
+			add(n.Name, color.Color(color.Hex(yellow)))
 
 		case *ast.SelectorExpr:
-			add(n.Sel, color.Color(codes.FgMagenta))
-			add(n.X, color.Color(codes.FgBlue))
+			//add(n.Sel, color.Color(color.Hex(blue)))
+			//add(n.X, color.Color(color.Hex(lightGreen)))
 
 		case *ast.BasicLit:
-			add(n, color.Color(codes.FgGreen))
+			switch n.Kind {
+			case token.STRING, token.CHAR:
+				add(n, color.Color(color.Hex(green)))
+			default:
+				add(n, color.Color(color.Hex(blue)))
+			}
 
 		case *ast.UnaryExpr:
 			n.End()
 			switch n.Op {
-			case token.RANGE:
-				// TODO: does not work, maybe end is wrong
-				add(n, color.Color(codes.FgRed))
+			case token.RANGE, token.FOR:
+				//add(n, color.Color(color.Hex(orange)))
 			}
 		}
 		return true
 	})
 	return index
 }
+
+const (
+	orange     = 0xC7773E
+	yellow     = 0xE6B163
+	purple     = 0x9876AA
+	blue       = 0x6897BB
+	green      = 0x6A8759
+	lightGreen = 0xAFBF7E
+)
 
 type syntaxHighlighter struct {
 	out   io.Writer

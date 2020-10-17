@@ -8,6 +8,7 @@ require (
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
 	github.com/jonboulle/clockwork v0.1.0
 	github.com/mattn/go-colorable v0.1.6 // indirect
+	github.com/mattn/go-isatty v0.0.12
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/pflag v1.0.3
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9

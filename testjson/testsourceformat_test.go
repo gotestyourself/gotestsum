@@ -2,12 +2,12 @@ package testjson
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 
-	"github.com/fatih/color"
+	"gotest.tools/gotestsum/internal/color"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/env"
-	"gotest.tools/v3/golden"
 )
 
 func TestTestSourceFormatter(t *testing.T) {
@@ -20,8 +20,9 @@ func TestTestSourceFormatter(t *testing.T) {
 	_, err := ScanTestOutput(shim.Config(t))
 
 	assert.NilError(t, err)
-	golden.Assert(t, out.String(), "testsource-format.out")
-	golden.Assert(t, shim.err.String(), "testsource-format.err")
+	//golden.Assert(t, out.String(), "testsource-format.out")
+	//golden.Assert(t, shim.err.String(), "testsource-format.err")
+	fmt.Println(out.String())
 	t.Fail()
 }
 
