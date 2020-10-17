@@ -18,6 +18,7 @@ Flags:
       --rerun-fails-max-failures int                do not rerun any tests if the initial run has more than this number of failures (default 10)
       --rerun-fails-report string                   write a report to the file, of the tests that were rerun
       --version                                     show version and exit
+      --watch                                       watch go files, and run tests when a file is modified
 
 Formats:
     dots                    print a character for each test
