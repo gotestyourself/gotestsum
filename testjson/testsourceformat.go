@@ -191,12 +191,22 @@ func (h *highlighter) Pre(c *astutil.Cursor) bool {
 		}
 
 	case *ast.SelectorExpr:
-		if h.inFuncFieldList {
+		switch {
+		case h.inFuncFieldList:
 			h.add(n.Sel, color.Hex(blue))
 			h.add(n.X, color.Hex(lightGreen))
-			return true
+		case isCallExpr(c.Parent()):
+			if isPackageIdent(n.X) {
+				h.add(n.X, color.Hex(lightGreen))
+			}
+			h.add(n.Sel, color.Hex(lightYellow))
+		default:
+			if isPackageIdent(n.X) {
+				h.add(n.X, color.Hex(lightGreen))
+			}
+			// TODO: only for constants
+			//h.add(n.Sel, color.Hex(purple))
 		}
-		h.add(n.Sel, color.Hex(lightYellow))
 	}
 	return true
 }
@@ -208,6 +218,16 @@ func (h *highlighter) Post(c *astutil.Cursor) bool {
 		h.inFuncFieldList = false
 	}
 	return true
+}
+
+func isCallExpr(n ast.Node) bool {
+	_, ok := n.(*ast.CallExpr)
+	return ok
+}
+
+func isPackageIdent(n ast.Expr) bool {
+	ident, ok := n.(*ast.Ident)
+	return ok && ident.Obj == nil
 }
 
 const (
