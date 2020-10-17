@@ -1,7 +1,6 @@
 package filewatcher
 
 import (
-	"context"
 	"fmt"
 	"io"
 	"os"
@@ -13,7 +12,9 @@ import (
 	"gotest.tools/gotestsum/log"
 )
 
-func Watch(ctx context.Context, dirs []string, run func(pkg string) error) error {
+const maxDepth = 7
+
+func Watch(dirs []string, run func(pkg string) error) error {
 	toWatch := findAllDirs(dirs, maxDepth)
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -28,13 +29,16 @@ func Watch(ctx context.Context, dirs []string, run func(pkg string) error) error
 		}
 	}
 
+	timer := time.NewTimer(time.Hour)
+	defer timer.Stop()
+
 	h := &handler{last: time.Now(), fn: run}
 	for {
 		select {
-		case <-ctx.Done():
+		case <-timer.C:
 			return fmt.Errorf("exceeded idle timeout while watching files")
 		case event := <-watcher.Events:
-			log.Debugf("handling event %v", event.String())
+			log.Debugf("handling event %v", event)
 
 			if handleDirCreated(watcher, event) {
 				continue
@@ -43,16 +47,12 @@ func Watch(ctx context.Context, dirs []string, run func(pkg string) error) error
 			if err := h.handleEvent(event); err != nil {
 				return fmt.Errorf("failed to run tests for %v: %v", event.Name, err)
 			}
+			timer.Reset(time.Hour)
 		case err := <-watcher.Errors:
 			return fmt.Errorf("failed while watching files: %v", err)
 		}
 	}
 }
-
-const (
-	maxDepth       = 7
-	floodThreshold = 250 * time.Millisecond
-)
 
 func findAllDirs(dirs []string, depth int) []string {
 	var output []string
@@ -154,6 +154,8 @@ type handler struct {
 	last time.Time
 	fn   func(pkg string) error
 }
+
+const floodThreshold = 250 * time.Millisecond
 
 func (h *handler) handleEvent(event fsnotify.Event) error {
 	if event.Op&fsnotify.Write|fsnotify.Create == 0 {

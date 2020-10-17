@@ -8,7 +8,6 @@ import (
 	"os/exec"
 	"os/signal"
 	"strings"
-	"time"
 
 	"github.com/fatih/color"
 	"github.com/pkg/errors"
@@ -43,9 +42,6 @@ func Run(name string, args []string) error {
 }
 
 func runWatcher(opts *options) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Hour)
-	defer cancel()
-
 	fn := func(pkg string) error {
 		opts := *opts
 		opts.packages = []string{pkg}
@@ -55,7 +51,7 @@ func runWatcher(opts *options) error {
 		}
 		return nil
 	}
-	return filewatcher.Watch(ctx, opts.packages, fn)
+	return filewatcher.Watch(opts.packages, fn)
 }
 
 func setupFlags(name string) (*pflag.FlagSet, *options) {
