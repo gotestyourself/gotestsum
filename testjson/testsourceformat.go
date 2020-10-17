@@ -1,6 +1,7 @@
 package testjson
 
 import (
+	"bufio"
 	"fmt"
 	"go/ast"
 	"go/printer"
@@ -112,6 +113,9 @@ func (t *testSourceFormatter) writeSource(src pkgSource, event TestEvent) error 
 	writer := &syntaxHighlighter{
 		out:   t.out,
 		index: newColorIndex(decl),
+		line: func(pos token.Pos) int {
+			return src.fileset.Position(pos + decl.Pos()).Line
+		},
 	}
 	if err := cfg.Fprint(writer, src.fileset, decl); err != nil {
 		return err
@@ -262,14 +266,21 @@ type syntaxHighlighter struct {
 	out   io.Writer
 	index colorIndex
 	pos   token.Pos
+	line  func(pos token.Pos) int
 }
 
 func (s *syntaxHighlighter) Write(raw []byte) (int, error) {
-	for i, b := range raw {
+	if len(raw) == 0 {
+		return 0, nil
+	}
+	buf := bufio.NewWriter(s.out)
+	// TODO: better way to handle this? in one place
+	if s.pos == 0 {
+		s.writeLineNumber(buf)
+	}
+	for _, b := range raw {
 		if fn := s.index[s.pos]; fn != nil {
-			if _, err := fn(s.out); err != nil {
-				return i, err
-			}
+			fn(buf)
 		}
 		// replace tabs with 4 spaces here instead of the ast printer so that
 		// s.pos advances the correct number of bytes to match the positions
@@ -278,12 +289,19 @@ func (s *syntaxHighlighter) Write(raw []byte) (int, error) {
 		if b == '\t' {
 			next = []byte("    ")
 		}
-		if _, err := s.out.Write(next); err != nil {
-			return i, err
+		buf.Write(next)
+		if b == '\n' {
+			s.writeLineNumber(buf)
 		}
 		s.pos++
 	}
-	return len(raw), nil
+	return len(raw), buf.Flush()
+}
+
+func (s *syntaxHighlighter) writeLineNumber(out io.Writer) {
+	color.Color(color.Hex(0x777777))(out)
+	fmt.Fprintf(out, "%4d ", s.line(s.pos+1))
+	color.Unset(out)
 }
 
 type pkgSource struct {
