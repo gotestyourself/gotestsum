@@ -94,8 +94,11 @@ func (t *testSourceFormatter) loadSource(name string) (pkgSource, error) {
 
 // TODO: test with source that is not gofmt formatted
 func (t *testSourceFormatter) writeSource(src pkgSource, event TestEvent) error {
-	root, _ := SplitTestName(event.Test)
-	// TODO: make it work with subtests
+	root, sub := SplitTestName(event.Test)
+	if sub != "" {
+		// TODO: make it work with subtests, for now print all subs as part of the root
+		return nil
+	}
 
 	decl, ok := src.tests[root]
 	if !ok {
@@ -120,61 +123,110 @@ var _ EventFormatter = (*testSourceFormatter)(nil)
 type colorIndex map[token.Pos]func(w io.Writer) (int, error)
 
 func newColorIndex(node ast.Node) colorIndex {
+	if color.NoColor {
+		return nil
+	}
 	index := make(colorIndex)
 	offset := node.Pos()
-	add := func(node ast.Node, fn func(w io.Writer) (int, error)) {
-		if node == nil || fn == nil {
+	add := func(node ast.Node, c color.Attribute) {
+		if node == nil {
 			return
 		}
-		index[node.Pos()-offset] = fn
+		index[node.Pos()-offset] = color.Color(c)
 		end := node.End() - offset
 		if _, exists := index[end]; !exists {
 			index[end] = color.Unset
 		}
 	}
 
-	ast.Inspect(node, func(node ast.Node) bool {
-		if node == nil {
-			return true
-		}
-
-		switch n := node.(type) {
-		case *ast.FuncDecl:
-			add(n.Type, color.Color(color.Hex(orange)))
-			add(n.Name, color.Color(color.Hex(yellow)))
-
-		case *ast.SelectorExpr:
-			//add(n.Sel, color.Color(color.Hex(blue)))
-			//add(n.X, color.Color(color.Hex(lightGreen)))
-
-		case *ast.BasicLit:
-			switch n.Kind {
-			case token.STRING, token.CHAR:
-				add(n, color.Color(color.Hex(green)))
-			default:
-				add(n, color.Color(color.Hex(blue)))
-			}
-
-		case *ast.UnaryExpr:
-			n.End()
-			switch n.Op {
-			case token.RANGE, token.FOR:
-				//add(n, color.Color(color.Hex(orange)))
-			}
-		}
-		return true
-	})
+	ast.Walk(&highlighter{add: add}, node)
 	return index
 }
 
+type highlighter struct {
+	add             func(node ast.Node, c color.Attribute)
+	inFuncFieldList bool
+}
+
+func (h *highlighter) Visit(node ast.Node) ast.Visitor {
+	if node == nil {
+		return nil
+	}
+
+	switch n := node.(type) {
+	case *ast.FuncDecl:
+		h.add(n.Name, color.Hex(yellow))
+
+	case *ast.FuncType:
+		h.add(newTokenPos(n.Pos(), token.FUNC), color.Hex(orange))
+		h.inFuncFieldList = true
+		ast.Walk(h, n.Params)
+		h.inFuncFieldList = false
+		return nil
+
+	case *ast.BasicLit:
+		switch n.Kind {
+		case token.STRING, token.CHAR:
+			h.add(n, color.Hex(green))
+		default:
+			h.add(n, color.Hex(blue))
+		}
+
+	case *ast.RangeStmt:
+		h.add(newTokenPos(n.For, token.FOR), color.Hex(orange))
+		ast.Walk(h, n.Key)
+
+	case *ast.UnaryExpr:
+		fmt.Println("UNARY GOT YA")
+		switch n.Op {
+		case token.RANGE:
+			h.add(newTokenPos(n.Pos(), token.RANGE), color.Hex(orange))
+		}
+
+	case *ast.Ident:
+		switch n.Name {
+		case "string":
+			h.add(n, color.Hex(orange))
+		}
+
+	case *ast.SelectorExpr:
+		if h.inFuncFieldList {
+			h.add(n.Sel, color.Hex(blue))
+			h.add(n.X, color.Hex(lightGreen))
+			return h
+		}
+		h.add(n.Sel, color.Hex(lightYellow))
+	}
+	return h
+}
+
 const (
-	orange     = 0xC7773E
-	yellow     = 0xE6B163
-	purple     = 0x9876AA
-	blue       = 0x6897BB
-	green      = 0x6A8759
-	lightGreen = 0xAFBF7E
+	orange      = 0xC7773E
+	yellow      = 0xE6B163
+	purple      = 0x9876AA
+	blue        = 0x6897BB
+	green       = 0x6A8759
+	lightGreen  = 0xAFBF7E
+	lightYellow = 0xB09D79
+	red         = 0xFF0000
 )
+
+type position struct {
+	start, end token.Pos
+}
+
+func newTokenPos(start token.Pos, tok token.Token) position {
+	end := int(start) + len(tok.String())
+	return position{start: start, end: token.Pos(end)}
+}
+
+func (p position) Pos() token.Pos {
+	return p.start
+}
+
+func (p position) End() token.Pos {
+	return p.end
+}
 
 type syntaxHighlighter struct {
 	out   io.Writer
