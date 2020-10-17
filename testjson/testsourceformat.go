@@ -9,6 +9,7 @@ import (
 	"os"
 	"strings"
 
+	"golang.org/x/tools/go/ast/astutil"
 	"golang.org/x/tools/go/packages"
 	"gotest.tools/gotestsum/internal/color"
 )
@@ -139,7 +140,8 @@ func newColorIndex(node ast.Node) colorIndex {
 		}
 	}
 
-	ast.Walk(&highlighter{add: add}, node)
+	h := &highlighter{add: add}
+	astutil.Apply(node, h.Pre, h.Post)
 	return index
 }
 
@@ -148,9 +150,10 @@ type highlighter struct {
 	inFuncFieldList bool
 }
 
-func (h *highlighter) Visit(node ast.Node) ast.Visitor {
+func (h *highlighter) Pre(c *astutil.Cursor) bool {
+	node := c.Node()
 	if node == nil {
-		return nil
+		return false
 	}
 
 	switch n := node.(type) {
@@ -160,9 +163,6 @@ func (h *highlighter) Visit(node ast.Node) ast.Visitor {
 	case *ast.FuncType:
 		h.add(newTokenPos(n.Pos(), token.FUNC), color.Hex(orange))
 		h.inFuncFieldList = true
-		ast.Walk(h, n.Params)
-		h.inFuncFieldList = false
-		return nil
 
 	case *ast.BasicLit:
 		switch n.Kind {
@@ -174,7 +174,8 @@ func (h *highlighter) Visit(node ast.Node) ast.Visitor {
 
 	case *ast.RangeStmt:
 		h.add(newTokenPos(n.For, token.FOR), color.Hex(orange))
-		ast.Walk(h, n.Key)
+		start := n.TokPos + token.Pos(len(n.Tok.String()))
+		h.add(position{start: start, end: n.X.Pos()}, color.Hex(orange))
 
 	case *ast.UnaryExpr:
 		fmt.Println("UNARY GOT YA")
@@ -193,11 +194,20 @@ func (h *highlighter) Visit(node ast.Node) ast.Visitor {
 		if h.inFuncFieldList {
 			h.add(n.Sel, color.Hex(blue))
 			h.add(n.X, color.Hex(lightGreen))
-			return h
+			return true
 		}
 		h.add(n.Sel, color.Hex(lightYellow))
 	}
-	return h
+	return true
+}
+
+func (h *highlighter) Post(c *astutil.Cursor) bool {
+	node := c.Node()
+	switch node.(type) {
+	case *ast.FuncType:
+		h.inFuncFieldList = false
+	}
+	return true
 }
 
 const (
