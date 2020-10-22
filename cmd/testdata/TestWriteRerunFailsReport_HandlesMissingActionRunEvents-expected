@@ -1,0 +1,3 @@
+github.com/hashicorp/consul/test/integration/connect/envoy.TestEnvoy: 5 runs, 5 failures
+github.com/hashicorp/consul/test/integration/connect/envoy.TestEnvoy/case-ent-cross-namespaces: 3 runs, 3 failures
+github.com/hashicorp/consul/test/integration/connect/envoy.TestEnvoy/case-ent-intra-namespace: 3 runs, 3 failures
