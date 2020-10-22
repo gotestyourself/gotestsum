@@ -8,6 +8,7 @@ import (
 	"io"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/jonboulle/clockwork"
@@ -261,11 +262,12 @@ func newPackage() *Package {
 
 // Execution of one or more test packages
 type Execution struct {
-	started   time.Time
-	packages  map[string]*Package
-	errors    []string
-	done      bool
-	lastRunID int
+	started    time.Time
+	packages   map[string]*Package
+	errorsLock sync.RWMutex
+	errors     []string
+	done       bool
+	lastRunID  int
 }
 
 func (e *Execution) add(event TestEvent) {
@@ -462,11 +464,15 @@ func (e *Execution) addError(err string) {
 	if strings.HasPrefix(err, "# ") {
 		return
 	}
+	e.errorsLock.Lock()
 	e.errors = append(e.errors, err)
+	e.errorsLock.Unlock()
 }
 
 // Errors returns a list of all the errors.
 func (e *Execution) Errors() []string {
+	e.errorsLock.RLock()
+	defer e.errorsLock.RUnlock()
 	return e.errors
 }
 
