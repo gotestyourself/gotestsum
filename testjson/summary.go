@@ -178,7 +178,7 @@ func writeTestCaseSummary(out io.Writer, execution executionSummary, conf testCa
 			formatRunID(tc.RunID),
 			FormatDurationAsSeconds(tc.Elapsed, 2))
 		for _, line := range execution.OutputLines(tc) {
-			if isFramingLine(line) || conf.filter(tc.Test, line) {
+			if isFramingLine(line) || conf.filter(tc.Test.Name(), line) {
 				continue
 			}
 			fmt.Fprint(out, line)

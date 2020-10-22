@@ -168,7 +168,7 @@ func aggregateTestCases(cases []testjson.TestCase) []testjson.TestCase {
 	}
 	pkg := cases[0].Package
 	// nolint: prealloc // size is not predictable
-	m := make(map[string][]time.Duration)
+	m := make(map[testjson.TestName][]time.Duration)
 	for _, tc := range cases {
 		m[tc.Test] = append(m[tc.Test], tc.Elapsed)
 	}

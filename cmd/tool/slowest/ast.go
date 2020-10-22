@@ -124,20 +124,16 @@ func testNamesByPkgName(tcs []testjson.TestCase) ([]string, map[string]set) {
 	var pkgs []string
 	index := make(map[string]set)
 	for _, tc := range tcs {
-		if isSubTest(tc.Test) {
+		if tc.Test.IsSubTest() {
 			continue
 		}
 		if len(index[tc.Package]) == 0 {
 			pkgs = append(pkgs, tc.Package)
 			index[tc.Package] = make(map[string]struct{})
 		}
-		index[tc.Package][tc.Test] = struct{}{}
+		index[tc.Package][tc.Test.Name()] = struct{}{}
 	}
 	return pkgs, index
-}
-
-func isSubTest(name string) bool {
-	return strings.Contains(name, "/")
 }
 
 func errPkgLoad(pkg *packages.Package) error {

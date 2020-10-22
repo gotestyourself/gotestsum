@@ -121,7 +121,7 @@ func (p *Package) TestCases() []TestCase {
 // provides a little more safety if that ever changes.
 func (p *Package) LastFailedByName(name string) TestCase {
 	for i := len(p.Failed) - 1; i >= 0; i-- {
-		if p.Failed[i].Test == name {
+		if p.Failed[i].Test.Name() == name {
 			return p.Failed[i]
 		}
 	}
@@ -143,13 +143,12 @@ func (p *Package) Output(id int) string {
 // then all output for every subtest under the root test is returned.
 // See https://github.com/golang/go/issues/29755.
 func (p *Package) OutputLines(tc TestCase) []string {
-	_, sub := SplitTestName(tc.Test)
 	lines := p.output[tc.ID]
 
 	// If this is a subtest, or a root test case with subtest failures the
 	// subtest failure output should contain the relevant lines, so we don't need
 	// extra lines.
-	if sub != "" || tc.hasSubTestFailed {
+	if tc.Test.IsSubTest() || tc.hasSubTestFailed {
 		return lines
 	}
 
@@ -166,13 +165,24 @@ func (p *Package) addOutput(id int, output string) {
 	p.output[id] = append(p.output[id], output)
 }
 
-// SplitTestName into root test name and any subtest names.
-func SplitTestName(name string) (root, sub string) {
-	parts := strings.SplitN(name, "/", 2)
+type TestName string
+
+func (n TestName) Split() (root string, sub string) {
+	parts := strings.SplitN(string(n), "/", 2)
 	if len(parts) < 2 {
-		return name, ""
+		return string(n), ""
 	}
 	return parts[0], parts[1]
+}
+
+// IsSubTest returns true if the name indicates the test is a subtest run using
+// t.Run().
+func (n TestName) IsSubTest() bool {
+	return strings.Contains(string(n), "/")
+}
+
+func (n TestName) Name() string {
+	return string(n)
 }
 
 func (p *Package) removeOutput(id int) {
@@ -216,7 +226,7 @@ func (p *Package) end() []TestEvent {
 		result = append(result, TestEvent{
 			Action:  ActionFail,
 			Package: tc.Package,
-			Test:    tc.Test,
+			Test:    tc.Test.Name(),
 			Elapsed: float64(neverFinished),
 		})
 		delete(p.running, k)
@@ -232,7 +242,7 @@ type TestCase struct {
 	// test case.
 	ID      int
 	Package string
-	Test    string
+	Test    TestName
 	Elapsed time.Duration
 	// RunID from the ScanConfig which produced this test case.
 	RunID int
@@ -287,8 +297,7 @@ func (e *Execution) addPackageEvent(pkg *Package, event TestEvent) {
 }
 
 func (p *Package) addTestEvent(event TestEvent) {
-	tc := p.running[event.Test]
-	root, subTest := SplitTestName(event.Test)
+	root, _ := TestName(event.Test).Split()
 
 	switch event.Action {
 	case ActionRun:
@@ -297,24 +306,27 @@ func (p *Package) addTestEvent(event TestEvent) {
 		p.Total++
 		tc := TestCase{
 			Package: event.Package,
-			Test:    event.Test,
+			Test:    TestName(event.Test),
 			ID:      p.Total,
 			RunID:   event.RunID,
 		}
 		p.running[event.Test] = tc
 
-		if subTest != "" {
+		if tc.Test.IsSubTest() {
 			rootID := p.running[root].ID
 			p.subTests[rootID] = append(p.subTests[rootID], tc.ID)
 		}
 		return
 	case ActionOutput, ActionBench:
+		tc := p.running[event.Test]
 		p.addOutput(tc.ID, event.Output)
 		return
 	case ActionPause, ActionCont:
 		return
 	}
 
+	// the event.Action must be one of the three test end events
+	tc := p.running[event.Test]
 	delete(p.running, event.Test)
 	tc.Elapsed = elapsedDuration(event.Elapsed)
 
@@ -323,7 +335,7 @@ func (p *Package) addTestEvent(event TestEvent) {
 		p.Failed = append(p.Failed, tc)
 
 		// If this is a subtest, mark the root test as having a failed subtest
-		if subTest != "" {
+		if tc.Test.IsSubTest() {
 			rootTestCase := p.running[root]
 			rootTestCase.hasSubTestFailed = true
 			p.running[root] = rootTestCase
@@ -337,7 +349,7 @@ func (p *Package) addTestEvent(event TestEvent) {
 		// Do not immediately remove output for subtests, to work around a bug
 		// in 'go test' where output is attributed to the wrong sub test.
 		// github.com/golang/go/issues/29755.
-		if subTest != "" {
+		if tc.Test.IsSubTest() {
 			return
 		}
 

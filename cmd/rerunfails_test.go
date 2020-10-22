@@ -42,7 +42,7 @@ func TestGoTestRunFlagFromTestCases(t *testing.T) {
 		expected string
 	}
 	fn := func(t *testing.T, tc testCase) {
-		actual := goTestRunFlagForTestCase(tc.input)
+		actual := goTestRunFlagForTestCase(testjson.TestName(tc.input))
 		assert.Equal(t, actual, tc.expected)
 	}
 

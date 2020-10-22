@@ -40,7 +40,7 @@ func TestAggregateTestCases(t *testing.T) {
 	}
 	assert.DeepEqual(t, actual, expected,
 		cmpopts.SortSlices(func(x, y testjson.TestCase) bool {
-			return strings.Compare(x.Test, y.Test) == -1
+			return strings.Compare(x.Test.Name(), y.Test.Name()) == -1
 		}),
 		cmpopts.IgnoreUnexported(testjson.TestCase{}))
 }
