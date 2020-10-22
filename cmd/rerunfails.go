@@ -123,12 +123,12 @@ func (r *failureRecorder) count() int {
 	return len(r.failures)
 }
 
-func goTestRunFlagForTestCase(name string) string {
-	root, sub := testjson.SplitTestName(name)
-	if sub == "" {
-		return "-test.run=^" + name + "$"
+func goTestRunFlagForTestCase(test testjson.TestName) string {
+	if test.IsSubTest() {
+		root, sub := test.Split()
+		return "-test.run=^" + root + "$/^" + sub + "$"
 	}
-	return "-test.run=^" + root + "$/^" + sub + "$"
+	return "-test.run=^" + test.Name() + "$"
 }
 
 func writeRerunFailsReport(opts *options, exec *testjson.Execution) error {
@@ -144,7 +144,7 @@ func writeRerunFailsReport(opts *options, exec *testjson.Execution) error {
 	names := []string{}
 	results := map[string]testCaseCounts{}
 	for _, failure := range exec.Failed() {
-		name := failure.Package + "." + failure.Test
+		name := failure.Package + "." + failure.Test.Name()
 		if _, ok := results[name]; ok {
 			continue
 		}
