@@ -38,6 +38,9 @@ func Watch(dirs []string, run func(pkg string) error) error {
 		case <-timer.C:
 			return fmt.Errorf("exceeded idle timeout while watching files")
 		case event := <-watcher.Events:
+			if !timer.Stop() {
+				<-timer.C
+			}
 			log.Debugf("handling event %v", event)
 
 			if handleDirCreated(watcher, event) {
@@ -129,7 +132,7 @@ func noGoFiles(path string) bool {
 	}
 }
 
-func handleDirCreated(watcher *fsnotify.Watcher, event fsnotify.Event) bool {
+func handleDirCreated(watcher *fsnotify.Watcher, event fsnotify.Event) (handled bool) {
 	if event.Op&fsnotify.Create != fsnotify.Create {
 		return false
 	}
@@ -158,7 +161,7 @@ type handler struct {
 const floodThreshold = 250 * time.Millisecond
 
 func (h *handler) handleEvent(event fsnotify.Event) error {
-	if event.Op&fsnotify.Write|fsnotify.Create == 0 {
+	if event.Op&(fsnotify.Write|fsnotify.Create) == 0 {
 		return nil
 	}
 
