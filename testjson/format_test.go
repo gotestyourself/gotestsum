@@ -118,6 +118,7 @@ var expectedExecution = &Execution{
 var cmpExecutionShallow = gocmp.Options{
 	gocmp.AllowUnexported(Execution{}, Package{}),
 	gocmp.FilterPath(stringPath("started"), opt.TimeWithThreshold(10*time.Second)),
+	cmpopts.IgnoreFields(Execution{}, "errorsLock"),
 	cmpopts.EquateEmpty(),
 	cmpPackageShallow,
 }

@@ -8,6 +8,7 @@ import (
 	"io"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/jonboulle/clockwork"
@@ -261,11 +262,12 @@ func newPackage() *Package {
 
 // Execution of one or more test packages
 type Execution struct {
-	started   time.Time
-	packages  map[string]*Package
-	errors    []string
-	done      bool
-	lastRunID int
+	started    time.Time
+	packages   map[string]*Package
+	errorsLock sync.RWMutex
+	errors     []string
+	done       bool
+	lastRunID  int
 }
 
 func (e *Execution) add(event TestEvent) {
@@ -296,27 +298,40 @@ func (e *Execution) addPackageEvent(pkg *Package, event TestEvent) {
 	}
 }
 
-func (p *Package) addTestEvent(event TestEvent) {
-	root, _ := TestName(event.Test).Split()
+func (p *Package) newTestCaseFromEvent(event TestEvent) TestCase {
+	// Incremental total before using it as the ID, because ID 0 is used for
+	// the package output
+	p.Total++
+	return TestCase{
+		Package: event.Package,
+		Test:    TestName(event.Test),
+		ID:      p.Total,
+		RunID:   event.RunID,
+	}
+}
 
-	switch event.Action {
-	case ActionRun:
-		// Incremental total before using it as the ID, because ID 0 is used for
-		// the package output
-		p.Total++
-		tc := TestCase{
-			Package: event.Package,
-			Test:    TestName(event.Test),
-			ID:      p.Total,
-			RunID:   event.RunID,
-		}
+func (p *Package) addTestEvent(event TestEvent) {
+	if event.Action == ActionRun {
+		tc := p.newTestCaseFromEvent(event)
 		p.running[event.Test] = tc
 
 		if tc.Test.IsSubTest() {
+			root, _ := TestName(event.Test).Split()
 			rootID := p.running[root].ID
 			p.subTests[rootID] = append(p.subTests[rootID], tc.ID)
 		}
 		return
+	}
+
+	tc := p.running[event.Test]
+	// This appears to be a bug in 'go test' or test2json. This test is missing
+	// an Action=run event. Create one on the first event received from the test.
+	if tc.ID == 0 {
+		tc = p.newTestCaseFromEvent(event)
+		p.running[event.Test] = tc
+	}
+
+	switch event.Action {
 	case ActionOutput, ActionBench:
 		tc := p.running[event.Test]
 		p.addOutput(tc.ID, event.Output)
@@ -326,7 +341,6 @@ func (p *Package) addTestEvent(event TestEvent) {
 	}
 
 	// the event.Action must be one of the three test end events
-	tc := p.running[event.Test]
 	delete(p.running, event.Test)
 	tc.Elapsed = elapsedDuration(event.Elapsed)
 
@@ -336,6 +350,7 @@ func (p *Package) addTestEvent(event TestEvent) {
 
 		// If this is a subtest, mark the root test as having a failed subtest
 		if tc.Test.IsSubTest() {
+			root, _ := TestName(event.Test).Split()
 			rootTestCase := p.running[root]
 			rootTestCase.hasSubTestFailed = true
 			p.running[root] = rootTestCase
@@ -462,11 +477,15 @@ func (e *Execution) addError(err string) {
 	if strings.HasPrefix(err, "# ") {
 		return
 	}
+	e.errorsLock.Lock()
 	e.errors = append(e.errors, err)
+	e.errorsLock.Unlock()
 }
 
 // Errors returns a list of all the errors.
 func (e *Execution) Errors() []string {
+	e.errorsLock.RLock()
+	defer e.errorsLock.RUnlock()
 	return e.errors
 }
 

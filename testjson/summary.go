@@ -150,7 +150,7 @@ type executionSummary interface {
 }
 
 type noOutputSummary struct {
-	Execution
+	*Execution
 }
 
 func (s *noOutputSummary) OutputLines(_ TestCase) []string {
@@ -161,7 +161,7 @@ func newExecSummary(execution *Execution, opts Summary) executionSummary {
 	if opts.Includes(SummarizeOutput) {
 		return execution
 	}
-	return &noOutputSummary{Execution: *execution}
+	return &noOutputSummary{Execution: execution}
 }
 
 func writeTestCaseSummary(out io.Writer, execution executionSummary, conf testCaseFormatConfig) {

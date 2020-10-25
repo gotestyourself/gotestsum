@@ -5,7 +5,7 @@ replace github.com/spf13/pflag => github.com/dnephin/pflag v0.0.0-20200521001137
 require (
 	github.com/fatih/color v1.9.0
 	github.com/fsnotify/fsnotify v1.4.9
-	github.com/google/go-cmp v0.4.0
+	github.com/google/go-cmp v0.5.2
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
 	github.com/jonboulle/clockwork v0.1.0
 	github.com/mattn/go-colorable v0.1.6 // indirect
