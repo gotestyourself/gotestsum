@@ -38,6 +38,9 @@ func Watch(dirs []string, run func(pkg string) error) error {
 		case <-timer.C:
 			return fmt.Errorf("exceeded idle timeout while watching files")
 		case event := <-watcher.Events:
+			if !timer.Stop() {
+				<-timer.C
+			}
 			log.Debugf("handling event %v", event)
 
 			if handleDirCreated(watcher, event) {
@@ -54,9 +57,28 @@ func Watch(dirs []string, run func(pkg string) error) error {
 	}
 }
 
-func findAllDirs(dirs []string, depth int) []string {
-	var output []string
+func findAllDirs(dirs []string, maxDepth int) []string {
+	if len(dirs) == 0 {
+		dirs = []string{"./..."}
+	}
 
+	var output []string // nolint: prealloc
+	for _, dir := range dirs {
+		const recur = "/..."
+		if strings.HasSuffix(dir, recur) {
+			dir = strings.TrimSuffix(dir, recur)
+			output = append(output, findSubDirs(dir, maxDepth)...)
+			continue
+		}
+		output = append(output, dir)
+	}
+	return output
+}
+
+func findSubDirs(rootDir string, maxDepth int) []string {
+	var output []string
+	// add root dir depth so that maxDepth is relative to the root dir
+	maxDepth += pathDepth(rootDir)
 	walker := func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			log.Warnf("failed to watch %v: %v", path, err)
@@ -65,32 +87,24 @@ func findAllDirs(dirs []string, depth int) []string {
 		if !info.IsDir() {
 			return nil
 		}
-		if isMaxDepth(path, depth) || exclude(path) {
+		if pathDepth(path) > maxDepth || exclude(path) {
 			log.Debugf("Ignoring %v because of max depth or exclude list", path)
 			return filepath.SkipDir
 		}
-		if noGoFiles(path) {
+		if !hasGoFiles(path) {
 			log.Debugf("Ignoring %v because it has no .go files", path)
 			return nil
 		}
 		output = append(output, path)
 		return nil
 	}
-
-	if len(dirs) == 0 {
-		dirs = []string{"."}
-	}
-
-	for _, dir := range dirs {
-		dir = strings.TrimSuffix(dir, "/...")
-		// nolint: errcheck // error is handled by walker func
-		filepath.Walk(dir, walker)
-	}
+	// nolint: errcheck // error is handled by walker func
+	filepath.Walk(rootDir, walker)
 	return output
 }
 
-func isMaxDepth(path string, depth int) bool {
-	return strings.Count(filepath.Clean(path), string(filepath.Separator)) >= depth
+func pathDepth(path string) int {
+	return strings.Count(filepath.Clean(path), string(filepath.Separator))
 }
 
 // return true if path is vendor, testdata, or starts with a dot
@@ -105,31 +119,31 @@ func exclude(path string) bool {
 	return false
 }
 
-func noGoFiles(path string) bool {
+func hasGoFiles(path string) bool {
 	fh, err := os.Open(path)
 	if err != nil {
-		return true
+		return false
 	}
 
 	for {
 		names, err := fh.Readdirnames(20)
 		switch {
 		case err == io.EOF:
-			return true
+			return false
 		case err != nil:
 			log.Warnf("failed to read directory %v: %v", path, err)
-			return true
+			return false
 		}
 
 		for _, name := range names {
 			if strings.HasSuffix(name, ".go") {
-				return false
+				return true
 			}
 		}
 	}
 }
 
-func handleDirCreated(watcher *fsnotify.Watcher, event fsnotify.Event) bool {
+func handleDirCreated(watcher *fsnotify.Watcher, event fsnotify.Event) (handled bool) {
 	if event.Op&fsnotify.Create != fsnotify.Create {
 		return false
 	}
@@ -158,7 +172,7 @@ type handler struct {
 const floodThreshold = 250 * time.Millisecond
 
 func (h *handler) handleEvent(event fsnotify.Event) error {
-	if event.Op&fsnotify.Write|fsnotify.Create == 0 {
+	if event.Op&(fsnotify.Write|fsnotify.Create) == 0 {
 		return nil
 	}
 
