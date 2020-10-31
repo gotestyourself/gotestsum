@@ -314,7 +314,7 @@ gotestsum --watch --format testname
 ## Development
 
 [![Godoc](https://godoc.org/gotest.tools/gotestsum?status.svg)](https://pkg.go.dev/gotest.tools/gotestsum?tab=subdirectories)
-[![CircleCI](https://circleci.com/gh/gotestyourself/gotestsum/tree/master.svg?style=shield)](https://circleci.com/gh/gotestyourself/gotestsum/tree/master)
+[![CircleCI](https://circleci.com/gh/gotestyourself/gotestsum/tree/main.svg?style=shield)](https://circleci.com/gh/gotestyourself/gotestsum/tree/main)
 [![Go Reportcard](https://goreportcard.com/badge/gotest.tools/gotestsum)](https://goreportcard.com/report/gotest.tools/gotestsum)
 
 Pull requests and bug reports are welcome! Please open an issue first for any
