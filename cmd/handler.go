@@ -16,6 +16,7 @@ type eventHandler struct {
 	formatter testjson.EventFormatter
 	err       io.Writer
 	jsonFile  io.WriteCloser
+	maxFails  int
 }
 
 func (h *eventHandler) Err(text string) error {
@@ -36,6 +37,10 @@ func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execu
 	err := h.formatter.Format(event, execution)
 	if err != nil {
 		return errors.Wrap(err, "failed to format event")
+	}
+
+	if h.maxFails > 0 && len(execution.Failed()) >= h.maxFails {
+		return fmt.Errorf("ending test run because max failures was reached")
 	}
 	return nil
 }
@@ -59,6 +64,7 @@ func newEventHandler(opts *options) (*eventHandler, error) {
 	handler := &eventHandler{
 		formatter: formatter,
 		err:       opts.stderr,
+		maxFails:  opts.maxFails,
 	}
 	var err error
 	if opts.jsonFile != "" {

@@ -87,6 +87,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		"command to run after the tests have completed")
 	flags.BoolVar(&opts.watch, "watch", false,
 		"watch go files, and run tests when a file is modified")
+	flags.IntVar(&opts.maxFails, "max-fails", 0,
+		"end the test run after this number of failures")
 
 	flags.StringVar(&opts.junitFile, "junitfile",
 		lookEnvWithDefault("GOTESTSUM_JUNITFILE", ""),
@@ -163,6 +165,7 @@ type options struct {
 	rerunFailsOnlyRootCases      bool
 	packages                     []string
 	watch                        bool
+	maxFails                     int
 	version                      bool
 
 	// shims for testing
