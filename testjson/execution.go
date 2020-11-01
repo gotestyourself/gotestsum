@@ -562,18 +562,10 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 
 	var group errgroup.Group
 	group.Go(func() error {
-		if err := readStdout(config, execution); err != nil {
-			config.Stop()
-			return err
-		}
-		return nil
+		return stopOnError(config.Stop, readStdout(config, execution))
 	})
 	group.Go(func() error {
-		if err := readStderr(config, execution); err != nil {
-			config.Stop()
-			return err
-		}
-		return nil
+		return stopOnError(config.Stop, readStderr(config, execution))
 	})
 
 	err := group.Wait()
@@ -583,6 +575,14 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 		}
 	}
 	return execution, err
+}
+
+func stopOnError(stop func(), err error) error {
+	if err != nil {
+		stop()
+		return err
+	}
+	return nil
 }
 
 func readStdout(config ScanConfig, execution *Execution) error {
