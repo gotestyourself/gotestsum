@@ -211,10 +211,11 @@ func run(opts *options) error {
 		Stdout:  goTestProc.stdout,
 		Stderr:  goTestProc.stderr,
 		Handler: handler,
+		Stop:    cancel,
 	}
 	exec, err := testjson.ScanTestOutput(cfg)
 	if err != nil {
-		return err
+		return finishRun(opts, exec, err)
 	}
 	exitErr := goTestProc.cmd.Wait()
 	if exitErr == nil || opts.rerunFailsMaxAttempts == 0 {

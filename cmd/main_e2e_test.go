@@ -28,6 +28,10 @@ func TestMain(m *testing.M) {
 }
 
 func TestE2E_RerunFails(t *testing.T) {
+	if testing.Short() {
+		t.Skip("too slow for short run")
+	}
+
 	type testCase struct {
 		name        string
 		args        []string
@@ -96,9 +100,6 @@ func TestE2E_RerunFails(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			if testing.Short() {
-				t.Skip("too slow for short run")
-			}
 			fn(t, tc)
 		})
 	}
@@ -214,4 +215,36 @@ func TestE2E_SignalHandler(t *testing.T) {
 	icmd.WaitOnCmd(2*time.Second, result)
 
 	result.Assert(t, icmd.Expected{ExitCode: 102})
+}
+
+func TestE2E_MaxFails_EndTestRun(t *testing.T) {
+	if testing.Short() {
+		t.Skip("too slow for short run")
+	}
+
+	tmpFile := fs.NewFile(t, t.Name()+"-seedfile", fs.WithContent("0"))
+	defer tmpFile.Remove()
+
+	envVars := osEnviron()
+	envVars["TEST_SEEDFILE"] = tmpFile.Path()
+	defer env.PatchAll(t, envVars)()
+
+	flags, opts := setupFlags("gotestsum")
+	args := []string{"--max-fails=2", "--packages=./testdata/e2e/flaky/", "--", "-tags=testdata"}
+	assert.NilError(t, flags.Parse(args))
+	opts.args = flags.Args()
+
+	bufStdout := new(bytes.Buffer)
+	opts.stdout = bufStdout
+	bufStderr := new(bytes.Buffer)
+	opts.stderr = bufStderr
+
+	err := run(opts)
+	assert.Error(t, err, "ending test run because max failures was reached")
+	out := text.ProcessLines(t, bufStdout,
+		text.OpRemoveSummaryLineElapsedTime,
+		text.OpRemoveTestElapsedTime,
+		filepath.ToSlash, // for windows
+	)
+	golden.Assert(t, out, "e2e/expected/"+t.Name())
 }

@@ -522,6 +522,8 @@ type ScanConfig struct {
 	// Execution to populate while scanning. If nil a new one will be created
 	// and returned from ScanTestOutput.
 	Execution *Execution
+	// Stop is called when ScanTestOutput fails during a scan.
+	Stop func()
 }
 
 // EventHandler is called by ScanTestOutput for each event and write to stderr.
@@ -548,6 +550,9 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 	if config.Stderr == nil {
 		config.Stderr = new(bytes.Reader)
 	}
+	if config.Stop == nil {
+		config.Stop = func() {}
+	}
 	execution := config.Execution
 	if execution == nil {
 		execution = newExecution()
@@ -557,21 +562,27 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 
 	var group errgroup.Group
 	group.Go(func() error {
-		return readStdout(config, execution)
+		if err := readStdout(config, execution); err != nil {
+			config.Stop()
+			return err
+		}
+		return nil
 	})
 	group.Go(func() error {
-		return readStderr(config, execution)
+		if err := readStderr(config, execution); err != nil {
+			config.Stop()
+			return err
+		}
+		return nil
 	})
-	if err := group.Wait(); err != nil {
-		return execution, err
-	}
+
+	err := group.Wait()
 	for _, event := range execution.end() {
 		if err := config.Handler.Event(event, execution); err != nil {
 			return execution, err
 		}
 	}
-
-	return execution, nil
+	return execution, err
 }
 
 func readStdout(config ScanConfig, execution *Execution) error {
