@@ -1,6 +1,7 @@
 package filewatcher
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -15,6 +16,9 @@ import (
 const maxDepth = 7
 
 func Watch(dirs []string, run func(pkg string) error) error {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	toWatch := findAllDirs(dirs, maxDepth)
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -32,15 +36,22 @@ func Watch(dirs []string, run func(pkg string) error) error {
 	timer := time.NewTimer(time.Hour)
 	defer timer.Stop()
 
+	redo := &redoHandler{ch: make(chan string)}
+	go redo.run(ctx)
 	h := &handler{last: time.Now(), fn: run}
 	for {
 		select {
 		case <-timer.C:
 			return fmt.Errorf("exceeded idle timeout while watching files")
-		case event := <-watcher.Events:
-			if !timer.Stop() {
-				<-timer.C
+
+		case path := <-redo.ch:
+			resetTimer(timer)
+			if err := h.runTests(path); err != nil {
+				return fmt.Errorf("failed to rerun tests for %v: %v", path, err)
 			}
+
+		case event := <-watcher.Events:
+			resetTimer(timer)
 			log.Debugf("handling event %v", event)
 
 			if handleDirCreated(watcher, event) {
@@ -50,11 +61,19 @@ func Watch(dirs []string, run func(pkg string) error) error {
 			if err := h.handleEvent(event); err != nil {
 				return fmt.Errorf("failed to run tests for %v: %v", event.Name, err)
 			}
-			timer.Reset(time.Hour)
+			redo.prevPath = event.Name
+
 		case err := <-watcher.Errors:
 			return fmt.Errorf("failed while watching files: %v", err)
 		}
 	}
+}
+
+func resetTimer(timer *time.Timer) {
+	if !timer.Stop() {
+		<-timer.C
+	}
+	timer.Reset(time.Hour)
 }
 
 func findAllDirs(dirs []string, maxDepth int) []string {
@@ -184,12 +203,20 @@ func (h *handler) handleEvent(event fsnotify.Event) error {
 		log.Debugf("skipping event received less than %v after the previous", floodThreshold)
 		return nil
 	}
+	return h.runTests(event.Name)
+}
 
-	pkg := "./" + filepath.Dir(event.Name)
+func (h *handler) runTests(path string) error {
+	pkg := "./" + filepath.Dir(path)
 	fmt.Printf("\nRunning tests in %v\n", pkg)
 	if err := h.fn(pkg); err != nil {
 		return err
 	}
 	h.last = time.Now()
 	return nil
+}
+
+type redoHandler struct {
+	prevPath string
+	ch       chan string
 }

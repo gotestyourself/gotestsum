@@ -306,6 +306,8 @@ tests for the package which contains the changed file. By default all
 directories under the current directory will be watched. Use the `--packages` flag
 to specify a different list.
 
+While in watch mode, pressing `r` will re-run the tests for the previous event.
+
 **Example: run tests for a package when any file in that package is saved**
 ```
 gotestsum --watch --format testname
