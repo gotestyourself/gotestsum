@@ -90,3 +90,20 @@ func (s *handlerFails) Event(_ TestEvent, _ *Execution) error {
 func (s *handlerFails) Err(_ string) error {
 	return nil
 }
+
+func TestParseEvent(t *testing.T) {
+	// nolint: lll
+	raw := `{"Time":"2018-03-22T22:33:35.168308334Z","Action":"output","Package":"example.com/good","Test": "TestOk","Output":"PASS\n"}`
+	event, err := parseEvent([]byte(raw))
+	assert.NilError(t, err)
+	expected := TestEvent{
+		Time:    time.Date(2018, 3, 22, 22, 33, 35, 168308334, time.UTC),
+		Action:  "output",
+		Package: "example.com/good",
+		Test:    "TestOk",
+		Output:  "PASS\n",
+		raw:     []byte(raw),
+	}
+	cmpTestEvent := cmp.AllowUnexported(TestEvent{})
+	assert.DeepEqual(t, event, expected, cmpTestEvent)
+}
