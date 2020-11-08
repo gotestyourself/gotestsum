@@ -2,6 +2,7 @@ package testjson
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 	"time"
 
@@ -57,4 +58,35 @@ func TestScanTestOutput_MinimalConfig(t *testing.T) {
 	assert.NilError(t, err)
 	// a weak check to show that all the stdout was scanned
 	assert.Equal(t, exec.Total(), 46)
+}
+
+func TestScanTestOutput_CallsStopOnError(t *testing.T) {
+	var called bool
+	stop := func() {
+		called = true
+	}
+	cfg := ScanConfig{
+		Stdout:  bytes.NewReader(golden.Get(t, "go-test-json.out")),
+		Handler: &handlerFails{},
+		Stop:    stop,
+	}
+	_, err := ScanTestOutput(cfg)
+	assert.Error(t, err, "something failed")
+	assert.Assert(t, called)
+}
+
+type handlerFails struct {
+	count int
+}
+
+func (s *handlerFails) Event(_ TestEvent, _ *Execution) error {
+	if s.count > 1 {
+		return fmt.Errorf("something failed")
+	}
+	s.count++
+	return nil
+}
+
+func (s *handlerFails) Err(_ string) error {
+	return nil
 }

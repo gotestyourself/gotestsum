@@ -44,6 +44,8 @@ func rerunFailsFilter(o *options) testCaseFilter {
 }
 
 func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanConfig) error {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 	tcFilter := rerunFailsFilter(opts)
 
 	rec := newFailureRecorderFromExecution(scanConfig.Execution)
@@ -64,6 +66,7 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 				Stderr:    goTestProc.stderr,
 				Handler:   nextRec,
 				Execution: scanConfig.Execution,
+				Stop:      cancel,
 			}
 			if _, err := testjson.ScanTestOutput(cfg); err != nil {
 				return err

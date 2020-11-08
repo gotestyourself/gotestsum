@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -70,4 +71,17 @@ func TestEventHandler_Event_WithMissingActionFail(t *testing.T) {
 	// confirm the artificial event was sent to the handler by checking the output
 	// of the formatter.
 	golden.Assert(t, errBuf.String(), "event-handler-missing-test-fail-expected")
+}
+
+func TestEventHandler_Event_MaxFails(t *testing.T) {
+	format := testjson.NewEventFormatter(ioutil.Discard, "testname")
+
+	source := golden.Get(t, "../../testjson/testdata/go-test-json.out")
+	cfg := testjson.ScanConfig{
+		Stdout:  bytes.NewReader(source),
+		Handler: &eventHandler{formatter: format, maxFails: 2},
+	}
+
+	_, err := testjson.ScanTestOutput(cfg)
+	assert.Error(t, err, "ending test run because max failures was reached")
 }

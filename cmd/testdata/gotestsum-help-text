@@ -10,6 +10,7 @@ Flags:
       --junitfile string                            write a JUnit XML file
       --junitfile-testcase-classname field-format   format the testcase classname field as: full, relative, short (default full)
       --junitfile-testsuite-name field-format       format the testsuite name field as: full, relative, short (default full)
+      --max-fails int                               end the test run after this number of failures
       --no-color                                    disable color output (default true)
       --packages list                               space separated list of package to test
       --post-run-command command                    command to run after the tests have completed
