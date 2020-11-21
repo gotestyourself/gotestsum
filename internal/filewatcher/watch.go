@@ -33,18 +33,20 @@ func Watch(dirs []string, run func(pkg string) error) error {
 		}
 	}
 
-	timer := time.NewTimer(time.Hour)
+	timer := time.NewTimer(maxIdleTime)
 	defer timer.Stop()
 
-	redo := &redoHandler{ch: make(chan string)}
-	go redo.run(ctx)
+	redo := newRedoHandler()
+	defer redo.Reset()
+	go redo.Run(ctx)
+
 	h := &handler{last: time.Now(), fn: run}
 	for {
 		select {
 		case <-timer.C:
 			return fmt.Errorf("exceeded idle timeout while watching files")
 
-		case path := <-redo.ch:
+		case path := <-redo.Ch():
 			resetTimer(timer)
 			if err := h.runTests(path); err != nil {
 				return fmt.Errorf("failed to rerun tests for %v: %v", path, err)
@@ -61,7 +63,7 @@ func Watch(dirs []string, run func(pkg string) error) error {
 			if err := h.handleEvent(event); err != nil {
 				return fmt.Errorf("failed to run tests for %v: %v", event.Name, err)
 			}
-			redo.prevPath = event.Name
+			redo.Save(event.Name)
 
 		case err := <-watcher.Errors:
 			return fmt.Errorf("failed while watching files: %v", err)
@@ -69,11 +71,13 @@ func Watch(dirs []string, run func(pkg string) error) error {
 	}
 }
 
+const maxIdleTime = time.Hour
+
 func resetTimer(timer *time.Timer) {
 	if !timer.Stop() {
 		<-timer.C
 	}
-	timer.Reset(time.Hour)
+	timer.Reset(maxIdleTime)
 }
 
 func findAllDirs(dirs []string, maxDepth int) []string {
@@ -214,9 +218,4 @@ func (h *handler) runTests(path string) error {
 	}
 	h.last = time.Now()
 	return nil
-}
-
-type redoHandler struct {
-	prevPath string
-	ch       chan string
 }

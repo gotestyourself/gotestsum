@@ -12,6 +12,22 @@ import (
 	"gotest.tools/gotestsum/log"
 )
 
+type redoHandler struct {
+	prevPath string
+	ch       chan string
+	reset    func()
+}
+
+func newRedoHandler() *redoHandler {
+	fd := int(os.Stdin.Fd())
+	reset, err := enableNonBlockingRead(fd)
+	if err != nil {
+		log.Warnf("failed to put terminal (fd %d) into raw mode: %v", fd, err)
+		return nil
+	}
+	return &redoHandler{ch: make(chan string), reset: reset}
+}
+
 func enableNonBlockingRead(fd int) (func(), error) {
 	term, err := unix.IoctlGetTermios(fd, tcGet)
 	if err != nil {
@@ -35,15 +51,10 @@ func enableNonBlockingRead(fd int) (func(), error) {
 	return reset, nil
 }
 
-func (r *redoHandler) run(ctx context.Context) {
-	fd := int(os.Stdin.Fd())
-	reset, err := enableNonBlockingRead(fd)
-	if err != nil {
-		log.Debugf("failed to put terminal (fd %d) into raw mode: %v", fd, err)
+func (r *redoHandler) Run(ctx context.Context) {
+	if r == nil {
 		return
 	}
-	defer reset()
-
 	in := bufio.NewReader(os.Stdin)
 	for {
 		if ctx.Err() != nil {
@@ -64,4 +75,24 @@ func (r *redoHandler) run(ctx context.Context) {
 			fmt.Println()
 		}
 	}
+}
+
+func (r *redoHandler) Ch() <-chan string {
+	if r == nil {
+		return nil
+	}
+	return r.ch
+}
+
+func (r *redoHandler) Reset() {
+	if r != nil {
+		r.reset()
+	}
+}
+
+func (r *redoHandler) Save(path string) {
+	if r == nil {
+		return
+	}
+	r.prevPath = path
 }
