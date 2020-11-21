@@ -35,12 +35,15 @@ workflows:
             tag: 1.15-alpine
 
       - go/test:
-          name: test-windows-go1.12
+          name: test-windows
           executor: windows
           pre-steps:
             - run: |
                 git config --global core.autocrlf false
                 git config --global core.symlinks true
+            - run: |
+                choco upgrade golang
+                go version
 
       - go/lint:
           golangci-lint-version: 1.24.0
@@ -62,7 +65,7 @@ workflows:
 executors:
   windows:
     machine:
-      image: windows-server-2019-vs2019:201908-06
+      image: windows-server-2019-vs2019:stable
       resource_class: windows.medium
       shell: bash.exe
 
@@ -127,6 +130,9 @@ jobs:
       - run: |
           git config --global core.autocrlf false
           git config --global core.symlinks true
+      - run: |
+          choco upgrade golang
+          go version
 
       - run: |
           /go/bin/gotestsum ./testjson ./internal/junitxml -test.update-golden
