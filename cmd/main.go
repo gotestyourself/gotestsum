@@ -42,9 +42,9 @@ func Run(name string, args []string) error {
 }
 
 func runWatcher(opts *options) error {
-	fn := func(pkg string) error {
+	fn := func(runOpts filewatcher.RunOptions) error {
 		opts := *opts
-		opts.packages = []string{pkg}
+		opts.packages = []string{runOpts.PkgPath}
 		err := run(&opts)
 		if !isExitCoder(err) {
 			return err

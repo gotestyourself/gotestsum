@@ -14,7 +14,7 @@ import (
 
 type redoHandler struct {
 	prevPath string
-	ch       chan string
+	ch       chan RunOptions
 	reset    func()
 }
 
@@ -25,7 +25,7 @@ func newRedoHandler() *redoHandler {
 		log.Warnf("failed to put terminal (fd %d) into raw mode: %v", fd, err)
 		return nil
 	}
-	return &redoHandler{ch: make(chan string), reset: reset}
+	return &redoHandler{ch: make(chan RunOptions), reset: reset}
 }
 
 func enableNonBlockingRead(fd int) (func(), error) {
@@ -70,14 +70,16 @@ func (r *redoHandler) Run(ctx context.Context) {
 
 		switch char {
 		case 'r':
-			r.ch <- r.prevPath
+			r.ch <- RunOptions{PkgPath: r.prevPath}
+		case 'd':
+			r.ch <- RunOptions{PkgPath: r.prevPath, Debug: true}
 		case '\n':
 			fmt.Println()
 		}
 	}
 }
 
-func (r *redoHandler) Ch() <-chan string {
+func (r *redoHandler) Ch() <-chan RunOptions {
 	if r == nil {
 		return nil
 	}
