@@ -13,9 +13,8 @@ import (
 )
 
 type redoHandler struct {
-	prevPath string
-	ch       chan RunOptions
-	reset    func()
+	ch    chan RunOptions
+	reset func()
 }
 
 func newRedoHandler() *redoHandler {
@@ -77,10 +76,10 @@ func (r *redoHandler) Run(ctx context.Context) {
 		switch char {
 		case 'r':
 			chResume = make(chan struct{})
-			r.ch <- RunOptions{PkgPath: r.prevPath, resume: chResume}
+			r.ch <- RunOptions{resume: chResume}
 		case 'd':
 			chResume = make(chan struct{})
-			r.ch <- RunOptions{PkgPath: r.prevPath, Debug: true, resume: chResume}
+			r.ch <- RunOptions{Debug: true, resume: chResume}
 		case '\n':
 			fmt.Println()
 			continue
@@ -106,11 +105,5 @@ func (r *redoHandler) Ch() <-chan RunOptions {
 func (r *redoHandler) ResetTerm() {
 	if r != nil && r.reset != nil {
 		r.reset()
-	}
-}
-
-func (r *redoHandler) Save(path string) {
-	if r != nil {
-		r.prevPath = path
 	}
 }

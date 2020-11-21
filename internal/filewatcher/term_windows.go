@@ -17,5 +17,3 @@ func (r *redoHandler) Ch() <-chan RunOptions {
 func (r *redoHandler) SetupTerm() {}
 
 func (r *redoHandler) ResetTerm() {}
-
-func (r *redoHandler) Save(_ string) {}

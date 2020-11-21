@@ -56,6 +56,7 @@ func Watch(dirs []string, run func(opts RunOptions) error) error {
 			resetTimer(timer)
 
 			redo.ResetTerm()
+			opts.PkgPath = h.lastPath
 			if err := h.runTests(opts); err != nil {
 				return fmt.Errorf("failed to rerun tests for %v: %v", opts.PkgPath, err)
 			}
@@ -73,7 +74,6 @@ func Watch(dirs []string, run func(opts RunOptions) error) error {
 			if err := h.handleEvent(event); err != nil {
 				return fmt.Errorf("failed to run tests for %v: %v", event.Name, err)
 			}
-			redo.Save(event.Name)
 
 		case err := <-watcher.Errors:
 			return fmt.Errorf("failed while watching files: %v", err)
@@ -198,8 +198,9 @@ func handleDirCreated(watcher *fsnotify.Watcher, event fsnotify.Event) (handled 
 }
 
 type handler struct {
-	last time.Time
-	fn   func(opts RunOptions) error
+	last     time.Time
+	lastPath string
+	fn       func(opts RunOptions) error
 }
 
 const floodThreshold = 250 * time.Millisecond
@@ -217,16 +218,16 @@ func (h *handler) handleEvent(event fsnotify.Event) error {
 		log.Debugf("skipping event received less than %v after the previous", floodThreshold)
 		return nil
 	}
-	return h.runTests(RunOptions{PkgPath: event.Name})
+	return h.runTests(RunOptions{PkgPath: "./" + filepath.Dir(event.Name)})
 }
 
 func (h *handler) runTests(opts RunOptions) error {
-	opts.PkgPath = "./" + filepath.Dir(opts.PkgPath)
 	fmt.Printf("\nRunning tests in %v\n", opts.PkgPath)
 
 	if err := h.fn(opts); err != nil {
 		return err
 	}
 	h.last = time.Now()
+	h.lastPath = opts.PkgPath
 	return nil
 }
