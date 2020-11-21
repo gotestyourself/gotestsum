@@ -14,6 +14,8 @@ func (r *redoHandler) Ch() <-chan RunOptions {
 	return nil
 }
 
-func (r *redoHandler) Reset() {}
+func (r *redoHandler) SetupTerm() {}
+
+func (r *redoHandler) ResetTerm() {}
 
 func (r *redoHandler) Save(_ string) {}

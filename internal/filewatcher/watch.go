@@ -18,6 +18,7 @@ const maxDepth = 7
 type RunOptions struct {
 	PkgPath string
 	Debug   bool
+	resume  chan struct{}
 }
 
 func Watch(dirs []string, run func(opts RunOptions) error) error {
@@ -42,7 +43,7 @@ func Watch(dirs []string, run func(opts RunOptions) error) error {
 	defer timer.Stop()
 
 	redo := newRedoHandler()
-	defer redo.Reset()
+	defer redo.ResetTerm()
 	go redo.Run(ctx)
 
 	h := &handler{last: time.Now(), fn: run}
@@ -53,9 +54,13 @@ func Watch(dirs []string, run func(opts RunOptions) error) error {
 
 		case opts := <-redo.Ch():
 			resetTimer(timer)
+
+			redo.ResetTerm()
 			if err := h.runTests(opts); err != nil {
 				return fmt.Errorf("failed to rerun tests for %v: %v", opts.PkgPath, err)
 			}
+			redo.SetupTerm()
+			close(opts.resume)
 
 		case event := <-watcher.Events:
 			resetTimer(timer)
@@ -216,9 +221,9 @@ func (h *handler) handleEvent(event fsnotify.Event) error {
 }
 
 func (h *handler) runTests(opts RunOptions) error {
+	opts.PkgPath = "./" + filepath.Dir(opts.PkgPath)
 	fmt.Printf("\nRunning tests in %v\n", opts.PkgPath)
 
-	opts.PkgPath = "./" + filepath.Dir(opts.PkgPath)
 	if err := h.fn(opts); err != nil {
 		return err
 	}

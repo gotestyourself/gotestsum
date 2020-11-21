@@ -43,10 +43,20 @@ func Run(name string, args []string) error {
 
 func runWatcher(opts *options) error {
 	fn := func(runOpts filewatcher.RunOptions) error {
+		if runOpts.Debug {
+			o := delveOpts{
+				pkgPath: runOpts.PkgPath,
+				args:    opts.args,
+			}
+			if err := runDelve(o); !isExitCoder(err) {
+				return err
+			}
+			return nil
+		}
+
 		opts := *opts
 		opts.packages = []string{runOpts.PkgPath}
-		err := run(&opts)
-		if !isExitCoder(err) {
+		if err := run(&opts); !isExitCoder(err) {
 			return err
 		}
 		return nil
