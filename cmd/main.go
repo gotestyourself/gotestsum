@@ -12,7 +12,6 @@ import (
 	"github.com/fatih/color"
 	"github.com/pkg/errors"
 	"github.com/spf13/pflag"
-	"gotest.tools/gotestsum/internal/filewatcher"
 	"gotest.tools/gotestsum/log"
 	"gotest.tools/gotestsum/testjson"
 )
@@ -39,29 +38,6 @@ func Run(name string, args []string) error {
 		return runWatcher(opts)
 	}
 	return run(opts)
-}
-
-func runWatcher(opts *options) error {
-	fn := func(runOpts filewatcher.RunOptions) error {
-		if runOpts.Debug {
-			o := delveOpts{
-				pkgPath: runOpts.PkgPath,
-				args:    opts.args,
-			}
-			if err := runDelve(o); !isExitCoder(err) {
-				return err
-			}
-			return nil
-		}
-
-		opts := *opts
-		opts.packages = []string{runOpts.PkgPath}
-		if err := run(&opts); !isExitCoder(err) {
-			return err
-		}
-		return nil
-	}
-	return filewatcher.Watch(opts.packages, fn)
 }
 
 func setupFlags(name string) (*pflag.FlagSet, *options) {
