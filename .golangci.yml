@@ -15,8 +15,7 @@ issues:
     - linters: [stylecheck]
       text: 'ST1000: at least one file in a package should have a package comment'
     - linters: [errcheck]
-      path: log/
-      text: 'Error return value of `out.WriteString` is not checked'
+      text: 'Error return value of `.*\.WriteString` is not checked'
     - linters: [unparam]
       text: 'result .* is always'
     - linters: [unparam]

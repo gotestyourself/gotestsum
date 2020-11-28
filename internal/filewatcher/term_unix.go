@@ -13,19 +13,27 @@ import (
 )
 
 type redoHandler struct {
-	prevPath string
-	ch       chan string
-	reset    func()
+	ch    chan RunOptions
+	reset func()
 }
 
 func newRedoHandler() *redoHandler {
+	h := &redoHandler{ch: make(chan RunOptions)}
+	h.SetupTerm()
+	return h
+}
+
+func (r *redoHandler) SetupTerm() {
+	if r == nil {
+		return
+	}
 	fd := int(os.Stdin.Fd())
 	reset, err := enableNonBlockingRead(fd)
 	if err != nil {
 		log.Warnf("failed to put terminal (fd %d) into raw mode: %v", fd, err)
-		return nil
+		return
 	}
-	return &redoHandler{ch: make(chan string), reset: reset}
+	r.reset = reset
 }
 
 func enableNonBlockingRead(fd int) (func(), error) {
@@ -57,10 +65,6 @@ func (r *redoHandler) Run(ctx context.Context) {
 	}
 	in := bufio.NewReader(os.Stdin)
 	for {
-		if ctx.Err() != nil {
-			return
-		}
-
 		char, err := in.ReadByte()
 		if err != nil {
 			log.Warnf("failed to read input: %v", err)
@@ -68,31 +72,38 @@ func (r *redoHandler) Run(ctx context.Context) {
 		}
 		log.Debugf("received byte %v (%v)", char, string(char))
 
+		var chResume chan struct{}
 		switch char {
 		case 'r':
-			r.ch <- r.prevPath
+			chResume = make(chan struct{})
+			r.ch <- RunOptions{resume: chResume}
+		case 'd':
+			chResume = make(chan struct{})
+			r.ch <- RunOptions{Debug: true, resume: chResume}
 		case '\n':
 			fmt.Println()
+			continue
+		default:
+			continue
+		}
+
+		select {
+		case <-ctx.Done():
+			return
+		case <-chResume:
 		}
 	}
 }
 
-func (r *redoHandler) Ch() <-chan string {
+func (r *redoHandler) Ch() <-chan RunOptions {
 	if r == nil {
 		return nil
 	}
 	return r.ch
 }
 
-func (r *redoHandler) Reset() {
-	if r != nil {
+func (r *redoHandler) ResetTerm() {
+	if r != nil && r.reset != nil {
 		r.reset()
 	}
-}
-
-func (r *redoHandler) Save(path string) {
-	if r == nil {
-		return
-	}
-	r.prevPath = path
 }

@@ -78,6 +78,7 @@ func TestGoTestRunFlagFromTestCases(t *testing.T) {
 			expected: "-test.run=^TestOne$/^SubtestA$",
 		},
 	}
+
 	for name := range testCases {
 		t.Run(name, func(t *testing.T) {
 			fn(t, testCases[name])

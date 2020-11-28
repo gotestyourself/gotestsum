@@ -15,7 +15,13 @@ import (
 
 const maxDepth = 7
 
-func Watch(dirs []string, run func(pkg string) error) error {
+type RunOptions struct {
+	PkgPath string
+	Debug   bool
+	resume  chan struct{}
+}
+
+func Watch(dirs []string, run func(opts RunOptions) error) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -37,7 +43,7 @@ func Watch(dirs []string, run func(pkg string) error) error {
 	defer timer.Stop()
 
 	redo := newRedoHandler()
-	defer redo.Reset()
+	defer redo.ResetTerm()
 	go redo.Run(ctx)
 
 	h := &handler{last: time.Now(), fn: run}
@@ -46,11 +52,16 @@ func Watch(dirs []string, run func(pkg string) error) error {
 		case <-timer.C:
 			return fmt.Errorf("exceeded idle timeout while watching files")
 
-		case path := <-redo.Ch():
+		case opts := <-redo.Ch():
 			resetTimer(timer)
-			if err := h.runTests(path); err != nil {
-				return fmt.Errorf("failed to rerun tests for %v: %v", path, err)
+
+			redo.ResetTerm()
+			opts.PkgPath = h.lastPath
+			if err := h.runTests(opts); err != nil {
+				return fmt.Errorf("failed to rerun tests for %v: %v", opts.PkgPath, err)
 			}
+			redo.SetupTerm()
+			close(opts.resume)
 
 		case event := <-watcher.Events:
 			resetTimer(timer)
@@ -63,7 +74,6 @@ func Watch(dirs []string, run func(pkg string) error) error {
 			if err := h.handleEvent(event); err != nil {
 				return fmt.Errorf("failed to run tests for %v: %v", event.Name, err)
 			}
-			redo.Save(event.Name)
 
 		case err := <-watcher.Errors:
 			return fmt.Errorf("failed while watching files: %v", err)
@@ -188,8 +198,9 @@ func handleDirCreated(watcher *fsnotify.Watcher, event fsnotify.Event) (handled 
 }
 
 type handler struct {
-	last time.Time
-	fn   func(pkg string) error
+	last     time.Time
+	lastPath string
+	fn       func(opts RunOptions) error
 }
 
 const floodThreshold = 250 * time.Millisecond
@@ -207,15 +218,16 @@ func (h *handler) handleEvent(event fsnotify.Event) error {
 		log.Debugf("skipping event received less than %v after the previous", floodThreshold)
 		return nil
 	}
-	return h.runTests(event.Name)
+	return h.runTests(RunOptions{PkgPath: "./" + filepath.Dir(event.Name)})
 }
 
-func (h *handler) runTests(path string) error {
-	pkg := "./" + filepath.Dir(path)
-	fmt.Printf("\nRunning tests in %v\n", pkg)
-	if err := h.fn(pkg); err != nil {
+func (h *handler) runTests(opts RunOptions) error {
+	fmt.Printf("\nRunning tests in %v\n", opts.PkgPath)
+
+	if err := h.fn(opts); err != nil {
 		return err
 	}
 	h.last = time.Now()
+	h.lastPath = opts.PkgPath
 	return nil
 }

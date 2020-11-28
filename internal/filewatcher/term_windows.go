@@ -10,10 +10,10 @@ func newRedoHandler() *redoHandler {
 
 func (r *redoHandler) Run(_ context.Context) {}
 
-func (r *redoHandler) Ch() <-chan string {
+func (r *redoHandler) Ch() <-chan RunOptions {
 	return nil
 }
 
-func (r *redoHandler) Reset() {}
+func (r *redoHandler) SetupTerm() {}
 
-func (r *redoHandler) Save(_ string) {}
+func (r *redoHandler) ResetTerm() {}
