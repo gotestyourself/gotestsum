@@ -114,7 +114,7 @@ func rewriteAST(file *ast.File, testNames set, skipStmt ast.Stmt) bool {
 
 type set map[string]struct{}
 
-// testNamesByPkgName removes subtests from the list of TestCases, then builds
+// testNamesByPkgName strips subtest names from test names, then builds
 // and returns a slice of all the packages names, and a mapping of package name
 // to set of failed tests in that package.
 //
@@ -124,14 +124,16 @@ func testNamesByPkgName(tcs []testjson.TestCase) ([]string, map[string]set) {
 	var pkgs []string
 	index := make(map[string]set)
 	for _, tc := range tcs {
+		testName := tc.Test.Name()
 		if tc.Test.IsSubTest() {
-			continue
+			root, _ := tc.Test.Split()
+			testName = root
 		}
 		if len(index[tc.Package]) == 0 {
 			pkgs = append(pkgs, tc.Package)
 			index[tc.Package] = make(map[string]struct{})
 		}
-		index[tc.Package][tc.Test.Name()] = struct{}{}
+		index[tc.Package][testName] = struct{}{}
 	}
 	return pkgs, index
 }
