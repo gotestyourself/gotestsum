@@ -306,7 +306,18 @@ tests for the package which contains the changed file. By default all
 directories under the current directory will be watched. Use the `--packages` flag
 to specify a different list.
 
-While in watch mode, pressing `r` will re-run the tests for the previous event.
+While in watch mode, pressing some keys will perform an action:
+
+* `r` will run tests for the previous event.
+* `d` will run tests for the previous event using `dlv test`, allowing you to 
+  debug a test failure using [delve] A breakpoint will automatically be added at
+  the first line of any tests which failed in the previous run. Additional
+  breakpoints can be added with [`runtime.Breakpoint`](https://golang.org/pkg/runtime/#Breakpoint)
+  or by using the delve command prompt.
+
+Note that [delve] must be installed in order to use debug (`d`).
+
+[delve]: https://github.com/go-delve/delve
 
 **Example: run tests for a package when any file in that package is saved**
 ```
