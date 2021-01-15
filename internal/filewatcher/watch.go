@@ -157,19 +157,29 @@ func hasGoFiles(path string) bool {
 	if err != nil {
 		return false
 	}
+	defer fh.Close()
 
 	for {
 		names, err := fh.Readdirnames(20)
 		switch {
 		case err == io.EOF:
+			if err := fh.Sync(); err != nil {
+				panic(err)
+			}
 			return false
 		case err != nil:
 			log.Warnf("failed to read directory %v: %v", path, err)
+			if err := fh.Sync(); err != nil {
+				panic(err)
+			}
 			return false
 		}
 
 		for _, name := range names {
 			if strings.HasSuffix(name, ".go") {
+				if err := fh.Sync(); err != nil {
+					panic(err)
+				}
 				return true
 			}
 		}
