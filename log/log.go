@@ -20,6 +20,14 @@ var (
 	out   stringWriter = os.Stderr
 )
 
+func writeOrPanic(s string) int {
+	n, err := out.WriteString(s)
+	if err != nil {
+		panic(err)
+	}
+	return n
+}
+
 // TODO: replace with io.StringWriter once support for go1.11 is dropped.
 type stringWriter interface {
 	WriteString(s string) (n int, err error)
@@ -35,9 +43,9 @@ func Warnf(format string, args ...interface{}) {
 	if level < WarnLevel {
 		return
 	}
-	out.WriteString(color.YellowString("WARN "))
-	out.WriteString(fmt.Sprintf(format, args...))
-	out.WriteString("\n")
+	writeOrPanic(color.YellowString("WARN "))
+	writeOrPanic(fmt.Sprintf(format, args...))
+	writeOrPanic("\n")
 }
 
 // Debugf prints the message to stderr, with no prefix.
@@ -45,8 +53,8 @@ func Debugf(format string, args ...interface{}) {
 	if level < DebugLevel {
 		return
 	}
-	out.WriteString(fmt.Sprintf(format, args...))
-	out.WriteString("\n")
+	writeOrPanic(fmt.Sprintf(format, args...))
+	writeOrPanic("\n")
 }
 
 // Errorf prints the message to stderr, with a red ERROR prefix.
@@ -54,9 +62,9 @@ func Errorf(format string, args ...interface{}) {
 	if level < ErrorLevel {
 		return
 	}
-	out.WriteString(color.RedString("ERROR "))
-	out.WriteString(fmt.Sprintf(format, args...))
-	out.WriteString("\n")
+	writeOrPanic(color.RedString("ERROR "))
+	writeOrPanic(fmt.Sprintf(format, args...))
+	writeOrPanic("\n")
 }
 
 // Error prints the message to stderr, with a red ERROR prefix.
@@ -64,7 +72,7 @@ func Error(msg string) {
 	if level < ErrorLevel {
 		return
 	}
-	out.WriteString(color.RedString("ERROR "))
-	out.WriteString(msg)
-	out.WriteString("\n")
+	writeOrPanic(color.RedString("ERROR "))
+	writeOrPanic(msg)
+	writeOrPanic("\n")
 }

@@ -97,7 +97,9 @@ func delveInitFile(exec *testjson.Execution) (string, func(), error) {
 	for _, tc := range exec.Failed() {
 		fmt.Fprintf(buf, "break %s\n", tc.Test.Name())
 	}
-	buf.WriteString("continue\n")
+	if _, err := buf.WriteString("continue\n"); err != nil {
+		panic(err)
+	}
 	if err := buf.Flush(); err != nil {
 		remove()
 		return "", nil, err
