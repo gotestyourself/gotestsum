@@ -157,6 +157,7 @@ func hasGoFiles(path string) bool {
 	if err != nil {
 		return false
 	}
+	defer fh.Close() // nolint: errcheck // fh is opened read-only
 
 	for {
 		names, err := fh.Readdirnames(20)
