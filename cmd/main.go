@@ -231,10 +231,10 @@ func finishRun(opts *options, exec *testjson.Execution, exitErr error) error {
 	testjson.PrintSummary(opts.stdout, exec, opts.hideSummary.value)
 
 	if err := writeJUnitFile(opts, exec); err != nil {
-		return err
+		return fmt.Errorf("failed to write junit file: %w", err)
 	}
 	if err := postRunHook(opts, exec); err != nil {
-		return err
+		return fmt.Errorf("post run command failed: %w", err)
 	}
 	return exitErr
 }
