@@ -28,14 +28,14 @@ func Watch(dirs []string, run func(opts RunOptions) error) error {
 	toWatch := findAllDirs(dirs, maxDepth)
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create file watcher: %w", err)
 	}
-	defer watcher.Close() // nolint: errcheck
+	defer watcher.Close() // nolint: errcheck // always returns nil error
 
 	fmt.Printf("Watching %v directories. Use Ctrl-c to to stop a run or exit.\n", len(toWatch))
 	for _, dir := range toWatch {
 		if err = watcher.Add(dir); err != nil {
-			return err
+			return fmt.Errorf("failed to watch directory %v: %w", dir, err)
 		}
 	}
 

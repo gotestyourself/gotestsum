@@ -26,7 +26,7 @@ func (w *watchRuns) run(runOpts filewatcher.RunOptions) error {
 	if runOpts.Debug {
 		path, cleanup, err := delveInitFile(w.prevExec)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to write delve init file: %w", err)
 		}
 		defer cleanup()
 		o := delveOpts{
@@ -35,7 +35,7 @@ func (w *watchRuns) run(runOpts filewatcher.RunOptions) error {
 			initFilePath: path,
 		}
 		if err := runDelve(o); !isExitCoder(err) {
-			return err
+			return fmt.Errorf("delve failed: %w", err)
 		}
 		return nil
 	}
