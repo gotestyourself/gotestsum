@@ -15,6 +15,7 @@ builds:
     goarch:
       - amd64
       - arm64
+      - mips64le
     env: [CGO_ENABLED=0]
     ldflags: ["-s -w -X gotest.tools/gotestsum/cmd.version={{.Version}}"]
 
