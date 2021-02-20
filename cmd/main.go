@@ -9,9 +9,9 @@ import (
 	"os/signal"
 	"strings"
 
+	"github.com/dnephin/pflag"
 	"github.com/fatih/color"
 	"github.com/pkg/errors"
-	"github.com/spf13/pflag"
 	"gotest.tools/gotestsum/log"
 	"gotest.tools/gotestsum/testjson"
 )

@@ -1,8 +1,7 @@
 module gotest.tools/gotestsum
 
-replace github.com/spf13/pflag => github.com/dnephin/pflag v0.0.0-20200521001137-0f09ccd3add8
-
 require (
+	github.com/dnephin/pflag v1.0.7
 	github.com/fatih/color v1.9.0
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/google/go-cmp v0.5.2
@@ -10,7 +9,6 @@ require (
 	github.com/jonboulle/clockwork v0.1.0
 	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/pkg/errors v0.9.1
-	github.com/spf13/pflag v1.0.3
 	golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
 	golang.org/x/sync v0.0.0-20190423024810-112230192c58
 	golang.org/x/sys v0.0.0-20201009025420-dfb3f7c4e634
