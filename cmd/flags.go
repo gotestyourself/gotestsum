@@ -5,9 +5,9 @@ import (
 	"path"
 	"strings"
 
+	"github.com/dnephin/pflag"
 	"github.com/google/shlex"
 	"github.com/pkg/errors"
-	"github.com/spf13/pflag"
 	"gotest.tools/gotestsum/internal/junitxml"
 	"gotest.tools/gotestsum/testjson"
 )
