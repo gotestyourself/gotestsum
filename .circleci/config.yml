@@ -32,7 +32,7 @@ workflows:
           gotestsum-format: short-verbose
           executor:
             name: go/golang
-            tag: 1.16-rc-alpine
+            tag: 1.16-alpine
 
       - go/test:
           name: test-windows
@@ -43,7 +43,8 @@ workflows:
                 git config --global core.symlinks true
             - run: |
                 choco upgrade golang
-                go version
+                echo 'export PATH="$PATH:/c/Program Files/Go/bin"' > $BASH_ENV
+            - run: go version
 
       - go/lint:
           golangci-lint-version: 1.24.0
