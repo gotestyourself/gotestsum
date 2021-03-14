@@ -4,7 +4,7 @@ require (
 	github.com/dnephin/pflag v1.0.7
 	github.com/fatih/color v1.10.0
 	github.com/fsnotify/fsnotify v1.4.9
-	github.com/google/go-cmp v0.5.2
+	github.com/google/go-cmp v0.5.5
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
 	github.com/jonboulle/clockwork v0.1.0
 	github.com/pkg/errors v0.9.1
