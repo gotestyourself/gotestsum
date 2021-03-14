@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
 	"strconv"
+
+	exec "golang.org/x/sys/execabs"
 )
 
 func main() {

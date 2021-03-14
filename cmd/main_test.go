@@ -3,10 +3,10 @@ package cmd
 import (
 	"bytes"
 	"os"
-	"os/exec"
 	"strings"
 	"testing"
 
+	exec "golang.org/x/sys/execabs"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/env"
 	"gotest.tools/v3/golden"

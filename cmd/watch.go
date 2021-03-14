@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"os/exec"
 
+	exec "golang.org/x/sys/execabs"
 	"gotest.tools/gotestsum/internal/filewatcher"
 	"gotest.tools/gotestsum/testjson"
 )

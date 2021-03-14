@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"os/exec"
 
 	"github.com/pkg/errors"
+	exec "golang.org/x/sys/execabs"
 	"gotest.tools/gotestsum/internal/junitxml"
 	"gotest.tools/gotestsum/log"
 	"gotest.tools/gotestsum/testjson"

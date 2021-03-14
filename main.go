@@ -2,8 +2,8 @@ package main
 
 import (
 	"os"
-	"os/exec"
 
+	exec "golang.org/x/sys/execabs"
 	"gotest.tools/gotestsum/cmd"
 	"gotest.tools/gotestsum/cmd/tool"
 	"gotest.tools/gotestsum/log"

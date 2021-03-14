@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"os/exec"
 	"os/signal"
 	"strings"
 
 	"github.com/dnephin/pflag"
 	"github.com/fatih/color"
 	"github.com/pkg/errors"
+	exec "golang.org/x/sys/execabs"
 	"gotest.tools/gotestsum/log"
 	"gotest.tools/gotestsum/testjson"
 )
