@@ -11,55 +11,10 @@ import (
 	"strings"
 	"time"
 
+	"gotest.tools/gotestsum/junitxml"
 	"gotest.tools/gotestsum/log"
 	"gotest.tools/gotestsum/testjson"
 )
-
-// JUnitTestSuites is a collection of JUnit test suites.
-type JUnitTestSuites struct {
-	XMLName xml.Name `xml:"testsuites"`
-	Suites  []JUnitTestSuite
-}
-
-// JUnitTestSuite is a single JUnit test suite which may contain many
-// testcases.
-type JUnitTestSuite struct {
-	XMLName    xml.Name        `xml:"testsuite"`
-	Tests      int             `xml:"tests,attr"`
-	Failures   int             `xml:"failures,attr"`
-	Time       string          `xml:"time,attr"`
-	Name       string          `xml:"name,attr"`
-	Properties []JUnitProperty `xml:"properties>property,omitempty"`
-	TestCases  []JUnitTestCase
-}
-
-// JUnitTestCase is a single test case with its result.
-type JUnitTestCase struct {
-	XMLName     xml.Name          `xml:"testcase"`
-	Classname   string            `xml:"classname,attr"`
-	Name        string            `xml:"name,attr"`
-	Time        string            `xml:"time,attr"`
-	SkipMessage *JUnitSkipMessage `xml:"skipped,omitempty"`
-	Failure     *JUnitFailure     `xml:"failure,omitempty"`
-}
-
-// JUnitSkipMessage contains the reason why a testcase was skipped.
-type JUnitSkipMessage struct {
-	Message string `xml:"message,attr"`
-}
-
-// JUnitProperty represents a key/value pair used to define properties.
-type JUnitProperty struct {
-	Name  string `xml:"name,attr"`
-	Value string `xml:"value,attr"`
-}
-
-// JUnitFailure contains data related to a failed test.
-type JUnitFailure struct {
-	Message  string `xml:"message,attr"`
-	Type     string `xml:"type,attr"`
-	Contents string `xml:",chardata"`
-}
 
 // Config used to write a junit XML document.
 type Config struct {
@@ -78,14 +33,14 @@ func Write(out io.Writer, exec *testjson.Execution, cfg Config) error {
 	return nil
 }
 
-func generate(exec *testjson.Execution, cfg Config) JUnitTestSuites {
+func generate(exec *testjson.Execution, cfg Config) junitxml.JUnitTestSuites {
 	cfg = configWithDefaults(cfg)
 	version := goVersion()
-	suites := JUnitTestSuites{}
+	suites := junitxml.JUnitTestSuites{}
 
 	for _, pkgname := range exec.Packages() {
 		pkg := exec.Package(pkgname)
-		junitpkg := JUnitTestSuite{
+		junitpkg := junitxml.JUnitTestSuite{
 			Name:       cfg.FormatTestSuiteName(pkgname),
 			Tests:      pkg.Total,
 			Time:       formatDurationAsSeconds(pkg.Elapsed()),
@@ -115,8 +70,8 @@ func formatDurationAsSeconds(d time.Duration) string {
 	return fmt.Sprintf("%f", d.Seconds())
 }
 
-func packageProperties(goVersion string) []JUnitProperty {
-	return []JUnitProperty{
+func packageProperties(goVersion string) []junitxml.JUnitProperty {
+	return []junitxml.JUnitProperty{
 		{Name: "go.version", Value: goVersion},
 	}
 }
@@ -141,12 +96,12 @@ func goVersion() string {
 	return strings.TrimPrefix(strings.TrimSpace(string(out)), "go version ")
 }
 
-func packageTestCases(pkg *testjson.Package, formatClassname FormatFunc) []JUnitTestCase {
-	cases := []JUnitTestCase{}
+func packageTestCases(pkg *testjson.Package, formatClassname FormatFunc) []junitxml.JUnitTestCase {
+	cases := []junitxml.JUnitTestCase{}
 
 	if pkg.TestMainFailed() {
 		jtc := newJUnitTestCase(testjson.TestCase{Test: "TestMain"}, formatClassname)
-		jtc.Failure = &JUnitFailure{
+		jtc.Failure = &junitxml.JUnitFailure{
 			Message:  "Failed",
 			Contents: pkg.Output(0),
 		}
@@ -155,7 +110,7 @@ func packageTestCases(pkg *testjson.Package, formatClassname FormatFunc) []JUnit
 
 	for _, tc := range pkg.Failed {
 		jtc := newJUnitTestCase(tc, formatClassname)
-		jtc.Failure = &JUnitFailure{
+		jtc.Failure = &junitxml.JUnitFailure{
 			Message:  "Failed",
 			Contents: strings.Join(pkg.OutputLines(tc), ""),
 		}
@@ -164,7 +119,7 @@ func packageTestCases(pkg *testjson.Package, formatClassname FormatFunc) []JUnit
 
 	for _, tc := range pkg.Skipped {
 		jtc := newJUnitTestCase(tc, formatClassname)
-		jtc.SkipMessage = &JUnitSkipMessage{
+		jtc.SkipMessage = &junitxml.JUnitSkipMessage{
 			Message: strings.Join(pkg.OutputLines(tc), ""),
 		}
 		cases = append(cases, jtc)
@@ -177,15 +132,15 @@ func packageTestCases(pkg *testjson.Package, formatClassname FormatFunc) []JUnit
 	return cases
 }
 
-func newJUnitTestCase(tc testjson.TestCase, formatClassname FormatFunc) JUnitTestCase {
-	return JUnitTestCase{
+func newJUnitTestCase(tc testjson.TestCase, formatClassname FormatFunc) junitxml.JUnitTestCase {
+	return junitxml.JUnitTestCase{
 		Classname: formatClassname(tc.Package),
 		Name:      tc.Test.Name(),
 		Time:      formatDurationAsSeconds(tc.Elapsed),
 	}
 }
 
-func write(out io.Writer, suites JUnitTestSuites) error {
+func write(out io.Writer, suites junitxml.JUnitTestSuites) error {
 	doc, err := xml.MarshalIndent(suites, "", "\t")
 	if err != nil {
 		return err

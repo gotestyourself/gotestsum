@@ -12,6 +12,7 @@ require (
 	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
 	golang.org/x/sys v0.0.0-20210119212857-b64e53b001e4
 	golang.org/x/tools v0.1.0
+	gotest.tools v2.2.0+incompatible
 	gotest.tools/v3 v3.0.3
 )
 
