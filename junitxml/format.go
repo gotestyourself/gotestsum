@@ -1,4 +1,4 @@
-/*Package testjson defines JUnit XML format and parser
+/*Package junitxml defines JUnit XML format and parser
  */
 package junitxml
 
