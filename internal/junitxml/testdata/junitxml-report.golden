@@ -80,4 +80,9 @@
 		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestParallelTheSecond" time="0.010000"></testcase>
 		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestParallelTheFirst" time="0.010000"></testcase>
 	</testsuite>
+	<testsuite tests="0" failures="0" time="0.000000" name="gotest.tools/gotestsum/internal/empty">
+		<properties>
+			<property name="go.version" value="go7.7.7"></property>
+		</properties>
+	</testsuite>
 </testsuites>

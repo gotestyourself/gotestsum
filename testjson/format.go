@@ -31,10 +31,14 @@ func standardQuietFormat(event TestEvent, _ *Execution) (string, error) {
 	if !event.PackageEvent() {
 		return "", nil
 	}
-	if event.Output != "PASS\n" && !isCoverageOutput(event.Output) {
-		return event.Output, nil
+	if event.Output == "PASS\n" || isCoverageOutput(event.Output) {
+		return "", nil
 	}
-	return "", nil
+	if isWarningNoTestsToRunOutput(event.Output) {
+		return "", nil
+	}
+
+	return event.Output, nil
 }
 
 func testNameFormat(event TestEvent, exec *Execution) (string, error) {
@@ -54,20 +58,22 @@ func testNameFormat(event TestEvent, exec *Execution) (string, error) {
 		return event.Output, nil
 
 	case event.PackageEvent():
-		switch event.Action {
-		case ActionSkip:
-			result = colorEvent(event)("EMPTY")
-			fallthrough
-		case ActionPass, ActionFail:
-			var cached string
-			if exec.Package(event.Package).cached {
-				cached = cachedMessage
-			}
-			return fmt.Sprintf("%s %s%s\n",
-				result,
-				RelativePackagePath(event.Package),
-				cached), nil
+		if !event.Action.IsTerminal() {
+			return "", nil
 		}
+		pkg := exec.Package(event.Package)
+		if event.Action == ActionSkip || (event.Action == ActionPass && pkg.Total == 0) {
+			result = colorEvent(event)("EMPTY")
+		}
+
+		var cached string
+		if pkg.cached {
+			cached = cachedMessage
+		}
+		return fmt.Sprintf("%s %s%s\n",
+			result,
+			RelativePackagePath(event.Package),
+			cached), nil
 
 	case event.Action == ActionFail:
 		pkg := exec.Package(event.Package)
@@ -111,6 +117,7 @@ func isPkgFailureOutput(event TestEvent) bool {
 		event.Action == ActionOutput,
 		out != "PASS\n",
 		out != "FAIL\n",
+		!isWarningNoTestsToRunOutput(out),
 		!strings.HasPrefix(out, "FAIL\t"+event.Package),
 		!strings.HasPrefix(out, "ok  \t"+event.Package),
 		!strings.HasPrefix(out, "?   \t"+event.Package),
@@ -167,6 +174,9 @@ func shortFormatPackageEvent(event TestEvent, exec *Execution) (string, error) {
 	case ActionSkip:
 		return fmtEvent(withColor("∅"))
 	case ActionPass:
+		if pkg.Total == 0 {
+			return fmtEvent(withColor("∅"))
+		}
 		return fmtEvent(withColor("✓"))
 	case ActionFail:
 		return fmtEvent(withColor("✖"))

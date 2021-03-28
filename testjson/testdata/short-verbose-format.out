@@ -56,3 +56,4 @@ PASS testjson/internal/stub.TestParallelTheThird (0.00s)
 PASS testjson/internal/stub.TestParallelTheSecond (0.01s)
 PASS testjson/internal/stub.TestParallelTheFirst (0.01s)
 FAIL testjson/internal/stub
+EMPTY gotest.tools/gotestsum/internal/empty

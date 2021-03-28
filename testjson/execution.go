@@ -32,6 +32,16 @@ const (
 	ActionSkip   Action = "skip"
 )
 
+// IsTerminal returns true if the Action is one of: pass, fail, skip.
+func (a Action) IsTerminal() bool {
+	switch a {
+	case ActionPass, ActionFail, ActionSkip:
+		return true
+	default:
+		return false
+	}
+}
+
 // TestEvent is a structure output by go tool test2json and go test -json.
 type TestEvent struct {
 	// Time encoded as an RFC3339-format string
@@ -390,6 +400,10 @@ func isCoverageOutput(output string) bool {
 
 func isCachedOutput(output string) bool {
 	return strings.Contains(output, "\t(cached)")
+}
+
+func isWarningNoTestsToRunOutput(output string) bool {
+	return output == "testing: warning: no tests to run\n"
 }
 
 // OutputLines returns the full test output for a test as an slice of lines.

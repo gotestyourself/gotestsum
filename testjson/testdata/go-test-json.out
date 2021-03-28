@@ -229,3 +229,7 @@
 {"Time":"2018-03-22T22:33:35.288005158Z","Action":"output","Package":"github.com/gotestyourself/gotestyourself/testjson/internal/stub","Output":"FAIL\n"}
 {"Time":"2018-03-22T22:33:35.288154141Z","Action":"output","Package":"github.com/gotestyourself/gotestyourself/testjson/internal/stub","Output":"FAIL\tgithub.com/gotestyourself/gotestyourself/testjson/internal/stub\t0.011s\n"}
 {"Time":"2018-03-22T22:33:35.288167612Z","Action":"fail","Package":"github.com/gotestyourself/gotestyourself/testjson/internal/stub","Elapsed":0.011}
+{"Time":"2021-03-28T13:58:17.979131051-04:00","Action":"output","Package":"gotest.tools/gotestsum/internal/empty","Output":"testing: warning: no tests to run\n"}
+{"Time":"2021-03-28T13:58:17.979525677-04:00","Action":"output","Package":"gotest.tools/gotestsum/internal/empty","Output":"PASS\n"}
+{"Time":"2021-03-28T13:58:17.979689639-04:00","Action":"output","Package":"gotest.tools/gotestsum/internal/empty","Output":"ok  \tgotest.tools/gotestsum/internal/empty\t0.004s [no tests to run]\n"}
+{"Time":"2021-03-28T13:58:17.979759254-04:00","Action":"pass","Package":"gotest.tools/gotestsum/internal/empty","Elapsed":0.004}

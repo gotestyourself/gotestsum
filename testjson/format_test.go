@@ -112,6 +112,9 @@ var expectedExecution = &Execution{
 			action:  ActionFail,
 			running: map[string]TestCase{},
 		},
+		"gotest.tools/gotestsum/internal/empty": {
+			action: ActionPass,
+		},
 	},
 }
 
