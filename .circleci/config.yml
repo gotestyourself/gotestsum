@@ -87,7 +87,9 @@ jobs:
       publish:
         type: boolean
         default: false
-    executor: go/golang
+    executor:
+      name: go/golang
+      tag: 1.16-alpine
     steps:
       - go/install: {package: git}
       - go/install-ssh
