@@ -107,3 +107,30 @@ func TestParseEvent(t *testing.T) {
 	cmpTestEvent := cmp.AllowUnexported(TestEvent{})
 	assert.DeepEqual(t, event, expected, cmpTestEvent)
 }
+
+func TestPassageCascades(t *testing.T) {
+	exec := newExecution()
+	exec.add(TestEvent{
+		Package: "mytestpkg",
+		Action:  ActionRun,
+		Test:    "TestFoo",
+	})
+	exec.add(TestEvent{
+		Package: "mytestpkg",
+		Action:  ActionRun,
+		Test:    "TestFoo/child",
+	})
+	exec.add(TestEvent{
+		Package: "mytestpkg",
+		Action:  ActionPass,
+		Test:    "TestFoo",
+	})
+
+	passed := exec.packages["mytestpkg"].Passed
+	assert.Equal(t, 2, len(passed))
+	if len(passed) != 2 {
+		return
+	}
+	assert.Equal(t, "TestFoo", string(passed[0].Test))
+	assert.Equal(t, "TestFoo/child", string(passed[1].Test))
+}

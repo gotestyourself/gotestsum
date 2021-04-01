@@ -72,10 +72,10 @@ type Package struct {
 	Skipped []TestCase
 	Passed  []TestCase
 
-	// mapping of root TestCase ID to all sub test IDs. Used to mitigate
-	// github.com/golang/go/issues/29755.
-	// In the future when that bug is fixed this mapping can likely be removed.
-	subTests map[int][]int
+	// mapping of root TestCase ID to most recent subtest TestCases. Used to
+	// mitigate github.com/golang/go/issues/29755, and also to infer passage of
+	// subtests from passage of the parent test.
+	subTests map[int][]TestCase
 
 	// output printed by test cases, indexed by TestCase.ID. Package output is
 	// saved with key 0.
@@ -156,7 +156,7 @@ func (p *Package) OutputLines(tc TestCase) []string {
 	result := make([]string, 0, len(lines)+1)
 	result = append(result, lines...)
 	for _, sub := range p.subTests[tc.ID] {
-		result = append(result, p.output[sub]...)
+		result = append(result, p.output[sub.ID]...)
 	}
 	return result
 }
@@ -191,8 +191,8 @@ func (p *Package) removeOutput(id int) {
 
 	skipped := tcIDSet(p.Skipped)
 	for _, sub := range p.subTests[id] {
-		if _, isSkipped := skipped[sub]; !isSkipped {
-			delete(p.output, sub)
+		if _, isSkipped := skipped[sub.ID]; !isSkipped {
+			delete(p.output, sub.ID)
 		}
 	}
 }
@@ -258,7 +258,7 @@ func newPackage() *Package {
 	return &Package{
 		output:   make(map[int][]string),
 		running:  make(map[string]TestCase),
-		subTests: make(map[int][]int),
+		subTests: make(map[int][]TestCase),
 	}
 }
 
@@ -321,7 +321,7 @@ func (p *Package) addTestEvent(event TestEvent) {
 		if tc.Test.IsSubTest() {
 			root, _ := TestName(event.Test).Split()
 			rootID := p.running[root].ID
-			p.subTests[rootID] = append(p.subTests[rootID], tc.ID)
+			p.subTests[rootID] = append(p.subTests[rootID], tc)
 		}
 		return
 	}
@@ -344,6 +344,10 @@ func (p *Package) addTestEvent(event TestEvent) {
 	}
 
 	// the event.Action must be one of the three test end events
+	p.addEndTestEvent(event, tc)
+}
+
+func (p *Package) addEndTestEvent(event TestEvent, tc TestCase) {
 	delete(p.running, event.Test)
 	tc.Elapsed = elapsedDuration(event.Elapsed)
 
@@ -369,6 +373,14 @@ func (p *Package) addTestEvent(event TestEvent) {
 		// github.com/golang/go/issues/29755.
 		if tc.Test.IsSubTest() {
 			return
+		}
+
+		// If a test passed, that implies its subtests passed too.
+		for _, subtest := range p.subTests[tc.ID] {
+			if _, ok := p.running[string(subtest.Test)]; ok {
+				delete(p.running, string(subtest.Test))
+				p.Passed = append(p.Passed, subtest)
+			}
 		}
 
 		// Remove test output once a test passes, it wont be used.
