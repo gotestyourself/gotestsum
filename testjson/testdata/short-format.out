@@ -1,3 +1,4 @@
 ✖  testjson/internal/badmain (10ms)
 ✓  testjson/internal/good (cached)
 ✖  testjson/internal/stub (11ms)
+∅  gotest.tools/gotestsum/internal/empty (4ms)

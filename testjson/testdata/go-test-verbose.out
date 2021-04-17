@@ -122,3 +122,6 @@ this is stderr
 --- PASS: TestParallelTheFirst (0.01s)
 FAIL
 FAIL	github.com/gotestyourself/gotestyourself/testjson/internal/stub	0.011s
+testing: warning: no tests to run
+PASS
+ok  	gotest.tools/gotestsum/internal/empty	0.004s [no tests to run]

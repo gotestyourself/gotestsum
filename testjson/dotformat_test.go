@@ -18,6 +18,8 @@ import (
 )
 
 func TestScanTestOutput_WithDotsFormatter(t *testing.T) {
+	skip.If(t, runtime.GOOS == "windows")
+
 	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
 
 	out := new(bytes.Buffer)
