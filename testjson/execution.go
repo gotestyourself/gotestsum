@@ -279,24 +279,24 @@ func (e *Execution) add(event TestEvent) {
 		e.packages[event.Package] = pkg
 	}
 	if event.PackageEvent() {
-		e.addPackageEvent(pkg, event)
+		pkg.addEvent(event)
 		return
 	}
 	pkg.addTestEvent(event)
 }
 
-func (e *Execution) addPackageEvent(pkg *Package, event TestEvent) {
+func (p *Package) addEvent(event TestEvent) {
 	switch event.Action {
 	case ActionPass, ActionFail:
-		pkg.action = event.Action
+		p.action = event.Action
 	case ActionOutput:
 		if isCoverageOutput(event.Output) {
-			pkg.coverage = strings.TrimRight(event.Output, "\n")
+			p.coverage = strings.TrimRight(event.Output, "\n")
 		}
 		if isCachedOutput(event.Output) {
-			pkg.cached = true
+			p.cached = true
 		}
-		pkg.addOutput(0, event.Output)
+		p.addOutput(0, event.Output)
 	}
 }
 
@@ -385,7 +385,7 @@ func elapsedDuration(elapsed float64) time.Duration {
 func isCoverageOutput(output string) bool {
 	return all(
 		strings.HasPrefix(output, "coverage:"),
-		strings.HasSuffix(output, "% of statements\n"))
+		strings.Contains(output, "% of statements"))
 }
 
 func isCachedOutput(output string) bool {
