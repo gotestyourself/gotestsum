@@ -73,8 +73,8 @@ type Package struct {
 	Passed  []TestCase
 
 	// mapping of root TestCase ID to all sub test IDs. Used to mitigate
-	// github.com/golang/go/issues/29755.
-	// In the future when that bug is fixed this mapping can likely be removed.
+	// github.com/golang/go/issues/29755, and github.com/golang/go/issues/40771.
+	// In the future when those bug are fixed this mapping can likely be removed.
 	subTests map[int][]int
 
 	// output printed by test cases, indexed by TestCase.ID. Package output is
@@ -221,6 +221,12 @@ const neverFinished time.Duration = -1
 func (p *Package) end() []TestEvent {
 	result := make([]TestEvent, 0, len(p.running))
 	for k, tc := range p.running {
+		if tc.Test.IsSubTest() && rootTestPassed(p, tc) {
+			// mitigate github.com/golang/go/issues/40771 (gotestsum/issues/141)
+			// by skipping missing subtest end events when the root test passed.
+			continue
+		}
+
 		tc.Elapsed = neverFinished
 		p.Failed = append(p.Failed, tc)
 
@@ -233,6 +239,32 @@ func (p *Package) end() []TestEvent {
 		delete(p.running, k)
 	}
 	return result
+}
+
+// rootTestPassed looks for the root test associated with subtest and returns
+// true if the root test passed. This is used to mitigate
+// github.com/golang/go/issues/40771 (gotestsum/issues/141) and may be removed
+// in the future since that issue was patched in go1.16.
+//
+// This function is slightly expensive because it has to scan every test in the
+// package, but it should only run in the rare case where a subtest was missing
+// an end event. Spending a little more time in that rare case is probably better
+// than keeping extra mapping of tests in all cases.
+func rootTestPassed(p *Package, subtest TestCase) bool {
+	root, _ := subtest.Test.Split()
+
+	for _, tc := range p.Passed {
+		if tc.Test.Name() != root {
+			continue
+		}
+
+		for _, subID := range p.subTests[tc.ID] {
+			if subID == subtest.ID {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // TestCase stores the name and elapsed time for a test case.
@@ -343,7 +375,7 @@ func (p *Package) addTestEvent(event TestEvent) {
 		return
 	}
 
-	// the event.Action must be one of the three test end events
+	// the event.Action must be one of the three "test end" events
 	delete(p.running, event.Test)
 	tc.Elapsed = elapsedDuration(event.Elapsed)
 
@@ -373,8 +405,6 @@ func (p *Package) addTestEvent(event TestEvent) {
 
 		// Remove test output once a test passes, it wont be used.
 		p.removeOutput(tc.ID)
-		// Remove subtest mapping, it is only used when a test fails.
-		delete(p.subTests, tc.ID)
 	}
 }
 

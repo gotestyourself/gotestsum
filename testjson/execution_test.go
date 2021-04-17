@@ -115,11 +115,6 @@ func TestPackage_AddEvent(t *testing.T) {
 		expected Package
 	}
 
-	var cmpPackage = cmp.Options{
-		cmp.AllowUnexported(Package{}),
-		cmpopts.EquateEmpty(),
-	}
-
 	run := func(t *testing.T, tc testCase) {
 		te, err := parseEvent([]byte(tc.event))
 		assert.NilError(t, err)
@@ -175,4 +170,50 @@ func TestPackage_AddEvent(t *testing.T) {
 
 func pkgOutput(id int, line string) map[int][]string {
 	return map[int][]string{id: {line}}
+}
+
+func TestScanOutput_WithMissingEvents(t *testing.T) {
+	source := golden.Get(t, "go-test-json-missing-test-events.out")
+	handler := &captureHandler{}
+	cfg := ScanConfig{
+		Stdout:  bytes.NewReader(source),
+		Handler: handler,
+	}
+	_, err := ScanTestOutput(cfg)
+	assert.NilError(t, err)
+
+	var cmpTestEventShallow = cmp.Options{
+		cmp.Comparer(func(x, y TestEvent) bool {
+			return x.Test == y.Test && x.Action == y.Action && x.Elapsed == y.Elapsed
+		}),
+		cmpopts.SortSlices(func(x, y TestEvent) bool {
+			return x.Test < y.Test
+		}),
+	}
+
+	// the package end event should come immediately before the artificial events
+	expected := []TestEvent{
+		{Action: ActionPass},
+		{Action: ActionFail, Test: "TestMissing", Elapsed: -1},
+		{Action: ActionFail, Test: "TestMissing/a", Elapsed: -1},
+		{Action: ActionFail, Test: "TestMissingEvent", Elapsed: -1},
+		{Action: ActionFail, Test: "TestFailed/a", Elapsed: -1},
+		{Action: ActionFail, Test: "TestFailed/a/sub", Elapsed: -1},
+	}
+	assert.Assert(t, len(handler.events) > len(expected))
+	start := len(handler.events) - len(expected)
+	assert.DeepEqual(t, expected, handler.events[start:], cmpTestEventShallow)
+}
+
+type captureHandler struct {
+	events []TestEvent
+}
+
+func (s *captureHandler) Event(event TestEvent, _ *Execution) error {
+	s.events = append(s.events, event)
+	return nil
+}
+
+func (s *captureHandler) Err(text string) error {
+	return fmt.Errorf(text)
 }

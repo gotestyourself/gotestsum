@@ -1,0 +1,37 @@
+{"Time":"2021-04-17T14:33:35.167978423Z","Action":"run","Package":"gotest.tools/testing","Test":"TestPassed"}
+{"Time":"2021-04-17T14:33:35.167999152Z","Action":"output","Package":"gotest.tools/testing","Test":"TestPassed","Output":"=== RUN   TestPassed\n"}
+{"Time":"2021-04-17T14:33:35.168007043Z","Action":"output","Package":"gotest.tools/testing","Test":"TestPassed","Output":"--- PASS: TestPassed (0.00s)\n"}
+{"Time":"2021-04-17T14:33:35.16801113Z","Action":"pass","Package":"gotest.tools/testing","Test":"TestPassed","Elapsed":0}
+{"Time":"2021-04-17T14:33:35.167978423Z","Action":"run","Package":"gotest.tools/testing","Test":"TestMissingEvent"}
+{"Time":"2021-04-17T14:33:35.167999152Z","Action":"output","Package":"gotest.tools/testing","Test":"TestMissingEvent","Output":"=== RUN   TestMissingEvent\n"}
+{"Time":"2021-04-17T14:33:35.168007043Z","Action":"output","Package":"gotest.tools/testing","Test":"TestMissingEvent","Output":"--- PASS: TestMissingEvent (0.00s)\n"}
+{"Time":"2021-04-17T14:33:35.168147969Z","Action":"run","Package":"gotest.tools/testing","Test":"TestNestedSuccess"}
+{"Time":"2021-04-17T14:33:35.168150995Z","Action":"output","Package":"gotest.tools/testing","Test":"TestNestedSuccess","Output":"=== RUN   TestNestedSuccess\n"}
+{"Time":"2021-04-17T14:33:35.168155447Z","Action":"run","Package":"gotest.tools/testing","Test":"TestNestedSuccess/a"}
+{"Time":"2021-04-17T14:33:35.168158403Z","Action":"output","Package":"gotest.tools/testing","Test":"TestNestedSuccess/a","Output":"=== RUN   TestNestedSuccess/a\n"}
+{"Time":"2021-04-17T14:33:35.168161668Z","Action":"run","Package":"gotest.tools/testing","Test":"TestNestedSuccess/a/sub"}
+{"Time":"2021-04-17T14:33:35.168164766Z","Action":"output","Package":"gotest.tools/testing","Test":"TestNestedSuccess/a/sub","Output":"=== RUN   TestNestedSuccess/a/sub\n"}
+{"Time":"2021-04-17T14:33:35.168168123Z","Action":"run","Package":"gotest.tools/testing","Test":"TestNestedSuccess/b"}
+{"Time":"2021-04-17T14:33:35.168170964Z","Action":"output","Package":"gotest.tools/testing","Test":"TestNestedSuccess/b","Output":"=== RUN   TestNestedSuccess/b\n"}
+{"Time":"2021-04-17T14:33:35.168174253Z","Action":"run","Package":"gotest.tools/testing","Test":"TestNestedSuccess/b/sub"}
+{"Time":"2021-04-17T14:33:35.168177104Z","Action":"output","Package":"gotest.tools/testing","Test":"TestNestedSuccess/b/sub","Output":"=== RUN   TestNestedSuccess/b/sub\n"}
+{"Time":"2021-04-17T14:33:35.16820637Z","Action":"output","Package":"gotest.tools/testing","Test":"TestNestedSuccess","Output":"--- PASS: TestNestedSuccess (0.00s)\n"}
+{"Time":"2021-04-17T14:33:35.168210256Z","Action":"output","Package":"gotest.tools/testing","Test":"TestNestedSuccess/a","Output":"    --- PASS: TestNestedSuccess/a (0.00s)\n"}
+{"Time":"2021-04-17T14:33:35.168213987Z","Action":"output","Package":"gotest.tools/testing","Test":"TestNestedSuccess/a/sub","Output":"        --- PASS: TestNestedSuccess/a/sub (0.00s)\n"}
+{"Time":"2021-04-17T14:33:35.168217438Z","Action":"pass","Package":"gotest.tools/testing","Test":"TestNestedSuccess/a/sub","Elapsed":0}
+{"Time":"2021-04-17T14:33:35.168222153Z","Action":"pass","Package":"gotest.tools/testing","Test":"TestNestedSuccess/a","Elapsed":0}
+{"Time":"2021-04-17T14:33:35.16826478Z","Action":"pass","Package":"gotest.tools/testing","Test":"TestNestedSuccess","Elapsed":0}
+{"Time":"2021-04-17T14:33:35.168147969Z","Action":"run","Package":"gotest.tools/testing","Test":"TestFailed"}
+{"Time":"2021-04-17T14:33:35.168150995Z","Action":"output","Package":"gotest.tools/testing","Test":"TestFailed","Output":"=== RUN   TestFailed\n"}
+{"Time":"2021-04-17T14:33:35.168155447Z","Action":"run","Package":"gotest.tools/testing","Test":"TestFailed/a"}
+{"Time":"2021-04-17T14:33:35.168158403Z","Action":"output","Package":"gotest.tools/testing","Test":"TestFailed/a","Output":"=== RUN   TestFailed/a\n"}
+{"Time":"2021-04-17T14:33:35.168161668Z","Action":"run","Package":"gotest.tools/testing","Test":"TestFailed/a/sub"}
+{"Time":"2021-04-17T14:33:35.168164766Z","Action":"output","Package":"gotest.tools/testing","Test":"TestFailed/a/sub","Output":"=== RUN   TestFailed/a/sub\n"}
+{"Time":"2021-04-17T14:33:35.16826478Z","Action":"fail","Package":"gotest.tools/testing","Test":"TestFailed","Elapsed":0}
+{"Time":"2021-04-17T14:33:35.168147969Z","Action":"run","Package":"gotest.tools/testing","Test":"TestMissing"}
+{"Time":"2021-04-17T14:33:35.168150995Z","Action":"output","Package":"gotest.tools/testing","Test":"TestMissing","Output":"=== RUN   TestMissing\n"}
+{"Time":"2021-04-17T14:33:35.168155447Z","Action":"run","Package":"gotest.tools/testing","Test":"TestMissing/a"}
+{"Time":"2021-04-17T14:33:35.168158403Z","Action":"output","Package":"gotest.tools/testing","Test":"TestMissing/a","Output":"=== RUN   TestMissing/a\n"}
+{"Time":"2021-04-17T14:33:35.168308334Z","Action":"output","Package":"gotest.tools/testing","Output":"PASS\n"}
+{"Time":"2021-04-17T14:33:35.168311492Z","Action":"output","Package":"gotest.tools/testing","Output":"ok  \tgotest.tools/testing\t(cached)\n"}
+{"Time":"2021-04-17T14:33:35.168316085Z","Action":"pass","Package":"gotest.tools/testing","Elapsed":0}
