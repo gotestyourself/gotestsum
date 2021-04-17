@@ -367,3 +367,35 @@ func TestRun_RerunFails_BuildErrorPreventsRerun(t *testing.T) {
 // type checking of os/exec.ExitError is done in a test file so that users
 // installing from source can continue to use versions prior to go1.12.
 var _ exitCoder = &exec.ExitError{}
+
+func TestRun_RerunFails_PanicPreventsRerun(t *testing.T) {
+	jsonFailed := `{"Package": "pkg", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne", "Action": "output","Output":"panic: something went wrong\n"}
+{"Package": "pkg", "Action": "fail"}
+`
+
+	fn := func(args []string) proc {
+		return proc{
+			cmd:    fakeWaiter{result: newExitCode("failed", 1)},
+			stdout: strings.NewReader(jsonFailed),
+			stderr: bytes.NewReader(nil),
+		}
+	}
+	reset := patchStartGoTestFn(fn)
+	defer reset()
+
+	out := new(bytes.Buffer)
+	opts := &options{
+		rawCommand:                   true,
+		args:                         []string{"./test.test"},
+		format:                       "testname",
+		rerunFailsMaxAttempts:        3,
+		rerunFailsMaxInitialFailures: 1,
+		stdout:                       out,
+		stderr:                       os.Stderr,
+		hideSummary:                  newHideSummaryValue(),
+	}
+	err := run(opts)
+	assert.ErrorContains(t, err, "rerun aborted because previous run had a suspected panic", out.String())
+}

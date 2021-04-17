@@ -99,6 +99,11 @@ type Package struct {
 	action Action
 	// cached is true if the package was marked as (cached)
 	cached bool
+	// panicked is true if the package, or one of the tests in the package,
+	// contained output that looked like a panic. This is used to mitigate
+	// github.com/golang/go/issues/45508. This field may be removed in the future
+	// if the issue is fixed in Go.
+	panicked bool
 }
 
 // Result returns if the package passed, failed, or was skipped because there
@@ -172,6 +177,9 @@ func (p *Package) OutputLines(tc TestCase) []string {
 }
 
 func (p *Package) addOutput(id int, output string) {
+	if strings.HasPrefix(output, "panic: ") {
+		p.panicked = true
+	}
 	// TODO: limit size of buffered test output
 	p.output[id] = append(p.output[id], output)
 }
@@ -504,6 +512,17 @@ func (e *Execution) Errors() []string {
 	e.errorsLock.RLock()
 	defer e.errorsLock.RUnlock()
 	return e.errors
+}
+
+// HasPanic returns true if at least one package had output that looked like a
+// panic.
+func (e *Execution) HasPanic() bool {
+	for _, pkg := range e.packages {
+		if pkg.panicked {
+			return true
+		}
+	}
+	return false
 }
 
 func (e *Execution) end() []TestEvent {

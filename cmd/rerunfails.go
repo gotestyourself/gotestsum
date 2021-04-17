@@ -94,6 +94,8 @@ func hasErrors(err error, exec *testjson.Execution) error {
 	// Exit code 0 and 1 are expected.
 	case ExitCodeWithDefault(err) > 1:
 		return fmt.Errorf("unexpected go test exit code: %v", err)
+	case exec.HasPanic():
+		return fmt.Errorf("rerun aborted because previous run had a suspected panic and some test may not have run")
 	default:
 		return nil
 	}
