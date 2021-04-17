@@ -107,3 +107,72 @@ func TestParseEvent(t *testing.T) {
 	cmpTestEvent := cmp.AllowUnexported(TestEvent{})
 	assert.DeepEqual(t, event, expected, cmpTestEvent)
 }
+
+func TestPackage_AddEvent(t *testing.T) {
+	type testCase struct {
+		name     string
+		event    string
+		expected Package
+	}
+
+	var cmpPackage = cmp.Options{
+		cmp.AllowUnexported(Package{}),
+		cmpopts.EquateEmpty(),
+	}
+
+	run := func(t *testing.T, tc testCase) {
+		te, err := parseEvent([]byte(tc.event))
+		assert.NilError(t, err)
+
+		p := newPackage()
+		p.addEvent(te)
+		assert.DeepEqual(t, p, &tc.expected, cmpPackage)
+	}
+
+	var testCases = []testCase{
+		{
+			name:  "coverage with -cover",
+			event: `{"Action":"output","Package":"gotest.tools/testing","Output":"coverage: 4.2% of statements\n"}`,
+			expected: Package{
+				coverage: "coverage: 4.2% of statements",
+				output:   pkgOutput(0, "coverage: 4.2% of statements\n"),
+			},
+		},
+		{
+			name:  "coverage with -coverpkg",
+			event: `{"Action":"output","Package":"gotest.tools/testing","Output":"coverage: 7.5% of statements in ./testing\n"}`,
+			expected: Package{
+				coverage: "coverage: 7.5% of statements in ./testing",
+				output:   pkgOutput(0, "coverage: 7.5% of statements in ./testing\n"),
+			},
+		},
+		{
+			name:     "package failed",
+			event:    `{"Action":"fail","Package":"gotest.tools/testing","Elapsed":0.012}`,
+			expected: Package{action: ActionFail},
+		},
+		{
+			name:  "package is cached",
+			event: `{"Action":"output","Package":"gotest.tools/testing","Output":"ok  \tgotest.tools/testing\t(cached)\n"}`,
+			expected: Package{
+				cached: true,
+				output: pkgOutput(0, "ok  \tgotest.tools/testing\t(cached)\n"),
+			},
+		},
+		{
+			name:     "package pass",
+			event:    `{"Action":"pass","Package":"gotest.tools/testing","Elapsed":0.012}`,
+			expected: Package{action: ActionPass},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			run(t, tc)
+		})
+	}
+}
+
+func pkgOutput(id int, line string) map[int][]string {
+	return map[int][]string{id: {line}}
+}
