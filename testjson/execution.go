@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 	"sort"
 	"strings"
 	"sync"
@@ -590,6 +591,9 @@ type ScanConfig struct {
 	Execution *Execution
 	// Stop is called when ScanTestOutput fails during a scan.
 	Stop func()
+	// IgnoreNonJSONOutputLines causes ScanTestOutput to print non-JSON lines to
+	// stderr rather than returning an error.
+	IgnoreNonJSONOutputLines bool
 }
 
 // EventHandler is called by ScanTestOutput for each event and write to stderr.
@@ -662,6 +666,10 @@ func readStdout(config ScanConfig, execution *Execution) error {
 			config.Handler.Err(errBadEvent.Error() + ": " + scanner.Text())
 			continue
 		case err != nil:
+			if config.IgnoreNonJSONOutputLines {
+				fmt.Fprintf(os.Stderr, "%s\n", raw)
+				continue
+			}
 			return errors.Wrapf(err, "failed to parse test output: %s", string(raw))
 		}
 

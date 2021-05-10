@@ -59,6 +59,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		"print format of test input")
 	flags.BoolVar(&opts.rawCommand, "raw-command", false,
 		"don't prepend 'go test -json' to the 'go test' command")
+	flags.BoolVar(&opts.ignoreNonJSONOutputLines, "ignore-non-json-output-lines", false,
+		"write non-JSON 'go test' output lines to stderr instead of failing")
 	flags.StringVar(&opts.jsonFile, "jsonfile",
 		lookEnvWithDefault("GOTESTSUM_JSONFILE", ""),
 		"write all TestEvents to file")
@@ -138,6 +140,7 @@ type options struct {
 	format                       string
 	debug                        bool
 	rawCommand                   bool
+	ignoreNonJSONOutputLines     bool
 	jsonFile                     string
 	junitFile                    string
 	postRunHookCmd               *commandValue
@@ -194,10 +197,11 @@ func run(opts *options) error {
 	}
 	defer handler.Close() // nolint: errcheck
 	cfg := testjson.ScanConfig{
-		Stdout:  goTestProc.stdout,
-		Stderr:  goTestProc.stderr,
-		Handler: handler,
-		Stop:    cancel,
+		Stdout:                   goTestProc.stdout,
+		Stderr:                   goTestProc.stderr,
+		Handler:                  handler,
+		Stop:                     cancel,
+		IgnoreNonJSONOutputLines: opts.ignoreNonJSONOutputLines,
 	}
 	exec, err := testjson.ScanTestOutput(cfg)
 	if err != nil {
