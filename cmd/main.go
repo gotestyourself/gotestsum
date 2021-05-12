@@ -61,6 +61,7 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		"don't prepend 'go test -json' to the 'go test' command")
 	flags.BoolVar(&opts.ignoreNonJSONOutputLines, "ignore-non-json-output-lines", false,
 		"write non-JSON 'go test' output lines to stderr instead of failing")
+	flags.Lookup("ignore-non-json-output-lines").Hidden = true
 	flags.StringVar(&opts.jsonFile, "jsonfile",
 		lookEnvWithDefault("GOTESTSUM_JSONFILE", ""),
 		"write all TestEvents to file")

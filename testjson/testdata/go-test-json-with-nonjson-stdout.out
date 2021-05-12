@@ -1,0 +1,8 @@
+{"Time":"2021-05-12T13:53:07.462687619-05:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassed"}
+|||This line is not valid test2json output.|||
+{"Time":"2021-05-12T13:53:07.46279664-05:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassed","Output":"=== RUN   TestPassed\n"}
+{"Time":"2021-05-12T13:53:07.462812837-05:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassed","Output":"--- PASS: TestPassed (0.00s)\n"}
+{"Time":"2021-05-12T13:53:07.462819251-05:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassed","Elapsed":0}
+{"Time":"2021-05-12T13:53:07.462825108-05:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Output":"PASS\n"}
+{"Time":"2021-05-12T13:53:07.462848483-05:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Output":"ok  \tgotest.tools/gotestsum/testjson/internal/good\t0.001s\n"}
+{"Time":"2021-05-12T13:53:07.46309146-05:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Elapsed":0.001}

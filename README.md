@@ -220,11 +220,17 @@ gotestsum -- -coverprofile=cover.out ./...
 gotestsum --raw-command -- ./scripts/run_tests.sh
 ```
 
-Note: when using `--raw-command` you must ensure that the stdout produced by
-the script only contains the `test2json` output. Any stderr produced by the script
-will be considered an error (this behaviour is necessary because package build errors
-are only reported by writting to stderr, not the `test2json` stdout). Any stderr
-produced by tests is not considered an error (it will be in the `test2json` stdout).
+Note: when using `--raw-command`, the script must follow a few rules about
+stdout and stderr output:
+
+* The stdout produced by the script must only contain the `test2json` output, or
+  `gotestsum` will fail. If it isn't possible to change the script to avoid
+  non-JSON output, you can use `--ignore-non-json-output-lines` to ignore
+  non-JSON lines and write them to `gotestsum`'s stderr instead.
+* Any stderr produced by the script will be considered an error (this behaviour
+  is necessary because package build errors are only reported by writting to
+  stderr, not the `test2json` stdout). Any stderr produced by tests is not
+  considered an error (it will be in the `test2json` stdout).
 
 **Example: using `TEST_DIRECTORY`**
 ```

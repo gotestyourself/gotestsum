@@ -205,8 +205,34 @@ func TestScanOutput_WithMissingEvents(t *testing.T) {
 	assert.DeepEqual(t, expected, handler.events[start:], cmpTestEventShallow)
 }
 
+func TestScanOutput_WithNonJSONLines(t *testing.T) {
+	source := golden.Get(t, "go-test-json-with-nonjson-stdout.out")
+	nonJSONLine := "|||This line is not valid test2json output.|||"
+
+	// Test that when we ignore non-JSON lines, scanning completes, and test
+	// that when we don't ignore non-JSON lines, scanning fails.
+	for _, ignore := range []bool{true, false} {
+		handler := &captureHandler{}
+		cfg := ScanConfig{
+			Stdout:                   bytes.NewReader(source),
+			Handler:                  handler,
+			IgnoreNonJSONOutputLines: ignore,
+		}
+		_, err := ScanTestOutput(cfg)
+		if ignore {
+			assert.Assert(t, len(handler.errs) == 1)
+			assert.Assert(t, handler.errs[0] == nonJSONLine)
+			assert.NilError(t, err)
+		} else {
+			assert.Assert(t, len(handler.errs) == 0)
+			assert.Error(t, err, "failed to parse test output: "+nonJSONLine+": invalid character '|' looking for beginning of value")
+		}
+	}
+}
+
 type captureHandler struct {
 	events []TestEvent
+	errs   []string
 }
 
 func (s *captureHandler) Event(event TestEvent, _ *Execution) error {
@@ -215,5 +241,6 @@ func (s *captureHandler) Event(event TestEvent, _ *Execution) error {
 }
 
 func (s *captureHandler) Err(text string) error {
+	s.errs = append(s.errs, text)
 	return fmt.Errorf(text)
 }
