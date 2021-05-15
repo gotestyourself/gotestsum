@@ -212,21 +212,24 @@ func TestScanOutput_WithNonJSONLines(t *testing.T) {
 	// Test that when we ignore non-JSON lines, scanning completes, and test
 	// that when we don't ignore non-JSON lines, scanning fails.
 	for _, ignore := range []bool{true, false} {
-		handler := &captureHandler{}
-		cfg := ScanConfig{
-			Stdout:                   bytes.NewReader(source),
-			Handler:                  handler,
-			IgnoreNonJSONOutputLines: ignore,
-		}
-		_, err := ScanTestOutput(cfg)
-		if ignore {
-			assert.Assert(t, len(handler.errs) == 1)
-			assert.Assert(t, handler.errs[0] == nonJSONLine)
-			assert.NilError(t, err)
-		} else {
-			assert.Assert(t, len(handler.errs) == 0)
-			assert.Error(t, err, "failed to parse test output: "+nonJSONLine+": invalid character '|' looking for beginning of value")
-		}
+		t.Run(fmt.Sprintf("ignore-non-json=%v", ignore), func(t *testing.T) {
+			handler := &captureHandler{}
+			cfg := ScanConfig{
+				Stdout:                   bytes.NewReader(source),
+				Handler:                  handler,
+				IgnoreNonJSONOutputLines: ignore,
+			}
+			_, err := ScanTestOutput(cfg)
+			if ignore {
+				assert.DeepEqual(t, handler.errs, []string{nonJSONLine})
+				assert.NilError(t, err)
+				return
+			}
+			assert.DeepEqual(t, handler.errs, []string{}, cmpopts.EquateEmpty())
+			expected := "failed to parse test output: " +
+				nonJSONLine + ": invalid character '|' looking for beginning of value"
+			assert.Error(t, err, expected)
+		})
 	}
 }
 
