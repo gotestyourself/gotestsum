@@ -316,10 +316,11 @@ While in watch mode, pressing some keys will perform an action:
 
 * `r` will run tests for the previous event.
 * `d` will run tests for the previous event using `dlv test`, allowing you to 
-  debug a test failure using [delve] A breakpoint will automatically be added at
+  debug a test failure using [delve]. A breakpoint will automatically be added at
   the first line of any tests which failed in the previous run. Additional
   breakpoints can be added with [`runtime.Breakpoint`](https://golang.org/pkg/runtime/#Breakpoint)
   or by using the delve command prompt.
+* `a` will run tests for all packages, by using `./...` as the package selector.
 
 Note that [delve] must be installed in order to use debug (`d`).
 
