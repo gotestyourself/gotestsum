@@ -83,6 +83,9 @@ func (r *redoHandler) Run(ctx context.Context) {
 		case 'a':
 			chResume = make(chan struct{})
 			r.ch <- RunOptions{resume: chResume, PkgPath: "./..."}
+		case 'l':
+			chResume = make(chan struct{})
+			r.ch <- RunOptions{resume: chResume, reloadPaths: true}
 		case '\n':
 			fmt.Println()
 			continue

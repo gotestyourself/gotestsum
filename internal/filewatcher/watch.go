@@ -16,27 +16,26 @@ import (
 const maxDepth = 7
 
 type RunOptions struct {
-	PkgPath string
-	Debug   bool
-	resume  chan struct{}
+	PkgPath     string
+	Debug       bool
+	resume      chan struct{}
+	reloadPaths bool
 }
 
+// Watch dirs for filesystem events, and run tests when .go files are saved.
+// nolint: gocyclo
 func Watch(dirs []string, run func(opts RunOptions) error) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	toWatch := findAllDirs(dirs, maxDepth)
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		return fmt.Errorf("failed to create file watcher: %w", err)
 	}
 	defer watcher.Close() // nolint: errcheck // always returns nil error
 
-	fmt.Printf("Watching %v directories. Use Ctrl-c to to stop a run or exit.\n", len(toWatch))
-	for _, dir := range toWatch {
-		if err = watcher.Add(dir); err != nil {
-			return fmt.Errorf("failed to watch directory %v: %w", dir, err)
-		}
+	if err := loadPaths(watcher, dirs); err != nil {
+		return err
 	}
 
 	timer := time.NewTimer(maxIdleTime)
@@ -54,6 +53,14 @@ func Watch(dirs []string, run func(opts RunOptions) error) error {
 
 		case opts := <-redo.Ch():
 			resetTimer(timer)
+
+			if opts.reloadPaths {
+				if err := loadPaths(watcher, dirs); err != nil {
+					return err
+				}
+				close(opts.resume)
+				continue
+			}
 
 			redo.ResetTerm()
 			if err := h.runTests(opts); err != nil {
@@ -87,6 +94,17 @@ func resetTimer(timer *time.Timer) {
 		<-timer.C
 	}
 	timer.Reset(maxIdleTime)
+}
+
+func loadPaths(watcher *fsnotify.Watcher, dirs []string) error {
+	toWatch := findAllDirs(dirs, maxDepth)
+	fmt.Printf("Watching %v directories. Use Ctrl-c to to stop a run or exit.\n", len(toWatch))
+	for _, dir := range toWatch {
+		if err := watcher.Add(dir); err != nil {
+			return fmt.Errorf("failed to watch directory %v: %w", dir, err)
+		}
+	}
+	return nil
 }
 
 func findAllDirs(dirs []string, maxDepth int) []string {
