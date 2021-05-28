@@ -15,7 +15,7 @@ import (
 
 const maxDepth = 7
 
-type RunOptions struct {
+type Event struct {
 	PkgPath     string
 	Debug       bool
 	resume      chan struct{}
@@ -24,7 +24,7 @@ type RunOptions struct {
 
 // Watch dirs for filesystem events, and run tests when .go files are saved.
 // nolint: gocyclo
-func Watch(dirs []string, run func(opts RunOptions) error) error {
+func Watch(dirs []string, run func(Event) error) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -41,9 +41,9 @@ func Watch(dirs []string, run func(opts RunOptions) error) error {
 	timer := time.NewTimer(maxIdleTime)
 	defer timer.Stop()
 
-	redo := newRedoHandler()
-	defer redo.ResetTerm()
-	go redo.Run(ctx)
+	term := newTerminal()
+	defer term.Reset()
+	go term.Monitor(ctx)
 
 	h := &handler{last: time.Now(), fn: run}
 	for {
@@ -51,23 +51,23 @@ func Watch(dirs []string, run func(opts RunOptions) error) error {
 		case <-timer.C:
 			return fmt.Errorf("exceeded idle timeout while watching files")
 
-		case opts := <-redo.Ch():
+		case event := <-term.Events():
 			resetTimer(timer)
 
-			if opts.reloadPaths {
+			if event.reloadPaths {
 				if err := loadPaths(watcher, dirs); err != nil {
 					return err
 				}
-				close(opts.resume)
+				close(event.resume)
 				continue
 			}
 
-			redo.ResetTerm()
-			if err := h.runTests(opts); err != nil {
-				return fmt.Errorf("failed to rerun tests for %v: %v", opts.PkgPath, err)
+			term.Reset()
+			if err := h.runTests(event); err != nil {
+				return fmt.Errorf("failed to rerun tests for %v: %v", event.PkgPath, err)
 			}
-			redo.SetupTerm()
-			close(opts.resume)
+			term.Start()
+			close(event.resume)
 
 		case event := <-watcher.Events:
 			resetTimer(timer)
@@ -218,7 +218,7 @@ func handleDirCreated(watcher *fsnotify.Watcher, event fsnotify.Event) (handled 
 type handler struct {
 	last     time.Time
 	lastPath string
-	fn       func(opts RunOptions) error
+	fn       func(opts Event) error
 }
 
 const floodThreshold = 250 * time.Millisecond
@@ -236,10 +236,10 @@ func (h *handler) handleEvent(event fsnotify.Event) error {
 		log.Debugf("skipping event received less than %v after the previous", floodThreshold)
 		return nil
 	}
-	return h.runTests(RunOptions{PkgPath: "./" + filepath.Dir(event.Name)})
+	return h.runTests(Event{PkgPath: "./" + filepath.Dir(event.Name)})
 }
 
-func (h *handler) runTests(opts RunOptions) error {
+func (h *handler) runTests(opts Event) error {
 	if opts.PkgPath == "" {
 		opts.PkgPath = h.lastPath
 	}

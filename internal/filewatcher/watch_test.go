@@ -22,7 +22,7 @@ func TestHandler_HandleEvent(t *testing.T) {
 
 	fn := func(t *testing.T, tc testCase) {
 		var ran bool
-		run := func(opts RunOptions) error {
+		run := func(opts Event) error {
 			ran = true
 			return nil
 		}

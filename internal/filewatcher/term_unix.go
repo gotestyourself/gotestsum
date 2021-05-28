@@ -12,18 +12,20 @@ import (
 	"gotest.tools/gotestsum/log"
 )
 
-type redoHandler struct {
-	ch    chan RunOptions
+type terminal struct {
+	ch    chan Event
 	reset func()
 }
 
-func newRedoHandler() *redoHandler {
-	h := &redoHandler{ch: make(chan RunOptions)}
-	h.SetupTerm()
+func newTerminal() *terminal {
+	h := &terminal{ch: make(chan Event)}
+	h.Start()
 	return h
 }
 
-func (r *redoHandler) SetupTerm() {
+// Start the terminal is non-blocking read mode. The terminal can be reset to
+// normal mode by calling Reset.
+func (r *terminal) Start() {
 	if r == nil {
 		return
 	}
@@ -59,7 +61,9 @@ func enableNonBlockingRead(fd int) (func(), error) {
 	return reset, nil
 }
 
-func (r *redoHandler) Run(ctx context.Context) {
+// Monitor the terminal for key presses. If the key press is associated with an
+// action, an event will be sent to channel returned by Events.
+func (r *terminal) Monitor(ctx context.Context) {
 	if r == nil {
 		return
 	}
@@ -76,16 +80,16 @@ func (r *redoHandler) Run(ctx context.Context) {
 		switch char {
 		case 'r':
 			chResume = make(chan struct{})
-			r.ch <- RunOptions{resume: chResume}
+			r.ch <- Event{resume: chResume}
 		case 'd':
 			chResume = make(chan struct{})
-			r.ch <- RunOptions{Debug: true, resume: chResume}
+			r.ch <- Event{Debug: true, resume: chResume}
 		case 'a':
 			chResume = make(chan struct{})
-			r.ch <- RunOptions{resume: chResume, PkgPath: "./..."}
+			r.ch <- Event{resume: chResume, PkgPath: "./..."}
 		case 'l':
 			chResume = make(chan struct{})
-			r.ch <- RunOptions{resume: chResume, reloadPaths: true}
+			r.ch <- Event{resume: chResume, reloadPaths: true}
 		case '\n':
 			fmt.Println()
 			continue
@@ -101,14 +105,17 @@ func (r *redoHandler) Run(ctx context.Context) {
 	}
 }
 
-func (r *redoHandler) Ch() <-chan RunOptions {
+// Events returns a channel which will receive events when keys are pressed.
+// When an event is received, the caller must close the resume channel to
+// resume monitoring for events.
+func (r *terminal) Events() <-chan Event {
 	if r == nil {
 		return nil
 	}
 	return r.ch
 }
 
-func (r *redoHandler) ResetTerm() {
+func (r *terminal) Reset() {
 	if r != nil && r.reset != nil {
 		r.reset()
 	}
