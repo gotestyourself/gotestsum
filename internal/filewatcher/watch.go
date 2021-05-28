@@ -56,9 +56,6 @@ func Watch(dirs []string, run func(opts RunOptions) error) error {
 			resetTimer(timer)
 
 			redo.ResetTerm()
-			if opts.PkgPath == "" {
-				opts.PkgPath = h.lastPath
-			}
 			if err := h.runTests(opts); err != nil {
 				return fmt.Errorf("failed to rerun tests for %v: %v", opts.PkgPath, err)
 			}
@@ -225,6 +222,9 @@ func (h *handler) handleEvent(event fsnotify.Event) error {
 }
 
 func (h *handler) runTests(opts RunOptions) error {
+	if opts.PkgPath == "" {
+		opts.PkgPath = h.lastPath
+	}
 	fmt.Printf("\nRunning tests in %v\n", opts.PkgPath)
 
 	if err := h.fn(opts); err != nil {
