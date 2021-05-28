@@ -56,7 +56,9 @@ func Watch(dirs []string, run func(opts RunOptions) error) error {
 			resetTimer(timer)
 
 			redo.ResetTerm()
-			opts.PkgPath = h.lastPath
+			if opts.PkgPath == "" {
+				opts.PkgPath = h.lastPath
+			}
 			if err := h.runTests(opts); err != nil {
 				return fmt.Errorf("failed to rerun tests for %v: %v", opts.PkgPath, err)
 			}
