@@ -22,15 +22,15 @@ type watchRuns struct {
 	prevExec *testjson.Execution
 }
 
-func (w *watchRuns) run(runOpts filewatcher.RunOptions) error {
-	if runOpts.Debug {
+func (w *watchRuns) run(event filewatcher.Event) error {
+	if event.Debug {
 		path, cleanup, err := delveInitFile(w.prevExec)
 		if err != nil {
 			return fmt.Errorf("failed to write delve init file: %w", err)
 		}
 		defer cleanup()
 		o := delveOpts{
-			pkgPath:      runOpts.PkgPath,
+			pkgPath:      event.PkgPath,
 			args:         w.opts.args,
 			initFilePath: path,
 		}
@@ -41,7 +41,7 @@ func (w *watchRuns) run(runOpts filewatcher.RunOptions) error {
 	}
 
 	opts := w.opts
-	opts.packages = []string{runOpts.PkgPath}
+	opts.packages = []string{event.PkgPath}
 	var err error
 	if w.prevExec, err = runSingle(&opts); !isExitCoder(err) {
 		return err

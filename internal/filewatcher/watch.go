@@ -15,36 +15,35 @@ import (
 
 const maxDepth = 7
 
-type RunOptions struct {
-	PkgPath string
-	Debug   bool
-	resume  chan struct{}
+type Event struct {
+	PkgPath     string
+	Debug       bool
+	resume      chan struct{}
+	reloadPaths bool
 }
 
-func Watch(dirs []string, run func(opts RunOptions) error) error {
+// Watch dirs for filesystem events, and run tests when .go files are saved.
+// nolint: gocyclo
+func Watch(dirs []string, run func(Event) error) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	toWatch := findAllDirs(dirs, maxDepth)
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		return fmt.Errorf("failed to create file watcher: %w", err)
 	}
 	defer watcher.Close() // nolint: errcheck // always returns nil error
 
-	fmt.Printf("Watching %v directories. Use Ctrl-c to to stop a run or exit.\n", len(toWatch))
-	for _, dir := range toWatch {
-		if err = watcher.Add(dir); err != nil {
-			return fmt.Errorf("failed to watch directory %v: %w", dir, err)
-		}
+	if err := loadPaths(watcher, dirs); err != nil {
+		return err
 	}
 
 	timer := time.NewTimer(maxIdleTime)
 	defer timer.Stop()
 
-	redo := newRedoHandler()
-	defer redo.ResetTerm()
-	go redo.Run(ctx)
+	term := newTerminal()
+	defer term.Reset()
+	go term.Monitor(ctx)
 
 	h := &handler{last: time.Now(), fn: run}
 	for {
@@ -52,15 +51,23 @@ func Watch(dirs []string, run func(opts RunOptions) error) error {
 		case <-timer.C:
 			return fmt.Errorf("exceeded idle timeout while watching files")
 
-		case opts := <-redo.Ch():
+		case event := <-term.Events():
 			resetTimer(timer)
 
-			redo.ResetTerm()
-			if err := h.runTests(opts); err != nil {
-				return fmt.Errorf("failed to rerun tests for %v: %v", opts.PkgPath, err)
+			if event.reloadPaths {
+				if err := loadPaths(watcher, dirs); err != nil {
+					return err
+				}
+				close(event.resume)
+				continue
 			}
-			redo.SetupTerm()
-			close(opts.resume)
+
+			term.Reset()
+			if err := h.runTests(event); err != nil {
+				return fmt.Errorf("failed to rerun tests for %v: %v", event.PkgPath, err)
+			}
+			term.Start()
+			close(event.resume)
 
 		case event := <-watcher.Events:
 			resetTimer(timer)
@@ -87,6 +94,17 @@ func resetTimer(timer *time.Timer) {
 		<-timer.C
 	}
 	timer.Reset(maxIdleTime)
+}
+
+func loadPaths(watcher *fsnotify.Watcher, dirs []string) error {
+	toWatch := findAllDirs(dirs, maxDepth)
+	fmt.Printf("Watching %v directories. Use Ctrl-c to to stop a run or exit.\n", len(toWatch))
+	for _, dir := range toWatch {
+		if err := watcher.Add(dir); err != nil {
+			return fmt.Errorf("failed to watch directory %v: %w", dir, err)
+		}
+	}
+	return nil
 }
 
 func findAllDirs(dirs []string, maxDepth int) []string {
@@ -200,7 +218,7 @@ func handleDirCreated(watcher *fsnotify.Watcher, event fsnotify.Event) (handled 
 type handler struct {
 	last     time.Time
 	lastPath string
-	fn       func(opts RunOptions) error
+	fn       func(opts Event) error
 }
 
 const floodThreshold = 250 * time.Millisecond
@@ -218,10 +236,10 @@ func (h *handler) handleEvent(event fsnotify.Event) error {
 		log.Debugf("skipping event received less than %v after the previous", floodThreshold)
 		return nil
 	}
-	return h.runTests(RunOptions{PkgPath: "./" + filepath.Dir(event.Name)})
+	return h.runTests(Event{PkgPath: "./" + filepath.Dir(event.Name)})
 }
 
-func (h *handler) runTests(opts RunOptions) error {
+func (h *handler) runTests(opts Event) error {
 	if opts.PkgPath == "" {
 		opts.PkgPath = h.lastPath
 	}

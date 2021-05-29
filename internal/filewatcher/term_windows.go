@@ -2,18 +2,18 @@ package filewatcher
 
 import "context"
 
-type redoHandler struct{}
+type terminal struct{}
 
-func newRedoHandler() *redoHandler {
+func newTerminal() *terminal {
 	return nil
 }
 
-func (r *redoHandler) Run(_ context.Context) {}
+func (r *terminal) Monitor(context.Context) {}
 
-func (r *redoHandler) Ch() <-chan RunOptions {
+func (r *terminal) Events() <-chan Event {
 	return nil
 }
 
-func (r *redoHandler) SetupTerm() {}
+func (r *terminal) Start() {}
 
-func (r *redoHandler) ResetTerm() {}
+func (r *terminal) Reset() {}

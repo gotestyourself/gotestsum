@@ -309,8 +309,8 @@ When the `--watch` flag is set, `gotestsum` will watch directories using
 [file system notifications](https://pkg.go.dev/github.com/fsnotify/fsnotify).
 When a Go file in one of those directories is modified, `gotestsum` will run the
 tests for the package which contains the changed file. By default all
-directories under the current directory will be watched. Use the `--packages` flag
-to specify a different list.
+directories with at least one file with a `.go` extension, under the current
+directory will be watched. Use the `--packages` flag to specify a different list.
 
 While in watch mode, pressing some keys will perform an action:
 
@@ -321,6 +321,9 @@ While in watch mode, pressing some keys will perform an action:
   breakpoints can be added with [`runtime.Breakpoint`](https://golang.org/pkg/runtime/#Breakpoint)
   or by using the delve command prompt.
 * `a` will run tests for all packages, by using `./...` as the package selector.
+* `l` will scan the directory list again, and if there are any new directories
+  which contain a file with a `.go` extension, they will be added to the watch
+  list.
 
 Note that [delve] must be installed in order to use debug (`d`).
 
