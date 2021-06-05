@@ -232,6 +232,25 @@ stdout and stderr output:
   stderr, not the `test2json` stdout). Any stderr produced by tests is not
   considered an error (it will be in the `test2json` stdout).
 
+**Example: run tests with profiling enabled**
+
+Using a `profile.sh` script like this:
+
+```sh
+#!/usr/bin/env bash
+set -eu
+
+for pkg in $(go list "$@"); do
+    dir="$(go list -f '{{ .Dir }}' $pkg)"
+    go test -json -cpuprofile="$dir/cpu.profile" "$pkg"
+done
+```
+
+You can run:
+```
+gotestsum --raw-command ./profile.sh ./...
+```
+
 **Example: using `TEST_DIRECTORY`**
 ```
 TEST_DIRECTORY=./io/http gotestsum
