@@ -66,6 +66,8 @@ type JUnitFailure struct {
 type Config struct {
 	FormatTestSuiteName     FormatFunc
 	FormatTestCaseClassname FormatFunc
+	// This is used for tests to have a consistent timestamp
+	customTimestamp string
 }
 
 // FormatFunc converts a string from one format into another.
@@ -93,7 +95,10 @@ func generate(exec *testjson.Execution, cfg Config) JUnitTestSuites {
 			Properties: packageProperties(version),
 			TestCases:  packageTestCases(pkg, cfg.FormatTestCaseClassname),
 			Failures:   len(pkg.Failed),
-			Timestamp:  exec.Started().Format(time.RFC3339),
+			Timestamp:  cfg.customTimestamp,
+		}
+		if cfg.customTimestamp == "" {
+			junitpkg.Timestamp = exec.Started().Format(time.RFC3339)
 		}
 		suites.Suites = append(suites.Suites, junitpkg)
 	}

@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"runtime"
 	"testing"
+	"time"
 
 	"gotest.tools/gotestsum/testjson"
 	"gotest.tools/v3/assert"
@@ -19,7 +20,7 @@ func TestWrite(t *testing.T) {
 	exec := createExecution(t)
 
 	defer env.Patch(t, "GOVERSION", "go7.7.7")()
-	err := Write(out, exec, Config{})
+	err := Write(out, exec, Config{customTimestamp: new(time.Time).Format(time.RFC3339)})
 	assert.NilError(t, err)
 	golden.Assert(t, out.String(), "junitxml-report.golden")
 }
