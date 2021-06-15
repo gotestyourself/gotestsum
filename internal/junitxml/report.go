@@ -31,6 +31,7 @@ type JUnitTestSuite struct {
 	Name       string          `xml:"name,attr"`
 	Properties []JUnitProperty `xml:"properties>property,omitempty"`
 	TestCases  []JUnitTestCase
+	Timestamp  string `xml:"timestamp,attr"`
 }
 
 // JUnitTestCase is a single test case with its result.
@@ -92,6 +93,7 @@ func generate(exec *testjson.Execution, cfg Config) JUnitTestSuites {
 			Properties: packageProperties(version),
 			TestCases:  packageTestCases(pkg, cfg.FormatTestCaseClassname),
 			Failures:   len(pkg.Failed),
+			Timestamp:  exec.Started().Format(time.RFC3339),
 		}
 		suites.Suites = append(suites.Suites, junitpkg)
 	}
