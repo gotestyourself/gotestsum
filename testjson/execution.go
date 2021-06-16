@@ -564,6 +564,10 @@ func (e *Execution) end() []TestEvent {
 	return result
 }
 
+func (e *Execution) Started() time.Time {
+	return e.started
+}
+
 // newExecution returns a new Execution and records the current time as the
 // time the test execution started.
 func newExecution() *Execution {

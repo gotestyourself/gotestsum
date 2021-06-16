@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-	<testsuite tests="0" failures="0" time="0.000000" name="github.com/gotestyourself/gotestyourself/testjson/internal/badmain">
+	<testsuite tests="0" failures="0" time="0.000000" name="github.com/gotestyourself/gotestyourself/testjson/internal/badmain" timestamp="0001-01-01T00:00:00Z">
 		<properties>
 			<property name="go.version" value="go7.7.7"></property>
 		</properties>
@@ -8,7 +8,7 @@
 			<failure message="Failed" type="">sometimes main can exit 2&#xA;FAIL&#x9;github.com/gotestyourself/gotestyourself/testjson/internal/badmain&#x9;0.010s&#xA;</failure>
 		</testcase>
 	</testsuite>
-	<testsuite tests="18" failures="0" time="0.020000" name="github.com/gotestyourself/gotestyourself/testjson/internal/good">
+	<testsuite tests="18" failures="0" time="0.020000" name="github.com/gotestyourself/gotestyourself/testjson/internal/good" timestamp="0001-01-01T00:00:00Z">
 		<properties>
 			<property name="go.version" value="go7.7.7"></property>
 		</properties>
@@ -35,7 +35,7 @@
 		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestParallelTheSecond" time="0.010000"></testcase>
 		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/good" name="TestParallelTheFirst" time="0.010000"></testcase>
 	</testsuite>
-	<testsuite tests="28" failures="4" time="0.020000" name="github.com/gotestyourself/gotestyourself/testjson/internal/stub">
+	<testsuite tests="28" failures="4" time="0.020000" name="github.com/gotestyourself/gotestyourself/testjson/internal/stub" timestamp="0001-01-01T00:00:00Z">
 		<properties>
 			<property name="go.version" value="go7.7.7"></property>
 		</properties>
@@ -80,7 +80,7 @@
 		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestParallelTheSecond" time="0.010000"></testcase>
 		<testcase classname="github.com/gotestyourself/gotestyourself/testjson/internal/stub" name="TestParallelTheFirst" time="0.010000"></testcase>
 	</testsuite>
-	<testsuite tests="0" failures="0" time="0.000000" name="gotest.tools/gotestsum/internal/empty">
+	<testsuite tests="0" failures="0" time="0.000000" name="gotest.tools/gotestsum/internal/empty" timestamp="0001-01-01T00:00:00Z">
 		<properties>
 			<property name="go.version" value="go7.7.7"></property>
 		</properties>
