@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 	"gotest.tools/gotestsum/internal/dotwriter"
 	"gotest.tools/gotestsum/log"
 )
@@ -68,7 +68,7 @@ func (l *dotLine) checkWidth(prefix, terminal int) {
 }
 
 func newDotFormatter(out io.Writer) EventFormatter {
-	w, _, err := terminal.GetSize(int(os.Stdout.Fd()))
+	w, _, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil || w == 0 {
 		log.Warnf("Failed to detect terminal width for dots format, error: %v", err)
 		return &formatAdapter{format: dotsFormatV1, out: out}
