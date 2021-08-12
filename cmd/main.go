@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"strings"
+	"syscall"
 
 	"github.com/dnephin/pflag"
 	"github.com/fatih/color"
@@ -209,6 +210,12 @@ func run(opts *options) error {
 		return finishRun(opts, exec, err)
 	}
 	exitErr := goTestProc.cmd.Wait()
+	siggedOut := <-goTestProc.signal // check if we received a SIGINT
+
+	if siggedOut != nil {
+		n, _ := (siggedOut).(syscall.Signal)
+		return finishRun(opts, exec, fmt.Errorf("syscall.Signal==%d", int(n)))
+	}
 	if exitErr == nil || opts.rerunFailsMaxAttempts == 0 {
 		return finishRun(opts, exec, exitErr)
 	}
@@ -335,6 +342,7 @@ type proc struct {
 	cmd    waiter
 	stdout io.Reader
 	stderr io.Reader
+	signal chan os.Signal
 }
 
 type waiter interface {
@@ -347,7 +355,7 @@ func startGoTest(ctx context.Context, args []string) (proc, error) {
 	}
 
 	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
-	p := proc{cmd: cmd}
+	p := proc{cmd: cmd, signal: make(chan os.Signal, 1)}
 	log.Debugf("exec: %s", cmd.Args)
 	var err error
 	p.stdout, err = cmd.StdoutPipe()
@@ -364,7 +372,7 @@ func startGoTest(ctx context.Context, args []string) (proc, error) {
 	log.Debugf("go test pid: %d", cmd.Process.Pid)
 
 	ctx, cancel := context.WithCancel(ctx)
-	newSignalHandler(ctx, cmd.Process.Pid)
+	newSignalHandler(ctx, cmd.Process.Pid, &p)
 	p.cmd = &cancelWaiter{cancel: cancel, wrapped: p.cmd}
 	return p, nil
 }
@@ -392,7 +400,7 @@ func isExitCoder(err error) bool {
 	return ok
 }
 
-func newSignalHandler(ctx context.Context, pid int) {
+func newSignalHandler(ctx context.Context, pid int, p *proc) {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 
@@ -401,9 +409,11 @@ func newSignalHandler(ctx context.Context, pid int) {
 
 		select {
 		case <-ctx.Done():
+			close(p.signal)
 			return
 		case s := <-c:
 			proc, err := os.FindProcess(pid)
+			p.signal <- s
 			if err != nil {
 				log.Errorf("failed to find pid of 'go test': %v", err)
 				return
