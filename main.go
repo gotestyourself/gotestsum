@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"os/exec"
 
 	"gotest.tools/gotestsum/cmd"
 	"gotest.tools/gotestsum/cmd/tool"
@@ -11,10 +10,10 @@ import (
 
 func main() {
 	err := route(os.Args)
-	switch err.(type) {
-	case nil:
+	switch {
+	case err == nil:
 		return
-	case *exec.ExitError:
+	case cmd.IsExitCoder(err):
 		// go test should already report the error to stderr, exit with
 		// the same status code
 		os.Exit(cmd.ExitCodeWithDefault(err))

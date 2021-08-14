@@ -305,8 +305,8 @@ func TestRun_RerunFails_WithTooManyInitialFailures(t *testing.T) {
 {"Package": "pkg", "Action": "fail"}
 `
 
-	fn := func(args []string) proc {
-		return proc{
+	fn := func(args []string) *proc {
+		return &proc{
 			cmd:    fakeWaiter{result: newExitCode("failed", 1)},
 			stdout: strings.NewReader(jsonFailed),
 			stderr: bytes.NewReader(nil),
@@ -339,8 +339,8 @@ func TestRun_RerunFails_BuildErrorPreventsRerun(t *testing.T) {
 {"Package": "pkg", "Action": "fail"}
 `
 
-	fn := func(args []string) proc {
-		return proc{
+	fn := func(args []string) *proc {
+		return &proc{
 			cmd:    fakeWaiter{result: newExitCode("failed", 1)},
 			stdout: strings.NewReader(jsonFailed),
 			stderr: strings.NewReader("anything here is an error\n"),
@@ -375,8 +375,8 @@ func TestRun_RerunFails_PanicPreventsRerun(t *testing.T) {
 {"Package": "pkg", "Action": "fail"}
 `
 
-	fn := func(args []string) proc {
-		return proc{
+	fn := func(args []string) *proc {
+		return &proc{
 			cmd:    fakeWaiter{result: newExitCode("failed", 1)},
 			stdout: strings.NewReader(jsonFailed),
 			stderr: bytes.NewReader(nil),

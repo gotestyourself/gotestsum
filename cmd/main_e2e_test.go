@@ -214,7 +214,7 @@ func TestE2E_SignalHandler(t *testing.T) {
 	assert.NilError(t, result.Cmd.Process.Signal(os.Interrupt))
 	icmd.WaitOnCmd(2*time.Second, result)
 
-	result.Assert(t, icmd.Expected{ExitCode: 102})
+	result.Assert(t, icmd.Expected{ExitCode: 130})
 }
 
 func TestE2E_MaxFails_EndTestRun(t *testing.T) {

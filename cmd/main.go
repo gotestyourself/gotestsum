@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"strings"
+	"sync/atomic"
 	"syscall"
 
 	"github.com/dnephin/pflag"
@@ -210,11 +211,8 @@ func run(opts *options) error {
 		return finishRun(opts, exec, err)
 	}
 	exitErr := goTestProc.cmd.Wait()
-	siggedOut := <-goTestProc.signal // check if we received a SIGINT
-
-	if siggedOut != nil {
-		n, _ := (siggedOut).(syscall.Signal)
-		return finishRun(opts, exec, fmt.Errorf("syscall.Signal==%d", int(n)))
+	if signum := atomic.LoadInt32(&goTestProc.signal); signum != 0 {
+		return finishRun(opts, exec, exitError{num: signalExitCode + int(signum)})
 	}
 	if exitErr == nil || opts.rerunFailsMaxAttempts == 0 {
 		return finishRun(opts, exec, exitErr)
@@ -342,39 +340,41 @@ type proc struct {
 	cmd    waiter
 	stdout io.Reader
 	stderr io.Reader
-	signal chan os.Signal
+	// signal is atomically set to the signal value when a signal is received
+	// by newSignalHandler.
+	signal int32
 }
 
 type waiter interface {
 	Wait() error
 }
 
-func startGoTest(ctx context.Context, args []string) (proc, error) {
+func startGoTest(ctx context.Context, args []string) (*proc, error) {
 	if len(args) == 0 {
-		return proc{}, errors.New("missing command to run")
+		return nil, errors.New("missing command to run")
 	}
 
 	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
-	p := proc{cmd: cmd, signal: make(chan os.Signal, 1)}
+	p := proc{cmd: cmd}
 	log.Debugf("exec: %s", cmd.Args)
 	var err error
 	p.stdout, err = cmd.StdoutPipe()
 	if err != nil {
-		return p, err
+		return nil, err
 	}
 	p.stderr, err = cmd.StderrPipe()
 	if err != nil {
-		return p, err
+		return nil, err
 	}
 	if err := cmd.Start(); err != nil {
-		return p, errors.Wrapf(err, "failed to run %s", strings.Join(cmd.Args, " "))
+		return nil, errors.Wrapf(err, "failed to run %s", strings.Join(cmd.Args, " "))
 	}
 	log.Debugf("go test pid: %d", cmd.Process.Pid)
 
 	ctx, cancel := context.WithCancel(ctx)
 	newSignalHandler(ctx, cmd.Process.Pid, &p)
 	p.cmd = &cancelWaiter{cancel: cancel, wrapped: p.cmd}
-	return p, nil
+	return &p, nil
 }
 
 // ExitCodeWithDefault returns the ExitStatus of a process from the error returned by
@@ -395,10 +395,26 @@ type exitCoder interface {
 	ExitCode() int
 }
 
-func isExitCoder(err error) bool {
+func IsExitCoder(err error) bool {
 	_, ok := err.(exitCoder)
 	return ok
 }
+
+type exitError struct {
+	num int
+}
+
+func (e exitError) Error() string {
+	return fmt.Sprintf("exit code %d", e.num)
+}
+
+func (e exitError) ExitCode() int {
+	return e.num
+}
+
+// signalExitCode is the base value added to a signal number to produce the
+// exit code value. This matches the behaviour of bash.
+const signalExitCode = 128
 
 func newSignalHandler(ctx context.Context, pid int, p *proc) {
 	c := make(chan os.Signal, 1)
@@ -409,11 +425,11 @@ func newSignalHandler(ctx context.Context, pid int, p *proc) {
 
 		select {
 		case <-ctx.Done():
-			close(p.signal)
 			return
 		case s := <-c:
+			atomic.StoreInt32(&p.signal, int32(s.(syscall.Signal)))
+
 			proc, err := os.FindProcess(pid)
-			p.signal <- s
 			if err != nil {
 				log.Errorf("failed to find pid of 'go test': %v", err)
 				return
