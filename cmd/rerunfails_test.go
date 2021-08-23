@@ -109,10 +109,10 @@ func TestRerunFailed_ReturnsAnErrorWhenTheLastTestIsSuccessful(t *testing.T) {
 		},
 	}
 
-	fn := func(args []string) proc {
+	fn := func(args []string) *proc {
 		next := events[0]
 		events = events[1:]
-		return proc{
+		return &proc{
 			cmd:    fakeWaiter{result: next.err},
 			stdout: strings.NewReader(next.out),
 			stderr: bytes.NewReader(nil),
@@ -136,9 +136,9 @@ func TestRerunFailed_ReturnsAnErrorWhenTheLastTestIsSuccessful(t *testing.T) {
 	assert.Error(t, err, "run-failed-3")
 }
 
-func patchStartGoTestFn(f func(args []string) proc) func() {
+func patchStartGoTestFn(f func(args []string) *proc) func() {
 	orig := startGoTestFn
-	startGoTestFn = func(ctx context.Context, args []string) (proc, error) {
+	startGoTestFn = func(ctx context.Context, args []string) (*proc, error) {
 		return f(args), nil
 	}
 	return func() {
