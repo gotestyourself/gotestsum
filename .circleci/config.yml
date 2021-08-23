@@ -1,38 +1,38 @@
 version: 2.1
 
 orbs:
-  go: gotest/tools@0.0.13
+  go: gotest/tools@0.0.14
 
 workflows:
   ci:
     jobs:
       - go/test:
-          name: test-go-1.13
-          gotestsum-format: short-verbose
-          executor:
-            name: go/golang
-            tag: 1.13-alpine
-
-      - go/test:
           name: test-go-1.14
-          gotestsum-format: short-verbose
+          gotestsum-format: testname
           executor:
             name: go/golang
             tag: 1.14-alpine
 
       - go/test:
           name: test-go-1.15
-          gotestsum-format: short-verbose
+          gotestsum-format: testname
           executor:
             name: go/golang
             tag: 1.15-alpine
 
       - go/test:
           name: test-go-1.16
-          gotestsum-format: short-verbose
+          gotestsum-format: testname
           executor:
             name: go/golang
             tag: 1.16-alpine
+
+      - go/test:
+          name: test-go-1.17
+          gotestsum-format: testname
+          executor:
+            name: go/golang
+            tag: 1.17-alpine
 
       - go/test:
           name: test-windows
@@ -47,7 +47,7 @@ workflows:
             - run: go version
 
       - go/lint:
-          golangci-lint-version: 1.24.0
+          golangci-lint-version: 1.42.0
 
       - build
       - run
@@ -89,7 +89,7 @@ jobs:
         default: false
     executor:
       name: go/golang
-      tag: 1.16-alpine
+      tag: 1.17-alpine
     steps:
       - go/install: {package: git}
       - go/install-ssh
