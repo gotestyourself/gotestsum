@@ -27,6 +27,8 @@ func route(args []string) error {
 	name := args[0]
 	next, rest := cmd.Next(args[1:])
 	switch next {
+	case "help", "?":
+		return cmd.Run(name, []string{"--help"})
 	case "tool":
 		return tool.Run(name+" "+next, rest)
 	default:

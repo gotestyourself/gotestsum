@@ -128,6 +128,7 @@ Formats:
 
 Commands:
     tool                    tools for working with test2json output
+    help                    print this help next
 `)
 }
 
