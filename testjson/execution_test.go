@@ -12,22 +12,6 @@ import (
 	"gotest.tools/v3/golden"
 )
 
-func TestPackage_Elapsed(t *testing.T) {
-	pkg := &Package{
-		Failed: []TestCase{
-			{Elapsed: 300 * time.Millisecond},
-		},
-		Passed: []TestCase{
-			{Elapsed: 200 * time.Millisecond},
-			{Elapsed: 2500 * time.Millisecond},
-		},
-		Skipped: []TestCase{
-			{Elapsed: 100 * time.Millisecond},
-		},
-	}
-	assert.Equal(t, pkg.Elapsed(), 3100*time.Millisecond)
-}
-
 func TestExecution_Add_PackageCoverage(t *testing.T) {
 	exec := newExecution()
 	exec.add(TestEvent{
@@ -144,7 +128,7 @@ func TestPackage_AddEvent(t *testing.T) {
 		{
 			name:     "package failed",
 			event:    `{"Action":"fail","Package":"gotest.tools/testing","Elapsed":0.012}`,
-			expected: Package{action: ActionFail},
+			expected: Package{action: ActionFail, elapsed: 12 * time.Millisecond},
 		},
 		{
 			name:  "package is cached",
@@ -157,7 +141,7 @@ func TestPackage_AddEvent(t *testing.T) {
 		{
 			name:     "package pass",
 			event:    `{"Action":"pass","Package":"gotest.tools/testing","Elapsed":0.012}`,
-			expected: Package{action: ActionPass},
+			expected: Package{action: ActionPass, elapsed: 12 * time.Millisecond},
 		},
 	}
 

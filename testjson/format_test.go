@@ -105,15 +105,18 @@ var expectedExecution = &Execution{
 				{Test: "TestSkipped"},
 				{Test: "TestSkippedWitLog"},
 			},
+			elapsed: 11 * time.Millisecond,
 			action:  ActionFail,
 			running: map[string]TestCase{},
 		},
 		"github.com/gotestyourself/gotestyourself/testjson/internal/badmain": {
 			action:  ActionFail,
 			running: map[string]TestCase{},
+			elapsed: 10 * time.Millisecond,
 		},
 		"gotest.tools/gotestsum/internal/empty": {
-			action: ActionPass,
+			action:  ActionPass,
+			elapsed: 4 * time.Millisecond,
 		},
 	},
 }
@@ -224,6 +227,7 @@ var expectedCoverageExecution = &Execution{
 				{Test: "TestSkipped"},
 				{Test: "TestSkippedWitLog"},
 			},
+			elapsed:  12 * time.Millisecond,
 			action:   ActionPass,
 			coverage: "coverage: 0.0% of statements",
 			running:  map[string]TestCase{},
@@ -240,6 +244,7 @@ var expectedCoverageExecution = &Execution{
 				{Test: "TestSkipped"},
 				{Test: "TestSkippedWitLog"},
 			},
+			elapsed:  11 * time.Millisecond,
 			action:   ActionFail,
 			coverage: "coverage: 0.0% of statements",
 			running:  map[string]TestCase{},
@@ -247,6 +252,7 @@ var expectedCoverageExecution = &Execution{
 		"gotest.tools/gotestsum/testjson/internal/badmain": {
 			action:  ActionFail,
 			running: map[string]TestCase{},
+			elapsed: time.Millisecond,
 		},
 	},
 }
