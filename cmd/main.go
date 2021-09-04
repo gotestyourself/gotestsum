@@ -48,8 +48,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		junitTestCaseClassnameFormat: &junitFieldFormatValue{},
 		junitTestSuiteNameFormat:     &junitFieldFormatValue{},
 		postRunHookCmd:               &commandValue{},
-		stdout:                       os.Stdout,
-		stderr:                       os.Stderr,
+		stdout:                       color.Output,
+		stderr:                       color.Error,
 	}
 	flags := pflag.NewFlagSet(name, pflag.ContinueOnError)
 	flags.SetInterspersed(false)

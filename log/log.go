@@ -2,7 +2,6 @@ package log
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/fatih/color"
 )
@@ -16,14 +15,9 @@ const (
 )
 
 var (
-	level              = WarnLevel
-	out   stringWriter = os.Stderr
+	level = WarnLevel
+	out   = color.Error
 )
-
-// TODO: replace with io.StringWriter once support for go1.11 is dropped.
-type stringWriter interface {
-	WriteString(s string) (n int, err error)
-}
 
 // SetLevel for the global logger.
 func SetLevel(l Level) {
@@ -35,9 +29,9 @@ func Warnf(format string, args ...interface{}) {
 	if level < WarnLevel {
 		return
 	}
-	out.WriteString(color.YellowString("WARN "))
-	out.WriteString(fmt.Sprintf(format, args...))
-	out.WriteString("\n")
+	fmt.Fprint(out, color.YellowString("WARN "))
+	fmt.Fprintf(out, format, args...)
+	fmt.Fprint(out, "\n")
 }
 
 // Debugf prints the message to stderr, with no prefix.
@@ -45,8 +39,8 @@ func Debugf(format string, args ...interface{}) {
 	if level < DebugLevel {
 		return
 	}
-	out.WriteString(fmt.Sprintf(format, args...))
-	out.WriteString("\n")
+	fmt.Fprintf(out, format, args...)
+	fmt.Fprint(out, "\n")
 }
 
 // Errorf prints the message to stderr, with a red ERROR prefix.
@@ -54,9 +48,9 @@ func Errorf(format string, args ...interface{}) {
 	if level < ErrorLevel {
 		return
 	}
-	out.WriteString(color.RedString("ERROR "))
-	out.WriteString(fmt.Sprintf(format, args...))
-	out.WriteString("\n")
+	fmt.Fprint(out, color.RedString("ERROR "))
+	fmt.Fprintf(out, format, args...)
+	fmt.Fprint(out, "\n")
 }
 
 // Error prints the message to stderr, with a red ERROR prefix.
@@ -64,7 +58,6 @@ func Error(msg string) {
 	if level < ErrorLevel {
 		return
 	}
-	out.WriteString(color.RedString("ERROR "))
-	out.WriteString(msg)
-	out.WriteString("\n")
+	fmt.Fprint(out, color.RedString("ERROR "))
+	fmt.Fprintln(out, msg)
 }
