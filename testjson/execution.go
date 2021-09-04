@@ -82,6 +82,9 @@ type Package struct {
 	Skipped []TestCase
 	Passed  []TestCase
 
+	// elapsed time reported by the pass or fail event for the package.
+	elapsed time.Duration
+
 	// mapping of root TestCase ID to all sub test IDs. Used to mitigate
 	// github.com/golang/go/issues/29755, and github.com/golang/go/issues/40771.
 	// In the future when those bug are fixed this mapping can likely be removed.
@@ -112,13 +115,10 @@ func (p *Package) Result() Action {
 	return p.action
 }
 
-// Elapsed returns the sum of the elapsed time for all tests in the package.
+// Elapsed returns the elapsed time of the package, as reported by the
+// pass or fail event for the package.
 func (p *Package) Elapsed() time.Duration {
-	elapsed := time.Duration(0)
-	for _, testcase := range p.TestCases() {
-		elapsed += testcase.Elapsed
-	}
-	return elapsed
+	return p.elapsed
 }
 
 // TestCases returns all the test cases.
@@ -339,6 +339,7 @@ func (p *Package) addEvent(event TestEvent) {
 	switch event.Action {
 	case ActionPass, ActionFail:
 		p.action = event.Action
+		p.elapsed = elapsedDuration(event.Elapsed)
 	case ActionOutput:
 		if isCoverageOutput(event.Output) {
 			p.coverage = strings.TrimRight(event.Output, "\n")

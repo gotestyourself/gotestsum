@@ -105,8 +105,8 @@ func TestFmtDotElapsed(t *testing.T) {
 	for _, tc := range testcases {
 		t.Run(tc.expected, func(t *testing.T) {
 			pkg := &Package{
-				cached: tc.cached,
-				Passed: []TestCase{{Elapsed: tc.elapsed}},
+				cached:  tc.cached,
+				elapsed: tc.elapsed,
 			}
 			actual := fmtDotElapsed(pkg)
 			assert.Check(t, cmp.Equal(utf8.RuneCountInString(actual), 7))
