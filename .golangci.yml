@@ -10,7 +10,7 @@ linters-settings:
 issues:
   exclude-use-default: false
   exclude-rules:
-    - linters: [golint]
+    - linters: [revive]
       text: 'should have comment .*or be unexported'
     - linters: [stylecheck]
       text: 'ST1000: at least one file in a package should have a package comment'
@@ -33,7 +33,6 @@ linters:
     - gocyclo
     - gofmt
     - goimports
-    - golint
     - gosimple
     - govet
     - ineffassign
@@ -42,6 +41,7 @@ linters:
     - misspell
     - nakedret
     - prealloc
+    - revive
     - staticcheck
     - structcheck
     - stylecheck
