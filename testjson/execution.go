@@ -697,6 +697,9 @@ func readStderr(config ScanConfig, execution *Execution) error {
 		if isGoModuleOutput(line) {
 			continue
 		}
+		if strings.HasPrefix(line, "warning:") {
+			continue
+		}
 		execution.addError(line)
 	}
 	if err := scanner.Err(); err != nil {

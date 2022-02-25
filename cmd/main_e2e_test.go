@@ -248,3 +248,29 @@ func TestE2E_MaxFails_EndTestRun(t *testing.T) {
 	)
 	golden.Assert(t, out, "e2e/expected/"+t.Name())
 }
+
+func TestE2E_IgnoresWarnings(t *testing.T) {
+	if testing.Short() {
+		t.Skip("too slow for short run")
+	}
+
+	flags, opts := setupFlags("gotestsum")
+	args := []string{"--rerun-fails=1", "--packages=./testdata/e2e/ignore_warnings/", "--", "-tags=testdata",
+		"-cover", "-coverpkg=github.com/pkg/errors"}
+	assert.NilError(t, flags.Parse(args))
+	opts.args = flags.Args()
+
+	bufStdout := new(bytes.Buffer)
+	opts.stdout = bufStdout
+	bufStderr := new(bytes.Buffer)
+	opts.stderr = bufStderr
+
+	err := run(opts)
+	assert.Error(t, err, "exit status 1")
+	out := text.ProcessLines(t, bufStdout,
+		text.OpRemoveSummaryLineElapsedTime,
+		text.OpRemoveTestElapsedTime,
+		filepath.ToSlash, // for windows
+	)
+	golden.Assert(t, out, "e2e/expected/"+t.Name())
+}
