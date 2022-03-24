@@ -7,13 +7,6 @@ workflows:
   ci:
     jobs:
       - go/test:
-          name: test-go-1.14
-          gotestsum-format: testname
-          executor:
-            name: go/golang
-            tag: 1.14-alpine
-
-      - go/test:
           name: test-go-1.15
           gotestsum-format: testname
           executor:
@@ -33,6 +26,13 @@ workflows:
           executor:
             name: go/golang
             tag: 1.17-alpine
+
+      - go/test:
+          name: test-go-1.18
+          gotestsum-format: testname
+          executor:
+            name: go/golang
+            tag: 1.18-alpine
 
       - go/test:
           name: test-windows
@@ -77,8 +77,13 @@ commands:
       - run:
           name: Install goreleaser
           command: |
-            command -v goreleaser && exit
-            wget -O- -q https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
+            wget https://github.com/goreleaser/goreleaser/releases/download/v1.7.0/goreleaser_Linux_x86_64.tar.gz
+            echo "e74934e7571991522324642ac7b032310f04baf192ce2a54db1dc323b97bcd7d  goreleaser_Linux_x86_64.tar.gz" > checksum.txt
+            sha256sum -c checksum.txt
+            tar -xf goreleaser_Linux_x86_64.tar.gz
+            mkdir -p ./bin
+            mv goreleaser ./bin
+
 
 jobs:
 
@@ -89,7 +94,7 @@ jobs:
         default: false
     executor:
       name: go/golang
-      tag: 1.17-alpine
+      tag: 1.18-alpine
     steps:
       - go/install: {package: git}
       - go/install-ssh
