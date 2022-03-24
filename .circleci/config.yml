@@ -7,13 +7,6 @@ workflows:
   ci:
     jobs:
       - go/test:
-          name: test-go-1.14
-          gotestsum-format: testname
-          executor:
-            name: go/golang
-            tag: 1.14-alpine
-
-      - go/test:
           name: test-go-1.15
           gotestsum-format: testname
           executor:
@@ -33,6 +26,13 @@ workflows:
           executor:
             name: go/golang
             tag: 1.17-alpine
+
+      - go/test:
+          name: test-go-1.18
+          gotestsum-format: testname
+          executor:
+            name: go/golang
+            tag: 1.18-alpine
 
       - go/test:
           name: test-windows
