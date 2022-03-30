@@ -1,0 +1,20 @@
+=== RUN   TestIgnoreWarnings
+--- FAIL: TestIgnoreWarnings
+FAIL cmd/testdata/e2e/ignore_warnings.TestIgnoreWarnings
+coverage: [no statements]
+FAIL cmd/testdata/e2e/ignore_warnings
+
+DONE 1 tests, 1 failure
+
+=== RUN   TestIgnoreWarnings
+--- FAIL: TestIgnoreWarnings
+FAIL cmd/testdata/e2e/ignore_warnings.TestIgnoreWarnings (re-run 1)
+coverage: [no statements]
+FAIL cmd/testdata/e2e/ignore_warnings
+
+=== Failed
+=== FAIL: cmd/testdata/e2e/ignore_warnings TestIgnoreWarnings
+
+=== FAIL: cmd/testdata/e2e/ignore_warnings TestIgnoreWarnings (re-run 1)
+
+DONE 2 runs, 2 tests, 2 failures
