@@ -255,8 +255,12 @@ func TestE2E_IgnoresWarnings(t *testing.T) {
 	}
 
 	flags, opts := setupFlags("gotestsum")
-	args := []string{"--rerun-fails=1", "--packages=./testdata/e2e/ignore_warnings/", "--", "-tags=testdata",
-		"-cover", "-coverpkg=github.com/pkg/errors"}
+	args := []string{
+		"--rerun-fails=1",
+		"--packages=./testdata/e2e/ignore_warnings/",
+		"--format=testname",
+		"--", "-tags=testdata", "-cover", "-coverpkg=github.com/pkg/errors",
+	}
 	assert.NilError(t, flags.Parse(args))
 	opts.args = flags.Args()
 
