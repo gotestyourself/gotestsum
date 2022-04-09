@@ -2,12 +2,15 @@ package cmd
 
 import (
 	"bytes"
+	"encoding/json"
 	"os"
 	"os/exec"
 	"strings"
 	"testing"
 
+	"gotest.tools/gotestsum/testjson"
 	"gotest.tools/v3/assert"
+	"gotest.tools/v3/assert/cmp"
 	"gotest.tools/v3/env"
 	"gotest.tools/v3/golden"
 )
@@ -398,4 +401,42 @@ func TestRun_RerunFails_PanicPreventsRerun(t *testing.T) {
 	}
 	err := run(opts)
 	assert.ErrorContains(t, err, "rerun aborted because previous run had a suspected panic", out.String())
+}
+
+func TestRun_InputFromStdin(t *testing.T) {
+	stdin := os.Stdin
+	t.Cleanup(func() { os.Stdin = stdin })
+
+	r, w, err := os.Pipe()
+	assert.NilError(t, err)
+	t.Cleanup(func() { _ = r.Close() })
+
+	os.Stdin = r
+
+	go func() {
+		defer func() { _ = w.Close() }()
+
+		e := json.NewEncoder(w)
+		for _, event := range []testjson.TestEvent{
+			{Action: "run", Package: "pkg"},
+			{Action: "run", Package: "pkg", Test: "TestOne"},
+			{Action: "fail", Package: "pkg", Test: "TestOne"},
+			{Action: "fail", Package: "pkg"},
+		} {
+			assert.Check(t, e.Encode(event))
+		}
+	}()
+
+	stdout := new(bytes.Buffer)
+	err = run(&options{
+		args:        []string{"cat"},
+		format:      "testname",
+		hideSummary: newHideSummaryValue(),
+		rawCommand:  true,
+
+		stdout: stdout,
+		stderr: os.Stderr,
+	})
+	assert.NilError(t, err)
+	assert.Assert(t, cmp.Contains(stdout.String(), "DONE 1"))
 }

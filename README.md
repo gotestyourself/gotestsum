@@ -232,6 +232,11 @@ stdout and stderr output:
   stderr, not the `test2json` stdout). Any stderr produced by tests is not
   considered an error (it will be in the `test2json` stdout).
 
+**Example: accept intput from stdin**
+```
+cat out.json | gotestsum --raw-command -- cat
+```
+
 **Example: run tests with profiling enabled**
 
 Using a `profile.sh` script like this:

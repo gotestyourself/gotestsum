@@ -356,6 +356,7 @@ func startGoTest(ctx context.Context, args []string) (*proc, error) {
 	}
 
 	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
+	cmd.Stdin = os.Stdin
 	p := proc{cmd: cmd}
 	log.Debugf("exec: %s", cmd.Args)
 	var err error
