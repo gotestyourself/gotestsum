@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"path/filepath"
 
 	"github.com/pkg/errors"
 	"gotest.tools/gotestsum/internal/junitxml"
@@ -68,6 +69,7 @@ func newEventHandler(opts *options) (*eventHandler, error) {
 	}
 	var err error
 	if opts.jsonFile != "" {
+		_ = os.MkdirAll(filepath.Dir(opts.jsonFile), 0o755)
 		handler.jsonFile, err = os.Create(opts.jsonFile)
 		if err != nil {
 			return handler, errors.Wrap(err, "failed to open JSON file")
@@ -80,6 +82,7 @@ func writeJUnitFile(opts *options, execution *testjson.Execution) error {
 	if opts.junitFile == "" {
 		return nil
 	}
+	_ = os.MkdirAll(filepath.Dir(opts.junitFile), 0o755)
 	junitFile, err := os.Create(opts.junitFile)
 	if err != nil {
 		return fmt.Errorf("failed to open JUnit file: %v", err)
