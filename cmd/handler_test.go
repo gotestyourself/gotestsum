@@ -4,12 +4,14 @@ import (
 	"bytes"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
 	"gotest.tools/gotestsum/testjson"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/env"
+	"gotest.tools/v3/fs"
 	"gotest.tools/v3/golden"
 )
 
@@ -84,4 +86,37 @@ func TestEventHandler_Event_MaxFails(t *testing.T) {
 
 	_, err := testjson.ScanTestOutput(cfg)
 	assert.Error(t, err, "ending test run because max failures was reached")
+}
+
+func TestNewEventHandler_CreatesDirectory(t *testing.T) {
+	dir := fs.NewDir(t, t.Name())
+	jsonFile := filepath.Join(dir.Path(), "new-path", "log.json")
+
+	opts := &options{
+		stdout:   new(bytes.Buffer),
+		format:   "testname",
+		jsonFile: jsonFile,
+	}
+	_, err := newEventHandler(opts)
+	assert.NilError(t, err)
+
+	_, err = os.Stat(jsonFile)
+	assert.NilError(t, err)
+}
+
+func TestWriteJunitFile_CreatesDirectory(t *testing.T) {
+	dir := fs.NewDir(t, t.Name())
+	junitFile := filepath.Join(dir.Path(), "new-path", "junit.xml")
+
+	opts := &options{
+		junitFile:                    junitFile,
+		junitTestCaseClassnameFormat: &junitFieldFormatValue{},
+		junitTestSuiteNameFormat:     &junitFieldFormatValue{},
+	}
+	exec := &testjson.Execution{}
+	err := writeJUnitFile(opts, exec)
+	assert.NilError(t, err)
+
+	_, err = os.Stat(junitFile)
+	assert.NilError(t, err)
 }
