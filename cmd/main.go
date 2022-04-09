@@ -67,7 +67,7 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags.StringVar(&opts.jsonFile, "jsonfile",
 		lookEnvWithDefault("GOTESTSUM_JSONFILE", ""),
 		"write all TestEvents to file")
-	flags.BoolVar(&opts.noColor, "no-color", color.NoColor, "disable color output")
+	flags.BoolVar(&opts.noColor, "no-color", defaultNoColor, "disable color output")
 
 	flags.Var(opts.hideSummary, "no-summary",
 		"do not print summary of: "+testjson.SummarizeAll.String())
@@ -174,6 +174,13 @@ func (o options) Validate() error {
 	}
 	return nil
 }
+
+var defaultNoColor = func() bool {
+	if os.Getenv("GITHUB_ACTIONS") == "true" {
+		return false
+	}
+	return color.NoColor
+}()
 
 func setupLogging(opts *options) {
 	if opts.debug {
