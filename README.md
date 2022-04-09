@@ -152,6 +152,15 @@ example `notify` command only works on macOS with
 gotestsum --post-run-command notify
 ```
 
+**Example: command with flags**
+
+Possitional arguments or command line flags can be passed to the `--post-run-command` by
+quoting the whole command.
+
+```
+gotestsum --post-run-command "notify me --date"
+```
+
 ### Re-running failed tests
 
 When the `--rerun-fails` flag is set, `gotestsum` will re-run any failed tests.
