@@ -345,6 +345,11 @@ tests for the package which contains the changed file. By default all
 directories with at least one file with a `.go` extension, under the current
 directory will be watched. Use the `--packages` flag to specify a different list.
 
+If `--watch` is used with a command line that includes the name of one or more
+packages as command line arguments (ex: `gotestsum --watch -- ./...` or
+`gotestsum --watch -- ./extrapkg`), the
+tests in those packages will also be run when any file changes.
+
 While in watch mode, pressing some keys will perform an action:
 
 * `r` will run tests for the previous event.
