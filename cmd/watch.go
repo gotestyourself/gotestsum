@@ -40,8 +40,11 @@ func (w *watchRuns) run(event filewatcher.Event) error {
 		return nil
 	}
 
-	opts := w.opts
-	opts.packages = []string{event.PkgPath}
+	opts := w.opts // shallow copy opts
+	opts.packages = append([]string{}, opts.packages...)
+	opts.packages = append(opts.packages, event.PkgPath)
+	opts.packages = append(opts.packages, event.Args...)
+
 	var err error
 	if w.prevExec, err = runSingle(&opts); !IsExitCoder(err) {
 		return err

@@ -77,20 +77,18 @@ func (r *terminal) Monitor(ctx context.Context) {
 		}
 		log.Debugf("received byte %v (%v)", char, string(char))
 
-		var chResume chan struct{}
+		chResume := make(chan struct{})
 		switch char {
 		case 'r':
-			chResume = make(chan struct{})
-			r.ch <- Event{resume: chResume}
+			r.ch <- Event{resume: chResume, useLastPath: true}
 		case 'd':
-			chResume = make(chan struct{})
-			r.ch <- Event{Debug: true, resume: chResume}
+			r.ch <- Event{resume: chResume, useLastPath: true, Debug: true}
 		case 'a':
-			chResume = make(chan struct{})
 			r.ch <- Event{resume: chResume, PkgPath: "./..."}
 		case 'l':
-			chResume = make(chan struct{})
 			r.ch <- Event{resume: chResume, reloadPaths: true}
+		case 'u':
+			r.ch <- Event{resume: chResume, useLastPath: true, Args: []string{"-update"}}
 		case '\n':
 			fmt.Println()
 			continue

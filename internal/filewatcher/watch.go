@@ -19,10 +19,20 @@ import (
 const maxDepth = 7
 
 type Event struct {
-	PkgPath     string
-	Debug       bool
-	resume      chan struct{}
+	// PkgPath of the package that triggered the event.
+	PkgPath string
+	// Args will be appended to the command line args for 'go test'.
+	Args []string
+	// Debug runs the tests with delve.
+	Debug bool
+	// resume the Watch goroutine when this channel is closed. Used to block
+	// the Watch goroutine while tests are running.
+	resume chan struct{}
+	// reloadPaths will cause the watched path list to be reloaded, to watch
+	// new directories.
 	reloadPaths bool
+	// useLastPath when true will use the PkgPath from the previous run.
+	useLastPath bool
 }
 
 // Watch dirs for filesystem events, and run tests when .go files are saved.
@@ -48,7 +58,7 @@ func Watch(dirs []string, run func(Event) error) error {
 	defer term.Reset()
 	go term.Monitor(ctx)
 
-	h := &handler{last: time.Now(), fn: run}
+	h := &fsEventHandler{last: time.Now(), fn: run}
 	for {
 		select {
 		case <-timer.C:
@@ -218,7 +228,7 @@ func handleDirCreated(watcher *fsnotify.Watcher, event fsnotify.Event) (handled 
 	return true
 }
 
-type handler struct {
+type fsEventHandler struct {
 	last     time.Time
 	lastPath string
 	fn       func(opts Event) error
@@ -226,7 +236,7 @@ type handler struct {
 
 const floodThreshold = 250 * time.Millisecond
 
-func (h *handler) handleEvent(event fsnotify.Event) error {
+func (h *fsEventHandler) handleEvent(event fsnotify.Event) error {
 	if event.Op&(fsnotify.Write|fsnotify.Create) == 0 {
 		return nil
 	}
@@ -242,8 +252,8 @@ func (h *handler) handleEvent(event fsnotify.Event) error {
 	return h.runTests(Event{PkgPath: "./" + filepath.Dir(event.Name)})
 }
 
-func (h *handler) runTests(opts Event) error {
-	if opts.PkgPath == "" {
+func (h *fsEventHandler) runTests(opts Event) error {
+	if opts.useLastPath {
 		opts.PkgPath = h.lastPath
 	}
 	fmt.Printf("\nRunning tests in %v\n", opts.PkgPath)
