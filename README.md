@@ -1,6 +1,6 @@
 # gotestsum
 
-`gotestsum` runs tests using `go test --json`, prints formatted test output, and a summary of the test run.
+`gotestsum` runs tests using `go test -json`, prints formatted test output, and a summary of the test run.
 It is designed to work well for both local development, and for automation like CI.
 `gotest.tools/gotestsum/testjson` ([godoc](https://pkg.go.dev/gotest.tools/gotestsum/testjson)) is a library
 that can be used to read [`test2json`](https://golang.org/cmd/test2json/) output.
@@ -112,7 +112,7 @@ warning.
 When the `--jsonfile` flag or `GOTESTSUM_JSONFILE` environment variable are set
 to a file path, `gotestsum` will write a line-delimited JSON file with all the
 [test2json](https://golang.org/cmd/test2json/#hdr-Output_Format)
-output that was written by `go test --json`. This file can be used to compare test
+output that was written by `go test -json`. This file can be used to compare test
 runs, or find flaky tests.
 
 ```
@@ -202,7 +202,7 @@ how you specify args to `go test`:
 
 ### Custom `go test` command
 
-By default `gotestsum` runs tests using the command `go test --json ./...`. You
+By default `gotestsum` runs tests using the command `go test -json ./...`. You
 can change the command with positional arguments after a `--`. You can change just the
 test directory value (which defaults to `./...`) by setting the `TEST_DIRECTORY`
 environment variable.
@@ -354,6 +354,10 @@ While in watch mode, pressing some keys will perform an action:
 
 * `r` will run tests for the previous event.
   Added in version 1.6.1.
+* `u` will run tests for the previous event, with the `-update` flag added.
+  Many [golden](https://gotest.tools/v3/golden) packages use this flag to automatically
+  update expected values of tests.
+  Added in version 1.8.1.
 * `d` will run tests for the previous event using `dlv test`, allowing you to 
   debug a test failure using [delve]. A breakpoint will automatically be added at
   the first line of any tests which failed in the previous run. Additional
