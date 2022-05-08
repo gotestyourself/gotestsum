@@ -7,6 +7,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"io"
 	"os"
 
 	"golang.org/x/sys/unix"
@@ -62,13 +63,15 @@ func enableNonBlockingRead(fd int) (func(), error) {
 	return reset, nil
 }
 
+var stdin io.Reader = os.Stdin
+
 // Monitor the terminal for key presses. If the key press is associated with an
 // action, an event will be sent to channel returned by Events.
 func (r *terminal) Monitor(ctx context.Context) {
 	if r == nil {
 		return
 	}
-	in := bufio.NewReader(os.Stdin)
+	in := bufio.NewReader(stdin)
 	for {
 		char, err := in.ReadByte()
 		if err != nil {

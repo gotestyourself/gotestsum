@@ -37,10 +37,7 @@ type Event struct {
 
 // Watch dirs for filesystem events, and run tests when .go files are saved.
 // nolint: gocyclo
-func Watch(dirs []string, run func(Event) error) error {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
+func Watch(ctx context.Context, dirs []string, run func(Event) error) error {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		return fmt.Errorf("failed to create file watcher: %w", err)
@@ -61,6 +58,8 @@ func Watch(dirs []string, run func(Event) error) error {
 	h := &fsEventHandler{last: time.Now(), fn: run}
 	for {
 		select {
+		case <-ctx.Done():
+			return nil
 		case <-timer.C:
 			return fmt.Errorf("exceeded idle timeout while watching files")
 
@@ -234,7 +233,7 @@ type fsEventHandler struct {
 	fn       func(opts Event) error
 }
 
-const floodThreshold = 250 * time.Millisecond
+var floodThreshold = 250 * time.Millisecond
 
 func (h *fsEventHandler) handleEvent(event fsnotify.Event) error {
 	if event.Op&(fsnotify.Write|fsnotify.Create) == 0 {

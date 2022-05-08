@@ -13,8 +13,11 @@ import (
 )
 
 func runWatcher(opts *options) error {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	w := &watchRuns{opts: *opts}
-	return filewatcher.Watch(opts.packages, w.run)
+	return filewatcher.Watch(ctx, opts.packages, w.run)
 }
 
 type watchRuns struct {
