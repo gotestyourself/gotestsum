@@ -7,6 +7,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"io"
 	"os"
 
 	"golang.org/x/sys/unix"
@@ -62,13 +63,15 @@ func enableNonBlockingRead(fd int) (func(), error) {
 	return reset, nil
 }
 
+var stdin io.Reader = os.Stdin
+
 // Monitor the terminal for key presses. If the key press is associated with an
 // action, an event will be sent to channel returned by Events.
 func (r *terminal) Monitor(ctx context.Context) {
 	if r == nil {
 		return
 	}
-	in := bufio.NewReader(os.Stdin)
+	in := bufio.NewReader(stdin)
 	for {
 		char, err := in.ReadByte()
 		if err != nil {
@@ -77,20 +80,18 @@ func (r *terminal) Monitor(ctx context.Context) {
 		}
 		log.Debugf("received byte %v (%v)", char, string(char))
 
-		var chResume chan struct{}
+		chResume := make(chan struct{})
 		switch char {
 		case 'r':
-			chResume = make(chan struct{})
-			r.ch <- Event{resume: chResume}
+			r.ch <- Event{resume: chResume, useLastPath: true}
 		case 'd':
-			chResume = make(chan struct{})
-			r.ch <- Event{Debug: true, resume: chResume}
+			r.ch <- Event{resume: chResume, useLastPath: true, Debug: true}
 		case 'a':
-			chResume = make(chan struct{})
 			r.ch <- Event{resume: chResume, PkgPath: "./..."}
 		case 'l':
-			chResume = make(chan struct{})
 			r.ch <- Event{resume: chResume, reloadPaths: true}
+		case 'u':
+			r.ch <- Event{resume: chResume, useLastPath: true, Args: []string{"-update"}}
 		case '\n':
 			fmt.Println()
 			continue

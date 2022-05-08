@@ -12,7 +12,7 @@ import (
 	"gotest.tools/v3/fs"
 )
 
-func TestHandler_HandleEvent(t *testing.T) {
+func TestFSEventHandler_HandleEvent(t *testing.T) {
 	type testCase struct {
 		name        string
 		last        time.Time
@@ -27,7 +27,7 @@ func TestHandler_HandleEvent(t *testing.T) {
 			return nil
 		}
 
-		h := handler{last: tc.last, fn: run}
+		h := fsEventHandler{last: tc.last, fn: run}
 		err := h.handleEvent(tc.event)
 		assert.NilError(t, err)
 		assert.Equal(t, ran, tc.expectedRun)
