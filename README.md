@@ -5,7 +5,7 @@ It is designed to work well for both local development, and for automation like 
 `gotest.tools/gotestsum/testjson` ([godoc](https://pkg.go.dev/gotest.tools/gotestsum/testjson)) is a library
 that can be used to read [`test2json`](https://golang.org/cmd/test2json/) output.
 
-See [documentation](#documentation).
+See the [documentation](#documentation) for more details.
 
 ## Install
 
@@ -20,16 +20,23 @@ A demonstration of three `--format` options.
 
 ## Documentation 
 
+### Index
+
+**Core features**
 - [Output Format](#output-format) from compact to verbose, with color highlighting.
 - [Summary](#summary) of the test run.
-- [JUnit XML file](#junit-xml-output) for integration with CI systems.
-- [JSON file](#json-file-output) to capture the `test2json` output in a file.
-- [Post run commands](#post-run-command) may be used for desktop notification.
-- [Re-run failed tests](#re-running-failed-tests) to save time when dealing with flaky test suites.
 - [Add `go test` flags](#custom-go-test-command), or 
   [run a compiled test binary](#executing-a-compiled-test-binary).
-- [Find or skip slow tests](#finding-and-skipping-slow-tests) using `gotestsum tool slowest`.
+
+**Automation and CI**
+- [JUnit XML file](#junit-xml-output) for integration with CI systems.
+- [JSON file](#json-file-output) to capture the `test2json` output in a file.
+- [Re-run failed tests](#re-running-failed-tests) to save time when dealing with flaky test suites.
+
+**Local Development**
+- [Post run commands](#post-run-command) may be used for desktop notification.
 - [Run tests when a file is saved](#run-tests-when-a-file-is-saved).
+- [Find or skip slow tests](#finding-and-skipping-slow-tests) using `gotestsum tool slowest`.
 
 ### Output Format
 
