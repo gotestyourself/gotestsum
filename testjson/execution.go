@@ -405,16 +405,16 @@ func (p *Package) addTestEvent(event TestEvent) {
 	case ActionOutput, ActionBench:
 		tc := p.running[event.Test]
 		p.addOutput(tc.ID, event.Output)
-		passFailRegex, err := regexp.Compile(fmt.Sprintf(`(PASS|FAIL): %s \((.*)s\)`, event.Test))
+		passFailRegex, err := regexp.Compile(fmt.Sprintf(`PASS: %s \((.*)s\)`, event.Test))
 		if err != nil {
 			fmt.Println("failed to parse output for pass/fail")
 			return
 		}
 		passesOrFails := passFailRegex.FindStringSubmatch(event.Output)
-		if len(passesOrFails) == 3 && passesOrFails[1] == "PASS" {
-			parsedDuration, err := strconv.ParseFloat(passesOrFails[2], 64)
+		if len(passesOrFails) == 2 {
+			parsedDuration, err := strconv.ParseFloat(passesOrFails[1], 64)
 			if err != nil {
-				fmt.Printf("failed to parse duration %s\n", passesOrFails[2])
+				fmt.Printf("failed to parse duration %s\n", passesOrFails[1])
 				tc.Elapsed = neverFinished
 			} else {
 				tc.Elapsed = elapsedDuration(parsedDuration)
