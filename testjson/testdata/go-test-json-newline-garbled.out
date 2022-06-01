@@ -1,0 +1,4 @@
+{"Time":"2021-04-17T14:33:35.167978423Z","Action":"run","Package":"gotest.tools/testing","Test":"TestPassed"}
+{"Time":"2021-04-17T14:33:35.167999152Z","Action":"output","Package":"gotest.tools/testing","Test":"TestPassed","Output":"=== RUN   TestPassed\n"}
+{"Time":"2021-04-17T14:33:35.168007043Z","Action":"output","Package":"gotest.tools/testing","Test":"TestPassed","Output":"\tat ExampleStackFrame (/example.go:17)\n"}
+{"Time":"2021-04-17T14:33:35.168007043Z","Action":"output","Package":"gotest.tools/testing","Test":"TestPassed","Output":"[example.go--- PASS: TestPassed (0.18s)\n"}

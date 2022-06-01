@@ -217,6 +217,24 @@ func TestScanOutput_WithNonJSONLines(t *testing.T) {
 	}
 }
 
+func TestScanOutput_WithNewlineGarbledPass(t *testing.T) {
+	source := golden.Get(t, "go-test-json-newline-garbled.out")
+	handler := &captureHandler{}
+	cfg := ScanConfig{
+		Stdout:  bytes.NewReader(source),
+		Handler: handler,
+	}
+	_, err := ScanTestOutput(cfg)
+	assert.NilError(t, err)
+
+	expected := TestEvent{Action: ActionPass, Test: "TestPassed", Elapsed: 0.18}
+	assert.Assert(t, len(handler.events) > 2) // run, outcome, and some output
+	lastEvent := handler.events[len(handler.events)-1]
+	assert.Equal(t, expected.Test, lastEvent.Test)
+	assert.Equal(t, expected.Action, lastEvent.Action)
+	assert.Equal(t, expected.Elapsed, lastEvent.Elapsed)
+}
+
 type captureHandler struct {
 	events []TestEvent
 	errs   []string

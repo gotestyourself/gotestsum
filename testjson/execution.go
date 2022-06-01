@@ -6,7 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -76,11 +78,13 @@ func (e TestEvent) Bytes() []byte {
 
 // Package is the set of TestEvents for a single go package
 type Package struct {
-	Total   int
-	running map[string]TestCase
-	Failed  []TestCase
-	Skipped []TestCase
-	Passed  []TestCase
+	Total         int
+	running       map[string]TestCase
+	passedOutputs map[string]TestCase
+	failedOutputs map[string]TestCase
+	Failed        []TestCase
+	Skipped       []TestCase
+	Passed        []TestCase
 
 	// elapsed time reported by the pass or fail event for the package.
 	elapsed time.Duration
@@ -243,6 +247,17 @@ func (p *Package) end() []TestEvent {
 			// mitigate github.com/golang/go/issues/40771 (gotestsum/issues/141)
 			// by skipping missing subtest end events when the root test passed.
 			continue
+		} else if passedTC, ok := p.passedOutputs[k]; ok {
+			// this passed but test2json failed to parse it and record a "pass" action
+			p.Passed = append(p.Passed, passedTC)
+			result = append(result, TestEvent{
+				Action:  ActionPass,
+				Package: passedTC.Package,
+				Test:    passedTC.Test.Name(),
+				Elapsed: passedTC.Elapsed.Seconds(),
+			})
+			delete(p.running, k)
+			continue
 		}
 
 		tc.Elapsed = neverFinished
@@ -306,9 +321,10 @@ type TestCase struct {
 
 func newPackage() *Package {
 	return &Package{
-		output:   make(map[int][]string),
-		running:  make(map[string]TestCase),
-		subTests: make(map[int][]int),
+		output:        make(map[int][]string),
+		running:       make(map[string]TestCase),
+		passedOutputs: make(map[string]TestCase),
+		subTests:      make(map[int][]int),
 	}
 }
 
@@ -389,6 +405,23 @@ func (p *Package) addTestEvent(event TestEvent) {
 	case ActionOutput, ActionBench:
 		tc := p.running[event.Test]
 		p.addOutput(tc.ID, event.Output)
+		passFailRegex, err := regexp.Compile(fmt.Sprintf(`(PASS|FAIL): %s \((.*)s\)`, event.Test))
+		if err != nil {
+			fmt.Println("failed to parse output for pass/fail")
+			return
+		}
+		passesOrFails := passFailRegex.FindStringSubmatch(event.Output)
+		if len(passesOrFails) == 3 && passesOrFails[1] == "PASS" {
+			parsedDuration, err := strconv.ParseFloat(passesOrFails[2], 64)
+			if err != nil {
+				fmt.Printf("failed to parse duration %s\n", passesOrFails[2])
+				tc.Elapsed = neverFinished
+			} else {
+				tc.Elapsed = elapsedDuration(parsedDuration)
+			}
+			p.passedOutputs[event.Test] = tc
+			return
+		}
 		return
 	case ActionPause, ActionCont:
 		return
