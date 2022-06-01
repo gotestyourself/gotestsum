@@ -81,7 +81,6 @@ type Package struct {
 	Total         int
 	running       map[string]TestCase
 	passedOutputs map[string]TestCase
-	failedOutputs map[string]TestCase
 	Failed        []TestCase
 	Skipped       []TestCase
 	Passed        []TestCase
@@ -249,6 +248,7 @@ func (p *Package) end() []TestEvent {
 			continue
 		} else if passedTC, ok := p.passedOutputs[k]; ok {
 			// this passed but test2json failed to parse it and record a "pass" action
+			p.removeOutput(tc.ID)
 			p.Passed = append(p.Passed, passedTC)
 			result = append(result, TestEvent{
 				Action:  ActionPass,
@@ -594,6 +594,7 @@ func (e *Execution) end() []TestEvent {
 	var result []TestEvent // nolint: prealloc
 	for _, pkg := range e.packages {
 		result = append(result, pkg.end()...)
+		pkg.passedOutputs = make(map[string]TestCase)
 	}
 	return result
 }

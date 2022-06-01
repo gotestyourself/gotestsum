@@ -180,7 +180,8 @@ func TestScanOutput_WithMissingEvents(t *testing.T) {
 		{Action: ActionPass},
 		{Action: ActionFail, Test: "TestMissing", Elapsed: -1},
 		{Action: ActionFail, Test: "TestMissing/a", Elapsed: -1},
-		{Action: ActionFail, Test: "TestMissingEvent", Elapsed: -1},
+		// we should parse the success from the output despite the missing pass event
+		{Action: ActionPass, Test: "TestMissingEvent", Elapsed: 0},
 		{Action: ActionFail, Test: "TestFailed/a", Elapsed: -1},
 		{Action: ActionFail, Test: "TestFailed/a/sub", Elapsed: -1},
 	}
