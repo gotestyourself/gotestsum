@@ -405,23 +405,7 @@ func (p *Package) addTestEvent(event TestEvent) {
 	case ActionOutput, ActionBench:
 		tc := p.running[event.Test]
 		p.addOutput(tc.ID, event.Output)
-		passFailRegex, err := regexp.Compile(fmt.Sprintf(`PASS: %s \((.*)s\)`, event.Test))
-		if err != nil {
-			fmt.Println("failed to parse output for pass/fail")
-			return
-		}
-		passesOrFails := passFailRegex.FindStringSubmatch(event.Output)
-		if len(passesOrFails) == 2 {
-			parsedDuration, err := strconv.ParseFloat(passesOrFails[1], 64)
-			if err != nil {
-				fmt.Printf("failed to parse duration %s\n", passesOrFails[1])
-				tc.Elapsed = neverFinished
-			} else {
-				tc.Elapsed = elapsedDuration(parsedDuration)
-			}
-			p.passedOutputs[event.Test] = tc
-			return
-		}
+		p.checkOutputForPass(event.Test, event.Output, tc)
 		return
 	case ActionPause, ActionCont:
 		return
@@ -457,6 +441,25 @@ func (p *Package) addTestEvent(event TestEvent) {
 
 		// Remove test output once a test passes, it wont be used.
 		p.removeOutput(tc.ID)
+	}
+}
+
+func (p *Package) checkOutputForPass(testName string, output string, tc TestCase) {
+	passFailRegex, err := regexp.Compile(fmt.Sprintf(`PASS: %s \((.*)s\)`, testName))
+	if err != nil {
+		fmt.Println("failed to parse output for pass/fail")
+		return
+	}
+	passesOrFails := passFailRegex.FindStringSubmatch(output)
+	if len(passesOrFails) == 2 {
+		parsedDuration, err := strconv.ParseFloat(passesOrFails[1], 64)
+		if err != nil {
+			fmt.Printf("failed to parse duration %s\n", passesOrFails[1])
+			tc.Elapsed = neverFinished
+		} else {
+			tc.Elapsed = elapsedDuration(parsedDuration)
+		}
+		p.passedOutputs[testName] = tc
 	}
 }
 
