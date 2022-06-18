@@ -19,7 +19,7 @@ func TestWrite(t *testing.T) {
 	out := new(bytes.Buffer)
 	exec := createExecution(t)
 
-	defer env.Patch(t, "GOVERSION", "go7.7.7")()
+	env.Patch(t, "GOVERSION", "go7.7.7")
 	err := Write(out, exec, Config{customTimestamp: new(time.Time).Format(time.RFC3339)})
 	assert.NilError(t, err)
 	golden.Assert(t, out.String(), "junitxml-report.golden")
@@ -42,7 +42,7 @@ func readTestData(t *testing.T, stream string) io.Reader {
 
 func TestGoVersion(t *testing.T) {
 	t.Run("unknown", func(t *testing.T) {
-		defer env.Patch(t, "PATH", "/bogus")()
+		env.Patch(t, "PATH", "/bogus")
 		assert.Equal(t, goVersion(), "unknown")
 	})
 

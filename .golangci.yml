@@ -20,6 +20,9 @@ issues:
       text: 'result .* is always'
     - linters: [unparam]
       text: 'always receives'
+    # Remove once go1.16 is dropped
+    - linters: staticcheck
+      text: 'env.Patch is deprecated'
 
 linters:
   disable-all: true

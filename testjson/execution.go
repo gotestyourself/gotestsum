@@ -107,6 +107,9 @@ type Package struct {
 	// github.com/golang/go/issues/45508. This field may be removed in the future
 	// if the issue is fixed in Go.
 	panicked bool
+	// shuffleSeed is the seed used to shuffle the tests. The value is set when
+	// tests are run with -shuffle
+	shuffleSeed string
 }
 
 // Result returns if the package passed, failed, or was skipped because there
@@ -344,8 +347,11 @@ func (p *Package) addEvent(event TestEvent) {
 		if isCoverageOutput(event.Output) {
 			p.coverage = strings.TrimRight(event.Output, "\n")
 		}
-		if isCachedOutput(event.Output) {
+		if strings.Contains(event.Output, "\t(cached)") {
 			p.cached = true
+		}
+		if isShuffleSeedOutput(event.Output) {
+			p.shuffleSeed = strings.TrimRight(event.Output, "\n")
 		}
 		p.addOutput(0, event.Output)
 	}
@@ -437,8 +443,8 @@ func isCoverageOutput(output string) bool {
 		strings.Contains(output, "% of statements"))
 }
 
-func isCachedOutput(output string) bool {
-	return strings.Contains(output, "\t(cached)")
+func isShuffleSeedOutput(output string) bool {
+	return strings.HasPrefix(output, "-test.shuffle ")
 }
 
 func isWarningNoTestsToRunOutput(output string) bool {

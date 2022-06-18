@@ -1,0 +1,10 @@
+sometimes main can exit 2
+FAIL	gotest.tools/gotestsum/testjson/internal/badmain	0.001s
+-test.shuffle 123456
+ok  	gotest.tools/gotestsum/testjson/internal/good	0.020s
+-test.shuffle 123456
+FAIL
+FAIL	gotest.tools/gotestsum/testjson/internal/parallelfails	0.020s
+-test.shuffle 123456
+FAIL
+FAIL	gotest.tools/gotestsum/testjson/internal/withfails	0.020s

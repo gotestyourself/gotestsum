@@ -66,14 +66,8 @@ func testNameFormat(event TestEvent, exec *Execution) (string, error) {
 			result = colorEvent(event)("EMPTY")
 		}
 
-		var cached string
-		if pkg.cached {
-			cached = cachedMessage
-		}
-		return fmt.Sprintf("%s %s%s\n",
-			result,
-			RelativePackagePath(event.Package),
-			cached), nil
+		event.Elapsed = 0 // hide elapsed for now, for backwards compat
+		return result + " " + packageLine(event, exec), nil
 
 	case event.Action == ActionFail:
 		pkg := exec.Package(event.Package)
@@ -121,6 +115,7 @@ func isPkgFailureOutput(event TestEvent) bool {
 		!strings.HasPrefix(out, "FAIL\t"+event.Package),
 		!strings.HasPrefix(out, "ok  \t"+event.Package),
 		!strings.HasPrefix(out, "?   \t"+event.Package),
+		!isShuffleSeedOutput(out),
 	)
 }
 
@@ -133,41 +128,18 @@ func all(cond ...bool) bool {
 	return true
 }
 
-const cachedMessage = " (cached)"
-
 func pkgNameFormat(event TestEvent, exec *Execution) (string, error) {
 	if !event.PackageEvent() {
 		return "", nil
 	}
-	return shortFormatPackageEvent(event, exec)
+	return shortFormatPackageEvent(event, exec), nil
 }
 
-func shortFormatPackageEvent(event TestEvent, exec *Execution) (string, error) {
+func shortFormatPackageEvent(event TestEvent, exec *Execution) string {
 	pkg := exec.Package(event.Package)
 
-	fmtElapsed := func() string {
-		if pkg.cached {
-			return cachedMessage
-		}
-		d := elapsedDuration(event.Elapsed)
-		if d == 0 {
-			return ""
-		}
-		return fmt.Sprintf(" (%s)", d)
-	}
-	fmtCoverage := func() string {
-		if pkg.coverage == "" {
-			return ""
-		}
-		return " (" + pkg.coverage + ")"
-	}
-	fmtEvent := func(action string) (string, error) {
-		return fmt.Sprintf("%s  %s%s%s\n",
-			action,
-			RelativePackagePath(event.Package),
-			fmtElapsed(),
-			fmtCoverage(),
-		), nil
+	fmtEvent := func(action string) string {
+		return action + "  " + packageLine(event, exec)
 	}
 	withColor := colorEvent(event)
 	switch event.Action {
@@ -181,7 +153,32 @@ func shortFormatPackageEvent(event TestEvent, exec *Execution) (string, error) {
 	case ActionFail:
 		return fmtEvent(withColor("✖"))
 	}
-	return "", nil
+	return ""
+}
+
+func packageLine(event TestEvent, exec *Execution) string {
+	pkg := exec.Package(event.Package)
+
+	var buf strings.Builder
+	buf.WriteString(RelativePackagePath(event.Package))
+
+	switch {
+	case pkg.cached:
+		buf.WriteString(" (cached)")
+	case event.Elapsed != 0:
+		d := elapsedDuration(event.Elapsed)
+		buf.WriteString(fmt.Sprintf(" (%s)", d))
+	}
+
+	if pkg.coverage != "" {
+		buf.WriteString(" (" + pkg.coverage + ")")
+	}
+
+	if event.Action == ActionFail && pkg.shuffleSeed != "" {
+		buf.WriteString(" (" + pkg.shuffleSeed + ")")
+	}
+	buf.WriteString("\n")
+	return buf.String()
 }
 
 func pkgNameWithFailuresFormat(event TestEvent, exec *Execution) (string, error) {
@@ -193,7 +190,7 @@ func pkgNameWithFailuresFormat(event TestEvent, exec *Execution) (string, error)
 		}
 		return "", nil
 	}
-	return shortFormatPackageEvent(event, exec)
+	return shortFormatPackageEvent(event, exec), nil
 }
 
 func colorEvent(event TestEvent) func(format string, a ...interface{}) string {
