@@ -12,7 +12,20 @@ import (
 	"gotest.tools/v3/golden"
 )
 
-//go:generate ./generate.sh
+// go-test-json files are generated using the following command:
+//
+//   go test -p=1 -parallel=1 -json -tags=stubpkg ./testjson/internal/...
+//
+// Additional flags (ex: -cover, -shuffle) may be added to test different
+// scenarios.
+//
+// There are also special package scenarios:
+//
+//   -tags="stubpkg timeout"
+//   -tags="stubpkg panic"
+//
+// Expect output for the standard-quiet and standard-verbose formats can be
+// generated with the same command by removing the -json flag.
 
 type fakeHandler struct {
 	inputName string
@@ -124,7 +137,7 @@ var expectedExecution = &Execution{
 
 var cmpExecutionShallow = gocmp.Options{
 	gocmp.AllowUnexported(Execution{}, Package{}),
-	gocmp.FilterPath(stringPath("started"), opt.TimeWithThreshold(10*time.Second)),
+	gocmp.FilterPath(opt.PathString("started"), opt.TimeWithThreshold(10*time.Second)),
 	cmpopts.IgnoreFields(Execution{}, "errorsLock"),
 	cmpopts.EquateEmpty(),
 	cmpPackageShallow,
@@ -137,12 +150,6 @@ var cmpPackageShallow = gocmp.Options{
 	gocmp.Comparer(func(x, y TestCase) bool {
 		return x.Test == y.Test
 	}),
-}
-
-func stringPath(spec string) func(gocmp.Path) bool {
-	return func(path gocmp.Path) bool {
-		return path.String() == spec
-	}
 }
 
 func TestScanTestOutputWithDotsFormatV1(t *testing.T) {
