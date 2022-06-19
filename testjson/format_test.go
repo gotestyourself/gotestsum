@@ -30,7 +30,7 @@ func (s *fakeHandler) Config(t *testing.T) ScanConfig {
 }
 
 func newFakeHandlerWithAdapter(
-	format func(event TestEvent, output *Execution) (string, error),
+	format func(event TestEvent, output *Execution) string,
 	inputName string,
 ) *fakeHandler {
 	out := new(bytes.Buffer)
