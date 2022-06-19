@@ -68,7 +68,7 @@ func TestPrintSummary_NoFailures(t *testing.T) {
 }
 
 func TestPrintSummary_WithFailures(t *testing.T) {
-	t.Cleanup(patchPkgPathPrefix("example.com"))
+	patchPkgPathPrefix(t, "example.com")
 	patchTimeNow(t)
 
 	start := time.Now()

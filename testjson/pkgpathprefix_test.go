@@ -9,7 +9,7 @@ import (
 
 func TestRelativePackagePath(t *testing.T) {
 	prefix := "gotest.tools/gotestsum/testjson"
-	defer patchPkgPathPrefix(prefix)()
+	patchPkgPathPrefix(t, prefix)
 	relPath := RelativePackagePath(prefix + "/extra/relpath")
 	assert.Equal(t, relPath, "extra/relpath")
 

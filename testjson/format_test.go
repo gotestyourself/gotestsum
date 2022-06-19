@@ -69,11 +69,12 @@ func (s *fakeHandler) Err(text string) error {
 	return nil
 }
 
-func patchPkgPathPrefix(val string) func() {
+func patchPkgPathPrefix(t *testing.T, val string) {
 	var oldVal string
 	oldVal, pkgPathPrefix = pkgPathPrefix, val
-
-	return func() { pkgPathPrefix = oldVal }
+	t.Cleanup(func() {
+		pkgPathPrefix = oldVal
+	})
 }
 
 func TestFormats_DefaultGoTestJson(t *testing.T) {
@@ -133,7 +134,7 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 }
 
 func TestScanTestOutput_WithPkgNameFormat_WithCoverage(t *testing.T) {
-	defer patchPkgPathPrefix("gotest.tools")()
+	patchPkgPathPrefix(t, "gotest.tools")
 
 	shim := newFakeHandlerWithAdapter(pkgNameFormat, "go-test-json-with-cover")
 	_, err := ScanTestOutput(shim.Config(t))
@@ -144,7 +145,7 @@ func TestScanTestOutput_WithPkgNameFormat_WithCoverage(t *testing.T) {
 }
 
 func TestScanTestOutput_WithStandardQuietFormat_WithCoverage(t *testing.T) {
-	defer patchPkgPathPrefix("gotest.tools")()
+	patchPkgPathPrefix(t, "gotest.tools")
 
 	shim := newFakeHandlerWithAdapter(standardQuietFormat, "go-test-json-with-cover")
 	_, err := ScanTestOutput(shim.Config(t))
