@@ -7,7 +7,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jonboulle/clockwork"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/golden"
 )
@@ -47,19 +46,21 @@ func TestSummary_String(t *testing.T) {
 }
 
 func TestPrintSummary_NoFailures(t *testing.T) {
-	fake, reset := patchClock()
-	defer reset()
+	patchTimeNow(t)
 
 	out := new(bytes.Buffer)
+	start := time.Now()
 	exec := &Execution{
-		started: fake.Now(),
+		started: start,
 		done:    true,
 		packages: map[string]*Package{
 			"foo":   {Total: 12},
 			"other": {Total: 1},
 		},
 	}
-	fake.Advance(34123111 * time.Microsecond)
+	timeNow = func() time.Time {
+		return start.Add(34123111 * time.Microsecond)
+	}
 	PrintSummary(out, exec, SummarizeAll)
 
 	expected := "\nDONE 13 tests in 34.123s\n"
@@ -67,12 +68,12 @@ func TestPrintSummary_NoFailures(t *testing.T) {
 }
 
 func TestPrintSummary_WithFailures(t *testing.T) {
-	defer patchPkgPathPrefix("example.com")()
-	fake, reset := patchClock()
-	defer reset()
+	t.Cleanup(patchPkgPathPrefix("example.com"))
+	patchTimeNow(t)
 
+	start := time.Now()
 	exec := &Execution{
-		started: fake.Now(),
+		started: start,
 		done:    true,
 		packages: map[string]*Package{
 			"example.com/project/fs": {
@@ -144,7 +145,9 @@ Some stdout/stderr here
 			"pkg/file.go:99:12: missing ',' before newline",
 		},
 	}
-	fake.Advance(34123111 * time.Microsecond)
+	timeNow = func() time.Time {
+		return start.Add(34123111 * time.Microsecond)
+	}
 
 	t.Run("summarize all", func(t *testing.T) {
 		out := new(bytes.Buffer)
@@ -212,10 +215,15 @@ DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
 	})
 }
 
-func patchClock() (clockwork.FakeClock, func()) {
-	fake := clockwork.NewFakeClock()
-	clock = fake
-	return fake, func() { clock = clockwork.NewRealClock() }
+func patchTimeNow(t *testing.T) func() {
+	timeNow = func() time.Time {
+		return time.Date(2022, 1, 2, 3, 4, 5, 600, time.UTC)
+	}
+	reset := func() {
+		timeNow = time.Now
+	}
+	t.Cleanup(reset)
+	return reset
 }
 
 func multiLine(s string) []string {
@@ -223,8 +231,7 @@ func multiLine(s string) []string {
 }
 
 func TestPrintSummary_MissingTestFailEvent(t *testing.T) {
-	_, reset := patchClock()
-	defer reset()
+	patchTimeNow(t)
 
 	exec, err := ScanTestOutput(ScanConfig{
 		Stdout: bytes.NewReader(golden.Get(t, "go-test-json-missing-test-fail.out")),
@@ -241,8 +248,7 @@ func TestPrintSummary_MissingTestFailEvent(t *testing.T) {
 }
 
 func TestPrintSummary_WithMisattributedOutput(t *testing.T) {
-	_, reset := patchClock()
-	defer reset()
+	patchTimeNow(t)
 
 	exec, err := ScanTestOutput(ScanConfig{
 		Stdout: bytes.NewReader(golden.Get(t, "go-test-json-misattributed.out")),
@@ -255,8 +261,7 @@ func TestPrintSummary_WithMisattributedOutput(t *testing.T) {
 }
 
 func TestPrintSummary_WithSubtestFailures(t *testing.T) {
-	_, reset := patchClock()
-	defer reset()
+	patchTimeNow(t)
 
 	exec, err := ScanTestOutput(ScanConfig{
 		Stdout: bytes.NewReader(golden.Get(t, "go-test-json.out")),
@@ -269,8 +274,7 @@ func TestPrintSummary_WithSubtestFailures(t *testing.T) {
 }
 
 func TestPrintSummary_WithParallelFailures(t *testing.T) {
-	_, reset := patchClock()
-	defer reset()
+	patchTimeNow(t)
 
 	exec, err := ScanTestOutput(ScanConfig{
 		Stdout: bytes.NewReader(golden.Get(t, "go-test-json-with-parallel-fails.out")),
@@ -283,8 +287,7 @@ func TestPrintSummary_WithParallelFailures(t *testing.T) {
 }
 
 func TestPrintSummary_WithMissingSkipMessage(t *testing.T) {
-	_, reset := patchClock()
-	defer reset()
+	patchTimeNow(t)
 
 	exec, err := ScanTestOutput(ScanConfig{
 		Stdout: bytes.NewReader(golden.Get(t, "go-test-json-missing-skip-msg.out")),
@@ -297,8 +300,7 @@ func TestPrintSummary_WithMissingSkipMessage(t *testing.T) {
 }
 
 func TestPrintSummary_WithRepeatedTestCases(t *testing.T) {
-	_, reset := patchClock()
-	defer reset()
+	patchTimeNow(t)
 
 	in := golden.Get(t, "go-test-json.out")
 	exec, err := ScanTestOutput(ScanConfig{
@@ -315,8 +317,7 @@ func TestPrintSummary_WithRepeatedTestCases(t *testing.T) {
 }
 
 func TestPrintSummary_WithRerunID(t *testing.T) {
-	_, reset := patchClock()
-	defer reset()
+	patchTimeNow(t)
 
 	exec, err := ScanTestOutput(ScanConfig{
 		Stdout: bytes.NewReader(golden.Get(t, "go-test-json.out")),

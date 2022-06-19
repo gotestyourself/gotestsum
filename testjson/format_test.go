@@ -63,6 +63,7 @@ func (s *fakeHandler) Err(text string) error {
 func patchPkgPathPrefix(val string) func() {
 	var oldVal string
 	oldVal, pkgPathPrefix = pkgPathPrefix, val
+
 	return func() { pkgPathPrefix = oldVal }
 }
 
