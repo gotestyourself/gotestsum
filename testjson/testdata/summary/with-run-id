@@ -1,0 +1,63 @@
+
+=== Skipped
+=== SKIP: testjson/internal/good TestSkipped (re-run 7) (0.00s)
+    good_test.go:23: 
+
+=== SKIP: testjson/internal/good TestSkippedWitLog (re-run 7) (0.00s)
+    good_test.go:27: the skip message
+
+=== SKIP: testjson/internal/withfails TestSkipped (re-run 7) (0.00s)
+    fails_test.go:26: 
+
+=== SKIP: testjson/internal/withfails TestSkippedWitLog (re-run 7) (0.00s)
+    fails_test.go:30: the skip message
+
+=== SKIP: testjson/internal/withfails TestTimeout (re-run 7) (0.00s)
+    timeout_test.go:13: skipping slow test
+
+=== Failed
+=== FAIL: testjson/internal/badmain  (0.00s)
+sometimes main can exit 2
+FAIL	gotest.tools/gotestsum/testjson/internal/badmain	0.001s
+
+=== FAIL: testjson/internal/parallelfails TestNestedParallelFailures/a (re-run 7) (0.00s)
+    fails_test.go:50: failed sub a
+    --- FAIL: TestNestedParallelFailures/a (0.00s)
+
+=== FAIL: testjson/internal/parallelfails TestNestedParallelFailures/c (re-run 7) (0.00s)
+    fails_test.go:50: failed sub c
+    --- FAIL: TestNestedParallelFailures/c (0.00s)
+
+=== FAIL: testjson/internal/parallelfails TestNestedParallelFailures/d (re-run 7) (0.00s)
+    fails_test.go:50: failed sub d
+    --- FAIL: TestNestedParallelFailures/d (0.00s)
+
+=== FAIL: testjson/internal/parallelfails TestNestedParallelFailures/b (re-run 7) (0.00s)
+    fails_test.go:50: failed sub b
+    --- FAIL: TestNestedParallelFailures/b (0.00s)
+
+=== FAIL: testjson/internal/parallelfails TestNestedParallelFailures (re-run 7) (0.00s)
+
+=== FAIL: testjson/internal/parallelfails TestParallelTheFirst (re-run 7) (0.01s)
+    fails_test.go:29: failed the first
+
+=== FAIL: testjson/internal/parallelfails TestParallelTheThird (re-run 7) (0.00s)
+    fails_test.go:41: failed the third
+
+=== FAIL: testjson/internal/parallelfails TestParallelTheSecond (re-run 7) (0.01s)
+    fails_test.go:35: failed the second
+
+=== FAIL: testjson/internal/withfails TestFailed (re-run 7) (0.00s)
+    fails_test.go:34: this failed
+
+=== FAIL: testjson/internal/withfails TestFailedWithStderr (re-run 7) (0.00s)
+this is stderr
+    fails_test.go:43: also failed
+
+=== FAIL: testjson/internal/withfails TestNestedWithFailure/c (re-run 7) (0.00s)
+    fails_test.go:65: failed
+    --- FAIL: TestNestedWithFailure/c (0.00s)
+
+=== FAIL: testjson/internal/withfails TestNestedWithFailure (re-run 7) (0.00s)
+
+DONE 8 runs, 59 tests, 5 skipped, 13 failures in 0.000s

@@ -215,117 +215,107 @@ DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
 	})
 }
 
-func patchTimeNow(t *testing.T) func() {
+func patchTimeNow(t *testing.T) {
 	timeNow = func() time.Time {
 		return time.Date(2022, 1, 2, 3, 4, 5, 600, time.UTC)
 	}
-	reset := func() {
+	t.Cleanup(func() {
 		timeNow = time.Now
-	}
-	t.Cleanup(reset)
-	return reset
+	})
 }
 
 func multiLine(s string) []string {
 	return strings.SplitAfter(s, "\n")
 }
 
-func TestPrintSummary_MissingTestFailEvent(t *testing.T) {
+func TestPrintSummary(t *testing.T) {
 	patchTimeNow(t)
 
-	exec, err := ScanTestOutput(ScanConfig{
-		Stdout: bytes.NewReader(golden.Get(t, "go-test-json-missing-test-fail.out")),
-	})
-	assert.NilError(t, err)
+	type testCase struct {
+		name        string
+		config      func(t *testing.T) ScanConfig
+		expectedOut string
+		expected    func(t *testing.T, exec *Execution)
+	}
 
-	buf := new(bytes.Buffer)
-	PrintSummary(buf, exec, SummarizeAll)
-	golden.Assert(t, buf.String(), "summary-missing-test-fail-event")
+	run := func(t *testing.T, tc testCase) {
+		exec, err := ScanTestOutput(tc.config(t))
+		assert.NilError(t, err)
 
-	for name, pkg := range exec.packages {
-		assert.Equal(t, len(pkg.running), 0, "package %v still had tests in running", name)
+		buf := new(bytes.Buffer)
+		PrintSummary(buf, exec, SummarizeAll)
+		golden.Assert(t, buf.String(), tc.expectedOut)
+
+		if tc.expected != nil {
+			tc.expected(t, exec)
+		}
+	}
+
+	testCases := []testCase{
+		{
+			name:        "missing test fail event",
+			config:      scanConfigFromGolden("input/go-test-json-missing-test-fail.out"),
+			expectedOut: "summary/missing-test-fail-event",
+			expected: func(t *testing.T, exec *Execution) {
+				for name, pkg := range exec.packages {
+					assert.Equal(t, len(pkg.running), 0, "package %v still had tests in running", name)
+				}
+			},
+		},
+		{
+			name:        "output attributed to wrong test",
+			config:      scanConfigFromGolden("input/go-test-json-misattributed.out"),
+			expectedOut: "summary/misattributed-output",
+		},
+		{
+			name:        "with subtest failures",
+			config:      scanConfigFromGolden("input/go-test-json.out"),
+			expectedOut: "summary/root-test-has-subtest-failures",
+		},
+		{
+			name:        "with parallel failures",
+			config:      scanConfigFromGolden("input/go-test-json-with-parallel-fails.out"),
+			expectedOut: "summary/parallel-failures",
+		},
+		{
+			name:        "missing skip message",
+			config:      scanConfigFromGolden("input/go-test-json-missing-skip-msg.out"),
+			expectedOut: "summary/bug-missing-skip-message",
+		},
+		{
+			name: "repeated test case",
+			config: func(t *testing.T) ScanConfig {
+				in := golden.Get(t, "input/go-test-json.out")
+				return ScanConfig{
+					Stdout: io.MultiReader(
+						bytes.NewReader(in),
+						bytes.NewReader(in),
+						bytes.NewReader(in)),
+				}
+			},
+			expectedOut: "summary/bug-repeated-test-case-output",
+		},
+		{
+			name: "with rerun id",
+			config: func(t *testing.T) ScanConfig {
+				return ScanConfig{
+					Stdout: bytes.NewReader(golden.Get(t, "input/go-test-json.out")),
+					RunID:  7,
+				}
+			},
+			expectedOut: "summary/with-run-id",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			run(t, tc)
+		})
 	}
 }
 
-func TestPrintSummary_WithMisattributedOutput(t *testing.T) {
-	patchTimeNow(t)
-
-	exec, err := ScanTestOutput(ScanConfig{
-		Stdout: bytes.NewReader(golden.Get(t, "go-test-json-misattributed.out")),
-	})
-	assert.NilError(t, err)
-
-	buf := new(bytes.Buffer)
-	PrintSummary(buf, exec, SummarizeAll)
-	golden.Assert(t, buf.String(), "summary-misattributed-output")
-}
-
-func TestPrintSummary_WithSubtestFailures(t *testing.T) {
-	patchTimeNow(t)
-
-	exec, err := ScanTestOutput(ScanConfig{
-		Stdout: bytes.NewReader(golden.Get(t, "go-test-json.out")),
-	})
-	assert.NilError(t, err)
-
-	buf := new(bytes.Buffer)
-	PrintSummary(buf, exec, SummarizeAll)
-	golden.Assert(t, buf.String(), "summary-root-test-has-subtest-failures")
-}
-
-func TestPrintSummary_WithParallelFailures(t *testing.T) {
-	patchTimeNow(t)
-
-	exec, err := ScanTestOutput(ScanConfig{
-		Stdout: bytes.NewReader(golden.Get(t, "go-test-json-with-parallel-fails.out")),
-	})
-	assert.NilError(t, err)
-
-	buf := new(bytes.Buffer)
-	PrintSummary(buf, exec, SummarizeAll)
-	golden.Assert(t, buf.String(), "summary-parallel-failures.out")
-}
-
-func TestPrintSummary_WithMissingSkipMessage(t *testing.T) {
-	patchTimeNow(t)
-
-	exec, err := ScanTestOutput(ScanConfig{
-		Stdout: bytes.NewReader(golden.Get(t, "go-test-json-missing-skip-msg.out")),
-	})
-	assert.NilError(t, err)
-
-	buf := new(bytes.Buffer)
-	PrintSummary(buf, exec, SummarizeAll)
-	golden.Assert(t, buf.String(), "bug-missing-skip-message-summary.out")
-}
-
-func TestPrintSummary_WithRepeatedTestCases(t *testing.T) {
-	patchTimeNow(t)
-
-	in := golden.Get(t, "go-test-json.out")
-	exec, err := ScanTestOutput(ScanConfig{
-		Stdout: io.MultiReader(
-			bytes.NewReader(in),
-			bytes.NewReader(in),
-			bytes.NewReader(in)),
-	})
-	assert.NilError(t, err)
-
-	buf := new(bytes.Buffer)
-	PrintSummary(buf, exec, SummarizeAll)
-	golden.Assert(t, buf.String(), "bug-repeated-test-case-output.out")
-}
-
-func TestPrintSummary_WithRerunID(t *testing.T) {
-	patchTimeNow(t)
-
-	exec, err := ScanTestOutput(ScanConfig{
-		Stdout: bytes.NewReader(golden.Get(t, "go-test-json.out")),
-		RunID:  7,
-	})
-	assert.NilError(t, err)
-
-	buf := new(bytes.Buffer)
-	PrintSummary(buf, exec, SummarizeAll)
-	golden.Assert(t, buf.String(), "summary-with-run-id.out")
+func scanConfigFromGolden(filename string) func(t *testing.T) ScanConfig {
+	return func(t *testing.T) ScanConfig {
+		return ScanConfig{Stdout: bytes.NewReader(golden.Get(t, filename))}
+	}
 }
