@@ -58,13 +58,13 @@ FAIL	gotest.tools/gotestsum/testjson/internal/badmain	0.001s
     fails_test.go:50: failed sub a
     --- FAIL: TestNestedParallelFailures/a (0.00s)
 
-=== FAIL: testjson/internal/parallelfails TestNestedParallelFailures/c (0.00s)
-    fails_test.go:50: failed sub c
-    --- FAIL: TestNestedParallelFailures/c (0.00s)
-
 === FAIL: testjson/internal/parallelfails TestNestedParallelFailures/d (0.00s)
     fails_test.go:50: failed sub d
     --- FAIL: TestNestedParallelFailures/d (0.00s)
+
+=== FAIL: testjson/internal/parallelfails TestNestedParallelFailures/c (0.00s)
+    fails_test.go:50: failed sub c
+    --- FAIL: TestNestedParallelFailures/c (0.00s)
 
 === FAIL: testjson/internal/parallelfails TestNestedParallelFailures/b (0.00s)
     fails_test.go:50: failed sub b
@@ -85,13 +85,13 @@ FAIL	gotest.tools/gotestsum/testjson/internal/badmain	0.001s
     fails_test.go:50: failed sub a
     --- FAIL: TestNestedParallelFailures/a (0.00s)
 
-=== FAIL: testjson/internal/parallelfails TestNestedParallelFailures/c (0.00s)
-    fails_test.go:50: failed sub c
-    --- FAIL: TestNestedParallelFailures/c (0.00s)
-
 === FAIL: testjson/internal/parallelfails TestNestedParallelFailures/d (0.00s)
     fails_test.go:50: failed sub d
     --- FAIL: TestNestedParallelFailures/d (0.00s)
+
+=== FAIL: testjson/internal/parallelfails TestNestedParallelFailures/c (0.00s)
+    fails_test.go:50: failed sub c
+    --- FAIL: TestNestedParallelFailures/c (0.00s)
 
 === FAIL: testjson/internal/parallelfails TestNestedParallelFailures/b (0.00s)
     fails_test.go:50: failed sub b
@@ -112,13 +112,13 @@ FAIL	gotest.tools/gotestsum/testjson/internal/badmain	0.001s
     fails_test.go:50: failed sub a
     --- FAIL: TestNestedParallelFailures/a (0.00s)
 
-=== FAIL: testjson/internal/parallelfails TestNestedParallelFailures/c (0.00s)
-    fails_test.go:50: failed sub c
-    --- FAIL: TestNestedParallelFailures/c (0.00s)
-
 === FAIL: testjson/internal/parallelfails TestNestedParallelFailures/d (0.00s)
     fails_test.go:50: failed sub d
     --- FAIL: TestNestedParallelFailures/d (0.00s)
+
+=== FAIL: testjson/internal/parallelfails TestNestedParallelFailures/c (0.00s)
+    fails_test.go:50: failed sub c
+    --- FAIL: TestNestedParallelFailures/c (0.00s)
 
 === FAIL: testjson/internal/parallelfails TestNestedParallelFailures/b (0.00s)
     fails_test.go:50: failed sub b

@@ -37,11 +37,11 @@ var cmpPackage = cmp.Options{
 }
 
 func TestScanTestOutput_MinimalConfig(t *testing.T) {
-	in := bytes.NewReader(golden.Get(t, "go-test-json.out"))
+	in := bytes.NewReader(golden.Get(t, "input/go-test-json.out"))
 	exec, err := ScanTestOutput(ScanConfig{Stdout: in})
 	assert.NilError(t, err)
 	// a weak check to show that all the stdout was scanned
-	assert.Equal(t, exec.Total(), 46)
+	assert.Equal(t, exec.Total(), 59)
 }
 
 func TestScanTestOutput_CallsStopOnError(t *testing.T) {
@@ -50,7 +50,7 @@ func TestScanTestOutput_CallsStopOnError(t *testing.T) {
 		called = true
 	}
 	cfg := ScanConfig{
-		Stdout:  bytes.NewReader(golden.Get(t, "go-test-json.out")),
+		Stdout:  bytes.NewReader(golden.Get(t, "input/go-test-json.out")),
 		Handler: &handlerFails{},
 		Stop:    stop,
 	}

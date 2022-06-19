@@ -1,325 +1,329 @@
-{"Time":"2022-06-19T12:30:14.749068279-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/badmain","Output":"sometimes main can exit 2\n"}
-{"Time":"2022-06-19T12:30:14.749175987-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/badmain","Output":"FAIL\tgotest.tools/gotestsum/testjson/internal/badmain\t0.001s\n"}
-{"Time":"2022-06-19T12:30:14.749189794-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/badmain","Elapsed":0.001}
-{"Time":"2022-06-19T12:30:14.807515151-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassed"}
-{"Time":"2022-06-19T12:30:14.807530498-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassed","Output":"=== RUN   TestPassed\n"}
-{"Time":"2022-06-19T12:30:14.807538739-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassed","Output":"--- PASS: TestPassed (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.807542941-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassed","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.807546811-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithLog"}
-{"Time":"2022-06-19T12:30:14.807549026-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithLog","Output":"=== RUN   TestPassedWithLog\n"}
-{"Time":"2022-06-19T12:30:14.807551509-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithLog","Output":"    good_test.go:15: this is a log\n"}
-{"Time":"2022-06-19T12:30:14.807555271-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithLog","Output":"--- PASS: TestPassedWithLog (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.807557876-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithLog","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.807560164-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithStdout"}
-{"Time":"2022-06-19T12:30:14.807562314-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithStdout","Output":"=== RUN   TestPassedWithStdout\n"}
-{"Time":"2022-06-19T12:30:14.807564673-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithStdout","Output":"this is a Print\n"}
-{"Time":"2022-06-19T12:30:14.807567163-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithStdout","Output":"--- PASS: TestPassedWithStdout (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.807569523-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithStdout","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.80757161-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkipped"}
-{"Time":"2022-06-19T12:30:14.807573792-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkipped","Output":"=== RUN   TestSkipped\n"}
-{"Time":"2022-06-19T12:30:14.807577688-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkipped","Output":"    good_test.go:23: \n"}
-{"Time":"2022-06-19T12:30:14.807581225-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkipped","Output":"--- SKIP: TestSkipped (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.807583703-04:00","Action":"skip","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkipped","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.807585824-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkippedWitLog"}
-{"Time":"2022-06-19T12:30:14.807587867-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkippedWitLog","Output":"=== RUN   TestSkippedWitLog\n"}
-{"Time":"2022-06-19T12:30:14.807595953-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkippedWitLog","Output":"    good_test.go:27: the skip message\n"}
-{"Time":"2022-06-19T12:30:14.807599312-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkippedWitLog","Output":"--- SKIP: TestSkippedWitLog (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.807601758-04:00","Action":"skip","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkippedWitLog","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.807603973-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestWithStderr"}
-{"Time":"2022-06-19T12:30:14.80760611-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestWithStderr","Output":"=== RUN   TestWithStderr\n"}
-{"Time":"2022-06-19T12:30:14.807608537-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestWithStderr","Output":"this is stderr\n"}
-{"Time":"2022-06-19T12:30:14.807611001-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestWithStderr","Output":"--- PASS: TestWithStderr (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.80761388-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestWithStderr","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.80761599-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheFirst"}
-{"Time":"2022-06-19T12:30:14.807618166-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheFirst","Output":"=== RUN   TestParallelTheFirst\n"}
-{"Time":"2022-06-19T12:30:14.807620772-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheFirst","Output":"=== PAUSE TestParallelTheFirst\n"}
-{"Time":"2022-06-19T12:30:14.807622961-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheFirst"}
-{"Time":"2022-06-19T12:30:14.807625247-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheSecond"}
-{"Time":"2022-06-19T12:30:14.807627695-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheSecond","Output":"=== RUN   TestParallelTheSecond\n"}
-{"Time":"2022-06-19T12:30:14.807630069-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheSecond","Output":"=== PAUSE TestParallelTheSecond\n"}
-{"Time":"2022-06-19T12:30:14.807632211-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheSecond"}
-{"Time":"2022-06-19T12:30:14.807634372-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheThird"}
-{"Time":"2022-06-19T12:30:14.807636547-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheThird","Output":"=== RUN   TestParallelTheThird\n"}
-{"Time":"2022-06-19T12:30:14.807638993-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheThird","Output":"=== PAUSE TestParallelTheThird\n"}
-{"Time":"2022-06-19T12:30:14.807641148-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheThird"}
-{"Time":"2022-06-19T12:30:14.807643378-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess"}
-{"Time":"2022-06-19T12:30:14.807645375-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess","Output":"=== RUN   TestNestedSuccess\n"}
-{"Time":"2022-06-19T12:30:14.807647657-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/a"}
-{"Time":"2022-06-19T12:30:14.807649702-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/a","Output":"=== RUN   TestNestedSuccess/a\n"}
-{"Time":"2022-06-19T12:30:14.807654347-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/a/sub"}
-{"Time":"2022-06-19T12:30:14.807656897-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/a/sub","Output":"=== RUN   TestNestedSuccess/a/sub\n"}
-{"Time":"2022-06-19T12:30:14.807659354-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/b"}
-{"Time":"2022-06-19T12:30:14.807661513-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/b","Output":"=== RUN   TestNestedSuccess/b\n"}
-{"Time":"2022-06-19T12:30:14.807663876-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/b/sub"}
-{"Time":"2022-06-19T12:30:14.807665948-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/b/sub","Output":"=== RUN   TestNestedSuccess/b/sub\n"}
-{"Time":"2022-06-19T12:30:14.807669576-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/c"}
-{"Time":"2022-06-19T12:30:14.80767386-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/c","Output":"=== RUN   TestNestedSuccess/c\n"}
-{"Time":"2022-06-19T12:30:14.807676695-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/c/sub"}
-{"Time":"2022-06-19T12:30:14.807678936-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/c/sub","Output":"=== RUN   TestNestedSuccess/c/sub\n"}
-{"Time":"2022-06-19T12:30:14.807681254-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/d"}
-{"Time":"2022-06-19T12:30:14.807683321-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/d","Output":"=== RUN   TestNestedSuccess/d\n"}
-{"Time":"2022-06-19T12:30:14.807685578-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/d/sub"}
-{"Time":"2022-06-19T12:30:14.807687616-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/d/sub","Output":"=== RUN   TestNestedSuccess/d/sub\n"}
-{"Time":"2022-06-19T12:30:14.807690328-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess","Output":"--- PASS: TestNestedSuccess (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.807693193-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/a","Output":"    --- PASS: TestNestedSuccess/a (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.807696266-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/a/sub","Output":"        --- PASS: TestNestedSuccess/a/sub (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.807699506-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/a/sub","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.807701864-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/a","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.807704049-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/b","Output":"    --- PASS: TestNestedSuccess/b (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.807706547-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/b/sub","Output":"        --- PASS: TestNestedSuccess/b/sub (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.80770909-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/b/sub","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.807713431-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/b","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.807716024-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/c","Output":"    --- PASS: TestNestedSuccess/c (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.807718693-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/c/sub","Output":"        --- PASS: TestNestedSuccess/c/sub (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.807721299-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/c/sub","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.807723551-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/c","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.807725737-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/d","Output":"    --- PASS: TestNestedSuccess/d (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.807728239-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/d/sub","Output":"        --- PASS: TestNestedSuccess/d/sub (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.807730727-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/d/sub","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.807732845-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/d","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.807734997-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.80773713-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheFirst"}
-{"Time":"2022-06-19T12:30:14.807739336-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheFirst","Output":"=== CONT  TestParallelTheFirst\n"}
-{"Time":"2022-06-19T12:30:14.817888477-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheFirst","Output":"--- PASS: TestParallelTheFirst (0.01s)\n"}
-{"Time":"2022-06-19T12:30:14.817898749-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheFirst","Elapsed":0.01}
-{"Time":"2022-06-19T12:30:14.817902999-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheThird"}
-{"Time":"2022-06-19T12:30:14.817905389-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheThird","Output":"=== CONT  TestParallelTheThird\n"}
-{"Time":"2022-06-19T12:30:14.820066595-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheSecond"}
-{"Time":"2022-06-19T12:30:14.820075579-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheSecond","Output":"=== CONT  TestParallelTheSecond\n"}
-{"Time":"2022-06-19T12:30:14.820079998-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheThird","Output":"--- PASS: TestParallelTheThird (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.826256962-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheThird","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.826267411-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheSecond","Output":"--- PASS: TestParallelTheSecond (0.01s)\n"}
-{"Time":"2022-06-19T12:30:14.826270891-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheSecond","Elapsed":0.01}
-{"Time":"2022-06-19T12:30:14.826273608-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Output":"PASS\n"}
-{"Time":"2022-06-19T12:30:14.826425303-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Output":"ok  \tgotest.tools/gotestsum/testjson/internal/good\t0.020s\n"}
-{"Time":"2022-06-19T12:30:14.826619224-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Elapsed":0.02}
-{"Time":"2022-06-19T12:30:14.880542446-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassed"}
-{"Time":"2022-06-19T12:30:14.880564129-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassed","Output":"=== RUN   TestPassed\n"}
-{"Time":"2022-06-19T12:30:14.880575877-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassed","Output":"--- PASS: TestPassed (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.880580268-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassed","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.880584058-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithLog"}
-{"Time":"2022-06-19T12:30:14.880586412-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithLog","Output":"=== RUN   TestPassedWithLog\n"}
-{"Time":"2022-06-19T12:30:14.88058909-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithLog","Output":"    fails_test.go:15: this is a log\n"}
-{"Time":"2022-06-19T12:30:14.880592498-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithLog","Output":"--- PASS: TestPassedWithLog (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.880594983-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithLog","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.880597263-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithStdout"}
-{"Time":"2022-06-19T12:30:14.880599372-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithStdout","Output":"=== RUN   TestPassedWithStdout\n"}
-{"Time":"2022-06-19T12:30:14.880601767-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithStdout","Output":"this is a Print\n"}
-{"Time":"2022-06-19T12:30:14.880604372-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithStdout","Output":"--- PASS: TestPassedWithStdout (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.880607353-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithStdout","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.880609711-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestWithStderr"}
-{"Time":"2022-06-19T12:30:14.880611931-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestWithStderr","Output":"=== RUN   TestWithStderr\n"}
-{"Time":"2022-06-19T12:30:14.880614271-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestWithStderr","Output":"this is stderr\n"}
-{"Time":"2022-06-19T12:30:14.880616879-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestWithStderr","Output":"--- PASS: TestWithStderr (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.880619273-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestWithStderr","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.880621473-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst"}
-{"Time":"2022-06-19T12:30:14.880623555-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Output":"=== RUN   TestParallelTheFirst\n"}
-{"Time":"2022-06-19T12:30:14.880632002-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Output":"=== PAUSE TestParallelTheFirst\n"}
-{"Time":"2022-06-19T12:30:14.880654136-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst"}
-{"Time":"2022-06-19T12:30:14.880659329-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond"}
-{"Time":"2022-06-19T12:30:14.880678867-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Output":"=== RUN   TestParallelTheSecond\n"}
-{"Time":"2022-06-19T12:30:14.880682568-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Output":"=== PAUSE TestParallelTheSecond\n"}
-{"Time":"2022-06-19T12:30:14.880684852-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond"}
-{"Time":"2022-06-19T12:30:14.880687125-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird"}
-{"Time":"2022-06-19T12:30:14.880689732-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Output":"=== RUN   TestParallelTheThird\n"}
-{"Time":"2022-06-19T12:30:14.880692288-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Output":"=== PAUSE TestParallelTheThird\n"}
-{"Time":"2022-06-19T12:30:14.880694473-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird"}
-{"Time":"2022-06-19T12:30:14.880714931-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures"}
-{"Time":"2022-06-19T12:30:14.88071722-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures","Output":"=== RUN   TestNestedParallelFailures\n"}
-{"Time":"2022-06-19T12:30:14.880722133-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a"}
-{"Time":"2022-06-19T12:30:14.880724431-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Output":"=== RUN   TestNestedParallelFailures/a\n"}
-{"Time":"2022-06-19T12:30:14.880727086-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Output":"=== PAUSE TestNestedParallelFailures/a\n"}
-{"Time":"2022-06-19T12:30:14.880729424-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a"}
-{"Time":"2022-06-19T12:30:14.880731706-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b"}
-{"Time":"2022-06-19T12:30:14.880733976-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Output":"=== RUN   TestNestedParallelFailures/b\n"}
-{"Time":"2022-06-19T12:30:14.880736504-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Output":"=== PAUSE TestNestedParallelFailures/b\n"}
-{"Time":"2022-06-19T12:30:14.880738621-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b"}
-{"Time":"2022-06-19T12:30:14.880755352-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c"}
-{"Time":"2022-06-19T12:30:14.880757427-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Output":"=== RUN   TestNestedParallelFailures/c\n"}
-{"Time":"2022-06-19T12:30:14.880762095-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Output":"=== PAUSE TestNestedParallelFailures/c\n"}
-{"Time":"2022-06-19T12:30:14.880764723-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c"}
-{"Time":"2022-06-19T12:30:14.880767004-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d"}
-{"Time":"2022-06-19T12:30:14.880769379-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Output":"=== RUN   TestNestedParallelFailures/d\n"}
-{"Time":"2022-06-19T12:30:14.880771842-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Output":"=== PAUSE TestNestedParallelFailures/d\n"}
-{"Time":"2022-06-19T12:30:14.880773956-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d"}
-{"Time":"2022-06-19T12:30:14.880776269-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a"}
-{"Time":"2022-06-19T12:30:14.880778365-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Output":"=== CONT  TestNestedParallelFailures/a\n"}
-{"Time":"2022-06-19T12:30:14.880780863-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Output":"    fails_test.go:50: failed sub a\n"}
-{"Time":"2022-06-19T12:30:14.880783511-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c"}
-{"Time":"2022-06-19T12:30:14.880785753-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Output":"=== CONT  TestNestedParallelFailures/c\n"}
-{"Time":"2022-06-19T12:30:14.880788169-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Output":"    fails_test.go:50: failed sub c\n"}
-{"Time":"2022-06-19T12:30:14.880790488-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d"}
-{"Time":"2022-06-19T12:30:14.880792586-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Output":"=== CONT  TestNestedParallelFailures/d\n"}
-{"Time":"2022-06-19T12:30:14.880794903-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Output":"    fails_test.go:50: failed sub d\n"}
-{"Time":"2022-06-19T12:30:14.880797265-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b"}
-{"Time":"2022-06-19T12:30:14.880799482-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Output":"=== CONT  TestNestedParallelFailures/b\n"}
-{"Time":"2022-06-19T12:30:14.880801869-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Output":"    fails_test.go:50: failed sub b\n"}
-{"Time":"2022-06-19T12:30:14.880807555-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures","Output":"--- FAIL: TestNestedParallelFailures (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.880812833-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Output":"    --- FAIL: TestNestedParallelFailures/a (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.88081792-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.880820921-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Output":"    --- FAIL: TestNestedParallelFailures/c (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.880823551-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.880825833-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Output":"    --- FAIL: TestNestedParallelFailures/d (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.880828341-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.880830655-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Output":"    --- FAIL: TestNestedParallelFailures/b (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.880833132-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.880835314-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.880837426-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst"}
-{"Time":"2022-06-19T12:30:14.880839612-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Output":"=== CONT  TestParallelTheFirst\n"}
-{"Time":"2022-06-19T12:30:14.891132622-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Output":"    fails_test.go:29: failed the first\n"}
-{"Time":"2022-06-19T12:30:14.891202111-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Output":"--- FAIL: TestParallelTheFirst (0.01s)\n"}
-{"Time":"2022-06-19T12:30:14.891344286-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Elapsed":0.01}
-{"Time":"2022-06-19T12:30:14.891369105-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird"}
-{"Time":"2022-06-19T12:30:14.891384019-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Output":"=== CONT  TestParallelTheThird\n"}
-{"Time":"2022-06-19T12:30:14.893700851-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Output":"    fails_test.go:41: failed the third\n"}
-{"Time":"2022-06-19T12:30:14.893770199-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Output":"--- FAIL: TestParallelTheThird (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.893793879-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.893810196-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond"}
-{"Time":"2022-06-19T12:30:14.893824347-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Output":"=== CONT  TestParallelTheSecond\n"}
-{"Time":"2022-06-19T12:30:14.900053245-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Output":"    fails_test.go:35: failed the second\n"}
-{"Time":"2022-06-19T12:30:14.900166509-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Output":"--- FAIL: TestParallelTheSecond (0.01s)\n"}
-{"Time":"2022-06-19T12:30:14.900196855-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Elapsed":0.01}
-{"Time":"2022-06-19T12:30:14.900229225-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Output":"FAIL\n"}
-{"Time":"2022-06-19T12:30:14.900775973-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Output":"FAIL\tgotest.tools/gotestsum/testjson/internal/parallelfails\t0.021s\n"}
-{"Time":"2022-06-19T12:30:14.900859568-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Elapsed":0.021}
-{"Time":"2022-06-19T12:30:14.956977702-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassed"}
-{"Time":"2022-06-19T12:30:14.956999504-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassed","Output":"=== RUN   TestPassed\n"}
-{"Time":"2022-06-19T12:30:14.957007674-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassed","Output":"--- PASS: TestPassed (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957011064-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassed","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957014537-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithLog"}
-{"Time":"2022-06-19T12:30:14.95701703-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithLog","Output":"=== RUN   TestPassedWithLog\n"}
-{"Time":"2022-06-19T12:30:14.957019773-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithLog","Output":"    fails_test.go:18: this is a log\n"}
-{"Time":"2022-06-19T12:30:14.957022799-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithLog","Output":"--- PASS: TestPassedWithLog (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957025439-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithLog","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957027811-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithStdout"}
-{"Time":"2022-06-19T12:30:14.957030026-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithStdout","Output":"=== RUN   TestPassedWithStdout\n"}
-{"Time":"2022-06-19T12:30:14.957032442-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithStdout","Output":"this is a Print\n"}
-{"Time":"2022-06-19T12:30:14.957035094-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithStdout","Output":"--- PASS: TestPassedWithStdout (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957037736-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithStdout","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957039953-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkipped"}
-{"Time":"2022-06-19T12:30:14.957042041-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkipped","Output":"=== RUN   TestSkipped\n"}
-{"Time":"2022-06-19T12:30:14.957044527-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkipped","Output":"    fails_test.go:26: \n"}
-{"Time":"2022-06-19T12:30:14.957052589-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkipped","Output":"--- SKIP: TestSkipped (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957056619-04:00","Action":"skip","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkipped","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957059006-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkippedWitLog"}
-{"Time":"2022-06-19T12:30:14.957061089-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkippedWitLog","Output":"=== RUN   TestSkippedWitLog\n"}
-{"Time":"2022-06-19T12:30:14.957063434-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkippedWitLog","Output":"    fails_test.go:30: the skip message\n"}
-{"Time":"2022-06-19T12:30:14.95706607-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkippedWitLog","Output":"--- SKIP: TestSkippedWitLog (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957068659-04:00","Action":"skip","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkippedWitLog","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957070876-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailed"}
-{"Time":"2022-06-19T12:30:14.957073082-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailed","Output":"=== RUN   TestFailed\n"}
-{"Time":"2022-06-19T12:30:14.957075576-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailed","Output":"    fails_test.go:34: this failed\n"}
-{"Time":"2022-06-19T12:30:14.957078131-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailed","Output":"--- FAIL: TestFailed (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957080381-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailed","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957082546-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestWithStderr"}
-{"Time":"2022-06-19T12:30:14.957084549-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestWithStderr","Output":"=== RUN   TestWithStderr\n"}
-{"Time":"2022-06-19T12:30:14.957087021-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestWithStderr","Output":"this is stderr\n"}
-{"Time":"2022-06-19T12:30:14.957089684-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestWithStderr","Output":"--- PASS: TestWithStderr (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957092179-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestWithStderr","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957094395-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailedWithStderr"}
-{"Time":"2022-06-19T12:30:14.957096457-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailedWithStderr","Output":"=== RUN   TestFailedWithStderr\n"}
-{"Time":"2022-06-19T12:30:14.957098741-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailedWithStderr","Output":"this is stderr\n"}
-{"Time":"2022-06-19T12:30:14.957101016-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailedWithStderr","Output":"    fails_test.go:43: also failed\n"}
-{"Time":"2022-06-19T12:30:14.957103648-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailedWithStderr","Output":"--- FAIL: TestFailedWithStderr (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.95710622-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailedWithStderr","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957110625-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheFirst"}
-{"Time":"2022-06-19T12:30:14.957113067-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheFirst","Output":"=== RUN   TestParallelTheFirst\n"}
-{"Time":"2022-06-19T12:30:14.957115685-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheFirst","Output":"=== PAUSE TestParallelTheFirst\n"}
-{"Time":"2022-06-19T12:30:14.957117828-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheFirst"}
-{"Time":"2022-06-19T12:30:14.95712012-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheSecond"}
-{"Time":"2022-06-19T12:30:14.957122205-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheSecond","Output":"=== RUN   TestParallelTheSecond\n"}
-{"Time":"2022-06-19T12:30:14.957126852-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheSecond","Output":"=== PAUSE TestParallelTheSecond\n"}
-{"Time":"2022-06-19T12:30:14.957129469-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheSecond"}
-{"Time":"2022-06-19T12:30:14.957131845-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheThird"}
-{"Time":"2022-06-19T12:30:14.95713402-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheThird","Output":"=== RUN   TestParallelTheThird\n"}
-{"Time":"2022-06-19T12:30:14.957136498-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheThird","Output":"=== PAUSE TestParallelTheThird\n"}
-{"Time":"2022-06-19T12:30:14.957138641-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheThird"}
-{"Time":"2022-06-19T12:30:14.957140874-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure"}
-{"Time":"2022-06-19T12:30:14.957142943-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure","Output":"=== RUN   TestNestedWithFailure\n"}
-{"Time":"2022-06-19T12:30:14.957145347-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/a"}
-{"Time":"2022-06-19T12:30:14.957147542-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/a","Output":"=== RUN   TestNestedWithFailure/a\n"}
-{"Time":"2022-06-19T12:30:14.95715182-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/a/sub"}
-{"Time":"2022-06-19T12:30:14.957154463-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/a/sub","Output":"=== RUN   TestNestedWithFailure/a/sub\n"}
-{"Time":"2022-06-19T12:30:14.957156876-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/b"}
-{"Time":"2022-06-19T12:30:14.957158946-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/b","Output":"=== RUN   TestNestedWithFailure/b\n"}
-{"Time":"2022-06-19T12:30:14.957161291-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/b/sub"}
-{"Time":"2022-06-19T12:30:14.957163525-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/b/sub","Output":"=== RUN   TestNestedWithFailure/b/sub\n"}
-{"Time":"2022-06-19T12:30:14.957165961-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/c"}
-{"Time":"2022-06-19T12:30:14.95717015-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/c","Output":"=== RUN   TestNestedWithFailure/c\n"}
-{"Time":"2022-06-19T12:30:14.957172779-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/c","Output":"    fails_test.go:65: failed\n"}
-{"Time":"2022-06-19T12:30:14.957175154-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/d"}
-{"Time":"2022-06-19T12:30:14.957177231-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/d","Output":"=== RUN   TestNestedWithFailure/d\n"}
-{"Time":"2022-06-19T12:30:14.957180248-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/d/sub"}
-{"Time":"2022-06-19T12:30:14.957182629-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/d/sub","Output":"=== RUN   TestNestedWithFailure/d/sub\n"}
-{"Time":"2022-06-19T12:30:14.957185393-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure","Output":"--- FAIL: TestNestedWithFailure (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957188421-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/a","Output":"    --- PASS: TestNestedWithFailure/a (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.95719127-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/a/sub","Output":"        --- PASS: TestNestedWithFailure/a/sub (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957194257-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/a/sub","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957196552-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/a","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957198746-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/b","Output":"    --- PASS: TestNestedWithFailure/b (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957201282-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/b/sub","Output":"        --- PASS: TestNestedWithFailure/b/sub (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957203958-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/b/sub","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957206222-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/b","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957208474-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/c","Output":"    --- FAIL: TestNestedWithFailure/c (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957211052-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/c","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957213304-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/d","Output":"    --- PASS: TestNestedWithFailure/d (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957215844-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/d/sub","Output":"        --- PASS: TestNestedWithFailure/d/sub (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.95721822-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/d/sub","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957222356-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/d","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957224831-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.95722714-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess"}
-{"Time":"2022-06-19T12:30:14.957229684-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess","Output":"=== RUN   TestNestedSuccess\n"}
-{"Time":"2022-06-19T12:30:14.95723222-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/a"}
-{"Time":"2022-06-19T12:30:14.95723438-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/a","Output":"=== RUN   TestNestedSuccess/a\n"}
-{"Time":"2022-06-19T12:30:14.957236694-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/a/sub"}
-{"Time":"2022-06-19T12:30:14.957238766-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/a/sub","Output":"=== RUN   TestNestedSuccess/a/sub\n"}
-{"Time":"2022-06-19T12:30:14.957241095-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/b"}
-{"Time":"2022-06-19T12:30:14.957243273-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/b","Output":"=== RUN   TestNestedSuccess/b\n"}
-{"Time":"2022-06-19T12:30:14.957245668-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/b/sub"}
-{"Time":"2022-06-19T12:30:14.957247839-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/b/sub","Output":"=== RUN   TestNestedSuccess/b/sub\n"}
-{"Time":"2022-06-19T12:30:14.957251692-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/c"}
-{"Time":"2022-06-19T12:30:14.95725407-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/c","Output":"=== RUN   TestNestedSuccess/c\n"}
-{"Time":"2022-06-19T12:30:14.957256391-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/c/sub"}
-{"Time":"2022-06-19T12:30:14.957258478-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/c/sub","Output":"=== RUN   TestNestedSuccess/c/sub\n"}
-{"Time":"2022-06-19T12:30:14.957260937-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/d"}
-{"Time":"2022-06-19T12:30:14.957263112-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/d","Output":"=== RUN   TestNestedSuccess/d\n"}
-{"Time":"2022-06-19T12:30:14.957265488-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/d/sub"}
-{"Time":"2022-06-19T12:30:14.957287962-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/d/sub","Output":"=== RUN   TestNestedSuccess/d/sub\n"}
-{"Time":"2022-06-19T12:30:14.957290567-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess","Output":"--- PASS: TestNestedSuccess (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957293179-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/a","Output":"    --- PASS: TestNestedSuccess/a (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957295763-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/a/sub","Output":"        --- PASS: TestNestedSuccess/a/sub (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957300508-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/a/sub","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957303428-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/a","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957305751-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/b","Output":"    --- PASS: TestNestedSuccess/b (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957308489-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/b/sub","Output":"        --- PASS: TestNestedSuccess/b/sub (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957311115-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/b/sub","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957313293-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/b","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957315529-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/c","Output":"    --- PASS: TestNestedSuccess/c (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957318077-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/c/sub","Output":"        --- PASS: TestNestedSuccess/c/sub (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957339333-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/c/sub","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.95734171-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/c","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957343969-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/d","Output":"    --- PASS: TestNestedSuccess/d (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957346561-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/d/sub","Output":"        --- PASS: TestNestedSuccess/d/sub (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957348986-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/d/sub","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957351113-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/d","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957353189-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957355284-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestTimeout"}
-{"Time":"2022-06-19T12:30:14.957357451-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestTimeout","Output":"=== RUN   TestTimeout\n"}
-{"Time":"2022-06-19T12:30:14.957359814-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestTimeout","Output":"    timeout_test.go:13: skipping slow test\n"}
-{"Time":"2022-06-19T12:30:14.957362473-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestTimeout","Output":"--- SKIP: TestTimeout (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.957364904-04:00","Action":"skip","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestTimeout","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.957367066-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheFirst"}
-{"Time":"2022-06-19T12:30:14.957369106-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheFirst","Output":"=== CONT  TestParallelTheFirst\n"}
-{"Time":"2022-06-19T12:30:14.967512518-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheFirst","Output":"--- PASS: TestParallelTheFirst (0.01s)\n"}
-{"Time":"2022-06-19T12:30:14.967522957-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheFirst","Elapsed":0.01}
-{"Time":"2022-06-19T12:30:14.967526804-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheSecond"}
-{"Time":"2022-06-19T12:30:14.967529327-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheSecond","Output":"=== CONT  TestParallelTheSecond\n"}
-{"Time":"2022-06-19T12:30:14.973894825-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheSecond","Output":"--- PASS: TestParallelTheSecond (0.01s)\n"}
-{"Time":"2022-06-19T12:30:14.973955832-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheSecond","Elapsed":0.01}
-{"Time":"2022-06-19T12:30:14.973977717-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheThird"}
-{"Time":"2022-06-19T12:30:14.973992546-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheThird","Output":"=== CONT  TestParallelTheThird\n"}
-{"Time":"2022-06-19T12:30:14.976152481-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheThird","Output":"--- PASS: TestParallelTheThird (0.00s)\n"}
-{"Time":"2022-06-19T12:30:14.976209523-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheThird","Elapsed":0}
-{"Time":"2022-06-19T12:30:14.976230651-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Output":"FAIL\n"}
-{"Time":"2022-06-19T12:30:14.976814057-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Output":"FAIL\tgotest.tools/gotestsum/testjson/internal/withfails\t0.020s\n"}
-{"Time":"2022-06-19T12:30:14.97689155-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Elapsed":0.021}
+{"Time":"2022-06-19T13:44:44.850960153-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/badmain","Output":"sometimes main can exit 2\n"}
+{"Time":"2022-06-19T13:44:44.851078953-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/badmain","Output":"FAIL\tgotest.tools/gotestsum/testjson/internal/badmain\t0.001s\n"}
+{"Time":"2022-06-19T13:44:44.851087257-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/badmain","Elapsed":0.001}
+{"Time":"2022-06-19T13:44:44.855135812-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/empty","Output":"testing: warning: no tests to run\n"}
+{"Time":"2022-06-19T13:44:44.855143976-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/empty","Output":"PASS\n"}
+{"Time":"2022-06-19T13:44:44.855147691-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/empty","Output":"ok  \tgotest.tools/gotestsum/testjson/internal/empty\t(cached) [no tests to run]\n"}
+{"Time":"2022-06-19T13:44:44.855151131-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/empty","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.859682146-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassed"}
+{"Time":"2022-06-19T13:44:44.859690198-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassed","Output":"=== RUN   TestPassed\n"}
+{"Time":"2022-06-19T13:44:44.859696077-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassed","Output":"--- PASS: TestPassed (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859699224-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassed","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.859701901-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithLog"}
+{"Time":"2022-06-19T13:44:44.859704199-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithLog","Output":"=== RUN   TestPassedWithLog\n"}
+{"Time":"2022-06-19T13:44:44.859706845-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithLog","Output":"    good_test.go:15: this is a log\n"}
+{"Time":"2022-06-19T13:44:44.859709737-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithLog","Output":"--- PASS: TestPassedWithLog (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859712195-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithLog","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.859714391-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithStdout"}
+{"Time":"2022-06-19T13:44:44.859716575-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithStdout","Output":"=== RUN   TestPassedWithStdout\n"}
+{"Time":"2022-06-19T13:44:44.859719038-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithStdout","Output":"this is a Print\n"}
+{"Time":"2022-06-19T13:44:44.859721732-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithStdout","Output":"--- PASS: TestPassedWithStdout (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859724262-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestPassedWithStdout","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.859726506-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkipped"}
+{"Time":"2022-06-19T13:44:44.859728601-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkipped","Output":"=== RUN   TestSkipped\n"}
+{"Time":"2022-06-19T13:44:44.859730999-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkipped","Output":"    good_test.go:23: \n"}
+{"Time":"2022-06-19T13:44:44.859738124-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkipped","Output":"--- SKIP: TestSkipped (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859741082-04:00","Action":"skip","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkipped","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.859743399-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkippedWitLog"}
+{"Time":"2022-06-19T13:44:44.859745575-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkippedWitLog","Output":"=== RUN   TestSkippedWitLog\n"}
+{"Time":"2022-06-19T13:44:44.859747962-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkippedWitLog","Output":"    good_test.go:27: the skip message\n"}
+{"Time":"2022-06-19T13:44:44.859750682-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkippedWitLog","Output":"--- SKIP: TestSkippedWitLog (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859753158-04:00","Action":"skip","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestSkippedWitLog","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.859755305-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestWithStderr"}
+{"Time":"2022-06-19T13:44:44.859757397-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestWithStderr","Output":"=== RUN   TestWithStderr\n"}
+{"Time":"2022-06-19T13:44:44.859759841-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestWithStderr","Output":"this is stderr\n"}
+{"Time":"2022-06-19T13:44:44.859762418-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestWithStderr","Output":"--- PASS: TestWithStderr (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859765298-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestWithStderr","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.859767584-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheFirst"}
+{"Time":"2022-06-19T13:44:44.859769797-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheFirst","Output":"=== RUN   TestParallelTheFirst\n"}
+{"Time":"2022-06-19T13:44:44.859772324-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheFirst","Output":"=== PAUSE TestParallelTheFirst\n"}
+{"Time":"2022-06-19T13:44:44.859774461-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheFirst"}
+{"Time":"2022-06-19T13:44:44.859776697-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheSecond"}
+{"Time":"2022-06-19T13:44:44.859778932-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheSecond","Output":"=== RUN   TestParallelTheSecond\n"}
+{"Time":"2022-06-19T13:44:44.85978148-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheSecond","Output":"=== PAUSE TestParallelTheSecond\n"}
+{"Time":"2022-06-19T13:44:44.859783707-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheSecond"}
+{"Time":"2022-06-19T13:44:44.859786009-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheThird"}
+{"Time":"2022-06-19T13:44:44.859788165-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheThird","Output":"=== RUN   TestParallelTheThird\n"}
+{"Time":"2022-06-19T13:44:44.859790551-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheThird","Output":"=== PAUSE TestParallelTheThird\n"}
+{"Time":"2022-06-19T13:44:44.859792663-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheThird"}
+{"Time":"2022-06-19T13:44:44.859797122-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess"}
+{"Time":"2022-06-19T13:44:44.859799552-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess","Output":"=== RUN   TestNestedSuccess\n"}
+{"Time":"2022-06-19T13:44:44.859802001-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/a"}
+{"Time":"2022-06-19T13:44:44.859804221-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/a","Output":"=== RUN   TestNestedSuccess/a\n"}
+{"Time":"2022-06-19T13:44:44.859807062-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/a/sub"}
+{"Time":"2022-06-19T13:44:44.859809331-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/a/sub","Output":"=== RUN   TestNestedSuccess/a/sub\n"}
+{"Time":"2022-06-19T13:44:44.859811712-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/b"}
+{"Time":"2022-06-19T13:44:44.859813776-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/b","Output":"=== RUN   TestNestedSuccess/b\n"}
+{"Time":"2022-06-19T13:44:44.859816106-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/b/sub"}
+{"Time":"2022-06-19T13:44:44.859818297-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/b/sub","Output":"=== RUN   TestNestedSuccess/b/sub\n"}
+{"Time":"2022-06-19T13:44:44.859820689-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/c"}
+{"Time":"2022-06-19T13:44:44.85982284-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/c","Output":"=== RUN   TestNestedSuccess/c\n"}
+{"Time":"2022-06-19T13:44:44.859825214-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/c/sub"}
+{"Time":"2022-06-19T13:44:44.859829069-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/c/sub","Output":"=== RUN   TestNestedSuccess/c/sub\n"}
+{"Time":"2022-06-19T13:44:44.859832685-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/d"}
+{"Time":"2022-06-19T13:44:44.859834876-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/d","Output":"=== RUN   TestNestedSuccess/d\n"}
+{"Time":"2022-06-19T13:44:44.859837245-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/d/sub"}
+{"Time":"2022-06-19T13:44:44.859839467-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/d/sub","Output":"=== RUN   TestNestedSuccess/d/sub\n"}
+{"Time":"2022-06-19T13:44:44.859842632-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess","Output":"--- PASS: TestNestedSuccess (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859845452-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/a","Output":"    --- PASS: TestNestedSuccess/a (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859848379-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/a/sub","Output":"        --- PASS: TestNestedSuccess/a/sub (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859850991-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/a/sub","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.859853265-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/a","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.859857313-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/b","Output":"    --- PASS: TestNestedSuccess/b (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859860205-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/b/sub","Output":"        --- PASS: TestNestedSuccess/b/sub (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859862788-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/b/sub","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.85986508-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/b","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.859867507-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/c","Output":"    --- PASS: TestNestedSuccess/c (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859870066-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/c/sub","Output":"        --- PASS: TestNestedSuccess/c/sub (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859872517-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/c/sub","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.859874632-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/c","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.859876814-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/d","Output":"    --- PASS: TestNestedSuccess/d (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859879455-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/d/sub","Output":"        --- PASS: TestNestedSuccess/d/sub (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859881961-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/d/sub","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.859884191-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess/d","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.859886372-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestNestedSuccess","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.859888513-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheFirst"}
+{"Time":"2022-06-19T13:44:44.859890567-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheFirst","Output":"=== CONT  TestParallelTheFirst\n"}
+{"Time":"2022-06-19T13:44:44.8598932-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheFirst","Output":"--- PASS: TestParallelTheFirst (0.01s)\n"}
+{"Time":"2022-06-19T13:44:44.859895611-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheFirst","Elapsed":0.01}
+{"Time":"2022-06-19T13:44:44.85989839-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheThird"}
+{"Time":"2022-06-19T13:44:44.859900572-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheThird","Output":"=== CONT  TestParallelTheThird\n"}
+{"Time":"2022-06-19T13:44:44.859902923-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheSecond"}
+{"Time":"2022-06-19T13:44:44.859905116-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheSecond","Output":"=== CONT  TestParallelTheSecond\n"}
+{"Time":"2022-06-19T13:44:44.859907803-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheThird","Output":"--- PASS: TestParallelTheThird (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859913525-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheThird","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.859916116-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheSecond","Output":"--- PASS: TestParallelTheSecond (0.01s)\n"}
+{"Time":"2022-06-19T13:44:44.859918336-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Test":"TestParallelTheSecond","Elapsed":0.01}
+{"Time":"2022-06-19T13:44:44.859920892-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Output":"PASS\n"}
+{"Time":"2022-06-19T13:44:44.859923345-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/good","Output":"ok  \tgotest.tools/gotestsum/testjson/internal/good\t(cached)\n"}
+{"Time":"2022-06-19T13:44:44.859926497-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/good","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.914299027-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassed"}
+{"Time":"2022-06-19T13:44:44.914322345-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassed","Output":"=== RUN   TestPassed\n"}
+{"Time":"2022-06-19T13:44:44.914332487-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassed","Output":"--- PASS: TestPassed (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.914336528-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassed","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.914340657-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithLog"}
+{"Time":"2022-06-19T13:44:44.914343018-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithLog","Output":"=== RUN   TestPassedWithLog\n"}
+{"Time":"2022-06-19T13:44:44.914345542-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithLog","Output":"    fails_test.go:15: this is a log\n"}
+{"Time":"2022-06-19T13:44:44.914348788-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithLog","Output":"--- PASS: TestPassedWithLog (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.914351368-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithLog","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.91435378-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithStdout"}
+{"Time":"2022-06-19T13:44:44.914356071-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithStdout","Output":"=== RUN   TestPassedWithStdout\n"}
+{"Time":"2022-06-19T13:44:44.914358557-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithStdout","Output":"this is a Print\n"}
+{"Time":"2022-06-19T13:44:44.914361316-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithStdout","Output":"--- PASS: TestPassedWithStdout (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.914364274-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithStdout","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.914366514-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestWithStderr"}
+{"Time":"2022-06-19T13:44:44.914368785-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestWithStderr","Output":"=== RUN   TestWithStderr\n"}
+{"Time":"2022-06-19T13:44:44.914371203-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestWithStderr","Output":"this is stderr\n"}
+{"Time":"2022-06-19T13:44:44.914379591-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestWithStderr","Output":"--- PASS: TestWithStderr (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.914382623-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestWithStderr","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.914384983-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst"}
+{"Time":"2022-06-19T13:44:44.914387195-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Output":"=== RUN   TestParallelTheFirst\n"}
+{"Time":"2022-06-19T13:44:44.914389844-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Output":"=== PAUSE TestParallelTheFirst\n"}
+{"Time":"2022-06-19T13:44:44.914391974-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst"}
+{"Time":"2022-06-19T13:44:44.914396245-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond"}
+{"Time":"2022-06-19T13:44:44.914398768-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Output":"=== RUN   TestParallelTheSecond\n"}
+{"Time":"2022-06-19T13:44:44.914401349-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Output":"=== PAUSE TestParallelTheSecond\n"}
+{"Time":"2022-06-19T13:44:44.914403593-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond"}
+{"Time":"2022-06-19T13:44:44.914405943-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird"}
+{"Time":"2022-06-19T13:44:44.914408079-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Output":"=== RUN   TestParallelTheThird\n"}
+{"Time":"2022-06-19T13:44:44.914410513-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Output":"=== PAUSE TestParallelTheThird\n"}
+{"Time":"2022-06-19T13:44:44.91441271-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird"}
+{"Time":"2022-06-19T13:44:44.914414995-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures"}
+{"Time":"2022-06-19T13:44:44.914419031-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures","Output":"=== RUN   TestNestedParallelFailures\n"}
+{"Time":"2022-06-19T13:44:44.914422001-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a"}
+{"Time":"2022-06-19T13:44:44.914424349-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Output":"=== RUN   TestNestedParallelFailures/a\n"}
+{"Time":"2022-06-19T13:44:44.914426897-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Output":"=== PAUSE TestNestedParallelFailures/a\n"}
+{"Time":"2022-06-19T13:44:44.914429136-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a"}
+{"Time":"2022-06-19T13:44:44.914431319-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b"}
+{"Time":"2022-06-19T13:44:44.914433488-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Output":"=== RUN   TestNestedParallelFailures/b\n"}
+{"Time":"2022-06-19T13:44:44.914438246-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Output":"=== PAUSE TestNestedParallelFailures/b\n"}
+{"Time":"2022-06-19T13:44:44.914440864-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b"}
+{"Time":"2022-06-19T13:44:44.914443168-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c"}
+{"Time":"2022-06-19T13:44:44.914445351-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Output":"=== RUN   TestNestedParallelFailures/c\n"}
+{"Time":"2022-06-19T13:44:44.91444796-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Output":"=== PAUSE TestNestedParallelFailures/c\n"}
+{"Time":"2022-06-19T13:44:44.914450169-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c"}
+{"Time":"2022-06-19T13:44:44.914452457-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d"}
+{"Time":"2022-06-19T13:44:44.914454603-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Output":"=== RUN   TestNestedParallelFailures/d\n"}
+{"Time":"2022-06-19T13:44:44.914457163-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Output":"=== PAUSE TestNestedParallelFailures/d\n"}
+{"Time":"2022-06-19T13:44:44.914459404-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d"}
+{"Time":"2022-06-19T13:44:44.914461734-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a"}
+{"Time":"2022-06-19T13:44:44.914463919-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Output":"=== CONT  TestNestedParallelFailures/a\n"}
+{"Time":"2022-06-19T13:44:44.91446636-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Output":"    fails_test.go:50: failed sub a\n"}
+{"Time":"2022-06-19T13:44:44.914468803-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d"}
+{"Time":"2022-06-19T13:44:44.914470889-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Output":"=== CONT  TestNestedParallelFailures/d\n"}
+{"Time":"2022-06-19T13:44:44.914473333-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Output":"    fails_test.go:50: failed sub d\n"}
+{"Time":"2022-06-19T13:44:44.914475904-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c"}
+{"Time":"2022-06-19T13:44:44.914478123-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Output":"=== CONT  TestNestedParallelFailures/c\n"}
+{"Time":"2022-06-19T13:44:44.914483755-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Output":"    fails_test.go:50: failed sub c\n"}
+{"Time":"2022-06-19T13:44:44.914486923-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b"}
+{"Time":"2022-06-19T13:44:44.914489165-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Output":"=== CONT  TestNestedParallelFailures/b\n"}
+{"Time":"2022-06-19T13:44:44.914493631-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Output":"    fails_test.go:50: failed sub b\n"}
+{"Time":"2022-06-19T13:44:44.914496817-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures","Output":"--- FAIL: TestNestedParallelFailures (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.914500835-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Output":"    --- FAIL: TestNestedParallelFailures/a (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.914503606-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.914506103-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Output":"    --- FAIL: TestNestedParallelFailures/d (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.914508601-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.914510945-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Output":"    --- FAIL: TestNestedParallelFailures/c (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.914513457-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.914515814-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Output":"    --- FAIL: TestNestedParallelFailures/b (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.914518402-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.914520636-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.914522794-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst"}
+{"Time":"2022-06-19T13:44:44.914524941-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Output":"=== CONT  TestParallelTheFirst\n"}
+{"Time":"2022-06-19T13:44:44.92468079-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Output":"    fails_test.go:29: failed the first\n"}
+{"Time":"2022-06-19T13:44:44.924695036-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Output":"--- FAIL: TestParallelTheFirst (0.01s)\n"}
+{"Time":"2022-06-19T13:44:44.924699091-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Elapsed":0.01}
+{"Time":"2022-06-19T13:44:44.924702442-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird"}
+{"Time":"2022-06-19T13:44:44.924704814-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Output":"=== CONT  TestParallelTheThird\n"}
+{"Time":"2022-06-19T13:44:44.926875975-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Output":"    fails_test.go:41: failed the third\n"}
+{"Time":"2022-06-19T13:44:44.926887145-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Output":"--- FAIL: TestParallelTheThird (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.926895283-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.926900965-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond"}
+{"Time":"2022-06-19T13:44:44.926903673-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Output":"=== CONT  TestParallelTheSecond\n"}
+{"Time":"2022-06-19T13:44:44.933091105-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Output":"    fails_test.go:35: failed the second\n"}
+{"Time":"2022-06-19T13:44:44.933104623-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Output":"--- FAIL: TestParallelTheSecond (0.01s)\n"}
+{"Time":"2022-06-19T13:44:44.933108555-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Elapsed":0.01}
+{"Time":"2022-06-19T13:44:44.933117874-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Output":"FAIL\n"}
+{"Time":"2022-06-19T13:44:44.933266292-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Output":"FAIL\tgotest.tools/gotestsum/testjson/internal/parallelfails\t0.020s\n"}
+{"Time":"2022-06-19T13:44:44.933277617-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Elapsed":0.02}
+{"Time":"2022-06-19T13:44:44.988286791-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassed"}
+{"Time":"2022-06-19T13:44:44.988309483-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassed","Output":"=== RUN   TestPassed\n"}
+{"Time":"2022-06-19T13:44:44.988318625-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassed","Output":"--- PASS: TestPassed (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988321998-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassed","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988327026-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithLog"}
+{"Time":"2022-06-19T13:44:44.988329525-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithLog","Output":"=== RUN   TestPassedWithLog\n"}
+{"Time":"2022-06-19T13:44:44.988333414-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithLog","Output":"    fails_test.go:18: this is a log\n"}
+{"Time":"2022-06-19T13:44:44.988336781-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithLog","Output":"--- PASS: TestPassedWithLog (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988339579-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithLog","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988343267-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithStdout"}
+{"Time":"2022-06-19T13:44:44.988345671-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithStdout","Output":"=== RUN   TestPassedWithStdout\n"}
+{"Time":"2022-06-19T13:44:44.988348122-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithStdout","Output":"this is a Print\n"}
+{"Time":"2022-06-19T13:44:44.988352011-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithStdout","Output":"--- PASS: TestPassedWithStdout (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988360671-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestPassedWithStdout","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988363604-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkipped"}
+{"Time":"2022-06-19T13:44:44.988365906-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkipped","Output":"=== RUN   TestSkipped\n"}
+{"Time":"2022-06-19T13:44:44.988368362-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkipped","Output":"    fails_test.go:26: \n"}
+{"Time":"2022-06-19T13:44:44.988371175-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkipped","Output":"--- SKIP: TestSkipped (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988373636-04:00","Action":"skip","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkipped","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988375885-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkippedWitLog"}
+{"Time":"2022-06-19T13:44:44.988378012-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkippedWitLog","Output":"=== RUN   TestSkippedWitLog\n"}
+{"Time":"2022-06-19T13:44:44.988380515-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkippedWitLog","Output":"    fails_test.go:30: the skip message\n"}
+{"Time":"2022-06-19T13:44:44.988383329-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkippedWitLog","Output":"--- SKIP: TestSkippedWitLog (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988385879-04:00","Action":"skip","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestSkippedWitLog","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988388139-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailed"}
+{"Time":"2022-06-19T13:44:44.988390375-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailed","Output":"=== RUN   TestFailed\n"}
+{"Time":"2022-06-19T13:44:44.9883928-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailed","Output":"    fails_test.go:34: this failed\n"}
+{"Time":"2022-06-19T13:44:44.988397411-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailed","Output":"--- FAIL: TestFailed (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988400233-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailed","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988402503-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestWithStderr"}
+{"Time":"2022-06-19T13:44:44.98840471-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestWithStderr","Output":"=== RUN   TestWithStderr\n"}
+{"Time":"2022-06-19T13:44:44.988407249-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestWithStderr","Output":"this is stderr\n"}
+{"Time":"2022-06-19T13:44:44.988409861-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestWithStderr","Output":"--- PASS: TestWithStderr (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988412375-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestWithStderr","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988414596-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailedWithStderr"}
+{"Time":"2022-06-19T13:44:44.988416673-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailedWithStderr","Output":"=== RUN   TestFailedWithStderr\n"}
+{"Time":"2022-06-19T13:44:44.988419171-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailedWithStderr","Output":"this is stderr\n"}
+{"Time":"2022-06-19T13:44:44.988423763-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailedWithStderr","Output":"    fails_test.go:43: also failed\n"}
+{"Time":"2022-06-19T13:44:44.988426857-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailedWithStderr","Output":"--- FAIL: TestFailedWithStderr (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988429392-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestFailedWithStderr","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988431656-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheFirst"}
+{"Time":"2022-06-19T13:44:44.988433767-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheFirst","Output":"=== RUN   TestParallelTheFirst\n"}
+{"Time":"2022-06-19T13:44:44.988436368-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheFirst","Output":"=== PAUSE TestParallelTheFirst\n"}
+{"Time":"2022-06-19T13:44:44.988439303-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheFirst"}
+{"Time":"2022-06-19T13:44:44.988444219-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheSecond"}
+{"Time":"2022-06-19T13:44:44.988446969-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheSecond","Output":"=== RUN   TestParallelTheSecond\n"}
+{"Time":"2022-06-19T13:44:44.988449626-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheSecond","Output":"=== PAUSE TestParallelTheSecond\n"}
+{"Time":"2022-06-19T13:44:44.98845187-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheSecond"}
+{"Time":"2022-06-19T13:44:44.988454283-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheThird"}
+{"Time":"2022-06-19T13:44:44.988456446-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheThird","Output":"=== RUN   TestParallelTheThird\n"}
+{"Time":"2022-06-19T13:44:44.988459099-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheThird","Output":"=== PAUSE TestParallelTheThird\n"}
+{"Time":"2022-06-19T13:44:44.988461303-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheThird"}
+{"Time":"2022-06-19T13:44:44.988463656-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure"}
+{"Time":"2022-06-19T13:44:44.988465773-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure","Output":"=== RUN   TestNestedWithFailure\n"}
+{"Time":"2022-06-19T13:44:44.988468505-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/a"}
+{"Time":"2022-06-19T13:44:44.988470734-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/a","Output":"=== RUN   TestNestedWithFailure/a\n"}
+{"Time":"2022-06-19T13:44:44.98847318-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/a/sub"}
+{"Time":"2022-06-19T13:44:44.988476992-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/a/sub","Output":"=== RUN   TestNestedWithFailure/a/sub\n"}
+{"Time":"2022-06-19T13:44:44.988479651-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/b"}
+{"Time":"2022-06-19T13:44:44.988483849-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/b","Output":"=== RUN   TestNestedWithFailure/b\n"}
+{"Time":"2022-06-19T13:44:44.988487591-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/b/sub"}
+{"Time":"2022-06-19T13:44:44.988489875-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/b/sub","Output":"=== RUN   TestNestedWithFailure/b/sub\n"}
+{"Time":"2022-06-19T13:44:44.988492281-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/c"}
+{"Time":"2022-06-19T13:44:44.988496036-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/c","Output":"=== RUN   TestNestedWithFailure/c\n"}
+{"Time":"2022-06-19T13:44:44.988498593-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/c","Output":"    fails_test.go:65: failed\n"}
+{"Time":"2022-06-19T13:44:44.988501248-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/d"}
+{"Time":"2022-06-19T13:44:44.988503447-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/d","Output":"=== RUN   TestNestedWithFailure/d\n"}
+{"Time":"2022-06-19T13:44:44.988505839-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/d/sub"}
+{"Time":"2022-06-19T13:44:44.988507989-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/d/sub","Output":"=== RUN   TestNestedWithFailure/d/sub\n"}
+{"Time":"2022-06-19T13:44:44.988511055-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure","Output":"--- FAIL: TestNestedWithFailure (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988514438-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/a","Output":"    --- PASS: TestNestedWithFailure/a (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988517904-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/a/sub","Output":"        --- PASS: TestNestedWithFailure/a/sub (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988523195-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/a/sub","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988525729-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/a","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.98852807-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/b","Output":"    --- PASS: TestNestedWithFailure/b (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988530709-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/b/sub","Output":"        --- PASS: TestNestedWithFailure/b/sub (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988533344-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/b/sub","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988535616-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/b","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988538003-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/c","Output":"    --- FAIL: TestNestedWithFailure/c (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988540575-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/c","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.98854506-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/d","Output":"    --- PASS: TestNestedWithFailure/d (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.98854805-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/d/sub","Output":"        --- PASS: TestNestedWithFailure/d/sub (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.98855307-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/d/sub","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988555926-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure/d","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988558303-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedWithFailure","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988560552-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess"}
+{"Time":"2022-06-19T13:44:44.988562729-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess","Output":"=== RUN   TestNestedSuccess\n"}
+{"Time":"2022-06-19T13:44:44.988565175-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/a"}
+{"Time":"2022-06-19T13:44:44.988567397-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/a","Output":"=== RUN   TestNestedSuccess/a\n"}
+{"Time":"2022-06-19T13:44:44.988569785-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/a/sub"}
+{"Time":"2022-06-19T13:44:44.988571867-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/a/sub","Output":"=== RUN   TestNestedSuccess/a/sub\n"}
+{"Time":"2022-06-19T13:44:44.988574229-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/b"}
+{"Time":"2022-06-19T13:44:44.988576451-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/b","Output":"=== RUN   TestNestedSuccess/b\n"}
+{"Time":"2022-06-19T13:44:44.988578815-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/b/sub"}
+{"Time":"2022-06-19T13:44:44.988582115-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/b/sub","Output":"=== RUN   TestNestedSuccess/b/sub\n"}
+{"Time":"2022-06-19T13:44:44.988584739-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/c"}
+{"Time":"2022-06-19T13:44:44.988586907-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/c","Output":"=== RUN   TestNestedSuccess/c\n"}
+{"Time":"2022-06-19T13:44:44.988589239-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/c/sub"}
+{"Time":"2022-06-19T13:44:44.988591329-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/c/sub","Output":"=== RUN   TestNestedSuccess/c/sub\n"}
+{"Time":"2022-06-19T13:44:44.98859374-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/d"}
+{"Time":"2022-06-19T13:44:44.988595912-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/d","Output":"=== RUN   TestNestedSuccess/d\n"}
+{"Time":"2022-06-19T13:44:44.988598349-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/d/sub"}
+{"Time":"2022-06-19T13:44:44.988600634-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/d/sub","Output":"=== RUN   TestNestedSuccess/d/sub\n"}
+{"Time":"2022-06-19T13:44:44.988605352-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess","Output":"--- PASS: TestNestedSuccess (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988608372-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/a","Output":"    --- PASS: TestNestedSuccess/a (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988611012-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/a/sub","Output":"        --- PASS: TestNestedSuccess/a/sub (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988613572-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/a/sub","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.98861593-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/a","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988618293-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/b","Output":"    --- PASS: TestNestedSuccess/b (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988620939-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/b/sub","Output":"        --- PASS: TestNestedSuccess/b/sub (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988623564-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/b/sub","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988625803-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/b","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988628103-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/c","Output":"    --- PASS: TestNestedSuccess/c (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988630639-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/c/sub","Output":"        --- PASS: TestNestedSuccess/c/sub (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.98863313-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/c/sub","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988635513-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/c","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988637857-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/d","Output":"    --- PASS: TestNestedSuccess/d (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988640843-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/d/sub","Output":"        --- PASS: TestNestedSuccess/d/sub (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988643545-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/d/sub","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988645759-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess/d","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988647935-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestNestedSuccess","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988651152-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestTimeout"}
+{"Time":"2022-06-19T13:44:44.988653488-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestTimeout","Output":"=== RUN   TestTimeout\n"}
+{"Time":"2022-06-19T13:44:44.988655954-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestTimeout","Output":"    timeout_test.go:13: skipping slow test\n"}
+{"Time":"2022-06-19T13:44:44.988661116-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestTimeout","Output":"--- SKIP: TestTimeout (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.988663887-04:00","Action":"skip","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestTimeout","Elapsed":0}
+{"Time":"2022-06-19T13:44:44.988666175-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheFirst"}
+{"Time":"2022-06-19T13:44:44.988668308-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheFirst","Output":"=== CONT  TestParallelTheFirst\n"}
+{"Time":"2022-06-19T13:44:44.998837463-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheFirst","Output":"--- PASS: TestParallelTheFirst (0.01s)\n"}
+{"Time":"2022-06-19T13:44:44.998850256-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheFirst","Elapsed":0.01}
+{"Time":"2022-06-19T13:44:44.998854422-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheThird"}
+{"Time":"2022-06-19T13:44:44.998856909-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheThird","Output":"=== CONT  TestParallelTheThird\n"}
+{"Time":"2022-06-19T13:44:45.000973652-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheThird","Output":"--- PASS: TestParallelTheThird (0.00s)\n"}
+{"Time":"2022-06-19T13:44:45.000983481-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheThird","Elapsed":0}
+{"Time":"2022-06-19T13:44:45.000986998-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheSecond"}
+{"Time":"2022-06-19T13:44:45.000989406-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheSecond","Output":"=== CONT  TestParallelTheSecond\n"}
+{"Time":"2022-06-19T13:44:45.007312431-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheSecond","Output":"--- PASS: TestParallelTheSecond (0.01s)\n"}
+{"Time":"2022-06-19T13:44:45.007374647-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Test":"TestParallelTheSecond","Elapsed":0.01}
+{"Time":"2022-06-19T13:44:45.007398746-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Output":"FAIL\n"}
+{"Time":"2022-06-19T13:44:45.007878468-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Output":"FAIL\tgotest.tools/gotestsum/testjson/internal/withfails\t0.020s\n"}
+{"Time":"2022-06-19T13:44:45.00795073-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/withfails","Elapsed":0.02}

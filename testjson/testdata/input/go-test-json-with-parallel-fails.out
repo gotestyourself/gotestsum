@@ -1,0 +1,89 @@
+{"Time":"2020-06-20T20:03:14.189062291-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassed"}
+{"Time":"2020-06-20T20:03:14.189181845-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassed","Output":"=== RUN   TestPassed\n"}
+{"Time":"2020-06-20T20:03:14.189196791-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassed","Output":"--- PASS: TestPassed (0.00s)\n"}
+{"Time":"2020-06-20T20:03:14.189204529-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassed","Elapsed":0}
+{"Time":"2020-06-20T20:03:14.189209795-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithLog"}
+{"Time":"2020-06-20T20:03:14.189212884-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithLog","Output":"=== RUN   TestPassedWithLog\n"}
+{"Time":"2020-06-20T20:03:14.189216281-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithLog","Output":"    TestPassedWithLog: fails_test.go:15: this is a log\n"}
+{"Time":"2020-06-20T20:03:14.18922143-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithLog","Output":"--- PASS: TestPassedWithLog (0.00s)\n"}
+{"Time":"2020-06-20T20:03:14.189224935-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithLog","Elapsed":0}
+{"Time":"2020-06-20T20:03:14.189228284-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithStdout"}
+{"Time":"2020-06-20T20:03:14.189231421-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithStdout","Output":"=== RUN   TestPassedWithStdout\n"}
+{"Time":"2020-06-20T20:03:14.189242048-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithStdout","Output":"this is a Print\n"}
+{"Time":"2020-06-20T20:03:14.189248882-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithStdout","Output":"--- PASS: TestPassedWithStdout (0.00s)\n"}
+{"Time":"2020-06-20T20:03:14.1892537-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestPassedWithStdout","Elapsed":0}
+{"Time":"2020-06-20T20:03:14.18925685-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestWithStderr"}
+{"Time":"2020-06-20T20:03:14.189259838-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestWithStderr","Output":"=== RUN   TestWithStderr\n"}
+{"Time":"2020-06-20T20:03:14.189263114-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestWithStderr","Output":"this is stderr\n"}
+{"Time":"2020-06-20T20:03:14.189266603-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestWithStderr","Output":"--- PASS: TestWithStderr (0.00s)\n"}
+{"Time":"2020-06-20T20:03:14.189269864-04:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestWithStderr","Elapsed":0}
+{"Time":"2020-06-20T20:03:14.189272811-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst"}
+{"Time":"2020-06-20T20:03:14.189275739-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Output":"=== RUN   TestParallelTheFirst\n"}
+{"Time":"2020-06-20T20:03:14.189279428-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Output":"=== PAUSE TestParallelTheFirst\n"}
+{"Time":"2020-06-20T20:03:14.189282411-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst"}
+{"Time":"2020-06-20T20:03:14.189291743-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond"}
+{"Time":"2020-06-20T20:03:14.189295261-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Output":"=== RUN   TestParallelTheSecond\n"}
+{"Time":"2020-06-20T20:03:14.189298613-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Output":"=== PAUSE TestParallelTheSecond\n"}
+{"Time":"2020-06-20T20:03:14.189301547-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond"}
+{"Time":"2020-06-20T20:03:14.189304528-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird"}
+{"Time":"2020-06-20T20:03:14.189307722-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Output":"=== RUN   TestParallelTheThird\n"}
+{"Time":"2020-06-20T20:03:14.189316868-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Output":"=== PAUSE TestParallelTheThird\n"}
+{"Time":"2020-06-20T20:03:14.189321008-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird"}
+{"Time":"2020-06-20T20:03:14.189324205-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures"}
+{"Time":"2020-06-20T20:03:14.189327134-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures","Output":"=== RUN   TestNestedParallelFailures\n"}
+{"Time":"2020-06-20T20:03:14.189330311-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a"}
+{"Time":"2020-06-20T20:03:14.189333211-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Output":"=== RUN   TestNestedParallelFailures/a\n"}
+{"Time":"2020-06-20T20:03:14.189336566-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Output":"=== PAUSE TestNestedParallelFailures/a\n"}
+{"Time":"2020-06-20T20:03:14.189339616-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a"}
+{"Time":"2020-06-20T20:03:14.189342795-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b"}
+{"Time":"2020-06-20T20:03:14.189345726-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Output":"=== RUN   TestNestedParallelFailures/b\n"}
+{"Time":"2020-06-20T20:03:14.189348991-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Output":"=== PAUSE TestNestedParallelFailures/b\n"}
+{"Time":"2020-06-20T20:03:14.189351895-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b"}
+{"Time":"2020-06-20T20:03:14.18935492-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c"}
+{"Time":"2020-06-20T20:03:14.189357786-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Output":"=== RUN   TestNestedParallelFailures/c\n"}
+{"Time":"2020-06-20T20:03:14.18936103-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Output":"=== PAUSE TestNestedParallelFailures/c\n"}
+{"Time":"2020-06-20T20:03:14.189366866-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c"}
+{"Time":"2020-06-20T20:03:14.189370301-04:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d"}
+{"Time":"2020-06-20T20:03:14.189373227-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Output":"=== RUN   TestNestedParallelFailures/d\n"}
+{"Time":"2020-06-20T20:03:14.189376526-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Output":"=== PAUSE TestNestedParallelFailures/d\n"}
+{"Time":"2020-06-20T20:03:14.189379535-04:00","Action":"pause","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d"}
+{"Time":"2020-06-20T20:03:14.189382945-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a"}
+{"Time":"2020-06-20T20:03:14.189388341-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Output":"=== CONT  TestNestedParallelFailures/a\n"}
+{"Time":"2020-06-20T20:03:14.18939265-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Output":"    TestNestedParallelFailures/a: fails_test.go:50: failed sub a\n"}
+{"Time":"2020-06-20T20:03:14.189396424-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d"}
+{"Time":"2020-06-20T20:03:14.189399761-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Output":"=== CONT  TestNestedParallelFailures/d\n"}
+{"Time":"2020-06-20T20:03:14.189403259-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Output":"    TestNestedParallelFailures/d: fails_test.go:50: failed sub d\n"}
+{"Time":"2020-06-20T20:03:14.189406517-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c"}
+{"Time":"2020-06-20T20:03:14.189409434-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Output":"=== CONT  TestNestedParallelFailures/c\n"}
+{"Time":"2020-06-20T20:03:14.189412522-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Output":"    TestNestedParallelFailures/c: fails_test.go:50: failed sub c\n"}
+{"Time":"2020-06-20T20:03:14.189415748-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b"}
+{"Time":"2020-06-20T20:03:14.189418676-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Output":"=== CONT  TestNestedParallelFailures/b\n"}
+{"Time":"2020-06-20T20:03:14.189421937-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Output":"    TestNestedParallelFailures/b: fails_test.go:50: failed sub b\n"}
+{"Time":"2020-06-20T20:03:14.189430766-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures","Output":"--- FAIL: TestNestedParallelFailures (0.00s)\n"}
+{"Time":"2020-06-20T20:03:14.189435217-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Output":"    --- FAIL: TestNestedParallelFailures/a (0.00s)\n"}
+{"Time":"2020-06-20T20:03:14.189438729-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/a","Elapsed":0}
+{"Time":"2020-06-20T20:03:14.189446566-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Output":"    --- FAIL: TestNestedParallelFailures/d (0.00s)\n"}
+{"Time":"2020-06-20T20:03:14.189451208-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/d","Elapsed":0}
+{"Time":"2020-06-20T20:03:14.189454398-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Output":"    --- FAIL: TestNestedParallelFailures/c (0.00s)\n"}
+{"Time":"2020-06-20T20:03:14.189458705-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/c","Elapsed":0}
+{"Time":"2020-06-20T20:03:14.189464323-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Output":"    --- FAIL: TestNestedParallelFailures/b (0.00s)\n"}
+{"Time":"2020-06-20T20:03:14.189468081-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures/b","Elapsed":0}
+{"Time":"2020-06-20T20:03:14.18947115-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestNestedParallelFailures","Elapsed":0}
+{"Time":"2020-06-20T20:03:14.189475585-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst"}
+{"Time":"2020-06-20T20:03:14.189478551-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Output":"=== CONT  TestParallelTheFirst\n"}
+{"Time":"2020-06-20T20:03:14.199340121-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Output":"    TestParallelTheFirst: fails_test.go:29: failed the first\n"}
+{"Time":"2020-06-20T20:03:14.199385908-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Output":"--- FAIL: TestParallelTheFirst (0.01s)\n"}
+{"Time":"2020-06-20T20:03:14.199396994-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheFirst","Elapsed":0.01}
+{"Time":"2020-06-20T20:03:14.199406397-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird"}
+{"Time":"2020-06-20T20:03:14.19941412-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Output":"=== CONT  TestParallelTheThird\n"}
+{"Time":"2020-06-20T20:03:14.201560705-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Output":"    TestParallelTheThird: fails_test.go:41: failed the third\n"}
+{"Time":"2020-06-20T20:03:14.201602937-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Output":"--- FAIL: TestParallelTheThird (0.00s)\n"}
+{"Time":"2020-06-20T20:03:14.201615644-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheThird","Elapsed":0}
+{"Time":"2020-06-20T20:03:14.201630909-04:00","Action":"cont","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond"}
+{"Time":"2020-06-20T20:03:14.201640015-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Output":"=== CONT  TestParallelTheSecond\n"}
+{"Time":"2020-06-20T20:03:14.207765102-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Output":"    TestParallelTheSecond: fails_test.go:35: failed the second\n"}
+{"Time":"2020-06-20T20:03:14.207820447-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Output":"--- FAIL: TestParallelTheSecond (0.01s)\n"}
+{"Time":"2020-06-20T20:03:14.207829881-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Test":"TestParallelTheSecond","Elapsed":0.01}
+{"Time":"2020-06-20T20:03:14.207838745-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Output":"FAIL\n"}
+{"Time":"2020-06-20T20:03:14.214087937-04:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Output":"FAIL\tgotest.tools/gotestsum/testjson/internal/parallelfails\t0.026s\n"}
+{"Time":"2020-06-20T20:03:14.214125492-04:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/parallelfails","Elapsed":0.026}

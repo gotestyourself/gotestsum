@@ -1,19 +1,22 @@
 sometimes main can exit 2
-FAIL	github.com/gotestyourself/gotestyourself/testjson/internal/badmain	0.010s
+FAIL	gotest.tools/gotestsum/testjson/internal/badmain	0.001s
+testing: warning: no tests to run
+PASS
+ok  	gotest.tools/gotestsum/testjson/internal/empty	(cached) [no tests to run]
 === RUN   TestPassed
 --- PASS: TestPassed (0.00s)
 === RUN   TestPassedWithLog
+    good_test.go:15: this is a log
 --- PASS: TestPassedWithLog (0.00s)
-	good_test.go:15: this is a log
 === RUN   TestPassedWithStdout
 this is a Print
 --- PASS: TestPassedWithStdout (0.00s)
 === RUN   TestSkipped
+    good_test.go:23: 
 --- SKIP: TestSkipped (0.00s)
-	good_test.go:23: 
 === RUN   TestSkippedWitLog
+    good_test.go:27: the skip message
 --- SKIP: TestSkippedWitLog (0.00s)
-	good_test.go:27: the skip message
 === RUN   TestWithStderr
 this is stderr
 --- PASS: TestWithStderr (0.00s)
@@ -42,37 +45,87 @@ this is stderr
     --- PASS: TestNestedSuccess/d (0.00s)
         --- PASS: TestNestedSuccess/d/sub (0.00s)
 === CONT  TestParallelTheFirst
+--- PASS: TestParallelTheFirst (0.01s)
 === CONT  TestParallelTheThird
 === CONT  TestParallelTheSecond
 --- PASS: TestParallelTheThird (0.00s)
 --- PASS: TestParallelTheSecond (0.01s)
---- PASS: TestParallelTheFirst (0.01s)
 PASS
-ok  	github.com/gotestyourself/gotestyourself/testjson/internal/good	(cached)
+ok  	gotest.tools/gotestsum/testjson/internal/good	(cached)
 === RUN   TestPassed
 --- PASS: TestPassed (0.00s)
 === RUN   TestPassedWithLog
+    fails_test.go:15: this is a log
 --- PASS: TestPassedWithLog (0.00s)
-	stub_test.go:18: this is a log
+=== RUN   TestPassedWithStdout
+this is a Print
+--- PASS: TestPassedWithStdout (0.00s)
+=== RUN   TestWithStderr
+this is stderr
+--- PASS: TestWithStderr (0.00s)
+=== RUN   TestParallelTheFirst
+=== PAUSE TestParallelTheFirst
+=== RUN   TestParallelTheSecond
+=== PAUSE TestParallelTheSecond
+=== RUN   TestParallelTheThird
+=== PAUSE TestParallelTheThird
+=== RUN   TestNestedParallelFailures
+=== RUN   TestNestedParallelFailures/a
+=== PAUSE TestNestedParallelFailures/a
+=== RUN   TestNestedParallelFailures/b
+=== PAUSE TestNestedParallelFailures/b
+=== RUN   TestNestedParallelFailures/c
+=== PAUSE TestNestedParallelFailures/c
+=== RUN   TestNestedParallelFailures/d
+=== PAUSE TestNestedParallelFailures/d
+=== CONT  TestNestedParallelFailures/a
+    fails_test.go:50: failed sub a
+=== CONT  TestNestedParallelFailures/d
+    fails_test.go:50: failed sub d
+=== CONT  TestNestedParallelFailures/c
+    fails_test.go:50: failed sub c
+=== CONT  TestNestedParallelFailures/b
+    fails_test.go:50: failed sub b
+--- FAIL: TestNestedParallelFailures (0.00s)
+    --- FAIL: TestNestedParallelFailures/a (0.00s)
+    --- FAIL: TestNestedParallelFailures/d (0.00s)
+    --- FAIL: TestNestedParallelFailures/c (0.00s)
+    --- FAIL: TestNestedParallelFailures/b (0.00s)
+=== CONT  TestParallelTheFirst
+    fails_test.go:29: failed the first
+--- FAIL: TestParallelTheFirst (0.01s)
+=== CONT  TestParallelTheThird
+    fails_test.go:41: failed the third
+--- FAIL: TestParallelTheThird (0.00s)
+=== CONT  TestParallelTheSecond
+    fails_test.go:35: failed the second
+--- FAIL: TestParallelTheSecond (0.01s)
+FAIL
+FAIL	gotest.tools/gotestsum/testjson/internal/parallelfails	0.020s
+=== RUN   TestPassed
+--- PASS: TestPassed (0.00s)
+=== RUN   TestPassedWithLog
+    fails_test.go:18: this is a log
+--- PASS: TestPassedWithLog (0.00s)
 === RUN   TestPassedWithStdout
 this is a Print
 --- PASS: TestPassedWithStdout (0.00s)
 === RUN   TestSkipped
+    fails_test.go:26: 
 --- SKIP: TestSkipped (0.00s)
-	stub_test.go:26: 
 === RUN   TestSkippedWitLog
+    fails_test.go:30: the skip message
 --- SKIP: TestSkippedWitLog (0.00s)
-	stub_test.go:30: the skip message
 === RUN   TestFailed
+    fails_test.go:34: this failed
 --- FAIL: TestFailed (0.00s)
-	stub_test.go:34: this failed
 === RUN   TestWithStderr
 this is stderr
 --- PASS: TestWithStderr (0.00s)
 === RUN   TestFailedWithStderr
 this is stderr
+    fails_test.go:43: also failed
 --- FAIL: TestFailedWithStderr (0.00s)
-	stub_test.go:43: also failed
 === RUN   TestParallelTheFirst
 === PAUSE TestParallelTheFirst
 === RUN   TestParallelTheSecond
@@ -85,6 +138,7 @@ this is stderr
 === RUN   TestNestedWithFailure/b
 === RUN   TestNestedWithFailure/b/sub
 === RUN   TestNestedWithFailure/c
+    fails_test.go:65: failed
 === RUN   TestNestedWithFailure/d
 === RUN   TestNestedWithFailure/d/sub
 --- FAIL: TestNestedWithFailure (0.00s)
@@ -93,7 +147,6 @@ this is stderr
     --- PASS: TestNestedWithFailure/b (0.00s)
         --- PASS: TestNestedWithFailure/b/sub (0.00s)
     --- FAIL: TestNestedWithFailure/c (0.00s)
-    	stub_test.go:65: failed
     --- PASS: TestNestedWithFailure/d (0.00s)
         --- PASS: TestNestedWithFailure/d/sub (0.00s)
 === RUN   TestNestedSuccess
@@ -114,14 +167,14 @@ this is stderr
         --- PASS: TestNestedSuccess/c/sub (0.00s)
     --- PASS: TestNestedSuccess/d (0.00s)
         --- PASS: TestNestedSuccess/d/sub (0.00s)
+=== RUN   TestTimeout
+    timeout_test.go:13: skipping slow test
+--- SKIP: TestTimeout (0.00s)
 === CONT  TestParallelTheFirst
-=== CONT  TestParallelTheThird
-=== CONT  TestParallelTheSecond
---- PASS: TestParallelTheThird (0.00s)
---- PASS: TestParallelTheSecond (0.01s)
 --- PASS: TestParallelTheFirst (0.01s)
+=== CONT  TestParallelTheThird
+--- PASS: TestParallelTheThird (0.00s)
+=== CONT  TestParallelTheSecond
+--- PASS: TestParallelTheSecond (0.01s)
 FAIL
-FAIL	github.com/gotestyourself/gotestyourself/testjson/internal/stub	0.011s
-testing: warning: no tests to run
-PASS
-ok  	gotest.tools/gotestsum/internal/empty	0.004s [no tests to run]
+FAIL	gotest.tools/gotestsum/testjson/internal/withfails	0.020s

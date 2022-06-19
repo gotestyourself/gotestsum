@@ -1,0 +1,8 @@
+sometimes main can exit 2
+FAIL	gotest.tools/gotestsum/testjson/internal/badmain	0.001s
+ok  	gotest.tools/gotestsum/testjson/internal/empty	(cached) [no tests to run]
+ok  	gotest.tools/gotestsum/testjson/internal/good	(cached)
+FAIL
+FAIL	gotest.tools/gotestsum/testjson/internal/parallelfails	0.020s
+FAIL
+FAIL	gotest.tools/gotestsum/testjson/internal/withfails	0.020s
