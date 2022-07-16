@@ -141,7 +141,7 @@ func TestScanTestOutput_WithPkgNameFormat_WithCoverage(t *testing.T) {
 
 	assert.NilError(t, err)
 	golden.Assert(t, shim.out.String(), "short-format-coverage.out")
-	golden.Assert(t, shim.err.String(), "short-format-coverage.err")
+	golden.Assert(t, shim.err.String(), "go-test.err")
 }
 
 func TestScanTestOutput_WithStandardQuietFormat_WithCoverage(t *testing.T) {
@@ -152,7 +152,7 @@ func TestScanTestOutput_WithStandardQuietFormat_WithCoverage(t *testing.T) {
 
 	assert.NilError(t, err)
 	golden.Assert(t, shim.out.String(), "standard-quiet-format-coverage.out")
-	golden.Assert(t, shim.err.String(), "standard-quiet-format-coverage.err")
+	golden.Assert(t, shim.err.String(), "go-test.err")
 }
 
 func TestScanTestOutput_WithStandardVerboseFormat_WithShuffle(t *testing.T) {
