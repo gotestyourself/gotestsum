@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"sort"
@@ -11,7 +12,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
 	"golang.org/x/sync/errgroup"
 	"gotest.tools/gotestsum/log"
 )
@@ -680,7 +680,7 @@ func readStdout(config ScanConfig, execution *Execution) error {
 				config.Handler.Err(string(raw))
 				continue
 			}
-			return errors.Wrapf(err, "failed to parse test output: %s", string(raw))
+			return fmt.Errorf("failed to parse test output: %s: %w", string(raw), err)
 		}
 
 		event.RunID = config.RunID
@@ -689,7 +689,10 @@ func readStdout(config ScanConfig, execution *Execution) error {
 			return err
 		}
 	}
-	return errors.Wrap(scanner.Err(), "failed to scan test output")
+	if err := scanner.Err(); err != nil {
+		return fmt.Errorf("failed to scan test output: %w", err)
+	}
+	return nil
 }
 
 func readStderr(config ScanConfig, execution *Execution) error {

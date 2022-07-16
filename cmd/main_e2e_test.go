@@ -259,7 +259,7 @@ func TestE2E_IgnoresWarnings(t *testing.T) {
 		"--rerun-fails=1",
 		"--packages=./testdata/e2e/ignore_warnings/",
 		"--format=testname",
-		"--", "-tags=testdata", "-cover", "-coverpkg=github.com/pkg/errors",
+		"--", "-tags=testdata", "-cover", "-coverpkg=./cmd/internal",
 	}
 	assert.NilError(t, flags.Parse(args))
 	opts.args = flags.Args()

@@ -7,7 +7,6 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/pkg/errors"
 	"gotest.tools/gotestsum/internal/junitxml"
 	"gotest.tools/gotestsum/log"
 	"gotest.tools/gotestsum/testjson"
@@ -31,13 +30,13 @@ func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execu
 	if h.jsonFile != nil && len(event.Bytes()) > 0 {
 		_, err := h.jsonFile.Write(append(event.Bytes(), '\n'))
 		if err != nil {
-			return errors.Wrap(err, "failed to write JSON file")
+			return fmt.Errorf("failed to write JSON file: %w", err)
 		}
 	}
 
 	err := h.formatter.Format(event, execution)
 	if err != nil {
-		return errors.Wrap(err, "failed to format event")
+		return fmt.Errorf("failed to format event: %w", err)
 	}
 
 	if h.maxFails > 0 && len(execution.Failed()) >= h.maxFails {
@@ -60,7 +59,7 @@ var _ testjson.EventHandler = &eventHandler{}
 func newEventHandler(opts *options) (*eventHandler, error) {
 	formatter := testjson.NewEventFormatter(opts.stdout, opts.format)
 	if formatter == nil {
-		return nil, errors.Errorf("unknown format %s", opts.format)
+		return nil, fmt.Errorf("unknown format %s", opts.format)
 	}
 	handler := &eventHandler{
 		formatter: formatter,
@@ -72,7 +71,7 @@ func newEventHandler(opts *options) (*eventHandler, error) {
 		_ = os.MkdirAll(filepath.Dir(opts.jsonFile), 0o755)
 		handler.jsonFile, err = os.Create(opts.jsonFile)
 		if err != nil {
-			return handler, errors.Wrap(err, "failed to open JSON file")
+			return handler, fmt.Errorf("failed to open JSON file: %w", err)
 		}
 	}
 	return handler, nil
