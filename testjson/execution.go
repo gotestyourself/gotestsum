@@ -11,7 +11,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/jonboulle/clockwork"
 	"github.com/pkg/errors"
 	"golang.org/x/sync/errgroup"
 	"gotest.tools/gotestsum/log"
@@ -470,11 +469,11 @@ func (e *Execution) Packages() []string {
 	return sortedKeys(e.packages)
 }
 
-var clock = clockwork.NewRealClock()
+var timeNow = time.Now
 
 // Elapsed returns the time elapsed since the execution started.
 func (e *Execution) Elapsed() time.Duration {
-	return clock.Now().Sub(e.started)
+	return timeNow().Sub(e.started)
 }
 
 // Failed returns a list of all the failed test cases.
@@ -579,7 +578,7 @@ func (e *Execution) Started() time.Time {
 // time the test execution started.
 func newExecution() *Execution {
 	return &Execution{
-		started:  clock.Now(),
+		started:  timeNow(),
 		packages: make(map[string]*Package),
 	}
 }

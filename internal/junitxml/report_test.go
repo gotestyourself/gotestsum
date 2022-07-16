@@ -35,7 +35,7 @@ func createExecution(t *testing.T) *testjson.Execution {
 }
 
 func readTestData(t *testing.T, stream string) io.Reader {
-	raw, err := ioutil.ReadFile("../../testjson/testdata/go-test-json." + stream)
+	raw, err := ioutil.ReadFile("../../testjson/testdata/input/go-test-json." + stream)
 	assert.NilError(t, err)
 	return bytes.NewReader(raw)
 }

@@ -1,19 +1,19 @@
 sometimes main can exit 2
-FAIL	github.com/gotestyourself/gotestyourself/testjson/internal/badmain	0.010s
+FAIL	gotest.tools/gotestsum/testjson/internal/badmain	0.001s
 === RUN   TestPassed
 --- PASS: TestPassed (0.00s)
 === RUN   TestPassedWithLog
 --- PASS: TestPassedWithLog (0.00s)
-	good_test.go:15: this is a log
+    good_test.go:15: this is a log
 === RUN   TestPassedWithStdout
 this is a Print
 --- PASS: TestPassedWithStdout (0.00s)
 === RUN   TestSkipped
 --- SKIP: TestSkipped (0.00s)
-	good_test.go:23: 
+    good_test.go:23: 
 === RUN   TestSkippedWitLog
 --- SKIP: TestSkippedWitLog (0.00s)
-	good_test.go:27: the skip message
+    good_test.go:27: the skip message
 === RUN   TestWithStderr
 this is stderr
 --- PASS: TestWithStderr (0.00s)
@@ -48,31 +48,32 @@ this is stderr
 --- PASS: TestParallelTheSecond (0.01s)
 --- PASS: TestParallelTheFirst (0.01s)
 PASS
-ok  	github.com/gotestyourself/gotestyourself/testjson/internal/good	(cached)
+coverage: 0.0% of statements
+ok  	gotest.tools/gotestsum/testjson/internal/good	0.011s	coverage: 0.0% of statements
 === RUN   TestPassed
 --- PASS: TestPassed (0.00s)
 === RUN   TestPassedWithLog
 --- PASS: TestPassedWithLog (0.00s)
-	stub_test.go:18: this is a log
+    stub_test.go:18: this is a log
 === RUN   TestPassedWithStdout
 this is a Print
 --- PASS: TestPassedWithStdout (0.00s)
 === RUN   TestSkipped
 --- SKIP: TestSkipped (0.00s)
-	stub_test.go:26: 
+    stub_test.go:26: 
 === RUN   TestSkippedWitLog
 --- SKIP: TestSkippedWitLog (0.00s)
-	stub_test.go:30: the skip message
+    stub_test.go:30: the skip message
 === RUN   TestFailed
 --- FAIL: TestFailed (0.00s)
-	stub_test.go:34: this failed
+    stub_test.go:34: this failed
 === RUN   TestWithStderr
 this is stderr
 --- PASS: TestWithStderr (0.00s)
 === RUN   TestFailedWithStderr
 this is stderr
 --- FAIL: TestFailedWithStderr (0.00s)
-	stub_test.go:43: also failed
+    stub_test.go:43: also failed
 === RUN   TestParallelTheFirst
 === PAUSE TestParallelTheFirst
 === RUN   TestParallelTheSecond
@@ -93,7 +94,7 @@ this is stderr
     --- PASS: TestNestedWithFailure/b (0.00s)
         --- PASS: TestNestedWithFailure/b/sub (0.00s)
     --- FAIL: TestNestedWithFailure/c (0.00s)
-    	stub_test.go:65: failed
+        stub_test.go:65: failed
     --- PASS: TestNestedWithFailure/d (0.00s)
         --- PASS: TestNestedWithFailure/d/sub (0.00s)
 === RUN   TestNestedSuccess
@@ -121,7 +122,5 @@ this is stderr
 --- PASS: TestParallelTheSecond (0.01s)
 --- PASS: TestParallelTheFirst (0.01s)
 FAIL
-FAIL	github.com/gotestyourself/gotestyourself/testjson/internal/stub	0.011s
-testing: warning: no tests to run
-PASS
-ok  	gotest.tools/gotestsum/internal/empty	0.004s [no tests to run]
+coverage: 0.0% of statements
+FAIL	gotest.tools/gotestsum/testjson/internal/stub	0.011s

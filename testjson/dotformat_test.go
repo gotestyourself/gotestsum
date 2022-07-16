@@ -20,29 +20,19 @@ import (
 func TestScanTestOutput_WithDotsFormatter(t *testing.T) {
 	skip.If(t, runtime.GOOS == "windows")
 
-	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
-
 	out := new(bytes.Buffer)
 	dotfmt := &dotFormatter{
 		pkgs:      make(map[string]*dotLine),
 		writer:    dotwriter.New(out),
 		termWidth: 80,
 	}
-	shim := newFakeHandler(dotfmt, "go-test-json")
-	exec, err := ScanTestOutput(shim.Config(t))
+	shim := newFakeHandler(dotfmt, "input/go-test-json")
+	_, err := ScanTestOutput(shim.Config(t))
 	assert.NilError(t, err)
 
 	actual := text.ProcessLines(t, out, text.OpRemoveSummaryLineElapsedTime)
-	golden.Assert(t, actual, outFile("dots-format"))
-	golden.Assert(t, shim.err.String(), "dots-format.err")
-	assert.DeepEqual(t, exec, expectedExecution, cmpExecutionShallow)
-}
-
-func outFile(name string) string {
-	if runtime.GOOS == "windows" {
-		return name + "-windows.out"
-	}
-	return name + ".out"
+	golden.Assert(t, actual, "format/dots-v2.out")
+	golden.Assert(t, shim.err.String(), "input/go-test-json.err")
 }
 
 func TestFmtDotElapsed(t *testing.T) {
