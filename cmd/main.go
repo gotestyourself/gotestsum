@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -13,7 +14,6 @@ import (
 
 	"github.com/dnephin/pflag"
 	"github.com/fatih/color"
-	"github.com/pkg/errors"
 	"gotest.tools/gotestsum/log"
 	"gotest.tools/gotestsum/testjson"
 )
@@ -376,7 +376,7 @@ func startGoTest(ctx context.Context, args []string) (*proc, error) {
 		return nil, err
 	}
 	if err := cmd.Start(); err != nil {
-		return nil, errors.Wrapf(err, "failed to run %s", strings.Join(cmd.Args, " "))
+		return nil, fmt.Errorf("failed to run %s: %w", strings.Join(cmd.Args, " "), err)
 	}
 	log.Debugf("go test pid: %d", cmd.Process.Pid)
 

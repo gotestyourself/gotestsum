@@ -2,12 +2,12 @@ package cmd
 
 import (
 	"encoding/csv"
+	"fmt"
 	"path"
 	"strings"
 
 	"github.com/dnephin/pflag"
 	"github.com/google/shlex"
-	"github.com/pkg/errors"
 	"gotest.tools/gotestsum/internal/junitxml"
 	"gotest.tools/gotestsum/testjson"
 )
@@ -35,7 +35,7 @@ func (s *hideSummaryValue) Set(val string) error {
 	for _, item := range v {
 		summary, ok := testjson.NewSummary(item)
 		if !ok {
-			return errors.Errorf("value must be one or more of: %s",
+			return fmt.Errorf("value must be one or more of: %s",
 				testjson.SummarizeAll.String())
 		}
 		s.value -= summary
@@ -69,7 +69,7 @@ func (f *junitFieldFormatValue) Set(val string) error {
 		f.value = path.Base
 		return nil
 	}
-	return errors.Errorf("invalid value: %v, must be one of: "+junitFieldFormatValues, val)
+	return fmt.Errorf("invalid value: %v, must be one of: "+junitFieldFormatValues, val)
 }
 
 func (f *junitFieldFormatValue) Type() string {
