@@ -180,7 +180,7 @@ func TestScanTestOutput_WithPkgNameFormat_WithCoverage(t *testing.T) {
 	assert.DeepEqual(t, exec, expectedCoverageExecution, cmpExecutionShallow)
 }
 
-func TestScanTestOutputWithStandardVerboseFormat(t *testing.T) {
+func TestScanTestOutput_WithStandardVerboseFormat(t *testing.T) {
 	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
 
 	shim := newFakeHandlerWithAdapter(standardVerboseFormat, "go-test-json")
@@ -192,7 +192,7 @@ func TestScanTestOutputWithStandardVerboseFormat(t *testing.T) {
 	assert.DeepEqual(t, exec, expectedExecution, cmpExecutionShallow)
 }
 
-func TestScanTestOutputWithStandardQuietFormat(t *testing.T) {
+func TestScanTestOutput_WithStandardQuietFormat(t *testing.T) {
 	defer patchPkgPathPrefix("github.com/gotestyourself/gotestyourself")()
 
 	shim := newFakeHandlerWithAdapter(standardQuietFormat, "go-test-json")
@@ -204,7 +204,7 @@ func TestScanTestOutputWithStandardQuietFormat(t *testing.T) {
 	assert.DeepEqual(t, exec, expectedExecution, cmpExecutionShallow)
 }
 
-func TestScanTestOutputWithStandardQuietFormat_WithCoverage(t *testing.T) {
+func TestScanTestOutput_WithStandardQuietFormat_WithCoverage(t *testing.T) {
 	defer patchPkgPathPrefix("gotest.tools")()
 
 	shim := newFakeHandlerWithAdapter(standardQuietFormat, "go-test-json-with-cover")
@@ -255,4 +255,31 @@ var expectedCoverageExecution = &Execution{
 			elapsed: time.Millisecond,
 		},
 	},
+}
+
+func TestScanTestOutput_WithStandardVerboseFormat_WithShuffle(t *testing.T) {
+	shim := newFakeHandlerWithAdapter(standardVerboseFormat, "go-test-json-with-shuffle")
+	_, err := ScanTestOutput(shim.Config(t))
+
+	assert.NilError(t, err)
+	golden.Assert(t, shim.out.String(), "standard-verbose-format-shuffle.out")
+	golden.Assert(t, shim.err.String(), "go-test.err")
+}
+
+func TestScanTestOutput_WithTestNameFormat_WithShuffle(t *testing.T) {
+	shim := newFakeHandlerWithAdapter(testNameFormat, "go-test-json-with-shuffle")
+	_, err := ScanTestOutput(shim.Config(t))
+
+	assert.NilError(t, err)
+	golden.Assert(t, shim.out.String(), "testname-format-shuffle.out")
+	golden.Assert(t, shim.err.String(), "go-test.err")
+}
+
+func TestScanTestOutput_WithPkgNameFormat_WithShuffle(t *testing.T) {
+	shim := newFakeHandlerWithAdapter(pkgNameFormat, "go-test-json-with-shuffle")
+	_, err := ScanTestOutput(shim.Config(t))
+
+	assert.NilError(t, err)
+	golden.Assert(t, shim.out.String(), "pkgname-format-shuffle.out")
+	golden.Assert(t, shim.err.String(), "go-test.err")
 }

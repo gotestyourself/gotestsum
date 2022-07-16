@@ -28,7 +28,7 @@ func TestPostRunHook(t *testing.T) {
 		stdout:         buf,
 	}
 
-	defer env.Patch(t, "GOTESTSUM_FORMAT", "short")()
+	env.Patch(t, "GOTESTSUM_FORMAT", "short")
 
 	exec := newExecFromTestData(t)
 	err = postRunHook(opts, exec)

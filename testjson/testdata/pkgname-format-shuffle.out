@@ -1,0 +1,4 @@
+✖  testjson/internal/badmain (1ms)
+✓  testjson/internal/good (20ms)
+✖  testjson/internal/parallelfails (21ms) (-test.shuffle 123456)
+✖  testjson/internal/withfails (20ms) (-test.shuffle 123456)
