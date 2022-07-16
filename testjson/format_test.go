@@ -20,7 +20,7 @@ import (
 //   -tags="stubpkg timeout"
 //   -tags="stubpkg panic"
 //
-// Expect output for the standard-quiet and standard-verbose formats can be
+// Expected output for the standard-quiet and standard-verbose formats can be
 // generated with the same command by removing the -json flag.
 
 type fakeHandler struct {
