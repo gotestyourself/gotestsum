@@ -133,26 +133,56 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 	}
 }
 
-func TestScanTestOutput_WithPkgNameFormat_WithCoverage(t *testing.T) {
-	patchPkgPathPrefix(t, "gotest.tools")
+func TestFormats_Coverage(t *testing.T) {
+	type testCase struct {
+		name        string
+		format      func(event TestEvent, exec *Execution) string
+		expectedOut string
+		expected    func(t *testing.T, exec *Execution)
+	}
 
-	shim := newFakeHandlerWithAdapter(pkgNameFormat, "go-test-json-with-cover")
-	_, err := ScanTestOutput(shim.Config(t))
+	run := func(t *testing.T, tc testCase) {
+		patchPkgPathPrefix(t, "gotest.tools")
+		shim := newFakeHandlerWithAdapter(tc.format, "input/go-test-json-with-cover")
+		exec, err := ScanTestOutput(shim.Config(t))
+		assert.NilError(t, err)
 
-	assert.NilError(t, err)
-	golden.Assert(t, shim.out.String(), "short-format-coverage.out")
-	golden.Assert(t, shim.err.String(), "go-test.err")
-}
+		golden.Assert(t, shim.out.String(), tc.expectedOut)
+		golden.Assert(t, shim.err.String(), "go-test.err")
 
-func TestScanTestOutput_WithStandardQuietFormat_WithCoverage(t *testing.T) {
-	patchPkgPathPrefix(t, "gotest.tools")
+		if tc.expected != nil {
+			tc.expected(t, exec)
+		}
+	}
 
-	shim := newFakeHandlerWithAdapter(standardQuietFormat, "go-test-json-with-cover")
-	_, err := ScanTestOutput(shim.Config(t))
+	testCases := []testCase{
+		{
+			name:        "testname",
+			format:      testNameFormat,
+			expectedOut: "format/testname-coverage.out",
+		},
+		{
+			name:        "pkgname",
+			format:      pkgNameFormat,
+			expectedOut: "format/pkgname-coverage.out",
+		},
+		{
+			name:        "standard-verbose",
+			format:      standardVerboseFormat,
+			expectedOut: "format/standard-verbose-coverage.out",
+		},
+		{
+			name:        "standard-quiet",
+			format:      standardQuietFormat,
+			expectedOut: "format/standard-quiet-coverage.out",
+		},
+	}
 
-	assert.NilError(t, err)
-	golden.Assert(t, shim.out.String(), "standard-quiet-format-coverage.out")
-	golden.Assert(t, shim.err.String(), "go-test.err")
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			run(t, tc)
+		})
+	}
 }
 
 func TestScanTestOutput_WithStandardVerboseFormat_WithShuffle(t *testing.T) {
