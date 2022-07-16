@@ -185,29 +185,53 @@ func TestFormats_Coverage(t *testing.T) {
 	}
 }
 
-func TestScanTestOutput_WithStandardVerboseFormat_WithShuffle(t *testing.T) {
-	shim := newFakeHandlerWithAdapter(standardVerboseFormat, "go-test-json-with-shuffle")
-	_, err := ScanTestOutput(shim.Config(t))
+func TestFormats_Shuffle(t *testing.T) {
+	type testCase struct {
+		name        string
+		format      func(event TestEvent, exec *Execution) string
+		expectedOut string
+		expected    func(t *testing.T, exec *Execution)
+	}
 
-	assert.NilError(t, err)
-	golden.Assert(t, shim.out.String(), "standard-verbose-format-shuffle.out")
-	golden.Assert(t, shim.err.String(), "go-test.err")
-}
+	run := func(t *testing.T, tc testCase) {
+		shim := newFakeHandlerWithAdapter(tc.format, "input/go-test-json-with-shuffle")
+		exec, err := ScanTestOutput(shim.Config(t))
+		assert.NilError(t, err)
 
-func TestScanTestOutput_WithTestNameFormat_WithShuffle(t *testing.T) {
-	shim := newFakeHandlerWithAdapter(testNameFormat, "go-test-json-with-shuffle")
-	_, err := ScanTestOutput(shim.Config(t))
+		golden.Assert(t, shim.out.String(), tc.expectedOut)
+		golden.Assert(t, shim.err.String(), "go-test.err")
 
-	assert.NilError(t, err)
-	golden.Assert(t, shim.out.String(), "testname-format-shuffle.out")
-	golden.Assert(t, shim.err.String(), "go-test.err")
-}
+		if tc.expected != nil {
+			tc.expected(t, exec)
+		}
+	}
 
-func TestScanTestOutput_WithPkgNameFormat_WithShuffle(t *testing.T) {
-	shim := newFakeHandlerWithAdapter(pkgNameFormat, "go-test-json-with-shuffle")
-	_, err := ScanTestOutput(shim.Config(t))
+	testCases := []testCase{
+		{
+			name:        "testname",
+			format:      testNameFormat,
+			expectedOut: "format/testname-shuffle.out",
+		},
+		{
+			name:        "pkgname",
+			format:      pkgNameFormat,
+			expectedOut: "format/pkgname-shuffle.out",
+		},
+		{
+			name:        "standard-verbose",
+			format:      standardVerboseFormat,
+			expectedOut: "format/standard-verbose-shuffle.out",
+		},
+		{
+			name:        "standard-quiet",
+			format:      standardQuietFormat,
+			expectedOut: "format/standard-quiet-shuffle.out",
+		},
+	}
 
-	assert.NilError(t, err)
-	golden.Assert(t, shim.out.String(), "pkgname-format-shuffle.out")
-	golden.Assert(t, shim.err.String(), "go-test.err")
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			run(t, tc)
+		})
+	}
 }
