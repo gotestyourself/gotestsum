@@ -20,7 +20,11 @@ func TestWrite(t *testing.T) {
 	exec := createExecution(t)
 
 	env.Patch(t, "GOVERSION", "go7.7.7")
-	err := Write(out, exec, Config{customTimestamp: new(time.Time).Format(time.RFC3339)})
+	err := Write(out, exec, Config{
+		ProjectName:     "test",
+		customTimestamp: new(time.Time).Format(time.RFC3339),
+		customElapsed:   "2.1",
+	})
 	assert.NilError(t, err)
 	golden.Assert(t, out.String(), "junitxml-report.golden")
 }

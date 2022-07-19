@@ -17,8 +17,13 @@ import (
 
 // JUnitTestSuites is a collection of JUnit test suites.
 type JUnitTestSuites struct {
-	XMLName xml.Name `xml:"testsuites"`
-	Suites  []JUnitTestSuite
+	XMLName  xml.Name `xml:"testsuites"`
+	Name     string   `xml:"name,attr,omitempty"`
+	Tests    int      `xml:"tests,attr"`
+	Failures int      `xml:"failures,attr"`
+	Errors   int      `xml:"errors,attr"`
+	Time     string   `xml:"time,attr"`
+	Suites   []JUnitTestSuite
 }
 
 // JUnitTestSuite is a single JUnit test suite which may contain many
@@ -64,10 +69,12 @@ type JUnitFailure struct {
 
 // Config used to write a junit XML document.
 type Config struct {
+	ProjectName             string
 	FormatTestSuiteName     FormatFunc
 	FormatTestCaseClassname FormatFunc
 	// This is used for tests to have a consistent timestamp
 	customTimestamp string
+	customElapsed   string
 }
 
 // FormatFunc converts a string from one format into another.
@@ -84,8 +91,17 @@ func Write(out io.Writer, exec *testjson.Execution, cfg Config) error {
 func generate(exec *testjson.Execution, cfg Config) JUnitTestSuites {
 	cfg = configWithDefaults(cfg)
 	version := goVersion()
-	suites := JUnitTestSuites{}
+	suites := JUnitTestSuites{
+		Name:     cfg.ProjectName,
+		Tests:    exec.Total(),
+		Failures: len(exec.Failed()),
+		Errors:   len(exec.Errors()),
+		Time:     formatDurationAsSeconds(time.Since(exec.Started())),
+	}
 
+	if cfg.customElapsed != "" {
+		suites.Time = cfg.customElapsed
+	}
 	for _, pkgname := range exec.Packages() {
 		pkg := exec.Package(pkgname)
 		junitpkg := JUnitTestSuite{
