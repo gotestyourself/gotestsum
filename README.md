@@ -48,7 +48,7 @@ Please [share it on github](https://github.com/gotestyourself/gotestsum/issues/n
 
 A demonstration of three `--format` options.
 
-![Demo](https://i.ibb.co/XZfhmXq/demo.gif)
+![Demo](https://user-images.githubusercontent.com/442180/182284939-e08a0aa5-4504-4e30-9e88-207ef47f4537.gif)
 <br /><sup>[Source](https://github.com/gotestyourself/gotestsum/tree/readme-demo/scripts)</sup>
 
 ### Summary
