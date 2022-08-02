@@ -18,7 +18,7 @@ update-golden() {
 }
 
 lint() {
-    golangci-lint run -v
+    golangci-lint run -v --config .project/golangci-lint.yml
 }
 
 go-mod-tidy() {
@@ -47,7 +47,7 @@ shell() {
 _docker-build-dev() {
     set -e
     local idfile=".plsdo/docker-build-dev-image-id-${GOLANG_VERSION-default}"
-    local dockerfile=Dockerfile
+    local dockerfile=.project/Dockerfile
     local tag=gotest.tools/gotestsum/builder
     if [ -f "$idfile" ] && [ "$dockerfile" -ot "$idfile" ]; then
         cat "$idfile"

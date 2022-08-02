@@ -293,7 +293,7 @@ output. `./binary.test` is the path to the compiled test binary. The `-test.v`
 must be included so that `go tool test2json` receives all the output.
 
 To execute a test binary without installing Go, see
-[running without go](./docs/running-without-go.md).
+[running without go](./.project/docs/running-without-go.md).
 
 
 ### Finding and skipping slow tests

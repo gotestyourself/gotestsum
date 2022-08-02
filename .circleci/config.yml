@@ -107,13 +107,13 @@ jobs:
           steps:
             run:
               name: build binaries
-              command: bin/goreleaser --rm-dist --snapshot
+              command: bin/goreleaser --rm-dist --snapshot --config .project/goreleaser.yml
       - when:
           condition: << parameters.publish >>
           steps:
             run:
               name: build and publish binaries
-              command: bin/goreleaser --rm-dist --skip-validate
+              command: bin/goreleaser --rm-dist --skip-validate --config .project/goreleaser.yml
       - store_artifacts:
           path: ./dist
           destination: dist
