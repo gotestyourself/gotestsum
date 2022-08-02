@@ -5,7 +5,7 @@ import (
 
 	"gotest.tools/gotestsum/cmd"
 	"gotest.tools/gotestsum/cmd/tool"
-	"gotest.tools/gotestsum/log"
+	"gotest.tools/gotestsum/internal/log"
 )
 
 func main() {

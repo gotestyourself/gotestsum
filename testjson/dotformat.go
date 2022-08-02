@@ -10,7 +10,7 @@ import (
 
 	"golang.org/x/term"
 	"gotest.tools/gotestsum/internal/dotwriter"
-	"gotest.tools/gotestsum/log"
+	"gotest.tools/gotestsum/internal/log"
 )
 
 func dotsFormatV1(event TestEvent, exec *Execution) string {

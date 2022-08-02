@@ -14,7 +14,7 @@ import (
 
 	"github.com/dnephin/pflag"
 	"github.com/fatih/color"
-	"gotest.tools/gotestsum/log"
+	"gotest.tools/gotestsum/internal/log"
 	"gotest.tools/gotestsum/testjson"
 )
 
