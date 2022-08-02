@@ -2,25 +2,13 @@
 
 `gotestsum` runs tests using `go test -json`, prints formatted test output, and a summary of the test run.
 It is designed to work well for both local development, and for automation like CI.
-`gotest.tools/gotestsum/testjson` ([godoc](https://pkg.go.dev/gotest.tools/gotestsum/testjson)) is a library
-that can be used to read [`test2json`](https://golang.org/cmd/test2json/) output.
-
-See the [documentation](#documentation) for more details.
 
 ## Install
 
 Download a binary from [releases](https://github.com/gotestyourself/gotestsum/releases), or build from
 source with `go install gotest.tools/gotestsum@latest`. With `go` version before 1.17, use `go get gotest.tools/gotestsum`.
 
-## Demo
-A demonstration of three `--format` options.
-
-![Demo](https://i.ibb.co/XZfhmXq/demo.gif)
-<br /><sup>[Source](https://github.com/gotestyourself/gotestsum/tree/readme-demo/scripts)</sup>
-
-## Documentation 
-
-### Index
+## Documentation
 
 **Core features**
 - [Output Format](#output-format) from compact to verbose, with color highlighting.
@@ -28,15 +16,16 @@ A demonstration of three `--format` options.
 - [Add `go test` flags](#custom-go-test-command), or 
   [run a compiled test binary](#executing-a-compiled-test-binary).
 
-**Automation and CI**
-- [JUnit XML file](#junit-xml-output) for integration with CI systems.
-- [JSON file](#json-file-output) to capture the `test2json` output in a file.
-- [Re-run failed tests](#re-running-failed-tests) to save time when dealing with flaky test suites.
+**CI and Automation**
+- [`--junitfile`](#junit-xml-output) - write a JUnit XML file for integration with CI systems.
+- [`--jsonfile`](#json-file-output) - write the `test2json` output in a file.
+- [`--rerun-fails`](#re-running-failed-tests) - run failed tests again to save time when dealing with flaky test suites.
 
 **Local Development**
-- [Post run commands](#post-run-command) may be used for desktop notification.
-- [Run tests when a file is saved](#run-tests-when-a-file-is-saved).
-- [Find or skip slow tests](#finding-and-skipping-slow-tests) using `gotestsum tool slowest`.
+- [`--watch`](#run-tests-when-a-file-is-saved) - when a file is saved, run the tests for the package that includes the file.
+- [`--post-run-command`](#post-run-command) - run a command after the tests, can be used for desktop notification.
+- [`gotestsum tool slowest`](#finding-and-skipping-slow-tests) - find the slowest tests, also update slow tests to be skipepd with `-short`.
+
 
 ### Output Format
 
@@ -54,6 +43,13 @@ Commonly used formats (see `--help` for a full list):
 
 Have an idea for a new format?
 Please [share it on github](https://github.com/gotestyourself/gotestsum/issues/new)!
+
+#### Demo
+
+A demonstration of three `--format` options.
+
+![Demo](https://i.ibb.co/XZfhmXq/demo.gif)
+<br /><sup>[Source](https://github.com/gotestyourself/gotestsum/tree/readme-demo/scripts)</sup>
 
 ### Summary
 
