@@ -93,6 +93,7 @@ func writeJUnitFile(opts *options, execution *testjson.Execution) error {
 	}()
 
 	return junitxml.Write(junitFile, execution, junitxml.Config{
+		ProjectName:             opts.junitProjectName,
 		FormatTestSuiteName:     opts.junitTestSuiteNameFormat.Value(),
 		FormatTestCaseClassname: opts.junitTestCaseClassnameFormat.Value(),
 	})

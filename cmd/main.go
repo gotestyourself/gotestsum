@@ -88,6 +88,9 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		"format the testsuite name field as: "+junitFieldFormatValues)
 	flags.Var(opts.junitTestCaseClassnameFormat, "junitfile-testcase-classname",
 		"format the testcase classname field as: "+junitFieldFormatValues)
+	flags.StringVar(&opts.junitProjectName, "junitfile-project-name",
+		lookEnvWithDefault("GOTESTSUM_JUNITFILE_PROJECT_NAME", ""),
+		"name of the project used in the junit.xml file")
 
 	flags.IntVar(&opts.rerunFailsMaxAttempts, "rerun-fails", 0,
 		"rerun failed tests until they all pass, or attempts exceeds maximum. Defaults to max 2 reruns when enabled.")
@@ -152,6 +155,7 @@ type options struct {
 	hideSummary                  *hideSummaryValue
 	junitTestSuiteNameFormat     *junitFieldFormatValue
 	junitTestCaseClassnameFormat *junitFieldFormatValue
+	junitProjectName             string
 	rerunFailsMaxAttempts        int
 	rerunFailsMaxInitialFailures int
 	rerunFailsReportFile         string

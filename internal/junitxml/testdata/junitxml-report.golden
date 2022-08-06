@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites>
+<testsuites name="test" tests="59" failures="13" errors="1" time="2.1">
 	<testsuite tests="0" failures="0" time="0.001000" name="gotest.tools/gotestsum/testjson/internal/badmain" timestamp="0001-01-01T00:00:00Z">
 		<properties>
 			<property name="go.version" value="go7.7.7"></property>
