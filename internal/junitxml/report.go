@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"gotest.tools/gotestsum/log"
+	"gotest.tools/gotestsum/internal/log"
 	"gotest.tools/gotestsum/testjson"
 )
 

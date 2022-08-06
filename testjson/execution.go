@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"golang.org/x/sync/errgroup"
-	"gotest.tools/gotestsum/log"
+	"gotest.tools/gotestsum/internal/log"
 )
 
 // Action of TestEvent

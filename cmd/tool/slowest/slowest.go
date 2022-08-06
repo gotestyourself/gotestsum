@@ -9,7 +9,7 @@ import (
 
 	"github.com/dnephin/pflag"
 	"gotest.tools/gotestsum/internal/aggregate"
-	"gotest.tools/gotestsum/log"
+	"gotest.tools/gotestsum/internal/log"
 	"gotest.tools/gotestsum/testjson"
 )
 

@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 
 	"gotest.tools/gotestsum/internal/junitxml"
-	"gotest.tools/gotestsum/log"
+	"gotest.tools/gotestsum/internal/log"
 	"gotest.tools/gotestsum/testjson"
 )
 
