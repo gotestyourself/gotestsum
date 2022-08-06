@@ -46,9 +46,7 @@ workflows:
                 echo 'export PATH="$PATH:/c/Program Files/Go/bin"' > $BASH_ENV
             - run: go version
 
-      - go/lint:
-          golangci-lint-version: 1.48.0
-
+      - lint
       - build
       - run
 
@@ -129,6 +127,26 @@ jobs:
           mkdir -p dist
           go build -o dist/gotestsum .
       - run: dist/gotestsum
+
+  lint:
+    executor:
+      name: go/golang
+      tag: 1.19-alpine
+    steps:
+      - checkout
+      - run: go mod download
+      - run:
+          name: Install golangci-lint
+          command: |
+            mkdir -p /go/bin
+
+            download=https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh
+            wget -O- -q "$download" | sh -s -- -b /go/bin/ v1.48.0
+      - run:
+          name: Lint
+          command: |
+            golangci-lint run -v --concurrency 2 --config .project/golangci-lint.yml
+
 
   update-windows-golden:
     executor: windows
