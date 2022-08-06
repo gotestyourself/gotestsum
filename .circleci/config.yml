@@ -7,13 +7,6 @@ workflows:
   ci:
     jobs:
       - go/test:
-          name: test-go-1.15
-          gotestsum-format: testname
-          executor:
-            name: go/golang
-            tag: 1.15-alpine
-
-      - go/test:
           name: test-go-1.16
           gotestsum-format: testname
           executor:
@@ -35,6 +28,13 @@ workflows:
             tag: 1.18-alpine
 
       - go/test:
+          name: test-go-1.19
+          gotestsum-format: testname
+          executor:
+            name: go/golang
+            tag: 1.19-alpine
+
+      - go/test:
           name: test-windows
           executor: windows
           pre-steps:
@@ -47,7 +47,7 @@ workflows:
             - run: go version
 
       - go/lint:
-          golangci-lint-version: 1.42.0
+          golangci-lint-version: 1.48.0
 
       - build
       - run
@@ -94,7 +94,7 @@ jobs:
         default: false
     executor:
       name: go/golang
-      tag: 1.18-alpine
+      tag: 1.19-alpine
     steps:
       - go/install: {package: git}
       - go/install-ssh
