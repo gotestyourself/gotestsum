@@ -1,4 +1,5 @@
-/*Package dotwriter implements a buffered Writer for updating progress on the
+/*
+Package dotwriter implements a buffered Writer for updating progress on the
 terminal.
 */
 package dotwriter

@@ -158,6 +158,7 @@ func (p *Package) Output(id int) string {
 // As a workaround for test output being attributed to the wrong subtest, if:
 //   - the TestCase is a root TestCase (not a subtest), and
 //   - the TestCase has no subtest failures;
+//
 // then all output for every subtest under the root test is returned.
 // See https://github.com/golang/go/issues/29755.
 func (p *Package) OutputLines(tc TestCase) []string {
