@@ -11,20 +11,25 @@ source with `go install gotest.tools/gotestsum@latest`. With `go` version before
 ## Documentation
 
 **Core features**
-- [Output Format](#output-format) from compact to verbose, with color highlighting.
-- [Summary](#summary) of the test run.
-- [Add `go test` flags](#custom-go-test-command), or 
-  [run a compiled test binary](#executing-a-compiled-test-binary).
+- Change the [test output format](#output-format), from compact to verbose with color highlighting.
+- Print a [summary](#summary) of the test run after running all the tests.
+- Use any [`go test` flag](#custom-go-test-command),
+  run a script with [`--raw-command`](#custom-go-test-command),
+  or [run a compiled test binary](#executing-a-compiled-test-binary).
 
 **CI and Automation**
 - [`--junitfile`](#junit-xml-output) - write a JUnit XML file for integration with CI systems.
-- [`--jsonfile`](#json-file-output) - write the `test2json` output in a file.
-- [`--rerun-fails`](#re-running-failed-tests) - run failed tests again to save time when dealing with flaky test suites.
+- [`--jsonfile`](#json-file-output) - write all the [test2json](https://pkg.go.dev/cmd/test2json) input received by `gotestsum` to a file. The file
+  can be used as input to [`gotestsum tool slowest`](#finding-and-skipping-slow-tests), or as a way to
+  store the full verbose output of tests when less verbose output is printed to stdout using a compact [`--format`](#output-format).
+- [`--rerun-fails`](#re-running-failed-tests) - run failed (possibly flaky) tests again to avoid re-running the
+  entire suite. Re-running individual tests can save significant time when working with flaky test suites.
 
 **Local Development**
-- [`--watch`](#run-tests-when-a-file-is-saved) - when a file is saved, run the tests for the package that includes the file.
-- [`--post-run-command`](#post-run-command) - run a command after the tests, can be used for desktop notification.
-- [`gotestsum tool slowest`](#finding-and-skipping-slow-tests) - find the slowest tests, also update slow tests to be skipepd with `-short`.
+- [`--watch`](#run-tests-when-a-file-is-saved) - every time a `.go` file is saved run the tests for the package that changed.
+- [`--post-run-command`](#post-run-command) - run a command after the tests, can be used for desktop notification of the test run.
+- [`gotestsum tool slowest`](#finding-and-skipping-slow-tests) - find the slowest tests, or automatically update the source code of
+  the slowest tests to add a conditional `t.Skip` statements. This statement allows you to skip the slowest tests using `gotestsum -- -short ./...`.
 
 
 ### Output Format
