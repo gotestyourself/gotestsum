@@ -20,8 +20,8 @@ source with `go install gotest.tools/gotestsum@latest`. With `go` version before
 **CI and Automation**
 - [`--junitfile`](#junit-xml-output) - write a JUnit XML file for integration with CI systems.
 - [`--jsonfile`](#json-file-output) - write all the [test2json](https://pkg.go.dev/cmd/test2json) input received by `gotestsum` to a file. The file
-  can be used as input to [`gotestsum tool slowest`](#finding-and-skipping-slow-tests) or, as a way to
-  store the full verbose output of tests, while only printing less verbose output to stdout using a compact [`--format`](#output-format).
+  can be used as input to [`gotestsum tool slowest`](#finding-and-skipping-slow-tests), or as a way to
+  store the full verbose output of tests when less verbose output is printed to stdout using a compact [`--format`](#output-format).
 - [`--rerun-fails`](#re-running-failed-tests) - run failed (possibly flaky) tests again to avoid re-running the
   entire suite. Re-running individual tests can save significant time when working with flaky test suites.
 
