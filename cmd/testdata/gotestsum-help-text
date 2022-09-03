@@ -2,6 +2,8 @@ Usage:
     gotestsum [flags] [--] [go test flags]
     gotestsum [command]
 
+See https://pkg.go.dev/gotest.tools/gotestsum#section-readme for detailed documentation.
+
 Flags:
       --debug                                       enabled debug logging
   -f, --format string                               print format of test input (default "short")
@@ -24,14 +26,14 @@ Flags:
       --watch                                       watch go files, and run tests when a file is modified
 
 Formats:
-    dots                    print a character for each test
-    dots-v2                 experimental dots format, one package per line
-    pkgname                 print a line for each package
-    pkgname-and-test-fails  print a line for each package and failed test output
-    testname                print a line for each test and package
-    standard-quiet          standard go test format
-    standard-verbose        standard go test -v format
+    dots                     print a character for each test
+    dots-v2                  experimental dots format, one package per line
+    pkgname                  print a line for each package
+    pkgname-and-test-fails   print a line for each package and failed test output
+    testname                 print a line for each test and package
+    standard-quiet           standard go test format
+    standard-verbose         standard go test -v format
 
 Commands:
-    tool                    tools for working with test2json output
-    help                    print this help next
+    gotestsum tool slowest   find or skip the slowest tests
+    gotestsum help           print this help next

@@ -114,24 +114,26 @@ func usage(out io.Writer, name string, flags *pflag.FlagSet) {
     %[1]s [flags] [--] [go test flags]
     %[1]s [command]
 
+See https://pkg.go.dev/gotest.tools/gotestsum#section-readme for detailed documentation.
+
 Flags:
 `, name)
 	flags.SetOutput(out)
 	flags.PrintDefaults()
-	fmt.Fprint(out, `
+	fmt.Fprintf(out, `
 Formats:
-    dots                    print a character for each test
-    dots-v2                 experimental dots format, one package per line
-    pkgname                 print a line for each package
-    pkgname-and-test-fails  print a line for each package and failed test output
-    testname                print a line for each test and package
-    standard-quiet          standard go test format
-    standard-verbose        standard go test -v format
+    dots                     print a character for each test
+    dots-v2                  experimental dots format, one package per line
+    pkgname                  print a line for each package
+    pkgname-and-test-fails   print a line for each package and failed test output
+    testname                 print a line for each test and package
+    standard-quiet           standard go test format
+    standard-verbose         standard go test -v format
 
 Commands:
-    tool                    tools for working with test2json output
-    help                    print this help next
-`)
+    %[1]s tool slowest   find or skip the slowest tests
+    %[1]s help           print this help next
+`, name)
 }
 
 func lookEnvWithDefault(key, defValue string) string {
