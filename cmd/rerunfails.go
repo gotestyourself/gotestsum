@@ -61,7 +61,7 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 
 		nextRec := newFailureRecorder(scanConfig.Handler)
 		for _, tc := range tcFilter(rec.failures) {
-			goTestProc, err := startGoTestFn(ctx, goTestCmdArgs(opts, newRerunOptsFromTestCase(tc)))
+			goTestProc, err := startGoTestFn(ctx, "", goTestCmdArgs(opts, newRerunOptsFromTestCase(tc)))
 			if err != nil {
 				return err
 			}

@@ -138,7 +138,7 @@ func TestRerunFailed_ReturnsAnErrorWhenTheLastTestIsSuccessful(t *testing.T) {
 
 func patchStartGoTestFn(f func(args []string) *proc) func() {
 	orig := startGoTestFn
-	startGoTestFn = func(ctx context.Context, args []string) (*proc, error) {
+	startGoTestFn = func(ctx context.Context, dir string, args []string) (*proc, error) {
 		return f(args), nil
 	}
 	return func() {
