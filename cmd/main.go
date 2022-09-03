@@ -101,9 +101,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		"space separated list of package to test")
 	flags.StringVar(&opts.rerunFailsReportFile, "rerun-fails-report", "",
 		"write a report to the file, of the tests that were rerun")
-	flags.BoolVar(&opts.rerunFailsOnlyRootCases, "rerun-fails-only-root-testcases", false,
-		"rerun only root testcaes, instead of only subtests")
-	flags.Lookup("rerun-fails-only-root-testcases").Hidden = true
+	flags.BoolVar(&opts.rerunFailsRunRootCases, "rerun-fails-run-root-test", false,
+		"rerun the entire root testcase when any of its subtests fail, instead of only the failed subtest")
 
 	flags.BoolVar(&opts.debug, "debug", false, "enabled debug logging")
 	flags.BoolVar(&opts.version, "version", false, "show version and exit")
@@ -159,7 +158,7 @@ type options struct {
 	rerunFailsMaxAttempts        int
 	rerunFailsMaxInitialFailures int
 	rerunFailsReportFile         string
-	rerunFailsOnlyRootCases      bool
+	rerunFailsRunRootCases       bool
 	packages                     []string
 	watch                        bool
 	maxFails                     int

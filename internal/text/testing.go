@@ -4,15 +4,19 @@ import (
 	"bufio"
 	"io"
 	"strings"
-	"testing"
 
 	"gotest.tools/v3/assert"
 )
 
+type TestingT interface {
+	Helper()
+	assert.TestingT
+}
+
 // ProcessLines from the Reader by passing each one to ops. The output of each
 // op is passed to the next. Returns the string created by joining all the
 // processed lines.
-func ProcessLines(t *testing.T, r io.Reader, ops ...func(string) string) string {
+func ProcessLines(t TestingT, r io.Reader, ops ...func(string) string) string {
 	t.Helper()
 	out := new(strings.Builder)
 	scan := bufio.NewScanner(r)
