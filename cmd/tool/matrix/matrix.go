@@ -9,7 +9,6 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 	"time"
 
 	"github.com/dnephin/pflag"
@@ -26,6 +25,8 @@ func Run(name string, args []string) error {
 		usage(os.Stderr, name, flags)
 		return err
 	}
+	opts.stdin = os.Stdin
+	opts.stdout = os.Stdout
 	return run(*opts)
 }
 
@@ -34,6 +35,10 @@ type options struct {
 	numPartitions        uint
 	timingFilesPattern   string
 	debug                bool
+
+	// shims for testing
+	stdin  io.Reader
+	stdout io.Writer
 }
 
 func setupFlags(name string) (*pflag.FlagSet, *options) {
@@ -58,6 +63,19 @@ func usage(out io.Writer, name string, flags *pflag.FlagSet) {
 	fmt.Fprintf(out, `Usage:
     %[1]s [flags]
 
+Read a list of packages from stdin and output a GitHub Actions matrix strategy
+that splits the packages by previous run times to minimize overall CI runtime.
+
+Example
+
+    echo -n "::set-output name=matrix::"
+    go list ./... | \
+        %[1]s --partitions 4 --timing-files ./*.log --max-age-days 10
+
+The output of the command is a JSON object that can be used as the matrix
+strategy for a test job.
+
+
 Flags:
 `, name)
 	flags.SetOutput(out)
@@ -76,7 +94,7 @@ func run(opts options) error {
 		return fmt.Errorf("--timing-files is required")
 	}
 
-	pkgs, err := readPackages(os.Stdin)
+	pkgs, err := readPackages(opts.stdin)
 	if err != nil {
 		return fmt.Errorf("failed to read packages from stdin: %v", err)
 	}
@@ -93,7 +111,7 @@ func run(opts options) error {
 	}
 
 	buckets := bucketPackages(packagePercentile(pkgTiming), pkgs, opts.numPartitions)
-	return writeBuckets(buckets)
+	return writeMatrix(opts.stdout, buckets)
 }
 
 func readPackages(stdin io.Reader) ([]string, error) {
@@ -231,17 +249,54 @@ type bucket struct {
 	Packages []string
 }
 
-func writeBuckets(buckets []bucket) error {
-	out := make(map[int]string)
+type matrix struct {
+	Include []Partition `json:"include"`
+}
+
+type Partition struct {
+	ID               int           `json:"id"`
+	EstimatedRuntime time.Duration `json:"estimatedRuntime"`
+	Packages         []string      `json:"packages"`
+	Description      string        `json:"description"`
+}
+
+func writeMatrix(out io.Writer, buckets []bucket) error {
+	m := matrix{Include: make([]Partition, len(buckets))}
 	for i, bucket := range buckets {
-		out[i] = strings.Join(bucket.Packages, " ")
+		p := Partition{
+			ID:               i,
+			EstimatedRuntime: bucket.Total,
+			Packages:         bucket.Packages,
+		}
+		if len(p.Packages) > 0 {
+			var extra string
+			if len(p.Packages) > 1 {
+				extra = fmt.Sprintf(" and %d others", len(p.Packages)-1)
+			}
+			p.Description = fmt.Sprintf("package %v%v (%v)",
+				testjson.RelativePackagePath(p.Packages[0]),
+				extra,
+				p.EstimatedRuntime)
+		}
+
+		m.Include[i] = p
 	}
 
-	raw, err := json.Marshal(out)
+	log.Debugf("%v\n", debugMatrix(m))
+
+	err := json.NewEncoder(out).Encode(m)
 	if err != nil {
 		return fmt.Errorf("failed to json encode output: %v", err)
 	}
-	log.Debugf(string(raw))
-	fmt.Println(string(raw))
 	return nil
+}
+
+type debugMatrix matrix
+
+func (d debugMatrix) String() string {
+	raw, err := json.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return fmt.Sprintf("failed to marshal: %v", err.Error())
+	}
+	return string(raw)
 }

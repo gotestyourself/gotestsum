@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -127,7 +128,6 @@ func TestReadAndPruneTimingReports(t *testing.T) {
 				Action:  testjson.ActionRun,
 				Package: "pkg" + strconv.Itoa(i),
 			}))
-			buf.WriteString("\n")
 		}
 		return buf.String()
 	}
@@ -194,3 +194,54 @@ func TestReadAndPruneTimingReports(t *testing.T) {
 		assert.Equal(t, len(actual), 2)
 	})
 }
+
+func TestRun(t *testing.T) {
+	events := func(t *testing.T) string {
+		t.Helper()
+		var buf bytes.Buffer
+		encoder := json.NewEncoder(&buf)
+		for _, i := range []int{0, 1, 2} {
+			elapsed := time.Duration(i+1) * 2 * time.Second
+			end := time.Now().Add(-5 * time.Second)
+			start := end.Add(-elapsed)
+
+			assert.NilError(t, encoder.Encode(testjson.TestEvent{
+				Time:    start,
+				Action:  testjson.ActionRun,
+				Package: "pkg" + strconv.Itoa(i),
+			}))
+			assert.NilError(t, encoder.Encode(testjson.TestEvent{
+				Time:    end,
+				Action:  testjson.ActionPass,
+				Package: "pkg" + strconv.Itoa(i),
+				Elapsed: elapsed.Seconds(),
+			}))
+		}
+		return buf.String()
+	}
+
+	dir := fs.NewDir(t, "timing-files",
+		fs.WithFile("report1.log", events(t)),
+		fs.WithFile("report2.log", events(t)),
+		fs.WithFile("report3.log", events(t)),
+		fs.WithFile("report4.log", events(t)),
+		fs.WithFile("report5.log", events(t)))
+
+	stdout := new(bytes.Buffer)
+	opts := options{
+		numPartitions:      3,
+		timingFilesPattern: dir.Join("*.log"),
+		debug:              true,
+		stdout:             stdout,
+		stdin:              strings.NewReader("pkg0\npkg1\npkg2\nother"),
+	}
+	err := run(opts)
+	assert.NilError(t, err)
+
+	assert.Equal(t, stdout.String(), expectedMatrix)
+}
+
+// expectedMatrix can be automatically updated by running tests with -update
+// nolint:lll
+var expectedMatrix = `{"include":[{"id":0,"estimatedRuntime":6000000000,"packages":["pkg2"],"description":"package pkg2 (6s)"},{"id":1,"estimatedRuntime":4000000000,"packages":["pkg1"],"description":"package pkg1 (4s)"},{"id":2,"estimatedRuntime":2000000000,"packages":["pkg0","other"],"description":"package pkg0 and 1 others (2s)"}]}
+`
