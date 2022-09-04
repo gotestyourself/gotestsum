@@ -31,7 +31,7 @@ func Run(name string, args []string) error {
 
 type options struct {
 	pruneFilesMaxAgeDays uint
-	buckets              uint
+	numPartitions        uint
 	timingFilesPattern   string
 	debug                bool
 }
@@ -45,8 +45,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	}
 	flags.UintVar(&opts.pruneFilesMaxAgeDays, "max-age-days", 0,
 		"timing files older than this value will be deleted")
-	flags.UintVar(&opts.buckets, "buckets", 4,
-		"number of parallel buckets to create in the test matrix")
+	flags.UintVar(&opts.numPartitions, "partitions", 0,
+		"number of parallel partitions to create in the test matrix")
 	flags.StringVar(&opts.timingFilesPattern, "timing-files", "",
 		"glob pattern to match files that contain test2json events, ex: ./logs/*.log")
 	flags.BoolVar(&opts.debug, "debug", false,
@@ -69,8 +69,8 @@ func run(opts options) error {
 	if opts.debug {
 		log.SetLevel(log.DebugLevel)
 	}
-	if opts.buckets < 2 {
-		return fmt.Errorf("--buckets must be atleast 2")
+	if opts.numPartitions < 2 {
+		return fmt.Errorf("--partitions must be atleast 2")
 	}
 	if opts.timingFilesPattern == "" {
 		return fmt.Errorf("--timing-files is required")
@@ -92,7 +92,7 @@ func run(opts options) error {
 		return err
 	}
 
-	buckets := bucketPackages(packagePercentile(pkgTiming), pkgs, opts.buckets)
+	buckets := bucketPackages(packagePercentile(pkgTiming), pkgs, opts.numPartitions)
 	return writeBuckets(buckets)
 }
 
