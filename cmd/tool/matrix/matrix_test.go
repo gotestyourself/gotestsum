@@ -1,11 +1,16 @@
 package matrix
 
 import (
+	"bytes"
+	"encoding/json"
+	"os"
 	"strconv"
 	"testing"
 	"time"
 
+	"gotest.tools/gotestsum/testjson"
 	"gotest.tools/v3/assert"
+	"gotest.tools/v3/fs"
 )
 
 func TestPackagePercentile(t *testing.T) {
@@ -109,4 +114,83 @@ func TestBucketPackages(t *testing.T) {
 			run(t, tc)
 		})
 	}
+}
+
+func TestReadAndPruneTimingReports(t *testing.T) {
+	events := func(t *testing.T, start time.Time) string {
+		t.Helper()
+		var buf bytes.Buffer
+		encoder := json.NewEncoder(&buf)
+		for _, i := range []int{0, 1, 2} {
+			assert.NilError(t, encoder.Encode(testjson.TestEvent{
+				Time:    start.Add(time.Duration(i) * time.Second),
+				Action:  testjson.ActionRun,
+				Package: "pkg" + strconv.Itoa(i),
+			}))
+			buf.WriteString("\n")
+		}
+		return buf.String()
+	}
+
+	now := time.Now()
+	dir := fs.NewDir(t, "timing-files",
+		fs.WithFile("report1.log", events(t, now.Add(-time.Hour))),
+		fs.WithFile("report2.log", events(t, now.Add(-47*time.Hour))),
+		fs.WithFile("report3.log", events(t, now.Add(-49*time.Hour))),
+		fs.WithFile("report4.log", events(t, now.Add(-101*time.Hour))))
+
+	t.Run("no prune", func(t *testing.T) {
+		opts := options{
+			timingFilesPattern: dir.Join("*.log"),
+		}
+
+		files, err := readAndPruneTimingReports(opts)
+		assert.NilError(t, err)
+		defer closeFiles(files)
+		assert.Equal(t, len(files), 4)
+
+		for _, fh := range files {
+			// check the files are properly seeked to 0
+			event, err := parseEvent(fh)
+			assert.NilError(t, err)
+			assert.Equal(t, event.Package, "pkg0")
+		}
+
+		actual, err := os.ReadDir(dir.Path())
+		assert.NilError(t, err)
+		assert.Equal(t, len(actual), 4)
+	})
+
+	t.Run("no glob match, func", func(t *testing.T) {
+		opts := options{
+			timingFilesPattern: dir.Join("*.json"),
+		}
+
+		files, err := readAndPruneTimingReports(opts)
+		assert.NilError(t, err)
+		assert.Equal(t, len(files), 0)
+	})
+
+	t.Run("prune older than max age", func(t *testing.T) {
+		opts := options{
+			timingFilesPattern:   dir.Join("*.log"),
+			pruneFilesMaxAgeDays: 2,
+		}
+
+		files, err := readAndPruneTimingReports(opts)
+		assert.NilError(t, err)
+		defer closeFiles(files)
+		assert.Equal(t, len(files), 2)
+
+		for _, fh := range files {
+			// check the files are properly seeked to 0
+			event, err := parseEvent(fh)
+			assert.NilError(t, err)
+			assert.Equal(t, event.Package, "pkg0")
+		}
+
+		actual, err := os.ReadDir(dir.Path())
+		assert.NilError(t, err)
+		assert.Equal(t, len(actual), 2)
+	})
 }

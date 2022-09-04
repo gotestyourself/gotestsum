@@ -30,10 +30,10 @@ func Run(name string, args []string) error {
 }
 
 type options struct {
-	maxAge            time.Duration
-	buckets           uint
-	timingReportsPath string
-	debug             bool
+	pruneFilesMaxAgeDays uint
+	buckets              uint
+	timingFilesPattern   string
+	debug                bool
 }
 
 func setupFlags(name string) (*pflag.FlagSet, *options) {
@@ -43,14 +43,14 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags.Usage = func() {
 		usage(os.Stdout, name, flags)
 	}
-	flags.DurationVar(&opts.maxAge, "max-age", 7*24*time.Hour,
-		"Timing reports older than max age will be deleted")
+	flags.UintVar(&opts.pruneFilesMaxAgeDays, "max-age-days", 0,
+		"timing files older than this value will be deleted")
 	flags.UintVar(&opts.buckets, "buckets", 4,
 		"number of parallel buckets to create in the test matrix")
-	flags.StringVar(&opts.timingReportsPath, "dir", "",
-		"path to directory that contains jsonfile timing reports")
+	flags.StringVar(&opts.timingFilesPattern, "timing-files", "",
+		"glob pattern to match files that contain test2json events, ex: ./logs/*.log")
 	flags.BoolVar(&opts.debug, "debug", false,
-		"enable debug logging.")
+		"enable debug logging")
 	return flags, opts
 }
 
@@ -72,8 +72,8 @@ func run(opts options) error {
 	if opts.buckets < 2 {
 		return fmt.Errorf("--buckets must be atleast 2")
 	}
-	if opts.timingReportsPath == "" {
-		return fmt.Errorf("--dir is required")
+	if opts.timingFilesPattern == "" {
+		return fmt.Errorf("--timing-files is required")
 	}
 
 	pkgs, err := readPackages(os.Stdin)
@@ -83,7 +83,7 @@ func run(opts options) error {
 
 	files, err := readAndPruneTimingReports(opts)
 	if err != nil {
-		return fmt.Errorf("failed to read or delete timing reports: %v", err)
+		return fmt.Errorf("failed to read or delete timing files: %v", err)
 	}
 	defer closeFiles(files)
 
@@ -106,18 +106,14 @@ func readPackages(stdin io.Reader) ([]string, error) {
 }
 
 func readAndPruneTimingReports(opts options) ([]*os.File, error) {
-	entries, err := os.ReadDir(opts.timingReportsPath)
+	fileNames, err := filepath.Glob(opts.timingFilesPattern)
 	if err != nil {
 		return nil, err
 	}
 
 	var files []*os.File
-	for _, entry := range entries {
-		if entry.IsDir() || strings.HasPrefix(entry.Name(), ".") {
-			continue
-		}
-
-		fh, err := os.Open(filepath.Join(opts.timingReportsPath, entry.Name()))
+	for _, fileName := range fileNames {
+		fh, err := os.Open(fileName)
 		if err != nil {
 			return nil, err
 		}
@@ -128,7 +124,8 @@ func readAndPruneTimingReports(opts options) ([]*os.File, error) {
 		}
 
 		age := time.Since(event.Time)
-		if age < opts.maxAge {
+		maxAge := time.Duration(opts.pruneFilesMaxAgeDays) * 24 * time.Hour
+		if opts.pruneFilesMaxAgeDays == 0 || age < maxAge {
 			if _, err := fh.Seek(0, io.SeekStart); err != nil {
 				return nil, fmt.Errorf("failed to reset file: %v", err)
 			}
@@ -143,7 +140,7 @@ func readAndPruneTimingReports(opts options) ([]*os.File, error) {
 		}
 	}
 
-	log.Infof("Found %v timing reports in %v", len(files), opts.timingReportsPath)
+	log.Infof("Found %v timing files in %v", len(files), opts.timingFilesPattern)
 	return files, nil
 }
 
@@ -172,8 +169,8 @@ func packageTiming(files []*os.File) (map[string][]time.Duration, error) {
 func packagePercentile(timing map[string][]time.Duration) map[string]time.Duration {
 	result := make(map[string]time.Duration)
 	for pkg, times := range timing {
-		l := len(times)
-		if l == 0 {
+		lenTimes := len(times)
+		if lenTimes == 0 {
 			result[pkg] = 0
 			continue
 		}
@@ -182,7 +179,7 @@ func packagePercentile(timing map[string][]time.Duration) map[string]time.Durati
 			return times[i] < times[j]
 		})
 
-		r := int(math.Ceil(0.85 * float64(l)))
+		r := int(math.Ceil(0.85 * float64(lenTimes)))
 		if r == 0 {
 			result[pkg] = times[0]
 			continue
