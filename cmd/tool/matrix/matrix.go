@@ -177,7 +177,6 @@ func packageTiming(files []*os.File) (map[string][]time.Duration, error) {
 		}
 
 		for _, pkg := range exec.Packages() {
-			log.Debugf("package elapsed time %v %v", pkg, exec.Package(pkg).Elapsed())
 			timing[pkg] = append(timing[pkg], exec.Package(pkg).Elapsed())
 		}
 	}
@@ -254,10 +253,10 @@ type matrix struct {
 }
 
 type Partition struct {
-	ID               int           `json:"id"`
-	EstimatedRuntime time.Duration `json:"estimatedRuntime"`
-	Packages         []string      `json:"packages"`
-	Description      string        `json:"description"`
+	ID               int      `json:"id"`
+	EstimatedRuntime string   `json:"estimatedRuntime"`
+	Packages         []string `json:"packages"`
+	Description      string   `json:"description"`
 }
 
 func writeMatrix(out io.Writer, buckets []bucket) error {
@@ -265,7 +264,7 @@ func writeMatrix(out io.Writer, buckets []bucket) error {
 	for i, bucket := range buckets {
 		p := Partition{
 			ID:               i,
-			EstimatedRuntime: bucket.Total,
+			EstimatedRuntime: bucket.Total.String(),
 			Packages:         bucket.Packages,
 		}
 		if len(p.Packages) > 0 {
@@ -273,10 +272,8 @@ func writeMatrix(out io.Writer, buckets []bucket) error {
 			if len(p.Packages) > 1 {
 				extra = fmt.Sprintf(" and %d others", len(p.Packages)-1)
 			}
-			p.Description = fmt.Sprintf("package %v%v (%v)",
-				testjson.RelativePackagePath(p.Packages[0]),
-				extra,
-				p.EstimatedRuntime)
+			p.Description = fmt.Sprintf("partition %d - package %v%v",
+				p.ID, testjson.RelativePackagePath(p.Packages[0]), extra)
 		}
 
 		m.Include[i] = p

@@ -243,5 +243,5 @@ func TestRun(t *testing.T) {
 
 // expectedMatrix can be automatically updated by running tests with -update
 // nolint:lll
-var expectedMatrix = `{"include":[{"id":0,"estimatedRuntime":6000000000,"packages":["pkg2"],"description":"package pkg2 (6s)"},{"id":1,"estimatedRuntime":4000000000,"packages":["pkg1"],"description":"package pkg1 (4s)"},{"id":2,"estimatedRuntime":2000000000,"packages":["pkg0","other"],"description":"package pkg0 and 1 others (2s)"}]}
+var expectedMatrix = `{"include":[{"id":0,"estimatedRuntime":"6s","packages":["pkg2"],"description":"partition 0 - package pkg2"},{"id":1,"estimatedRuntime":"4s","packages":["pkg1"],"description":"partition 1 - package pkg1"},{"id":2,"estimatedRuntime":"2s","packages":["pkg0","other"],"description":"partition 2 - package pkg0 and 1 others"}]}
 `
