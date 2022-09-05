@@ -15,7 +15,7 @@ import (
 	"gotest.tools/v3/fs"
 )
 
-func TestPackagePercentile(t *testing.T) {
+func TestPercentile(t *testing.T) {
 	ms := time.Millisecond
 	timing := map[string][]time.Duration{
 		"none":  {},
@@ -32,7 +32,7 @@ func TestPackagePercentile(t *testing.T) {
 		},
 	}
 
-	out := packagePercentile(timing)
+	out := percentile(timing)
 	expected := map[string]time.Duration{
 		"none":   0,
 		"one":    time.Second,
@@ -47,7 +47,7 @@ func TestPackagePercentile(t *testing.T) {
 	assert.DeepEqual(t, out, expected)
 }
 
-func TestBucketPackages(t *testing.T) {
+func TestCreateBuckets(t *testing.T) {
 	ms := time.Millisecond
 	timing := map[string]time.Duration{
 		"one":   190 * ms,
@@ -67,7 +67,7 @@ func TestBucketPackages(t *testing.T) {
 	}
 
 	run := func(t *testing.T, tc testCase) {
-		buckets := bucketPackages(timing, packages, tc.n)
+		buckets := createBuckets(timing, packages, tc.n)
 		assert.DeepEqual(t, buckets, tc.expected)
 	}
 
@@ -75,38 +75,38 @@ func TestBucketPackages(t *testing.T) {
 		{
 			n: 2,
 			expected: []bucket{
-				0: {Total: 4440 * ms, Packages: []string{"four", "two", "one", "five"}},
-				1: {Total: 4406 * ms, Packages: []string{"three", "six", "new2", "new1"}},
+				0: {Total: 4440 * ms, Items: []string{"four", "two", "one", "five"}},
+				1: {Total: 4406 * ms, Items: []string{"three", "six", "new2", "new1"}},
 			},
 		},
 		{
 			n: 3,
 			expected: []bucket{
-				0: {Total: 4000 * ms, Packages: []string{"four"}},
-				1: {Total: 3800 * ms, Packages: []string{"three"}},
-				2: {Total: 1046 * ms, Packages: []string{"six", "two", "one", "five", "new1", "new2"}},
+				0: {Total: 4000 * ms, Items: []string{"four"}},
+				1: {Total: 3800 * ms, Items: []string{"three"}},
+				2: {Total: 1046 * ms, Items: []string{"six", "two", "one", "five", "new1", "new2"}},
 			},
 		},
 		{
 			n: 4,
 			expected: []bucket{
-				0: {Total: 4000 * ms, Packages: []string{"four"}},
-				1: {Total: 3800 * ms, Packages: []string{"three"}},
-				2: {Total: 606 * ms, Packages: []string{"six"}},
-				3: {Total: 440 * ms, Packages: []string{"two", "one", "five", "new2", "new1"}},
+				0: {Total: 4000 * ms, Items: []string{"four"}},
+				1: {Total: 3800 * ms, Items: []string{"three"}},
+				2: {Total: 606 * ms, Items: []string{"six"}},
+				3: {Total: 440 * ms, Items: []string{"two", "one", "five", "new2", "new1"}},
 			},
 		},
 		{
 			n: 8,
 			expected: []bucket{
-				0: {Total: 4000 * ms, Packages: []string{"four"}},
-				1: {Total: 3800 * ms, Packages: []string{"three"}},
-				2: {Total: 606 * ms, Packages: []string{"six"}},
-				3: {Total: 200 * ms, Packages: []string{"two"}},
-				4: {Total: 190 * ms, Packages: []string{"one"}},
-				5: {Total: 50 * ms, Packages: []string{"five"}},
-				6: {Packages: []string{"new1"}},
-				7: {Packages: []string{"new2"}},
+				0: {Total: 4000 * ms, Items: []string{"four"}},
+				1: {Total: 3800 * ms, Items: []string{"three"}},
+				2: {Total: 606 * ms, Items: []string{"six"}},
+				3: {Total: 200 * ms, Items: []string{"two"}},
+				4: {Total: 190 * ms, Items: []string{"one"}},
+				5: {Total: 50 * ms, Items: []string{"five"}},
+				6: {Items: []string{"new1"}},
+				7: {Items: []string{"new2"}},
 			},
 		},
 	}
@@ -222,7 +222,6 @@ func TestRun(t *testing.T) {
 }
 
 // expectedMatrix can be automatically updated by running tests with -update
-// nolint:lll
 var expectedMatrix = `{
   "include": [
     {
@@ -256,3 +255,130 @@ func formatJSON(t *testing.T, v io.Reader) string {
 	assert.NilError(t, err)
 	return string(formatted)
 }
+
+func TestRun_MorePartitionsThanInputs(t *testing.T) {
+	events := func(t *testing.T) string {
+		t.Helper()
+		var buf bytes.Buffer
+		encoder := json.NewEncoder(&buf)
+		for _, i := range []int{0, 1} {
+			elapsed := time.Duration(i+1) * 2 * time.Second
+			end := time.Now().Add(-5 * time.Second)
+			start := end.Add(-elapsed)
+
+			assert.NilError(t, encoder.Encode(testjson.TestEvent{
+				Time:    start,
+				Action:  testjson.ActionRun,
+				Package: "pkg" + strconv.Itoa(i),
+			}))
+			assert.NilError(t, encoder.Encode(testjson.TestEvent{
+				Time:    end,
+				Action:  testjson.ActionPass,
+				Package: "pkg" + strconv.Itoa(i),
+				Elapsed: elapsed.Seconds(),
+			}))
+		}
+		return buf.String()
+	}
+
+	dir := fs.NewDir(t, "timing-files",
+		fs.WithFile("report1.log", events(t)),
+		fs.WithFile("report2.log", events(t)))
+
+	stdout := new(bytes.Buffer)
+	opts := options{
+		numPartitions:      5,
+		timingFilesPattern: dir.Join("*.log"),
+		debug:              true,
+		stdout:             stdout,
+		stdin:              strings.NewReader("pkg0\npkg1\nother"),
+	}
+	err := run(opts)
+	assert.NilError(t, err)
+	assert.Equal(t, formatJSON(t, stdout), expectedMatrixMorePartitionsThanInputs)
+}
+
+// expectedMatrixMorePartitionsThanInputs can be automatically updated by
+// running tests with -update
+var expectedMatrixMorePartitionsThanInputs = `{
+  "include": [
+    {
+      "description": "partition 0 - package pkg1",
+      "estimatedRuntime": "4s",
+      "id": 0,
+      "packages": "pkg1"
+    },
+    {
+      "description": "partition 1 - package pkg0",
+      "estimatedRuntime": "2s",
+      "id": 1,
+      "packages": "pkg0"
+    },
+    {
+      "description": "partition 2 - package other",
+      "estimatedRuntime": "0s",
+      "id": 2,
+      "packages": "other"
+    }
+  ]
+}`
+
+func TestRun_PartitionTestsInPackage(t *testing.T) {
+	events := func(t *testing.T) string {
+		t.Helper()
+		var buf bytes.Buffer
+		encoder := json.NewEncoder(&buf)
+		for _, i := range []int{0, 1, 3, 4} {
+			elapsed := time.Duration(i+1) * 2 * time.Second
+			end := time.Now().Add(-5 * time.Second)
+			start := end.Add(-elapsed)
+
+			// TODO: add events for tests
+			assert.NilError(t, encoder.Encode(testjson.TestEvent{
+				Time:    start,
+				Action:  testjson.ActionRun,
+				Package: "example.com/pkg",
+			}))
+			assert.NilError(t, encoder.Encode(testjson.TestEvent{
+				Time:    start,
+				Action:  testjson.ActionRun,
+				Package: "example.com/pkg",
+			}))
+			assert.NilError(t, encoder.Encode(testjson.TestEvent{
+				Time:    start,
+				Action:  testjson.ActionRun,
+				Package: "other",
+			}))
+			assert.NilError(t, encoder.Encode(testjson.TestEvent{
+				Time:    end,
+				Action:  testjson.ActionPass,
+				Package: "other",
+				Elapsed: elapsed.Seconds(),
+			}))
+		}
+		return buf.String()
+	}
+
+	dir := fs.NewDir(t, "timing-files",
+		fs.WithFile("report1.log", events(t)),
+		fs.WithFile("report2.log", events(t)))
+
+	stdout := new(bytes.Buffer)
+	opts := options{
+		numPartitions:           5,
+		partitionTestsInPackage: "example.com/pkg",
+		timingFilesPattern:      dir.Join("*.log"),
+		debug:                   true,
+		stdout:                  stdout,
+		stdin:                   strings.NewReader(""),
+	}
+	err := run(opts)
+	assert.NilError(t, err)
+	assert.Equal(t, formatJSON(t, stdout), expectedMatrixTestsInPackage)
+}
+
+// expectedMatrixTestsInPackage can be automatically updated by
+// running tests with -update
+var expectedMatrixTestsInPackage = `
+// TODO:
+`
