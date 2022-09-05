@@ -32,10 +32,9 @@ func Run(name string, args []string) error {
 }
 
 type options struct {
-	pruneFilesMaxAgeDays uint
-	numPartitions        uint
-	timingFilesPattern   string
-	debug                bool
+	numPartitions      uint
+	timingFilesPattern string
+	debug              bool
 
 	// shims for testing
 	stdin  io.Reader
@@ -49,8 +48,6 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags.Usage = func() {
 		usage(os.Stdout, name, flags)
 	}
-	flags.UintVar(&opts.pruneFilesMaxAgeDays, "max-age-days", 0,
-		"timing files older than this value will be deleted")
 	flags.UintVar(&opts.numPartitions, "partitions", 0,
 		"number of parallel partitions to create in the test matrix")
 	flags.StringVar(&opts.timingFilesPattern, "timing-files", "",
@@ -67,11 +64,9 @@ func usage(out io.Writer, name string, flags *pflag.FlagSet) {
 Read a list of packages from stdin and output a GitHub Actions matrix strategy
 that splits the packages by previous run times to minimize overall CI runtime.
 
-Example
-
     echo -n "::set-output name=matrix::"
     go list ./... | \
-        %[1]s --partitions 4 --timing-files ./*.log --max-age-days 10
+        %[1]s --timing-files ./*.log --partitions 4
 
 The output of the command is a JSON object that can be used as the matrix
 strategy for a test job.
@@ -100,7 +95,7 @@ func run(opts options) error {
 		return fmt.Errorf("failed to read packages from stdin: %v", err)
 	}
 
-	files, err := readAndPruneTimingReports(opts)
+	files, err := readTimingReports(opts)
 	if err != nil {
 		return fmt.Errorf("failed to read or delete timing files: %v", err)
 	}
@@ -124,7 +119,7 @@ func readPackages(stdin io.Reader) ([]string, error) {
 	return packages, scan.Err()
 }
 
-func readAndPruneTimingReports(opts options) ([]*os.File, error) {
+func readTimingReports(opts options) ([]*os.File, error) {
 	fileNames, err := filepath.Glob(opts.timingFilesPattern)
 	if err != nil {
 		return nil, err
@@ -136,27 +131,7 @@ func readAndPruneTimingReports(opts options) ([]*os.File, error) {
 		if err != nil {
 			return nil, err
 		}
-
-		event, err := parseEvent(fh)
-		if err != nil {
-			return nil, fmt.Errorf("failed to read first event from %v: %v", fh.Name(), err)
-		}
-
-		age := time.Since(event.Time)
-		maxAge := time.Duration(opts.pruneFilesMaxAgeDays) * 24 * time.Hour
-		if opts.pruneFilesMaxAgeDays == 0 || age < maxAge {
-			if _, err := fh.Seek(0, io.SeekStart); err != nil {
-				return nil, fmt.Errorf("failed to reset file: %v", err)
-			}
-			files = append(files, fh)
-			continue
-		}
-
-		log.Infof("Removing %v because it is from %v", fh.Name(), event.Time.Format(time.RFC1123))
-		_ = fh.Close()
-		if err := os.Remove(fh.Name()); err != nil {
-			return nil, err
-		}
+		files = append(files, fh)
 	}
 
 	log.Infof("Found %v timing files in %v", len(files), opts.timingFilesPattern)
