@@ -3,6 +3,7 @@ package matrix
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -237,11 +238,44 @@ func TestRun(t *testing.T) {
 	}
 	err := run(opts)
 	assert.NilError(t, err)
+	assert.Equal(t, strings.Count(stdout.String(), "\n"), 1,
+		"the output should be a single line")
 
-	assert.Equal(t, stdout.String(), expectedMatrix)
+	assert.Equal(t, formatJSON(t, stdout), expectedMatrix)
 }
 
 // expectedMatrix can be automatically updated by running tests with -update
 // nolint:lll
-var expectedMatrix = `{"include":[{"id":0,"estimatedRuntime":"6s","packages":["pkg2"],"description":"partition 0 - package pkg2"},{"id":1,"estimatedRuntime":"4s","packages":["pkg1"],"description":"partition 1 - package pkg1"},{"id":2,"estimatedRuntime":"2s","packages":["pkg0","other"],"description":"partition 2 - package pkg0 and 1 others"}]}
-`
+var expectedMatrix = `{
+  "include": [
+    {
+      "description": "partition 0 - package pkg2",
+      "estimatedRuntime": "6s",
+      "id": 0,
+      "packages": "pkg2"
+    },
+    {
+      "description": "partition 1 - package pkg1",
+      "estimatedRuntime": "4s",
+      "id": 1,
+      "packages": "pkg1"
+    },
+    {
+      "description": "partition 2 - package pkg0 and 1 others",
+      "estimatedRuntime": "2s",
+      "id": 2,
+      "packages": "pkg0 other"
+    }
+  ]
+}`
+
+func formatJSON(t *testing.T, v io.Reader) string {
+	t.Helper()
+	raw := map[string]interface{}{}
+	err := json.NewDecoder(v).Decode(&raw)
+	assert.NilError(t, err)
+
+	formatted, err := json.MarshalIndent(raw, "", "  ")
+	assert.NilError(t, err)
+	return string(formatted)
+}

@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/dnephin/pflag"
@@ -253,10 +254,10 @@ type matrix struct {
 }
 
 type Partition struct {
-	ID               int      `json:"id"`
-	EstimatedRuntime string   `json:"estimatedRuntime"`
-	Packages         []string `json:"packages"`
-	Description      string   `json:"description"`
+	ID               int    `json:"id"`
+	EstimatedRuntime string `json:"estimatedRuntime"`
+	Packages         string `json:"packages"`
+	Description      string `json:"description"`
 }
 
 func writeMatrix(out io.Writer, buckets []bucket) error {
@@ -265,15 +266,15 @@ func writeMatrix(out io.Writer, buckets []bucket) error {
 		p := Partition{
 			ID:               i,
 			EstimatedRuntime: bucket.Total.String(),
-			Packages:         bucket.Packages,
+			Packages:         strings.Join(bucket.Packages, " "),
 		}
-		if len(p.Packages) > 0 {
+		if len(bucket.Packages) > 0 {
 			var extra string
-			if len(p.Packages) > 1 {
-				extra = fmt.Sprintf(" and %d others", len(p.Packages)-1)
+			if len(bucket.Packages) > 1 {
+				extra = fmt.Sprintf(" and %d others", len(bucket.Packages)-1)
 			}
 			p.Description = fmt.Sprintf("partition %d - package %v%v",
-				p.ID, testjson.RelativePackagePath(p.Packages[0]), extra)
+				p.ID, testjson.RelativePackagePath(bucket.Packages[0]), extra)
 		}
 
 		m.Include[i] = p
