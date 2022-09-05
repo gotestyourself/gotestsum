@@ -130,7 +130,7 @@ func readAndPruneTimingReports(opts options) ([]*os.File, error) {
 		return nil, err
 	}
 
-	var files []*os.File
+	files := make([]*os.File, 0, len(fileNames))
 	for _, fileName := range fileNames {
 		fh, err := os.Open(fileName)
 		if err != nil {

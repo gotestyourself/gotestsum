@@ -279,3 +279,42 @@ func formatJSON(t *testing.T, v io.Reader) string {
 	assert.NilError(t, err)
 	return string(formatted)
 }
+
+func TestRun_PruneOnly(t *testing.T) {
+	events := func(t *testing.T, start time.Time) string {
+		t.Helper()
+		var buf bytes.Buffer
+		encoder := json.NewEncoder(&buf)
+		for _, i := range []int{0, 1, 2} {
+			assert.NilError(t, encoder.Encode(testjson.TestEvent{
+				Time:    start.Add(time.Duration(i) * time.Second),
+				Action:  testjson.ActionRun,
+				Package: "pkg" + strconv.Itoa(i),
+			}))
+		}
+		return buf.String()
+	}
+
+	now := time.Now()
+	dir := fs.NewDir(t, "timing-files",
+		fs.WithFile("report1.log", events(t, now.Add(-time.Hour))),
+		fs.WithFile("report2.log", events(t, now.Add(-47*time.Hour))),
+		fs.WithFile("report3.log", events(t, now.Add(-49*time.Hour))),
+		fs.WithFile("report4.log", events(t, now.Add(-101*time.Hour))))
+
+	stdout := new(bytes.Buffer)
+	opts := options{
+		numPartitions:        3,
+		timingFilesPattern:   dir.Join("*.log"),
+		debug:                true,
+		stdout:               stdout,
+		stdin:                strings.NewReader(""),
+		pruneFilesMaxAgeDays: 2,
+	}
+	err := run(opts)
+	assert.NilError(t, err)
+
+	assert.Assert(t, fs.Equal(dir.Path(), fs.Expected(t,
+		fs.WithFile("report1.log", events(t, now.Add(-time.Hour))),
+		fs.WithFile("report2.log", events(t, now.Add(-47*time.Hour))))))
+}
