@@ -70,6 +70,11 @@ func TestOptions_Validate_FromFlags(t *testing.T) {
 			name: "rerun flag, no go-test args, with packages flag",
 			args: []string{"--rerun-fails", "--packages", "./..."},
 		},
+		{
+			name:     "rerun-fails with failfast",
+			args:     []string{"--rerun-fails", "--packages=./...", "--", "-failfast"},
+			expected: "-failfast can not be used with --rerun-fails",
+		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
