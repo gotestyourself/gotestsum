@@ -22,6 +22,7 @@ Flags:
       --rerun-fails-max-failures int                do not rerun any tests if the initial run has more than this number of failures (default 10)
       --rerun-fails-report string                   write a report to the file, of the tests that were rerun
       --rerun-fails-run-root-test                   rerun the entire root testcase when any of its subtests fail, instead of only the failed subtest
+      --skip-empty                                  skip empty test packages when running all tests
       --version                                     show version and exit
       --watch                                       watch go files, and run tests when a file is modified
 
