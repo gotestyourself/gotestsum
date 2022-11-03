@@ -184,8 +184,15 @@ func (o options) Validate() error {
 			"because not all test cases will run")
 	}
 	if o.skipEmpty {
-		if len(o.packages) > 0 && o.packages[0] != `./...` {
-			return errors.New("--skip-empty cannot be used with a target")
+		switch len(o.packages) {
+		case 0:
+		case 1:
+			if o.packages[0] == `./...` {
+				break
+			}
+			fallthrough
+		default:
+			return errors.New("--skip-empty can only be used with individual packages")
 		}
 	}
 	return nil

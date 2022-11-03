@@ -45,7 +45,7 @@ func TestOptions_Validate_FromFlags(t *testing.T) {
 		}
 		assert.ErrorContains(t, err, tc.expected, "opts: %#v", opts)
 	}
-	var testCases = []testCase{
+	testCases := []testCase{
 		{
 			name: "no flags",
 		},
@@ -74,6 +74,24 @@ func TestOptions_Validate_FromFlags(t *testing.T) {
 			name:     "rerun-fails with failfast",
 			args:     []string{"--rerun-fails", "--packages=./...", "--", "-failfast"},
 			expected: "-failfast can not be used with --rerun-fails",
+		},
+		{
+			name:     "disallow multiple packages with --skip-empty",
+			args:     []string{"--skip-empty", "--packages=./... bar", "--", "-count=1"},
+			expected: "--skip-empty can only be used with individual packages",
+		},
+		{
+			name:     "disallow non-./... targets with --skip-empty",
+			args:     []string{"--skip-empty", "--packages=foo", "--", "-count=1"},
+			expected: "--skip-empty can only be used with individual packages",
+		},
+		{
+			name: "--skip-empty works with no target",
+			args: []string{"--skip-empty"},
+		},
+		{
+			name: "--skip-empty works with explicit ./... target",
+			args: []string{"--skip-empty", "--packages=./...", "--", "-count=1"},
 		},
 	}
 	for _, tc := range testCases {
