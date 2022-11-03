@@ -104,6 +104,7 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags.BoolVar(&opts.rerunFailsRunRootCases, "rerun-fails-run-root-test", false,
 		"rerun the entire root testcase when any of its subtests fail, instead of only the failed subtest")
 
+	flags.BoolVar(&opts.skipEmpty, "skip-empty", false, "skip empty test packages when running all tests")
 	flags.BoolVar(&opts.debug, "debug", false, "enabled debug logging")
 	flags.BoolVar(&opts.version, "version", false, "show version and exit")
 	return flags, opts
@@ -164,6 +165,7 @@ type options struct {
 	packages                     []string
 	watch                        bool
 	maxFails                     int
+	skipEmpty                    bool
 	version                      bool
 
 	// shims for testing
@@ -180,6 +182,11 @@ func (o options) Validate() error {
 	if o.rerunFailsMaxAttempts > 0 && boolArgIndex("failfast", o.args) > -1 {
 		return fmt.Errorf("-failfast can not be used with --rerun-fails " +
 			"because not all test cases will run")
+	}
+	if o.skipEmpty {
+		if len(o.packages) > 0 && o.packages[0] != `./...` {
+			return errors.New("--skip-empty cannot be used with a target")
+		}
 	}
 	return nil
 }
@@ -222,6 +229,7 @@ func run(opts *options) error {
 		Handler:                  handler,
 		Stop:                     cancel,
 		IgnoreNonJSONOutputLines: opts.ignoreNonJSONOutputLines,
+		SkipEmpty:                opts.skipEmpty,
 	}
 	exec, err := testjson.ScanTestOutput(cfg)
 	if err != nil {

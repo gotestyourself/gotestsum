@@ -63,6 +63,11 @@ func (e TestEvent) PackageEvent() bool {
 	return e.Test == ""
 }
 
+// EmptyPackage returns true if the event is an empty package Event
+func (e TestEvent) EmptyPackage() bool {
+	return e.PackageEvent() && len(e.Output) > 0 && e.Output[0] == '?'
+}
+
 // ElapsedFormatted returns Elapsed formatted in the go test format, ex (0.00s).
 func (e TestEvent) ElapsedFormatted() string {
 	return fmt.Sprintf("(%.2fs)", e.Elapsed)
@@ -109,6 +114,9 @@ type Package struct {
 	// shuffleSeed is the seed used to shuffle the tests. The value is set when
 	// tests are run with -shuffle
 	shuffleSeed string
+	// empty is true if this package was found to have no test files when
+	// doing a directory traversal
+	empty bool
 }
 
 // Result returns if the package passed, failed, or was skipped because there
@@ -322,6 +330,7 @@ type Execution struct {
 	errorsLock sync.RWMutex
 	errors     []string
 	done       bool
+	skipEmpty  bool
 	lastRunID  int
 }
 
@@ -330,6 +339,12 @@ func (e *Execution) add(event TestEvent) {
 	if !ok {
 		pkg = newPackage()
 		e.packages[event.Package] = pkg
+	}
+	if event.EmptyPackage() && e.skipEmpty {
+		pkg.empty = true
+	}
+	if pkg.empty {
+		return
 	}
 	if event.PackageEvent() {
 		pkg.addEvent(event)
@@ -566,6 +581,9 @@ func (e *Execution) end() []TestEvent {
 	e.done = true
 	var result []TestEvent // nolint: prealloc
 	for _, pkg := range e.packages {
+		if e.skipEmpty && pkg.empty {
+			continue
+		}
 		result = append(result, pkg.end()...)
 	}
 	return result
@@ -604,6 +622,9 @@ type ScanConfig struct {
 	// IgnoreNonJSONOutputLines causes ScanTestOutput to ignore non-JSON lines received from
 	// the Stdout reader. Instead of causing an error, the lines will be sent to Handler.Err.
 	IgnoreNonJSONOutputLines bool
+	// SkipEmpty skips reporting on packages with no tests when running
+	// with the traversal target "./..."
+	SkipEmpty bool
 }
 
 // EventHandler is called by ScanTestOutput for each event and write to stderr.
@@ -639,6 +660,7 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 	}
 	execution.done = false
 	execution.lastRunID = config.RunID
+	execution.skipEmpty = config.SkipEmpty
 
 	var group errgroup.Group
 	group.Go(func() error {
@@ -650,6 +672,11 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 
 	err := group.Wait()
 	for _, event := range execution.end() {
+		if execution.skipEmpty {
+			if event.EmptyPackage() || execution.packages[event.Package].empty {
+				continue
+			}
+		}
 		if err := config.Handler.Event(event, execution); err != nil {
 			return execution, err
 		}
@@ -667,6 +694,7 @@ func stopOnError(stop func(), err error) error {
 
 func readStdout(config ScanConfig, execution *Execution) error {
 	scanner := bufio.NewScanner(config.Stdout)
+	fromEmpty := map[string]bool{}
 	for scanner.Scan() {
 		raw := scanner.Bytes()
 		event, err := parseEvent(raw)
@@ -684,6 +712,17 @@ func readStdout(config ScanConfig, execution *Execution) error {
 			return fmt.Errorf("failed to parse test output: %s: %w", string(raw), err)
 		}
 
+		if execution.skipEmpty {
+			// don't render missing packages or events from missing packages
+			if event.EmptyPackage() {
+				fromEmpty[event.Package] = true
+				continue
+			}
+			// don't render events from missing packages
+			if fromEmpty[event.Package] {
+				continue
+			}
+		}
 		event.RunID = config.RunID
 		execution.add(event)
 		if err := config.Handler.Event(event, execution); err != nil {

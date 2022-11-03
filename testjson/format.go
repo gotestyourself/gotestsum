@@ -1,6 +1,7 @@
 package testjson
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"strings"
@@ -137,6 +138,10 @@ func pkgNameFormat(event TestEvent, exec *Execution) string {
 
 func shortFormatPackageEvent(event TestEvent, exec *Execution) string {
 	pkg := exec.Package(event.Package)
+	if pkg == nil {
+		b, _ := json.MarshalIndent(event, "", " ")
+		fmt.Println(string(b))
+	}
 
 	fmtEvent := func(action string) string {
 		return action + "  " + packageLine(event, exec)
