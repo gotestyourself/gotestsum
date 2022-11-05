@@ -211,8 +211,12 @@ type EventFormatter interface {
 	Format(event TestEvent, output *Execution) error
 }
 
+type FormatOptions struct {
+	HideEmptyPackages bool
+}
+
 // NewEventFormatter returns a formatter for printing events.
-func NewEventFormatter(out io.Writer, format string) EventFormatter {
+func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) EventFormatter {
 	switch format {
 	case "debug":
 		return &formatAdapter{out, debugFormat}
@@ -223,7 +227,7 @@ func NewEventFormatter(out io.Writer, format string) EventFormatter {
 	case "dots", "dots-v1":
 		return &formatAdapter{out, dotsFormatV1}
 	case "dots-v2":
-		return newDotFormatter(out)
+		return newDotFormatter(out, formatOpts)
 	case "testname", "short-verbose":
 		return &formatAdapter{out, testNameFormat}
 	case "pkgname", "short":

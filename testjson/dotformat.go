@@ -41,6 +41,7 @@ type dotFormatter struct {
 	pkgs      map[string]*dotLine
 	order     []string
 	writer    *dotwriter.Writer
+	opts      FormatOptions
 	termWidth int
 }
 
@@ -67,7 +68,7 @@ func (l *dotLine) checkWidth(prefix, terminal int) {
 	}
 }
 
-func newDotFormatter(out io.Writer) EventFormatter {
+func newDotFormatter(out io.Writer, opts FormatOptions) EventFormatter {
 	w, _, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil || w == 0 {
 		log.Warnf("Failed to detect terminal width for dots format, error: %v", err)
@@ -77,6 +78,7 @@ func newDotFormatter(out io.Writer) EventFormatter {
 		pkgs:      make(map[string]*dotLine),
 		writer:    dotwriter.New(out),
 		termWidth: w,
+		opts:      opts,
 	}
 }
 
@@ -101,6 +103,10 @@ func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 
 	sort.Slice(d.order, d.orderByLastUpdated)
 	for _, pkg := range d.order {
+		if d.opts.HideEmptyPackages && exec.Package(pkg).Total == 0 {
+			continue
+		}
+
 		line := d.pkgs[pkg]
 		pkgname := RelativePackagePath(pkg) + " "
 		prefix := fmtDotElapsed(exec.Package(pkg))
