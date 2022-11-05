@@ -111,8 +111,13 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 		},
 		{
 			name:        "pkgname",
-			format:      pkgNameFormat,
+			format:      pkgNameFormat(FormatOptions{}),
 			expectedOut: "format/pkgname.out",
+		},
+		{
+			name:        "pkgname",
+			format:      pkgNameFormat(FormatOptions{HideEmptyPackages: true}),
+			expectedOut: "format/pkgname-hide-empty.out",
 		},
 		{
 			name:        "standard-verbose",
@@ -163,7 +168,7 @@ func TestFormats_Coverage(t *testing.T) {
 		},
 		{
 			name:        "pkgname",
-			format:      pkgNameFormat,
+			format:      pkgNameFormat(FormatOptions{}),
 			expectedOut: "format/pkgname-coverage.out",
 		},
 		{
@@ -214,7 +219,7 @@ func TestFormats_Shuffle(t *testing.T) {
 		},
 		{
 			name:        "pkgname",
-			format:      pkgNameFormat,
+			format:      pkgNameFormat(FormatOptions{}),
 			expectedOut: "format/pkgname-shuffle.out",
 		},
 		{

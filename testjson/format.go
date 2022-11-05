@@ -128,14 +128,16 @@ func all(cond ...bool) bool {
 	return true
 }
 
-func pkgNameFormat(event TestEvent, exec *Execution) string {
-	if !event.PackageEvent() {
-		return ""
+func pkgNameFormat(opts FormatOptions) func(event TestEvent, exec *Execution) string {
+	return func(event TestEvent, exec *Execution) string {
+		if !event.PackageEvent() {
+			return ""
+		}
+		return shortFormatPackageEvent(opts, event, exec)
 	}
-	return shortFormatPackageEvent(event, exec)
 }
 
-func shortFormatPackageEvent(event TestEvent, exec *Execution) string {
+func shortFormatPackageEvent(opts FormatOptions, event TestEvent, exec *Execution) string {
 	pkg := exec.Package(event.Package)
 
 	fmtEvent := func(action string) string {
@@ -144,9 +146,15 @@ func shortFormatPackageEvent(event TestEvent, exec *Execution) string {
 	withColor := colorEvent(event)
 	switch event.Action {
 	case ActionSkip:
+		if opts.HideEmptyPackages {
+			return ""
+		}
 		return fmtEvent(withColor("∅"))
 	case ActionPass:
 		if pkg.Total == 0 {
+			if opts.HideEmptyPackages {
+				return ""
+			}
 			return fmtEvent(withColor("∅"))
 		}
 		return fmtEvent(withColor("✓"))
@@ -181,16 +189,18 @@ func packageLine(event TestEvent, exec *Execution) string {
 	return buf.String()
 }
 
-func pkgNameWithFailuresFormat(event TestEvent, exec *Execution) string {
-	if !event.PackageEvent() {
-		if event.Action == ActionFail {
-			pkg := exec.Package(event.Package)
-			tc := pkg.LastFailedByName(event.Test)
-			return pkg.Output(tc.ID)
+func pkgNameWithFailuresFormat(opts FormatOptions) func(event TestEvent, exec *Execution) string {
+	return func(event TestEvent, exec *Execution) string {
+		if !event.PackageEvent() {
+			if event.Action == ActionFail {
+				pkg := exec.Package(event.Package)
+				tc := pkg.LastFailedByName(event.Test)
+				return pkg.Output(tc.ID)
+			}
+			return ""
 		}
-		return ""
+		return shortFormatPackageEvent(opts, event, exec)
 	}
-	return shortFormatPackageEvent(event, exec)
 }
 
 func colorEvent(event TestEvent) func(format string, a ...interface{}) string {
@@ -231,9 +241,9 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 	case "testname", "short-verbose":
 		return &formatAdapter{out, testNameFormat}
 	case "pkgname", "short":
-		return &formatAdapter{out, pkgNameFormat}
+		return &formatAdapter{out, pkgNameFormat(formatOpts)}
 	case "pkgname-and-test-fails", "short-with-failures":
-		return &formatAdapter{out, pkgNameWithFailuresFormat}
+		return &formatAdapter{out, pkgNameWithFailuresFormat(formatOpts)}
 	default:
 		return nil
 	}
