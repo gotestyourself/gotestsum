@@ -7,6 +7,7 @@ See https://pkg.go.dev/gotest.tools/gotestsum#section-readme for detailed docume
 Flags:
       --debug                                       enabled debug logging
   -f, --format string                               print format of test input (default "short")
+      --format-hide-empty-pkg                       do not print empty packages in compact formats
       --hide-summary summary                        hide sections of the summary: skipped,failed,errors,output (default none)
       --jsonfile string                             write all TestEvents to file
       --junitfile string                            write a JUnit XML file

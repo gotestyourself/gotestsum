@@ -59,7 +59,7 @@ func (bufferCloser) Close() error { return nil }
 func TestEventHandler_Event_WithMissingActionFail(t *testing.T) {
 	buf := new(bufferCloser)
 	errBuf := new(bytes.Buffer)
-	format := testjson.NewEventFormatter(errBuf, "testname")
+	format := testjson.NewEventFormatter(errBuf, "testname", testjson.FormatOptions{})
 
 	source := golden.Get(t, "../../testjson/testdata/input/go-test-json-missing-test-fail.out")
 	cfg := testjson.ScanConfig{
@@ -76,7 +76,7 @@ func TestEventHandler_Event_WithMissingActionFail(t *testing.T) {
 }
 
 func TestEventHandler_Event_MaxFails(t *testing.T) {
-	format := testjson.NewEventFormatter(ioutil.Discard, "testname")
+	format := testjson.NewEventFormatter(ioutil.Discard, "testname", testjson.FormatOptions{})
 
 	source := golden.Get(t, "../../testjson/testdata/input/go-test-json.out")
 	cfg := testjson.ScanConfig{

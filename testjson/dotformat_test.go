@@ -129,7 +129,7 @@ func TestFmtDotElapsed_RuneCountProperty(t *testing.T) {
 
 func TestNewDotFormatter(t *testing.T) {
 	buf := new(bytes.Buffer)
-	ef := newDotFormatter(buf)
+	ef := newDotFormatter(buf, FormatOptions{})
 
 	d, ok := ef.(*dotFormatter)
 	skip.If(t, !ok, "no terminal width")

@@ -59,6 +59,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags.StringVarP(&opts.format, "format", "f",
 		lookEnvWithDefault("GOTESTSUM_FORMAT", "short"),
 		"print format of test input")
+	flags.BoolVar(&opts.formatOptions.HideEmptyPackages, "format-hide-empty-pkg",
+		false, "do not print empty packages in compact formats")
 	flags.BoolVar(&opts.rawCommand, "raw-command", false,
 		"don't prepend 'go test -json' to the 'go test' command")
 	flags.BoolVar(&opts.ignoreNonJSONOutputLines, "ignore-non-json-output-lines", false,
@@ -146,6 +148,7 @@ func lookEnvWithDefault(key, defValue string) string {
 type options struct {
 	args                         []string
 	format                       string
+	formatOptions                testjson.FormatOptions
 	debug                        bool
 	rawCommand                   bool
 	ignoreNonJSONOutputLines     bool
