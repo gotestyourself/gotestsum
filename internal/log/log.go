@@ -11,6 +11,7 @@ type Level uint8
 const (
 	ErrorLevel Level = iota
 	WarnLevel
+	InfoLevel
 	DebugLevel
 )
 
@@ -37,6 +38,15 @@ func Warnf(format string, args ...interface{}) {
 // Debugf prints the message to stderr, with no prefix.
 func Debugf(format string, args ...interface{}) {
 	if level < DebugLevel {
+		return
+	}
+	fmt.Fprintf(out, format, args...)
+	fmt.Fprint(out, "\n")
+}
+
+// Infof prints the message to stderr, with no prefix.
+func Infof(format string, args ...interface{}) {
+	if level < InfoLevel {
 		return
 	}
 	fmt.Fprintf(out, format, args...)

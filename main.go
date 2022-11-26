@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"gotest.tools/gotestsum/cmd"
+	"gotest.tools/gotestsum/cmd/tool/matrix"
 	"gotest.tools/gotestsum/cmd/tool/slowest"
 	"gotest.tools/gotestsum/internal/log"
 )
@@ -55,6 +56,7 @@ func toolRun(name string, args []string) error {
 
 Commands:
     %[1]s slowest      find or skip the slowest tests
+    %[1]s ci-matrix    use previous test runtime to place packages into optimal buckets
 
 Use '%[1]s COMMAND --help' for command specific help.
 `, name)
@@ -67,6 +69,8 @@ Use '%[1]s COMMAND --help' for command specific help.
 		return nil
 	case "slowest":
 		return slowest.Run(name+" "+next, rest)
+	case "ci-matrix":
+		return matrix.Run(name+" "+next, rest)
 	default:
 		fmt.Fprintln(os.Stderr, usage(name))
 		return fmt.Errorf("invalid command: %v %v", name, next)
