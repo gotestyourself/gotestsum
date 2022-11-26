@@ -64,9 +64,8 @@ func usage(out io.Writer, name string, flags *pflag.FlagSet) {
 Read a list of packages from stdin and output a GitHub Actions matrix strategy
 that splits the packages by previous run times to minimize overall CI runtime.
 
-    echo -n "::set-output name=matrix::"
-    go list ./... | \
-        %[1]s --timing-files ./*.log --partitions 4
+    echo -n "matrix=" >> $GITHUB_OUTPUT
+    go list ./... | %[1]s --timing-files ./*.log --partitions 4 >> $GITHUB_OUTPUT
 
 The output of the command is a JSON object that can be used as the matrix
 strategy for a test job.
