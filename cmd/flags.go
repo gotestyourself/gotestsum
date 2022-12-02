@@ -132,3 +132,11 @@ func (s *stringSlice) Set(raw string) error {
 func (s *stringSlice) Type() string {
 	return "list"
 }
+
+func truthyFlag(s string) bool {
+	switch strings.ToLower(s) {
+	case "true", "yes", "1":
+		return true
+	}
+	return false
+}

@@ -72,6 +72,7 @@ type Config struct {
 	ProjectName             string
 	FormatTestSuiteName     FormatFunc
 	FormatTestCaseClassname FormatFunc
+	HideEmptyPackages       bool
 	// This is used for tests to have a consistent timestamp
 	customTimestamp string
 	customElapsed   string
@@ -104,6 +105,9 @@ func generate(exec *testjson.Execution, cfg Config) JUnitTestSuites {
 	}
 	for _, pkgname := range exec.Packages() {
 		pkg := exec.Package(pkgname)
+		if cfg.HideEmptyPackages && pkg.Total == 0 && !pkg.TestMainFailed() {
+			continue
+		}
 		junitpkg := JUnitTestSuite{
 			Name:       cfg.FormatTestSuiteName(pkgname),
 			Tests:      pkg.Total,

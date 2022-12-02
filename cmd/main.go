@@ -93,6 +93,9 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags.StringVar(&opts.junitProjectName, "junitfile-project-name",
 		lookEnvWithDefault("GOTESTSUM_JUNITFILE_PROJECT_NAME", ""),
 		"name of the project used in the junit.xml file")
+	flags.BoolVar(&opts.junitHideEmptyPackages, "junitfile-hide-empty-pkg",
+		truthyFlag(lookEnvWithDefault("GOTESTSUM_JUNIT_HIDE_EMPTY_PKG", "")),
+		"omit packages with no tests from the junit.xml file")
 
 	flags.IntVar(&opts.rerunFailsMaxAttempts, "rerun-fails", 0,
 		"rerun failed tests until they all pass, or attempts exceeds maximum. Defaults to max 2 reruns when enabled.")
@@ -160,6 +163,7 @@ type options struct {
 	junitTestSuiteNameFormat     *junitFieldFormatValue
 	junitTestCaseClassnameFormat *junitFieldFormatValue
 	junitProjectName             string
+	junitHideEmptyPackages       bool
 	rerunFailsMaxAttempts        int
 	rerunFailsMaxInitialFailures int
 	rerunFailsReportFile         string
