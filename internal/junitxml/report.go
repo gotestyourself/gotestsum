@@ -105,7 +105,7 @@ func generate(exec *testjson.Execution, cfg Config) JUnitTestSuites {
 	}
 	for _, pkgname := range exec.Packages() {
 		pkg := exec.Package(pkgname)
-		if cfg.HideEmptyPackages && pkg.Total == 0 && !pkg.TestMainFailed() {
+		if cfg.HideEmptyPackages && pkg.IsEmpty() {
 			continue
 		}
 		junitpkg := JUnitTestSuite{

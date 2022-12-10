@@ -232,6 +232,11 @@ func (p *Package) TestMainFailed() bool {
 	return p.action == ActionFail && len(p.Failed) == 0
 }
 
+// IsEmpty returns true if this package contains no tests.
+func (p *Package) IsEmpty() bool {
+	return p.Total == 0 && !p.TestMainFailed()
+}
+
 const neverFinished time.Duration = -1
 
 // end adds any tests that were missing an ActionFail TestEvent to the list of
