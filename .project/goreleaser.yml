@@ -10,6 +10,7 @@ builds:
   - binary: gotestsum
     goos:
       - darwin
+      - freebsd
       - windows
       - linux
     goarch:
@@ -25,6 +26,12 @@ builds:
         goarch: s390x
       - goos: darwin
         goarch: ppc64le
+      - goos: freebsd
+        goarch: s390x
+      - goos: freebsd
+        goarch: ppc64le
+      - goos: freebsd
+        goarch: arm
       - goos: windows
         goarch: s390x
       - goos: windows
