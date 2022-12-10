@@ -103,7 +103,7 @@ func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 
 	sort.Slice(d.order, d.orderByLastUpdated)
 	for _, pkg := range d.order {
-		if d.opts.HideEmptyPackages && exec.Package(pkg).Total == 0 {
+		if d.opts.HideEmptyPackages && exec.Package(pkg).IsEmpty() {
 			continue
 		}
 

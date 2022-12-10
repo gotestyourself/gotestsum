@@ -96,6 +96,7 @@ func writeJUnitFile(opts *options, execution *testjson.Execution) error {
 		ProjectName:             opts.junitProjectName,
 		FormatTestSuiteName:     opts.junitTestSuiteNameFormat.Value(),
 		FormatTestCaseClassname: opts.junitTestCaseClassnameFormat.Value(),
+		HideEmptyPackages:       opts.junitHideEmptyPackages,
 	})
 }
 
