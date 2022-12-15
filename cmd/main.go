@@ -127,13 +127,15 @@ Flags:
 	flags.PrintDefaults()
 	fmt.Fprintf(out, `
 Formats:
-    dots                     print a character for each test
-    dots-v2                  experimental dots format, one package per line
-    pkgname                  print a line for each package
-    pkgname-and-test-fails   print a line for each package and failed test output
-    testname                 print a line for each test and package
-    standard-quiet           standard go test format
-    standard-verbose         standard go test -v format
+    dots                           print a character for each test
+    dots-v2                        experimental dots format, one package per line
+    pkgname                        print a line for each package
+    pkgname-hivis                  print a line for each package, use hi-visability icons
+    pkgname-and-test-fails         print a line for each package and failed test output
+    pkgname-and-test-fails-hivis   print a line for each package and failed test output, use hi-visability icons
+    testname                       print a line for each test and package
+    standard-quiet                 standard go test format
+    standard-verbose               standard go test -v format
 
 Commands:
     %[1]s tool slowest   find or skip the slowest tests

@@ -115,6 +115,11 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 			expectedOut: "format/pkgname.out",
 		},
 		{
+			name:        "pkgname-hivis",
+			format:      pkgNameFormat(FormatOptions{UseHivisEmojis: true}),
+			expectedOut: "format/pkgname-hivis.out",
+		},
+		{
 			name:        "pkgname",
 			format:      pkgNameFormat(FormatOptions{HideEmptyPackages: true}),
 			expectedOut: "format/pkgname-hide-empty.out",

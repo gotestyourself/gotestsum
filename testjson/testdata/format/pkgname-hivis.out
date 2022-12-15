@@ -1,0 +1,5 @@
+❌  testjson/internal/badmain (1ms)
+🔳  testjson/internal/empty (cached)
+✅  testjson/internal/good (cached)
+❌  testjson/internal/parallelfails (20ms)
+❌  testjson/internal/withfails (20ms)
