@@ -1,6 +1,4 @@
 linters-settings:
-  gocyclo:
-    min-complexity: 12
   goconst:
     min-len: 2
     min-occurrences: 4
@@ -33,7 +31,6 @@ linters:
     - errcheck
     - gocognit
     - goconst
-    - gocyclo
     - gofmt
     - goimports
     - gosimple

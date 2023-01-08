@@ -109,6 +109,11 @@ type Package struct {
 	// shuffleSeed is the seed used to shuffle the tests. The value is set when
 	// tests are run with -shuffle
 	shuffleSeed string
+
+	// testTimeoutPanicInTest stores the name of a test that received the panic
+	// output caused by a test timeout. This is necessary to work around a race
+	// condition in test2json. See https://github.com/golang/go/issues/57305.
+	testTimeoutPanicInTest string
 }
 
 // Result returns if the package passed, failed, or was skipped because there
@@ -398,6 +403,14 @@ func (p *Package) addTestEvent(event TestEvent) {
 
 	switch event.Action {
 	case ActionOutput, ActionBench:
+		if strings.HasPrefix(event.Output, "panic: test timed out") {
+			p.testTimeoutPanicInTest = event.Test
+		}
+		if p.testTimeoutPanicInTest == event.Test {
+			p.addOutput(0, event.Output)
+			return
+		}
+
 		tc := p.running[event.Test]
 		p.addOutput(tc.ID, event.Output)
 		return
@@ -491,8 +504,10 @@ func (e *Execution) Failed() []TestCase {
 	for _, name := range sortedKeys(e.packages) {
 		pkg := e.packages[name]
 
-		// Add package-level failure output if there were no failed tests.
-		if pkg.TestMainFailed() {
+		// Add package-level failure output if there were no failed tests, or
+		// if the test timeout was reached (because we now have to store that
+		// output on the package).
+		if pkg.TestMainFailed() || pkg.testTimeoutPanicInTest != "" {
 			failed = append(failed, TestCase{Package: name})
 		}
 		failed = append(failed, pkg.Failed...)

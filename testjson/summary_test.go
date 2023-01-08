@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"gotest.tools/gotestsum/internal/text"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/golden"
 )
@@ -318,4 +319,20 @@ func scanConfigFromGolden(filename string) func(t *testing.T) ScanConfig {
 	return func(t *testing.T) ScanConfig {
 		return ScanConfig{Stdout: bytes.NewReader(golden.Get(t, filename))}
 	}
+}
+
+func TestSummary_TestTimeoutPanicRace(t *testing.T) {
+	source := golden.Get(t, "input/go-test-json-panic-race.out")
+	cfg := ScanConfig{
+		Stdout:  bytes.NewReader(source),
+		Handler: &captureHandler{},
+	}
+	exec, err := ScanTestOutput(cfg)
+	assert.NilError(t, err)
+
+	out := new(bytes.Buffer)
+	PrintSummary(out, exec, SummarizeAll)
+
+	actual := text.ProcessLines(t, out, text.OpRemoveSummaryLineElapsedTime)
+	golden.Assert(t, actual, "summary/test-timeout-panic-race")
 }

@@ -1,0 +1,37 @@
+
+=== Failed
+=== FAIL: github.com/mafredri/test  (0.00s)
+panic: test timed out after 1s
+running tests:
+	TestHello (1s)
+
+goroutine 33 [running]:
+testing.(*M).startAlarm.func1()
+	/home/mafredri/sdk/go1.20rc1/src/testing/testing.go:2240 +0x3b9
+created by time.goFunc
+	/home/mafredri/sdk/go1.20rc1/src/time/sleep.go:176 +0x32
+
+goroutine 1 [runnable]:
+testing.(*T).Run(0xc000083040, {0x5be88c?, 0x4ce6c5?}, 0x6072a0)
+	/home/mafredri/sdk/go1.20rc1/src/testing/testing.go:1629 +0x405
+testing.runTests.func1(0x7438e0?)
+	/home/mafredri/sdk/go1.20rc1/src/testing/testing.go:2035 +0x45
+testing.tRunner(0xc000083040, 0xc00025fc88)
+	/home/mafredri/sdk/go1.20rc1/src/testing/testing.go:1575 +0x10b
+testing.runTests(0xc0000c0500?, {0x739320, 0x2, 0x2}, {0x0?, 0x100c0000ab938?, 0x743080?})
+	/home/mafredri/sdk/go1.20rc1/src/testing/testing.go:2033 +0x489
+testing.(*M).Run(0xc0000c0500)
+	/home/mafredri/sdk/go1.20rc1/src/testing/testing.go:1905 +0x63a
+main.main()
+	_testmain.go:49 +0x1aa
+
+goroutine 20 [runnable]:
+runtime.goexit1()
+	/home/mafredri/sdk/go1.20rc1/src/runtime/proc.go:3616 +0x54
+runtime.goexit()
+	/home/mafredri/sdk/go1.20rc1/src/runtime/asm_amd64.s:1599 +0x6
+created by testing.(*T).Run
+	/home/mafredri/sdk/go1.20rc1/src/testing/testing.go:1628 +0x3ea
+FAIL	github.com/mafredri/test	1.012s
+
+DONE 1 tests, 1 failure
