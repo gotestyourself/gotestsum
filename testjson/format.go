@@ -8,16 +8,6 @@ import (
 	"github.com/fatih/color"
 )
 
-const (
-	hivisSuffiz         = "-hivis"
-	defaultEmptyEmoji   = "∅"
-	defaultSuccessEmoji = "✓"
-	defaultFailEmoji    = "✖"
-	hivisEmptyEmpji     = "🔳"
-	hivisSuccessEmoji   = "✅"
-	hivisFailEmoji      = "❌"
-)
-
 func debugFormat(event TestEvent, _ *Execution) string {
 	return fmt.Sprintf("%s %s %s (%.3f) [%d] %s\n",
 		event.Package,
@@ -149,16 +139,16 @@ func pkgNameFormat(opts FormatOptions) func(event TestEvent, exec *Execution) st
 
 func shortFormatPackageEvent(opts FormatOptions, event TestEvent, exec *Execution) string {
 	pkg := exec.Package(event.Package)
-	var emptyEmoji, successEmoji, failEmoji string
 
-	if opts.UseHivisEmojis {
-		emptyEmoji = hivisEmptyEmpji
-		successEmoji = hivisSuccessEmoji
-		failEmoji = hivisFailEmoji
+	var iconSkipped, iconSuccess, iconFailure string
+	if opts.UseHiVisibilityIcons {
+		iconSkipped = "🔳"
+		iconSuccess = "✅"
+		iconFailure = "❌"
 	} else {
-		emptyEmoji = defaultEmptyEmoji
-		successEmoji = defaultSuccessEmoji
-		failEmoji = defaultFailEmoji
+		iconSkipped = "∅"
+		iconSuccess = "✓"
+		iconFailure = "✖"
 	}
 
 	fmtEvent := func(action string) string {
@@ -170,17 +160,17 @@ func shortFormatPackageEvent(opts FormatOptions, event TestEvent, exec *Executio
 		if opts.HideEmptyPackages {
 			return ""
 		}
-		return fmtEvent(withColor(emptyEmoji))
+		return fmtEvent(withColor(iconSkipped))
 	case ActionPass:
 		if pkg.Total == 0 {
 			if opts.HideEmptyPackages {
 				return ""
 			}
-			return fmtEvent(withColor(emptyEmoji))
+			return fmtEvent(withColor(iconSkipped))
 		}
-		return fmtEvent(withColor(successEmoji))
+		return fmtEvent(withColor(iconSuccess))
 	case ActionFail:
-		return fmtEvent(withColor(failEmoji))
+		return fmtEvent(withColor(iconFailure))
 	}
 	return ""
 }
@@ -243,16 +233,12 @@ type EventFormatter interface {
 }
 
 type FormatOptions struct {
-	HideEmptyPackages bool
-	UseHivisEmojis    bool
+	HideEmptyPackages    bool
+	UseHiVisibilityIcons bool
 }
 
 // NewEventFormatter returns a formatter for printing events.
 func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) EventFormatter {
-	if strings.HasSuffix(format, hivisSuffiz) {
-		formatOpts.UseHivisEmojis = true
-		format = strings.TrimSuffix(format, hivisSuffiz)
-	}
 	switch format {
 	case "debug":
 		return &formatAdapter{out, debugFormat}
