@@ -142,7 +142,7 @@ func shortFormatPackageEvent(opts FormatOptions, event TestEvent, exec *Executio
 
 	var iconSkipped, iconSuccess, iconFailure string
 	if opts.UseHiVisibilityIcons {
-		iconSkipped = "🔳"
+		iconSkipped = "➖"
 		iconSuccess = "✅"
 		iconFailure = "❌"
 	} else {
