@@ -359,6 +359,12 @@ packages as command line arguments (ex: `gotestsum --watch -- ./...` or
 `gotestsum --watch -- ./extrapkg`), the
 tests in those packages will also be run when any file changes.
 
+With the `--watch-chdir` flag, `gotestsum` will change the working directory
+to the directory with the modified file before running tests. Changing the
+directory is primarily useful when the project contains multiple Go modules.
+Without this flag, `go test` will refuse to run tests for any package outside
+of the main Go module.
+
 While in watch mode, pressing some keys will perform an action:
 
 * `r` will run tests for the previous event.

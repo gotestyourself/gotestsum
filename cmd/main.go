@@ -80,6 +80,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		"command to run after the tests have completed")
 	flags.BoolVar(&opts.watch, "watch", false,
 		"watch go files, and run tests when a file is modified")
+	flags.BoolVar(&opts.watchChdir, "watch-chdir", false,
+		"in watch mode change the working directory to the directory with the modified file before running tests")
 	flags.IntVar(&opts.maxFails, "max-fails", 0,
 		"end the test run after this number of failures")
 
@@ -98,7 +100,7 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		"omit packages with no tests from the junit.xml file")
 
 	flags.IntVar(&opts.rerunFailsMaxAttempts, "rerun-fails", 0,
-		"rerun failed tests until they all pass, or attempts exceeds maximum. Defaults to max 2 reruns when enabled.")
+		"rerun failed tests until they all pass, or attempts exceeds maximum. Defaults to max 2 reruns when enabled")
 	flags.Lookup("rerun-fails").NoOptDefVal = "2"
 	flags.IntVar(&opts.rerunFailsMaxInitialFailures, "rerun-fails-max-failures", 10,
 		"do not rerun any tests if the initial run has more than this number of failures")
@@ -170,6 +172,7 @@ type options struct {
 	rerunFailsRunRootCases       bool
 	packages                     []string
 	watch                        bool
+	watchChdir                   bool
 	maxFails                     int
 	version                      bool
 
@@ -213,7 +216,7 @@ func run(opts *options) error {
 		return err
 	}
 
-	goTestProc, err := startGoTestFn(ctx, goTestCmdArgs(opts, rerunOpts{}))
+	goTestProc, err := startGoTestFn(ctx, "", goTestCmdArgs(opts, rerunOpts{}))
 	if err != nil {
 		return err
 	}
@@ -373,13 +376,15 @@ type waiter interface {
 	Wait() error
 }
 
-func startGoTest(ctx context.Context, args []string) (*proc, error) {
+func startGoTest(ctx context.Context, dir string, args []string) (*proc, error) {
 	if len(args) == 0 {
 		return nil, errors.New("missing command to run")
 	}
 
 	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
 	cmd.Stdin = os.Stdin
+	cmd.Dir = dir
+
 	p := proc{cmd: cmd}
 	log.Debugf("exec: %s", cmd.Args)
 	var err error

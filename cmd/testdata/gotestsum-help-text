@@ -20,12 +20,13 @@ Flags:
       --packages list                               space separated list of package to test
       --post-run-command command                    command to run after the tests have completed
       --raw-command                                 don't prepend 'go test -json' to the 'go test' command
-      --rerun-fails int[=2]                         rerun failed tests until they all pass, or attempts exceeds maximum. Defaults to max 2 reruns when enabled.
+      --rerun-fails int[=2]                         rerun failed tests until they all pass, or attempts exceeds maximum. Defaults to max 2 reruns when enabled
       --rerun-fails-max-failures int                do not rerun any tests if the initial run has more than this number of failures (default 10)
       --rerun-fails-report string                   write a report to the file, of the tests that were rerun
       --rerun-fails-run-root-test                   rerun the entire root testcase when any of its subtests fail, instead of only the failed subtest
       --version                                     show version and exit
       --watch                                       watch go files, and run tests when a file is modified
+      --watch-chdir                                 in watch mode change the working directory to the directory with the modified file before running tests
 
 Formats:
     dots                     print a character for each test
