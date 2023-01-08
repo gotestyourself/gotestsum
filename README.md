@@ -349,9 +349,10 @@ The next time tests are run using `--short` all the slow tests will be skipped.
 When the `--watch` flag is set, `gotestsum` will watch directories using
 [file system notifications](https://pkg.go.dev/github.com/fsnotify/fsnotify).
 When a Go file in one of those directories is modified, `gotestsum` will run the
-tests for the package which contains the changed file. By default all
-directories with at least one file with a `.go` extension, under the current
-directory will be watched. Use the `--packages` flag to specify a different list.
+tests for the package that contains the changed file. By default all
+directories under the current
+directory with at least one `.go` file will be watched.
+Use the `--packages` flag to specify a different list.
 
 If `--watch` is used with a command line that includes the name of one or more
 packages as command line arguments (ex: `gotestsum --watch -- ./...` or
