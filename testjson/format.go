@@ -67,7 +67,7 @@ func testNameFormat(event TestEvent, exec *Execution) string {
 		}
 
 		event.Elapsed = 0 // hide elapsed for now, for backwards compat
-		return result + " " + packageLine(event, exec)
+		return result + " " + packageLine(event, exec.Package(event.Package))
 
 	case event.Action == ActionFail:
 		pkg := exec.Package(event.Package)
@@ -152,7 +152,7 @@ func shortFormatPackageEvent(opts FormatOptions, event TestEvent, exec *Executio
 	}
 
 	fmtEvent := func(action string) string {
-		return action + "  " + packageLine(event, exec)
+		return action + "  " + packageLine(event, exec.Package(event.Package))
 	}
 	withColor := colorEvent(event)
 	switch event.Action {
@@ -175,9 +175,7 @@ func shortFormatPackageEvent(opts FormatOptions, event TestEvent, exec *Executio
 	return ""
 }
 
-func packageLine(event TestEvent, exec *Execution) string {
-	pkg := exec.Package(event.Package)
-
+func packageLine(event TestEvent, pkg *Package) string {
 	var buf strings.Builder
 	buf.WriteString(RelativePackagePath(event.Package))
 
