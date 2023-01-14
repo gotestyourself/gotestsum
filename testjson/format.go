@@ -140,6 +140,17 @@ func pkgNameFormat(opts FormatOptions) func(event TestEvent, exec *Execution) st
 func shortFormatPackageEvent(opts FormatOptions, event TestEvent, exec *Execution) string {
 	pkg := exec.Package(event.Package)
 
+	var iconSkipped, iconSuccess, iconFailure string
+	if opts.UseHiVisibilityIcons {
+		iconSkipped = "➖"
+		iconSuccess = "✅"
+		iconFailure = "❌"
+	} else {
+		iconSkipped = "∅"
+		iconSuccess = "✓"
+		iconFailure = "✖"
+	}
+
 	fmtEvent := func(action string) string {
 		return action + "  " + packageLine(event, exec)
 	}
@@ -149,17 +160,17 @@ func shortFormatPackageEvent(opts FormatOptions, event TestEvent, exec *Executio
 		if opts.HideEmptyPackages {
 			return ""
 		}
-		return fmtEvent(withColor("∅"))
+		return fmtEvent(withColor(iconSkipped))
 	case ActionPass:
 		if pkg.Total == 0 {
 			if opts.HideEmptyPackages {
 				return ""
 			}
-			return fmtEvent(withColor("∅"))
+			return fmtEvent(withColor(iconSkipped))
 		}
-		return fmtEvent(withColor("✓"))
+		return fmtEvent(withColor(iconSuccess))
 	case ActionFail:
-		return fmtEvent(withColor("✖"))
+		return fmtEvent(withColor(iconFailure))
 	}
 	return ""
 }
@@ -222,7 +233,8 @@ type EventFormatter interface {
 }
 
 type FormatOptions struct {
-	HideEmptyPackages bool
+	HideEmptyPackages    bool
+	UseHiVisibilityIcons bool
 }
 
 // NewEventFormatter returns a formatter for printing events.

@@ -61,6 +61,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		"print format of test input")
 	flags.BoolVar(&opts.formatOptions.HideEmptyPackages, "format-hide-empty-pkg",
 		false, "do not print empty packages in compact formats")
+	flags.BoolVar(&opts.formatOptions.UseHiVisibilityIcons, "format-hivis",
+		false, "use high visibility characters in some formats")
 	flags.BoolVar(&opts.rawCommand, "raw-command", false,
 		"don't prepend 'go test -json' to the 'go test' command")
 	flags.BoolVar(&opts.ignoreNonJSONOutputLines, "ignore-non-json-output-lines", false,
