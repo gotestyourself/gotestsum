@@ -10,6 +10,8 @@ issues:
   exclude-rules:
     - linters: [revive]
       text: 'should have comment .*or be unexported'
+    - linters: [revive]
+      text: 'should have a package comment'
     - linters: [stylecheck]
       text: 'ST1000: at least one file in a package should have a package comment'
     - linters: [errcheck]

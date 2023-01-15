@@ -32,9 +32,10 @@ func Run(name string, args []string) error {
 }
 
 type options struct {
-	numPartitions      uint
-	timingFilesPattern string
-	debug              bool
+	numPartitions           uint
+	timingFilesPattern      string
+	partitionTestsInPackage string
+	debug                   bool
 
 	// shims for testing
 	stdin  io.Reader
@@ -52,6 +53,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		"number of parallel partitions to create in the test matrix")
 	flags.StringVar(&opts.timingFilesPattern, "timing-files", "",
 		"glob pattern to match files that contain test2json events, ex: ./logs/*.log")
+	flags.StringVar(&opts.partitionTestsInPackage, "partition-tests-in-package", "",
+		"partition the tests in a single package instead of partitioning by package")
 	flags.BoolVar(&opts.debug, "debug", false,
 		"enable debug logging")
 	return flags, opts
@@ -71,6 +74,18 @@ The output of the command is a JSON object that can be used as the matrix
 strategy for a test job.
 
 
+When the --partition-tests-in-package flag is set to the name of a package, this
+command will output a matrix that partitions the tests in that one package. In
+this mode the command reads a list of test names from stdin.
+
+Example
+
+    echo -n "::set-output name=matrix::"
+    go test --list github.com/example/pkg | \
+        %[1]s --partitions 5 \
+        --partition-tests-in-package github.com/example/pkg \
+        --timing-files ./*.log --max-age-days 10
+
 Flags:
 `, name)
 	flags.SetOutput(out)
@@ -89,7 +104,7 @@ func run(opts options) error {
 		return fmt.Errorf("--timing-files is required")
 	}
 
-	pkgs, err := readPackages(opts.stdin)
+	inputs, err := readPackagesOrFiles(opts.stdin)
 	if err != nil {
 		return fmt.Errorf("failed to read packages from stdin: %v", err)
 	}
@@ -100,16 +115,16 @@ func run(opts options) error {
 	}
 	defer closeFiles(files)
 
-	pkgTiming, err := packageTiming(files)
+	timing, err := aggregateByName(files, opts.partitionTestsInPackage)
 	if err != nil {
 		return err
 	}
 
-	buckets := bucketPackages(packagePercentile(pkgTiming), pkgs, opts.numPartitions)
-	return writeMatrix(opts.stdout, buckets)
+	buckets := createBuckets(percentile(timing), inputs, opts.numPartitions)
+	return writeMatrix(opts, buckets)
 }
 
-func readPackages(stdin io.Reader) ([]string, error) {
+func readPackagesOrFiles(stdin io.Reader) ([]string, error) {
 	var packages []string
 	scan := bufio.NewScanner(stdin)
 	for scan.Scan() {
@@ -143,12 +158,24 @@ func parseEvent(reader io.Reader) (testjson.TestEvent, error) {
 	return event, err
 }
 
-func packageTiming(files []*os.File) (map[string][]time.Duration, error) {
+func aggregateByName(files []*os.File, pkgName string) (map[string][]time.Duration, error) {
 	timing := make(map[string][]time.Duration)
 	for _, fh := range files {
 		exec, err := testjson.ScanTestOutput(testjson.ScanConfig{Stdout: fh})
 		if err != nil {
 			return nil, fmt.Errorf("failed to read events from %v: %v", fh.Name(), err)
+		}
+
+		if pkgName != "" {
+			pkg := exec.Package(pkgName)
+			if pkg == nil {
+				return nil, nil
+			}
+
+			for _, tc := range pkg.TestCases() {
+				timing[tc.Test.Name()] = append(timing[tc.Test.Name()], tc.Elapsed)
+			}
+			continue
 		}
 
 		for _, pkg := range exec.Packages() {
@@ -158,12 +185,12 @@ func packageTiming(files []*os.File) (map[string][]time.Duration, error) {
 	return timing, nil
 }
 
-func packagePercentile(timing map[string][]time.Duration) map[string]time.Duration {
+func percentile(timing map[string][]time.Duration) map[string]time.Duration {
 	result := make(map[string]time.Duration)
-	for pkg, times := range timing {
+	for group, times := range timing {
 		lenTimes := len(times)
 		if lenTimes == 0 {
-			result[pkg] = 0
+			result[group] = 0
 			continue
 		}
 
@@ -173,10 +200,10 @@ func packagePercentile(timing map[string][]time.Duration) map[string]time.Durati
 
 		r := int(math.Ceil(0.85 * float64(lenTimes)))
 		if r == 0 {
-			result[pkg] = times[0]
+			result[group] = times[0]
 			continue
 		}
-		result[pkg] = times[r-1]
+		result[group] = times[r-1]
 	}
 	return result
 }
@@ -187,18 +214,18 @@ func closeFiles(files []*os.File) {
 	}
 }
 
-func bucketPackages(timing map[string]time.Duration, packages []string, n uint) []bucket {
-	sort.SliceStable(packages, func(i, j int) bool {
-		return timing[packages[i]] >= timing[packages[j]]
+func createBuckets(timing map[string]time.Duration, item []string, n uint) []bucket {
+	sort.SliceStable(item, func(i, j int) bool {
+		return timing[item[i]] >= timing[item[j]]
 	})
 
 	buckets := make([]bucket, n)
-	for _, pkg := range packages {
+	for _, name := range item {
 		i := minBucket(buckets)
-		buckets[i].Total += timing[pkg]
-		buckets[i].Packages = append(buckets[i].Packages, pkg)
+		buckets[i].Total += timing[name]
+		buckets[i].Items = append(buckets[i].Items, name)
 		log.Debugf("adding %v (%v) to bucket %v with total %v",
-			pkg, timing[pkg], i, buckets[i].Total)
+			name, timing[name], i, buckets[i].Total)
 	}
 	return buckets
 }
@@ -211,7 +238,7 @@ func minBucket(buckets []bucket) int {
 		case min < 0 || b.Total < min:
 			min = b.Total
 			n = i
-		case b.Total == min && len(buckets[i].Packages) < len(buckets[n].Packages):
+		case b.Total == min && len(buckets[i].Items) < len(buckets[n].Items):
 			n = i
 		}
 	}
@@ -219,8 +246,10 @@ func minBucket(buckets []bucket) int {
 }
 
 type bucket struct {
-	Total    time.Duration
-	Packages []string
+	Total time.Duration
+	// Items is the name of packages in the default mode, or the name of tests
+	// in partition-by-test mode.
+	Items []string
 }
 
 type matrix struct {
@@ -231,32 +260,46 @@ type Partition struct {
 	ID               int    `json:"id"`
 	EstimatedRuntime string `json:"estimatedRuntime"`
 	Packages         string `json:"packages"`
+	Tests            string `json:"tests,omitempty"`
 	Description      string `json:"description"`
 }
 
-func writeMatrix(out io.Writer, buckets []bucket) error {
-	m := matrix{Include: make([]Partition, len(buckets))}
+func writeMatrix(opts options, buckets []bucket) error {
+	m := matrix{Include: make([]Partition, 0, len(buckets))}
 	for i, bucket := range buckets {
+		if len(bucket.Items) == 0 {
+			continue
+		}
+
 		p := Partition{
 			ID:               i,
 			EstimatedRuntime: bucket.Total.String(),
-			Packages:         strings.Join(bucket.Packages, " "),
-		}
-		if len(bucket.Packages) > 0 {
-			var extra string
-			if len(bucket.Packages) > 1 {
-				extra = fmt.Sprintf(" and %d others", len(bucket.Packages)-1)
-			}
-			p.Description = fmt.Sprintf("partition %d - package %v%v",
-				p.ID, testjson.RelativePackagePath(bucket.Packages[0]), extra)
 		}
 
-		m.Include[i] = p
+		if opts.partitionTestsInPackage != "" {
+			p.Packages = opts.partitionTestsInPackage
+			p.Description = fmt.Sprintf("partition %d with %d tests", p.ID, len(bucket.Items))
+			p.Tests = fmt.Sprintf("-run='^%v$'", strings.Join(bucket.Items, "$,^"))
+
+			m.Include = append(m.Include, p)
+			continue
+		}
+
+		p.Packages = strings.Join(bucket.Items, " ")
+
+		var extra string
+		if len(bucket.Items) > 1 {
+			extra = fmt.Sprintf(" and %d others", len(bucket.Items)-1)
+		}
+		p.Description = fmt.Sprintf("partition %d - package %v%v",
+			p.ID, testjson.RelativePackagePath(bucket.Items[0]), extra)
+
+		m.Include = append(m.Include, p)
 	}
 
 	log.Debugf("%v\n", debugMatrix(m))
 
-	err := json.NewEncoder(out).Encode(m)
+	err := json.NewEncoder(opts.stdout).Encode(m)
 	if err != nil {
 		return fmt.Errorf("failed to json encode output: %v", err)
 	}
