@@ -120,26 +120,17 @@ func osEnviron() map[string]string {
 func expectedFilename(name string) string {
 	ver := runtime.Version()
 	switch {
-	case isPreGo114(ver):
-		return name + "-go1.13"
+	case isPreGo120(ver):
+		return name + "-go1.19"
 	default:
 		return name
 	}
 }
 
-// go1.14.6 changed how it prints messages from tests. go1.14.{0-5} used a format
-// that was different from both go1.14.6 and previous versions of Go. These tests
-// no longer support that format.
-func isPreGo114(ver string) bool {
-	prefix := "go1.1"
-	if !strings.HasPrefix(ver, prefix) || len(ver) < len(prefix)+1 {
-		return false
-	}
-	switch ver[len(prefix)] {
-	case '0', '1', '2', '3':
-		return true
-	}
-	return false
+// go1.20.0 changed how it prints messages from subtests. It seems the output
+// has changed back to match the output from go1.14 and earlier.
+func isPreGo120(ver string) bool {
+	return strings.HasPrefix(ver, "go1.1")
 }
 
 var binaryFixture pkgFixtureFile
