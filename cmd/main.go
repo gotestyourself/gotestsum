@@ -236,9 +236,11 @@ func run(opts *options) error {
 		IgnoreNonJSONOutputLines: opts.ignoreNonJSONOutputLines,
 	}
 	exec, err := testjson.ScanTestOutput(cfg)
+	handler.Flush()
 	if err != nil {
 		return finishRun(opts, exec, err)
 	}
+
 	exitErr := goTestProc.cmd.Wait()
 	if signum := atomic.LoadInt32(&goTestProc.signal); signum != 0 {
 		return finishRun(opts, exec, exitError{num: signalExitCode + int(signum)})
@@ -260,6 +262,7 @@ func run(opts *options) error {
 
 	cfg = testjson.ScanConfig{Execution: exec, Handler: handler}
 	exitErr = rerunFailed(ctx, opts, cfg)
+	handler.Flush()
 	if err := writeRerunFailsReport(opts, exec); err != nil {
 		return err
 	}

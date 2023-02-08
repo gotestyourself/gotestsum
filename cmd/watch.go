@@ -88,6 +88,7 @@ func runSingle(opts *options, dir string) (*testjson.Execution, error) {
 		Stop:    cancel,
 	}
 	exec, err := testjson.ScanTestOutput(cfg)
+	handler.Flush()
 	if err != nil {
 		return exec, finishRun(opts, exec, err)
 	}

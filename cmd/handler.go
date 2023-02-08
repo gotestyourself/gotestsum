@@ -15,8 +15,13 @@ import (
 type eventHandler struct {
 	formatter testjson.EventFormatter
 	err       io.Writer
-	jsonFile  io.WriteCloser
+	jsonFile  writeSyncer
 	maxFails  int
+}
+
+type writeSyncer interface {
+	io.WriteCloser
+	Sync() error
 }
 
 func (h *eventHandler) Err(text string) error {
@@ -43,6 +48,14 @@ func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execu
 		return fmt.Errorf("ending test run because max failures was reached")
 	}
 	return nil
+}
+
+func (h *eventHandler) Flush() {
+	if h.jsonFile != nil {
+		if err := h.jsonFile.Sync(); err != nil {
+			log.Errorf("Failed to sync JSON file: %v", err)
+		}
+	}
 }
 
 func (h *eventHandler) Close() error {
@@ -118,6 +131,5 @@ func postRunHook(opts *options, execution *testjson.Execution) error {
 		fmt.Sprintf("TESTS_SKIPPED=%d", len(execution.Skipped())),
 		fmt.Sprintf("TESTS_ERRORS=%d", len(execution.Errors())),
 	)
-	// TODO: send a more detailed report to stdin?
 	return cmd.Run()
 }

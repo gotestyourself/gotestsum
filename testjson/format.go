@@ -256,6 +256,8 @@ type FormatOptions struct {
 // NewEventFormatter returns a formatter for printing events.
 func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) EventFormatter {
 	switch format {
+	case "none":
+		return eventFormatterFunc(func(TestEvent, *Execution) error { return nil })
 	case "debug":
 		return &formatAdapter{out, debugFormat}
 	case "standard-json":
