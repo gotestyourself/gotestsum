@@ -7,20 +7,6 @@ workflows:
   ci:
     jobs:
       - go/test:
-          name: test-go-1.16
-          gotestsum-format: testname
-          executor:
-            name: go/golang
-            tag: 1.16-alpine
-
-      - go/test:
-          name: test-go-1.17
-          gotestsum-format: testname
-          executor:
-            name: go/golang
-            tag: 1.17-alpine
-
-      - go/test:
           name: test-go-1.18
           gotestsum-format: testname
           executor:
@@ -33,6 +19,13 @@ workflows:
           executor:
             name: go/golang
             tag: 1.19-alpine
+
+      - go/test:
+          name: test-go-1.20
+          gotestsum-format: testname
+          executor:
+            name: go/golang
+            tag: 1.20-alpine
 
       - go/test:
           name: test-windows
@@ -92,7 +85,7 @@ jobs:
         default: false
     executor:
       name: go/golang
-      tag: 1.19-alpine
+      tag: 1.20-alpine
     steps:
       - go/install: {package: git}
       - go/install-ssh
@@ -117,7 +110,9 @@ jobs:
           destination: dist
 
   run:
-    executor: go/golang
+    executor:
+      name: go/golang
+      tag: 1.20-alpine
     steps:
       - go/install: {package: git}
       - go/install-ssh
@@ -131,7 +126,7 @@ jobs:
   lint:
     executor:
       name: go/golang
-      tag: 1.19-alpine
+      tag: 1.20-alpine
     steps:
       - checkout
       - run: go mod download
