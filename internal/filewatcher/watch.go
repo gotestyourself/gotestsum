@@ -236,7 +236,7 @@ type fsEventHandler struct {
 var floodThreshold = 250 * time.Millisecond
 
 func (h *fsEventHandler) handleEvent(event fsnotify.Event) error {
-	if event.Op&(fsnotify.Write|fsnotify.Create) == 0 {
+	if event.Op&(fsnotify.Write|fsnotify.Create|fsnotify.Rename) == 0 {
 		return nil
 	}
 

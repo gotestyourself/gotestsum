@@ -38,8 +38,9 @@ func TestFSEventHandler_HandleEvent(t *testing.T) {
 
 	var testCases = []testCase{
 		{
-			name:  "Op is rename",
-			event: fsnotify.Event{Op: fsnotify.Rename, Name: "file_test.go"},
+			name:        "Op is rename",
+			event:       fsnotify.Event{Op: fsnotify.Rename, Name: "file_test.go"},
+			expectedRun: true,
 		},
 		{
 			name:  "Op is remove",
