@@ -12,7 +12,7 @@ FAIL cmd/testdata/e2e/flaky.TestFailsSometimes
 PASS cmd/testdata/e2e/flaky.TestFailsOften/subtest_always_passes
 === RUN   TestFailsOften/subtest_may_fail
     flaky_test.go:68: not this time
-    --- FAIL: TestFailsOften/subtest_may_fail
+--- FAIL: TestFailsOften/subtest_may_fail
 FAIL cmd/testdata/e2e/flaky.TestFailsOften/subtest_may_fail
 === RUN   TestFailsOften
 SEED:  0
@@ -30,7 +30,7 @@ PASS cmd/testdata/e2e/flaky.TestFailsSometimes (re-run 1)
 PASS cmd/testdata/e2e/flaky
 === RUN   TestFailsOften/subtest_may_fail
     flaky_test.go:68: not this time
-    --- FAIL: TestFailsOften/subtest_may_fail
+--- FAIL: TestFailsOften/subtest_may_fail
 FAIL cmd/testdata/e2e/flaky.TestFailsOften/subtest_may_fail (re-run 1)
 === RUN   TestFailsOften
 SEED:  3
@@ -42,7 +42,7 @@ DONE 2 runs, 12 tests, 6 failures
 
 === RUN   TestFailsOften/subtest_may_fail
     flaky_test.go:68: not this time
-    --- FAIL: TestFailsOften/subtest_may_fail
+--- FAIL: TestFailsOften/subtest_may_fail
 FAIL cmd/testdata/e2e/flaky.TestFailsOften/subtest_may_fail (re-run 2)
 === RUN   TestFailsOften
 SEED:  4
@@ -54,7 +54,7 @@ DONE 3 runs, 14 tests, 8 failures
 
 === RUN   TestFailsOften/subtest_may_fail
     flaky_test.go:68: not this time
-    --- FAIL: TestFailsOften/subtest_may_fail
+--- FAIL: TestFailsOften/subtest_may_fail
 FAIL cmd/testdata/e2e/flaky.TestFailsOften/subtest_may_fail (re-run 3)
 === RUN   TestFailsOften
 SEED:  5
@@ -79,28 +79,24 @@ SEED:  0
 
 === FAIL: cmd/testdata/e2e/flaky TestFailsOften/subtest_may_fail
     flaky_test.go:68: not this time
-    --- FAIL: TestFailsOften/subtest_may_fail
 
 === FAIL: cmd/testdata/e2e/flaky TestFailsOften
 SEED:  0
 
 === FAIL: cmd/testdata/e2e/flaky TestFailsOften/subtest_may_fail (re-run 1)
     flaky_test.go:68: not this time
-    --- FAIL: TestFailsOften/subtest_may_fail
 
 === FAIL: cmd/testdata/e2e/flaky TestFailsOften (re-run 1)
 SEED:  3
 
 === FAIL: cmd/testdata/e2e/flaky TestFailsOften/subtest_may_fail (re-run 2)
     flaky_test.go:68: not this time
-    --- FAIL: TestFailsOften/subtest_may_fail
 
 === FAIL: cmd/testdata/e2e/flaky TestFailsOften (re-run 2)
 SEED:  4
 
 === FAIL: cmd/testdata/e2e/flaky TestFailsOften/subtest_may_fail (re-run 3)
     flaky_test.go:68: not this time
-    --- FAIL: TestFailsOften/subtest_may_fail
 
 === FAIL: cmd/testdata/e2e/flaky TestFailsOften (re-run 3)
 SEED:  5
