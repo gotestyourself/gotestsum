@@ -136,7 +136,7 @@ jobs:
             mkdir -p /go/bin
 
             download=https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh
-            wget -O- -q "$download" | sh -s -- -b /go/bin/ v1.48.0
+            wget -O- -q "$download" | sh -s -- -b /go/bin/ v1.51.1
       - run:
           name: Lint
           command: |
