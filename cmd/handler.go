@@ -13,10 +13,11 @@ import (
 )
 
 type eventHandler struct {
-	formatter testjson.EventFormatter
-	err       io.Writer
-	jsonFile  writeSyncer
-	maxFails  int
+	formatter            testjson.EventFormatter
+	err                  io.Writer
+	jsonFile             writeSyncer
+	jsonFileTimingEvents writeSyncer
+	maxFails             int
 }
 
 type writeSyncer interface {
@@ -32,10 +33,18 @@ func (h *eventHandler) Err(text string) error {
 
 func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execution) error {
 	// ignore artificial events with no raw Bytes()
-	if h.jsonFile != nil && len(event.Bytes()) > 0 {
-		_, err := h.jsonFile.Write(append(event.Bytes(), '\n'))
-		if err != nil {
-			return fmt.Errorf("failed to write JSON file: %w", err)
+	if len(event.Bytes()) > 0 {
+		if h.jsonFile != nil {
+			_, err := h.jsonFile.Write(append(event.Bytes(), '\n'))
+			if err != nil {
+				return fmt.Errorf("failed to write JSON file: %w", err)
+			}
+		}
+		if h.jsonFileTimingEvents != nil && event.Action.IsTerminal() {
+			_, err := h.jsonFileTimingEvents.Write(append(event.Bytes(), '\n'))
+			if err != nil {
+				return fmt.Errorf("failed to write JSON file: %w", err)
+			}
 		}
 	}
 
@@ -56,11 +65,21 @@ func (h *eventHandler) Flush() {
 			log.Errorf("Failed to sync JSON file: %v", err)
 		}
 	}
+	if h.jsonFileTimingEvents != nil {
+		if err := h.jsonFileTimingEvents.Sync(); err != nil {
+			log.Errorf("Failed to sync JSON file: %v", err)
+		}
+	}
 }
 
 func (h *eventHandler) Close() error {
 	if h.jsonFile != nil {
 		if err := h.jsonFile.Close(); err != nil {
+			log.Errorf("Failed to close JSON file: %v", err)
+		}
+	}
+	if h.jsonFileTimingEvents != nil {
+		if err := h.jsonFileTimingEvents.Close(); err != nil {
 			log.Errorf("Failed to close JSON file: %v", err)
 		}
 	}
@@ -84,7 +103,14 @@ func newEventHandler(opts *options) (*eventHandler, error) {
 		_ = os.MkdirAll(filepath.Dir(opts.jsonFile), 0o755)
 		handler.jsonFile, err = os.Create(opts.jsonFile)
 		if err != nil {
-			return handler, fmt.Errorf("failed to open JSON file: %w", err)
+			return handler, fmt.Errorf("failed to create file: %w", err)
+		}
+	}
+	if opts.jsonFileTimingEvents != "" {
+		_ = os.MkdirAll(filepath.Dir(opts.jsonFileTimingEvents), 0o755)
+		handler.jsonFileTimingEvents, err = os.Create(opts.jsonFileTimingEvents)
+		if err != nil {
+			return handler, fmt.Errorf("failed to create file: %w", err)
 		}
 	}
 	return handler, nil
@@ -125,6 +151,7 @@ func postRunHook(opts *options, execution *testjson.Execution) error {
 	cmd.Env = append(
 		os.Environ(),
 		"GOTESTSUM_JSONFILE="+opts.jsonFile,
+		"GOTESTSUM_JSONFILE_TIMING_EVENTS="+opts.jsonFileTimingEvents,
 		"GOTESTSUM_JUNITFILE="+opts.junitFile,
 		fmt.Sprintf("TESTS_TOTAL=%d", execution.Total()),
 		fmt.Sprintf("TESTS_FAILED=%d", len(execution.Failed())),

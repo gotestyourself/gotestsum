@@ -22,10 +22,11 @@ func TestPostRunHook(t *testing.T) {
 
 	buf := new(bytes.Buffer)
 	opts := &options{
-		postRunHookCmd: command,
-		jsonFile:       "events.json",
-		junitFile:      "junit.xml",
-		stdout:         buf,
+		postRunHookCmd:       command,
+		jsonFile:             "events.json",
+		jsonFileTimingEvents: "timing.json",
+		junitFile:            "junit.xml",
+		stdout:               buf,
 	}
 
 	env.Patch(t, "GOTESTSUM_FORMAT", "short")

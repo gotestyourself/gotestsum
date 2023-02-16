@@ -11,6 +11,7 @@ Flags:
       --format-hivis                                use high visibility characters in some formats
       --hide-summary summary                        hide sections of the summary: skipped,failed,errors,output (default none)
       --jsonfile string                             write all TestEvents to file
+      --jsonfile-timing-events string               write only the pass, skip, and fail TestEvents to the file
       --junitfile string                            write a JUnit XML file
       --junitfile-hide-empty-pkg                    omit packages with no tests from the junit.xml file
       --junitfile-project-name string               name of the project used in the junit.xml file

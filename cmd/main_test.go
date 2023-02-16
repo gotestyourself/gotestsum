@@ -486,3 +486,37 @@ func TestRun_JsonFileIsSyncedBeforePostRunCommand(t *testing.T) {
 	_, actual, _ := strings.Cut(out.String(), "s\n") // remove the DONE line
 	assert.Equal(t, actual, expected)
 }
+
+func TestRun_JsonFileTimingEvents(t *testing.T) {
+	input := golden.Get(t, "../../testjson/testdata/input/go-test-json.out")
+
+	fn := func(args []string) *proc {
+		return &proc{
+			cmd:    fakeWaiter{},
+			stdout: bytes.NewReader(input),
+			stderr: bytes.NewReader(nil),
+		}
+	}
+	reset := patchStartGoTestFn(fn)
+	defer reset()
+
+	tmp := t.TempDir()
+	jsonFileTiming := filepath.Join(tmp, "json.log")
+
+	out := new(bytes.Buffer)
+	opts := &options{
+		rawCommand:           true,
+		args:                 []string{"./test.test"},
+		format:               "none",
+		stdout:               out,
+		stderr:               os.Stderr,
+		hideSummary:          &hideSummaryValue{value: testjson.SummarizeNone},
+		jsonFileTimingEvents: jsonFileTiming,
+	}
+	err := run(opts)
+	assert.NilError(t, err)
+
+	raw, err := os.ReadFile(jsonFileTiming)
+	assert.NilError(t, err)
+	golden.Assert(t, string(raw), "expected-jsonfile-timing-events")
+}
