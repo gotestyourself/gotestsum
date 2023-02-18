@@ -42,5 +42,6 @@ https://golang.org/cmd/go/#hdr-Environment_variables.
 Flags:
       --debug                enable debug logging.
       --jsonfile string      path to test2json output, defaults to stdin
+      --num int              print at most num slowest tests, instead of all tests above the threshold
       --skip-stmt string     add this go statement to slow tests, instead of printing the list of slow tests
       --threshold duration   test cases with elapsed time greater than threshold are slow tests (default 100ms)

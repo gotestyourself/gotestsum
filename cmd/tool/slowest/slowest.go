@@ -37,6 +37,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		"path to test2json output, defaults to stdin")
 	flags.DurationVar(&opts.threshold, "threshold", 100*time.Millisecond,
 		"test cases with elapsed time greater than threshold are slow tests")
+	flags.IntVar(&opts.topN, "num", 0,
+		"print at most num slowest tests, instead of all tests above the threshold")
 	flags.StringVar(&opts.skipStatement, "skip-stmt", "",
 		"add this go statement to slow tests, instead of printing the list of slow tests")
 	flags.BoolVar(&opts.debug, "debug", false,
@@ -94,6 +96,7 @@ Flags:
 
 type options struct {
 	threshold     time.Duration
+	topN          int
 	jsonfile      string
 	skipStatement string
 	debug         bool
@@ -118,7 +121,7 @@ func run(opts *options) error {
 		return fmt.Errorf("failed to scan testjson: %v", err)
 	}
 
-	tcs := aggregate.Slowest(exec, opts.threshold)
+	tcs := aggregate.Slowest(exec, opts.threshold, opts.topN)
 	if opts.skipStatement != "" {
 		skipStmt, err := parseSkipStatement(opts.skipStatement)
 		if err != nil {

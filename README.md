@@ -172,6 +172,20 @@ quoting the whole command.
 gotestsum --post-run-command "notify me --date"
 ```
 
+**Example: printing slowest tests**
+
+The post-run command can be combined with other `gotestsum` commands and tools to provide
+a more detailed summary. This example uses `gotestsum tool slowest` to print the
+slowest 10 tests after the summary.
+
+```
+gotestsum \
+  --jsonfile tmp.json.log \
+  --post-run-command "bash -c '
+    echo; echo Slowest tests;
+    gotestsum tool slowest --num 10 --jsonfile tmp.json.log'"
+```
+
 ### Re-running failed tests
 
 When the `--rerun-fails` flag is set, `gotestsum` will re-run any failed tests.
