@@ -247,7 +247,7 @@ func writeMatrix(out io.Writer, buckets []bucket) error {
 			if len(bucket.Packages) > 1 {
 				extra = fmt.Sprintf(" and %d others", len(bucket.Packages)-1)
 			}
-			p.Description = fmt.Sprintf("partition %d - package %v%v",
+			p.Description = fmt.Sprintf("%d - %v%v",
 				p.ID, testjson.RelativePackagePath(bucket.Packages[0]), extra)
 		}
 

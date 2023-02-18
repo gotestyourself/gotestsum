@@ -226,19 +226,19 @@ func TestRun(t *testing.T) {
 var expectedMatrix = `{
   "include": [
     {
-      "description": "partition 0 - package pkg2",
+      "description": "0 - pkg2",
       "estimatedRuntime": "6s",
       "id": 0,
       "packages": "pkg2"
     },
     {
-      "description": "partition 1 - package pkg1",
+      "description": "1 - pkg1",
       "estimatedRuntime": "4s",
       "id": 1,
       "packages": "pkg1"
     },
     {
-      "description": "partition 2 - package pkg0 and 1 others",
+      "description": "2 - pkg0 and 1 others",
       "estimatedRuntime": "2s",
       "id": 2,
       "packages": "pkg0 other"
