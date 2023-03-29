@@ -140,8 +140,9 @@ Formats:
     standard-verbose         standard go test -v format
 
 Commands:
-    %[1]s tool slowest   find or skip the slowest tests
-    %[1]s help           print this help next
+    %[1]s tool ci-matrix   use previous test runtime to place packages into optimal buckets
+    %[1]s tool slowest     find or skip the slowest tests
+    %[1]s help             print this help next
 `, name)
 }
 

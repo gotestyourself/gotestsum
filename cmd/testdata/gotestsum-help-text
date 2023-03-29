@@ -39,5 +39,6 @@ Formats:
     standard-verbose         standard go test -v format
 
 Commands:
-    gotestsum tool slowest   find or skip the slowest tests
-    gotestsum help           print this help next
+    gotestsum tool ci-matrix   use previous test runtime to place packages into optimal buckets
+    gotestsum tool slowest     find or skip the slowest tests
+    gotestsum help             print this help next
