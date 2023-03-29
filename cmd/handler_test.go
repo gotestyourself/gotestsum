@@ -56,6 +56,8 @@ type bufferCloser struct {
 
 func (bufferCloser) Close() error { return nil }
 
+func (bufferCloser) Sync() error { return nil }
+
 func TestEventHandler_Event_WithMissingActionFail(t *testing.T) {
 	buf := new(bufferCloser)
 	errBuf := new(bytes.Buffer)
