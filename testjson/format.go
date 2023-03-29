@@ -1,6 +1,7 @@
 package testjson
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"strings"
@@ -39,6 +40,15 @@ func standardQuietFormat(event TestEvent, _ *Execution) string {
 	}
 
 	return event.Output
+}
+
+// go test -json
+func standardJSONFormat(event TestEvent, _ *Execution) string {
+	b, err := json.Marshal(event)
+	if err != nil {
+		return ""
+	}
+	return string(b) + "\n"
 }
 
 func testNameFormat(event TestEvent, exec *Execution) string {
@@ -240,6 +250,8 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 	switch format {
 	case "debug":
 		return &formatAdapter{out, debugFormat}
+	case "standard-json":
+		return &formatAdapter{out, standardJSONFormat}
 	case "standard-verbose":
 		return &formatAdapter{out, standardVerboseFormat}
 	case "standard-quiet":

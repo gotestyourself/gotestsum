@@ -134,6 +134,11 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 			format:      standardQuietFormat,
 			expectedOut: "format/standard-quiet.out",
 		},
+		{
+			name:        "standard-json",
+			format:      standardJSONFormat,
+			expectedOut: "format/standard-json.out",
+		},
 	}
 
 	for _, tc := range testCases {
