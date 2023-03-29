@@ -35,7 +35,6 @@ Formats:
     pkgname                  print a line for each package
     pkgname-and-test-fails   print a line for each package and failed test output
     testname                 print a line for each test and package
-    standard-json            standard go test -json format
     standard-quiet           standard go test format
     standard-verbose         standard go test -v format
 

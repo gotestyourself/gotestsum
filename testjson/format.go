@@ -1,7 +1,7 @@
 package testjson
 
 import (
-	"encoding/json"
+	"bufio"
 	"fmt"
 	"io"
 	"strings"
@@ -43,12 +43,14 @@ func standardQuietFormat(event TestEvent, _ *Execution) string {
 }
 
 // go test -json
-func standardJSONFormat(event TestEvent, _ *Execution) string {
-	b, err := json.Marshal(event)
-	if err != nil {
-		return ""
-	}
-	return string(b) + "\n"
+func standardJSONFormat(out io.Writer) EventFormatter {
+	buf := bufio.NewWriter(out)
+	// nolint:errcheck // errors are returned by Flush
+	return eventFormatterFunc(func(event TestEvent, _ *Execution) error {
+		buf.Write(event.raw)
+		buf.WriteRune('\n')
+		return buf.Flush()
+	})
 }
 
 func testNameFormat(event TestEvent, exec *Execution) string {
@@ -240,6 +242,12 @@ type EventFormatter interface {
 	Format(event TestEvent, output *Execution) error
 }
 
+type eventFormatterFunc func(event TestEvent, output *Execution) error
+
+func (e eventFormatterFunc) Format(event TestEvent, output *Execution) error {
+	return e(event, output)
+}
+
 type FormatOptions struct {
 	HideEmptyPackages    bool
 	UseHiVisibilityIcons bool
@@ -251,7 +259,7 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 	case "debug":
 		return &formatAdapter{out, debugFormat}
 	case "standard-json":
-		return &formatAdapter{out, standardJSONFormat}
+		return standardJSONFormat(out)
 	case "standard-verbose":
 		return &formatAdapter{out, standardVerboseFormat}
 	case "standard-quiet":
