@@ -56,8 +56,12 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags.Usage = func() {
 		usage(os.Stdout, name, flags)
 	}
+	defaultFormat := "pkgname"
+	if os.Getenv("GITHUB_ACTIONS") == "true" {
+		defaultFormat = "github-actions"
+	}
 	flags.StringVarP(&opts.format, "format", "f",
-		lookEnvWithDefault("GOTESTSUM_FORMAT", "short"),
+		lookEnvWithDefault("GOTESTSUM_FORMAT", defaultFormat),
 		"print format of test input")
 	flags.BoolVar(&opts.formatOptions.HideEmptyPackages, "format-hide-empty-pkg",
 		false, "do not print empty packages in compact formats")

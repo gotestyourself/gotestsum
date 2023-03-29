@@ -63,11 +63,6 @@ func (e TestEvent) PackageEvent() bool {
 	return e.Test == ""
 }
 
-// ElapsedFormatted returns Elapsed formatted in the go test format, ex (0.00s).
-func (e TestEvent) ElapsedFormatted() string {
-	return fmt.Sprintf("(%.2fs)", e.Elapsed)
-}
-
 // Bytes returns the serialized JSON bytes that were parsed to create the event.
 func (e TestEvent) Bytes() []byte {
 	return e.raw

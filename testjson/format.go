@@ -73,18 +73,22 @@ func standardJSONFormat(out io.Writer) EventFormatter {
 	})
 }
 
+func testNameFormatTestEvent(out io.Writer, event TestEvent) {
+	pkgPath := RelativePackagePath(event.Package)
+
+	fmt.Fprintf(out, "%s %s%s %s\n",
+		colorEvent(event)(strings.ToUpper(string(event.Action))),
+		joinPkgToTestName(pkgPath, event.Test),
+		formatRunID(event.RunID),
+		fmt.Sprintf("(%.2fs)", event.Elapsed))
+}
+
 func testNameFormat(out io.Writer) EventFormatter {
 	buf := bufio.NewWriter(out)
 	// nolint:errcheck
 	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
 		formatTest := func() error {
-			pkgPath := RelativePackagePath(event.Package)
-
-			fmt.Fprintf(buf, "%s %s%s %s\n",
-				colorEvent(event)(strings.ToUpper(string(event.Action))),
-				joinPkgToTestName(pkgPath, event.Test),
-				formatRunID(event.RunID),
-				event.ElapsedFormatted())
+			testNameFormatTestEvent(buf, event)
 			return buf.Flush()
 		}
 
@@ -312,7 +316,31 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 		return pkgNameFormat(out, formatOpts)
 	case "pkgname-and-test-fails", "short-with-failures":
 		return pkgNameWithFailuresFormat(out, formatOpts)
+	case "github-actions", "github-action":
+		return githubActionsFormat(out)
 	default:
 		return nil
+	}
+}
+
+func githubActionsFormat(out io.Writer) eventFormatterFunc {
+	buf := bufio.NewWriter(out)
+	return func(event TestEvent, exec *Execution) error {
+		if event.Test != "" && event.Action.IsTerminal() {
+			buf.WriteString("::group::")
+			testNameFormatTestEvent(buf, event)
+
+			pkg := exec.Package(event.Package)
+			tc := pkg.LastFailedByName(event.Test)
+			buf.WriteString(strings.TrimRight(pkg.Output(tc.ID), "\n"))
+
+			buf.WriteString("::endgroup::\n")
+			return buf.Flush()
+		}
+
+		if err := testNameFormat(buf).Format(event, exec); err != nil {
+			return err
+		}
+		return buf.Flush()
 	}
 }
