@@ -120,7 +120,7 @@ func testNameFormat(out io.Writer) EventFormatter {
 			pkg.WriteOutputTo(buf, tc.ID)
 			return formatTest()
 
-		case event.Action == ActionPass:
+		case event.Action == ActionPass || event.Action == ActionSkip:
 			return formatTest()
 		}
 		return nil
