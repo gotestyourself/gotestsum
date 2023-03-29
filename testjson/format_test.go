@@ -2,6 +2,7 @@ package testjson
 
 import (
 	"bytes"
+	"io"
 	"testing"
 
 	"gotest.tools/v3/assert"
@@ -55,7 +56,6 @@ func newFakeHandler(formatter EventFormatter, inputName string) *fakeHandler {
 	return &fakeHandler{
 		inputName: inputName,
 		formatter: formatter,
-		out:       new(bytes.Buffer),
 		err:       new(bytes.Buffer),
 	}
 }
@@ -77,20 +77,27 @@ func patchPkgPathPrefix(t *testing.T, val string) {
 	})
 }
 
+func withAdapter(format func(TestEvent, *Execution) string) func(io.Writer) EventFormatter {
+	return func(out io.Writer) EventFormatter {
+		return &formatAdapter{out: out, format: format}
+	}
+}
+
 func TestFormats_DefaultGoTestJson(t *testing.T) {
 	type testCase struct {
 		name        string
-		format      func(event TestEvent, exec *Execution) string
+		format      func(io.Writer) EventFormatter
 		expectedOut string
 		expected    func(t *testing.T, exec *Execution)
 	}
 
 	run := func(t *testing.T, tc testCase) {
-		shim := newFakeHandlerWithAdapter(tc.format, "input/go-test-json")
+		out := new(bytes.Buffer)
+		shim := newFakeHandler(tc.format(out), "input/go-test-json")
 		exec, err := ScanTestOutput(shim.Config(t))
 		assert.NilError(t, err)
 
-		golden.Assert(t, shim.out.String(), tc.expectedOut)
+		golden.Assert(t, out.String(), tc.expectedOut)
 		golden.Assert(t, shim.err.String(), "input/go-test-json.err")
 
 		if tc.expected != nil {
@@ -101,38 +108,43 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 	testCases := []testCase{
 		{
 			name:        "testname",
-			format:      testNameFormat,
+			format:      withAdapter(testNameFormat),
 			expectedOut: "format/testname.out",
 		},
 		{
 			name:        "dots-v1",
-			format:      dotsFormatV1,
+			format:      withAdapter(dotsFormatV1),
 			expectedOut: "format/dots-v1.out",
 		},
 		{
 			name:        "pkgname",
-			format:      pkgNameFormat(FormatOptions{}),
+			format:      withAdapter(pkgNameFormat(FormatOptions{})),
 			expectedOut: "format/pkgname.out",
 		},
 		{
 			name:        "pkgname-hivis",
-			format:      pkgNameFormat(FormatOptions{UseHiVisibilityIcons: true}),
+			format:      withAdapter(pkgNameFormat(FormatOptions{UseHiVisibilityIcons: true})),
 			expectedOut: "format/pkgname-hivis.out",
 		},
 		{
 			name:        "pkgname",
-			format:      pkgNameFormat(FormatOptions{HideEmptyPackages: true}),
+			format:      withAdapter(pkgNameFormat(FormatOptions{HideEmptyPackages: true})),
 			expectedOut: "format/pkgname-hide-empty.out",
 		},
 		{
 			name:        "standard-verbose",
-			format:      standardVerboseFormat,
+			format:      withAdapter(standardVerboseFormat),
 			expectedOut: "format/standard-verbose.out",
 		},
 		{
 			name:        "standard-quiet",
-			format:      standardQuietFormat,
+			format:      withAdapter(standardQuietFormat),
 			expectedOut: "format/standard-quiet.out",
+		},
+		{
+			name:        "standard-json",
+			format:      standardJSONFormat,
+			expectedOut: "input/go-test-json.out",
 		},
 	}
 
