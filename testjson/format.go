@@ -35,18 +35,22 @@ func standardVerboseFormat(out io.Writer) EventFormatter {
 }
 
 // go test
-func standardQuietFormat(event TestEvent, _ *Execution) string {
-	if !event.PackageEvent() {
-		return ""
-	}
-	if event.Output == "PASS\n" || isCoverageOutput(event.Output) {
-		return ""
-	}
-	if isWarningNoTestsToRunOutput(event.Output) {
-		return ""
-	}
+func standardQuietFormat(out io.Writer) EventFormatter {
+	buf := bufio.NewWriter(out)
+	return eventFormatterFunc(func(event TestEvent, _ *Execution) error {
+		if !event.PackageEvent() {
+			return nil
+		}
+		if event.Output == "PASS\n" || isCoverageOutput(event.Output) {
+			return nil
+		}
+		if isWarningNoTestsToRunOutput(event.Output) {
+			return nil
+		}
 
-	return event.Output
+		_, _ = buf.WriteString(event.Output)
+		return buf.Flush()
+	})
 }
 
 // go test -json
@@ -272,9 +276,9 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 	case "standard-verbose":
 		return standardVerboseFormat(out)
 	case "standard-quiet":
-		return &formatAdapter{out, standardQuietFormat}
+		return standardQuietFormat(out)
 	case "dots", "dots-v1":
-		return &formatAdapter{out, dotsFormatV1}
+		return dotsFormatV1(out)
 	case "dots-v2":
 		return newDotFormatter(out, formatOpts)
 	case "testname", "short-verbose":

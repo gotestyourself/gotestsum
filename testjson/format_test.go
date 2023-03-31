@@ -99,7 +99,7 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 		},
 		{
 			name:        "dots-v1",
-			format:      withAdapter(dotsFormatV1),
+			format:      dotsFormatV1,
 			expectedOut: "format/dots-v1.out",
 		},
 		{
@@ -124,7 +124,7 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 		},
 		{
 			name:        "standard-quiet",
-			format:      withAdapter(standardQuietFormat),
+			format:      standardQuietFormat,
 			expectedOut: "format/standard-quiet.out",
 		},
 		{
@@ -183,7 +183,7 @@ func TestFormats_Coverage(t *testing.T) {
 		},
 		{
 			name:        "standard-quiet",
-			format:      withAdapter(standardQuietFormat),
+			format:      standardQuietFormat,
 			expectedOut: "format/standard-quiet-coverage.out",
 		},
 	}
@@ -235,7 +235,7 @@ func TestFormats_Shuffle(t *testing.T) {
 		},
 		{
 			name:        "standard-quiet",
-			format:      withAdapter(standardQuietFormat),
+			format:      standardQuietFormat,
 			expectedOut: "format/standard-quiet-shuffle.out",
 		},
 	}
