@@ -27,7 +27,6 @@ import (
 type fakeHandler struct {
 	inputName string
 	formatter EventFormatter
-	out       *bytes.Buffer
 	err       *bytes.Buffer
 }
 
@@ -36,19 +35,6 @@ func (s *fakeHandler) Config(t *testing.T) ScanConfig {
 		Stdout:  bytes.NewReader(golden.Get(t, s.inputName+".out")),
 		Stderr:  bytes.NewReader(golden.Get(t, s.inputName+".err")),
 		Handler: s,
-	}
-}
-
-func newFakeHandlerWithAdapter(
-	format func(event TestEvent, output *Execution) string,
-	inputName string,
-) *fakeHandler {
-	out := new(bytes.Buffer)
-	return &fakeHandler{
-		inputName: inputName,
-		formatter: &formatAdapter{out: out, format: format},
-		out:       out,
-		err:       new(bytes.Buffer),
 	}
 }
 
@@ -133,7 +119,7 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 		},
 		{
 			name:        "standard-verbose",
-			format:      withAdapter(standardVerboseFormat),
+			format:      standardVerboseFormat,
 			expectedOut: "format/standard-verbose.out",
 		},
 		{
@@ -158,18 +144,20 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 func TestFormats_Coverage(t *testing.T) {
 	type testCase struct {
 		name        string
-		format      func(event TestEvent, exec *Execution) string
+		format      func(writer io.Writer) EventFormatter
 		expectedOut string
 		expected    func(t *testing.T, exec *Execution)
 	}
 
 	run := func(t *testing.T, tc testCase) {
 		patchPkgPathPrefix(t, "gotest.tools")
-		shim := newFakeHandlerWithAdapter(tc.format, "input/go-test-json-with-cover")
+		out := new(bytes.Buffer)
+
+		shim := newFakeHandler(tc.format(out), "input/go-test-json-with-cover")
 		exec, err := ScanTestOutput(shim.Config(t))
 		assert.NilError(t, err)
 
-		golden.Assert(t, shim.out.String(), tc.expectedOut)
+		golden.Assert(t, out.String(), tc.expectedOut)
 		golden.Assert(t, shim.err.String(), "go-test.err")
 
 		if tc.expected != nil {
@@ -180,12 +168,12 @@ func TestFormats_Coverage(t *testing.T) {
 	testCases := []testCase{
 		{
 			name:        "testname",
-			format:      testNameFormat,
+			format:      withAdapter(testNameFormat),
 			expectedOut: "format/testname-coverage.out",
 		},
 		{
 			name:        "pkgname",
-			format:      pkgNameFormat(FormatOptions{}),
+			format:      withAdapter(pkgNameFormat(FormatOptions{})),
 			expectedOut: "format/pkgname-coverage.out",
 		},
 		{
@@ -195,7 +183,7 @@ func TestFormats_Coverage(t *testing.T) {
 		},
 		{
 			name:        "standard-quiet",
-			format:      standardQuietFormat,
+			format:      withAdapter(standardQuietFormat),
 			expectedOut: "format/standard-quiet-coverage.out",
 		},
 	}
@@ -210,17 +198,18 @@ func TestFormats_Coverage(t *testing.T) {
 func TestFormats_Shuffle(t *testing.T) {
 	type testCase struct {
 		name        string
-		format      func(event TestEvent, exec *Execution) string
+		format      func(io.Writer) EventFormatter
 		expectedOut string
 		expected    func(t *testing.T, exec *Execution)
 	}
 
 	run := func(t *testing.T, tc testCase) {
-		shim := newFakeHandlerWithAdapter(tc.format, "input/go-test-json-with-shuffle")
+		out := new(bytes.Buffer)
+		shim := newFakeHandler(tc.format(out), "input/go-test-json-with-shuffle")
 		exec, err := ScanTestOutput(shim.Config(t))
 		assert.NilError(t, err)
 
-		golden.Assert(t, shim.out.String(), tc.expectedOut)
+		golden.Assert(t, out.String(), tc.expectedOut)
 		golden.Assert(t, shim.err.String(), "go-test.err")
 
 		if tc.expected != nil {
@@ -231,12 +220,12 @@ func TestFormats_Shuffle(t *testing.T) {
 	testCases := []testCase{
 		{
 			name:        "testname",
-			format:      testNameFormat,
+			format:      withAdapter(testNameFormat),
 			expectedOut: "format/testname-shuffle.out",
 		},
 		{
 			name:        "pkgname",
-			format:      pkgNameFormat(FormatOptions{}),
+			format:      withAdapter(pkgNameFormat(FormatOptions{})),
 			expectedOut: "format/pkgname-shuffle.out",
 		},
 		{
@@ -246,7 +235,7 @@ func TestFormats_Shuffle(t *testing.T) {
 		},
 		{
 			name:        "standard-quiet",
-			format:      standardQuietFormat,
+			format:      withAdapter(standardQuietFormat),
 			expectedOut: "format/standard-quiet-shuffle.out",
 		},
 	}

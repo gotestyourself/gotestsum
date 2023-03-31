@@ -9,22 +9,29 @@ import (
 	"github.com/fatih/color"
 )
 
-func debugFormat(event TestEvent, _ *Execution) string {
-	return fmt.Sprintf("%s %s %s (%.3f) [%d] %s\n",
-		event.Package,
-		event.Test,
-		event.Action,
-		event.Elapsed,
-		event.Time.Unix(),
-		event.Output)
+func debugFormat(out io.Writer) eventFormatterFunc {
+	return func(event TestEvent, _ *Execution) error {
+		_, err := fmt.Fprintf(out, "%s %s %s (%.3f) [%d] %s\n",
+			event.Package,
+			event.Test,
+			event.Action,
+			event.Elapsed,
+			event.Time.Unix(),
+			event.Output)
+		return err
+	}
 }
 
 // go test -v
-func standardVerboseFormat(event TestEvent, _ *Execution) string {
-	if event.Action == ActionOutput {
-		return event.Output
-	}
-	return ""
+func standardVerboseFormat(out io.Writer) EventFormatter {
+	buf := bufio.NewWriter(out)
+	return eventFormatterFunc(func(event TestEvent, _ *Execution) error {
+		if event.Action == ActionOutput {
+			_, _ = buf.WriteString(event.Output)
+			return buf.Flush()
+		}
+		return nil
+	})
 }
 
 // go test
@@ -259,11 +266,11 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 	case "none":
 		return eventFormatterFunc(func(TestEvent, *Execution) error { return nil })
 	case "debug":
-		return &formatAdapter{out, debugFormat}
+		return debugFormat(out)
 	case "standard-json":
 		return standardJSONFormat(out)
 	case "standard-verbose":
-		return &formatAdapter{out, standardVerboseFormat}
+		return standardVerboseFormat(out)
 	case "standard-quiet":
 		return &formatAdapter{out, standardQuietFormat}
 	case "dots", "dots-v1":
