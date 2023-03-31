@@ -103,18 +103,24 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 			expectedOut: "format/dots-v1.out",
 		},
 		{
-			name:        "pkgname",
-			format:      withAdapter(pkgNameFormat(FormatOptions{})),
+			name: "pkgname",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{})
+			},
 			expectedOut: "format/pkgname.out",
 		},
 		{
-			name:        "pkgname-hivis",
-			format:      withAdapter(pkgNameFormat(FormatOptions{UseHiVisibilityIcons: true})),
+			name: "pkgname with hivis",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{UseHiVisibilityIcons: true})
+			},
 			expectedOut: "format/pkgname-hivis.out",
 		},
 		{
-			name:        "pkgname",
-			format:      withAdapter(pkgNameFormat(FormatOptions{HideEmptyPackages: true})),
+			name: "pkgname with hide-empty",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{HideEmptyPackages: true})
+			},
 			expectedOut: "format/pkgname-hide-empty.out",
 		},
 		{
@@ -172,8 +178,10 @@ func TestFormats_Coverage(t *testing.T) {
 			expectedOut: "format/testname-coverage.out",
 		},
 		{
-			name:        "pkgname",
-			format:      withAdapter(pkgNameFormat(FormatOptions{})),
+			name: "pkgname",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{})
+			},
 			expectedOut: "format/pkgname-coverage.out",
 		},
 		{
@@ -224,8 +232,10 @@ func TestFormats_Shuffle(t *testing.T) {
 			expectedOut: "format/testname-shuffle.out",
 		},
 		{
-			name:        "pkgname",
-			format:      withAdapter(pkgNameFormat(FormatOptions{})),
+			name: "pkgname",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{})
+			},
 			expectedOut: "format/pkgname-shuffle.out",
 		},
 		{

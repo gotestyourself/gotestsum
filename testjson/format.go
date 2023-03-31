@@ -151,12 +151,14 @@ func all(cond ...bool) bool {
 	return true
 }
 
-func pkgNameFormat(opts FormatOptions) func(event TestEvent, exec *Execution) string {
-	return func(event TestEvent, exec *Execution) string {
+func pkgNameFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
+	buf := bufio.NewWriter(out)
+	return func(event TestEvent, exec *Execution) error {
 		if !event.PackageEvent() {
-			return ""
+			return nil
 		}
-		return shortFormatPackageEvent(opts, event, exec)
+		_, _ = buf.WriteString(shortFormatPackageEvent(opts, event, exec))
+		return buf.Flush()
 	}
 }
 
@@ -221,17 +223,20 @@ func packageLine(event TestEvent, pkg *Package) string {
 	return buf.String()
 }
 
-func pkgNameWithFailuresFormat(opts FormatOptions) func(event TestEvent, exec *Execution) string {
-	return func(event TestEvent, exec *Execution) string {
+func pkgNameWithFailuresFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
+	buf := bufio.NewWriter(out)
+	return func(event TestEvent, exec *Execution) error {
 		if !event.PackageEvent() {
 			if event.Action == ActionFail {
 				pkg := exec.Package(event.Package)
 				tc := pkg.LastFailedByName(event.Test)
-				return pkg.Output(tc.ID)
+				pkg.WriteOutputTo(buf, tc.ID) // nolint:errcheck
+				return buf.Flush()
 			}
-			return ""
+			return nil
 		}
-		return shortFormatPackageEvent(opts, event, exec)
+		buf.WriteString(shortFormatPackageEvent(opts, event, exec)) // nolint:errcheck
+		return buf.Flush()
 	}
 }
 
@@ -284,9 +289,9 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 	case "testname", "short-verbose":
 		return &formatAdapter{out, testNameFormat}
 	case "pkgname", "short":
-		return &formatAdapter{out, pkgNameFormat(formatOpts)}
+		return pkgNameFormat(out, formatOpts)
 	case "pkgname-and-test-fails", "short-with-failures":
-		return &formatAdapter{out, pkgNameWithFailuresFormat(formatOpts)}
+		return pkgNameWithFailuresFormat(out, formatOpts)
 	default:
 		return nil
 	}

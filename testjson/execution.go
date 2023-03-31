@@ -154,8 +154,18 @@ func (p *Package) LastFailedByName(name string) TestCase {
 // Output returns the full test output for a test.
 //
 // Unlike OutputLines() it does not return lines from subtests in some cases.
+// TODO: remove
 func (p *Package) Output(id int) string {
 	return strings.Join(p.output[id], "")
+}
+
+func (p *Package) WriteOutputTo(out io.StringWriter, id int) error {
+	for _, v := range p.output[id] {
+		if _, err := out.WriteString(v); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // OutputLines returns the full test output for a test as a slice of strings.
