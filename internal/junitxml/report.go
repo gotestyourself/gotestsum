@@ -3,6 +3,7 @@
 package junitxml
 
 import (
+	"bytes"
 	"encoding/xml"
 	"fmt"
 	"io"
@@ -172,10 +173,12 @@ func packageTestCases(pkg *testjson.Package, formatClassname FormatFunc) []JUnit
 	cases := []JUnitTestCase{}
 
 	if pkg.TestMainFailed() {
+		var buf bytes.Buffer
+		pkg.WriteOutputTo(&buf, 0) //nolint:errcheck
 		jtc := newJUnitTestCase(testjson.TestCase{Test: "TestMain"}, formatClassname)
 		jtc.Failure = &JUnitFailure{
 			Message:  "Failed",
-			Contents: pkg.Output(0),
+			Contents: buf.String(),
 		}
 		cases = append(cases, jtc)
 	}

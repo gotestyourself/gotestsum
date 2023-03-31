@@ -63,12 +63,6 @@ func patchPkgPathPrefix(t *testing.T, val string) {
 	})
 }
 
-func withAdapter(format func(TestEvent, *Execution) string) func(io.Writer) EventFormatter {
-	return func(out io.Writer) EventFormatter {
-		return &formatAdapter{out: out, format: format}
-	}
-}
-
 func TestFormats_DefaultGoTestJson(t *testing.T) {
 	type testCase struct {
 		name        string
@@ -94,7 +88,7 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 	testCases := []testCase{
 		{
 			name:        "testname",
-			format:      withAdapter(testNameFormat),
+			format:      testNameFormat,
 			expectedOut: "format/testname.out",
 		},
 		{
@@ -174,7 +168,7 @@ func TestFormats_Coverage(t *testing.T) {
 	testCases := []testCase{
 		{
 			name:        "testname",
-			format:      withAdapter(testNameFormat),
+			format:      testNameFormat,
 			expectedOut: "format/testname-coverage.out",
 		},
 		{
@@ -228,7 +222,7 @@ func TestFormats_Shuffle(t *testing.T) {
 	testCases := []testCase{
 		{
 			name:        "testname",
-			format:      withAdapter(testNameFormat),
+			format:      testNameFormat,
 			expectedOut: "format/testname-shuffle.out",
 		},
 		{
