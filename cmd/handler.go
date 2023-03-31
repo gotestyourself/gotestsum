@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"os"
@@ -14,7 +15,7 @@ import (
 
 type eventHandler struct {
 	formatter            testjson.EventFormatter
-	err                  io.Writer
+	err                  *bufio.Writer
 	jsonFile             writeSyncer
 	jsonFileTimingEvents writeSyncer
 	maxFails             int
@@ -25,26 +26,22 @@ type writeSyncer interface {
 	Sync() error
 }
 
+// nolint:errcheck
 func (h *eventHandler) Err(text string) error {
-	_, _ = h.err.Write([]byte(text + "\n"))
+	h.err.WriteString(text)
+	h.err.WriteRune('\n')
+	h.err.Flush()
 	// always return nil, no need to stop scanning if the stderr write fails
 	return nil
 }
 
 func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execution) error {
-	// ignore artificial events with no raw Bytes()
-	if len(event.Bytes()) > 0 {
-		if h.jsonFile != nil {
-			_, err := h.jsonFile.Write(append(event.Bytes(), '\n'))
-			if err != nil {
-				return fmt.Errorf("failed to write JSON file: %w", err)
-			}
-		}
-		if h.jsonFileTimingEvents != nil && event.Action.IsTerminal() {
-			_, err := h.jsonFileTimingEvents.Write(append(event.Bytes(), '\n'))
-			if err != nil {
-				return fmt.Errorf("failed to write JSON file: %w", err)
-			}
+	if err := writeWithNewline(h.jsonFile, event.Bytes()); err != nil {
+		return fmt.Errorf("failed to write JSON file: %w", err)
+	}
+	if event.Action.IsTerminal() {
+		if err := writeWithNewline(h.jsonFileTimingEvents, event.Bytes()); err != nil {
+			return fmt.Errorf("failed to write JSON file: %w", err)
 		}
 	}
 
@@ -57,6 +54,18 @@ func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execu
 		return fmt.Errorf("ending test run because max failures was reached")
 	}
 	return nil
+}
+
+func writeWithNewline(out io.Writer, b []byte) error {
+	// ignore artificial events that have len(b) == 0
+	if out == nil || len(b) == 0 {
+		return nil
+	}
+	if _, err := out.Write(b); err != nil {
+		return err
+	}
+	_, err := out.Write([]byte{'\n'})
+	return err
 }
 
 func (h *eventHandler) Flush() {
@@ -95,7 +104,7 @@ func newEventHandler(opts *options) (*eventHandler, error) {
 	}
 	handler := &eventHandler{
 		formatter: formatter,
-		err:       opts.stderr,
+		err:       bufio.NewWriter(opts.stderr),
 		maxFails:  opts.maxFails,
 	}
 	var err error
