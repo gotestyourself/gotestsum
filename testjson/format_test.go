@@ -27,7 +27,6 @@ import (
 type fakeHandler struct {
 	inputName string
 	formatter EventFormatter
-	out       *bytes.Buffer
 	err       *bytes.Buffer
 }
 
@@ -36,19 +35,6 @@ func (s *fakeHandler) Config(t *testing.T) ScanConfig {
 		Stdout:  bytes.NewReader(golden.Get(t, s.inputName+".out")),
 		Stderr:  bytes.NewReader(golden.Get(t, s.inputName+".err")),
 		Handler: s,
-	}
-}
-
-func newFakeHandlerWithAdapter(
-	format func(event TestEvent, output *Execution) string,
-	inputName string,
-) *fakeHandler {
-	out := new(bytes.Buffer)
-	return &fakeHandler{
-		inputName: inputName,
-		formatter: &formatAdapter{out: out, format: format},
-		out:       out,
-		err:       new(bytes.Buffer),
 	}
 }
 
@@ -77,12 +63,6 @@ func patchPkgPathPrefix(t *testing.T, val string) {
 	})
 }
 
-func withAdapter(format func(TestEvent, *Execution) string) func(io.Writer) EventFormatter {
-	return func(out io.Writer) EventFormatter {
-		return &formatAdapter{out: out, format: format}
-	}
-}
-
 func TestFormats_DefaultGoTestJson(t *testing.T) {
 	type testCase struct {
 		name        string
@@ -108,37 +88,43 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 	testCases := []testCase{
 		{
 			name:        "testname",
-			format:      withAdapter(testNameFormat),
+			format:      testNameFormat,
 			expectedOut: "format/testname.out",
 		},
 		{
 			name:        "dots-v1",
-			format:      withAdapter(dotsFormatV1),
+			format:      dotsFormatV1,
 			expectedOut: "format/dots-v1.out",
 		},
 		{
-			name:        "pkgname",
-			format:      withAdapter(pkgNameFormat(FormatOptions{})),
+			name: "pkgname",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{})
+			},
 			expectedOut: "format/pkgname.out",
 		},
 		{
-			name:        "pkgname-hivis",
-			format:      withAdapter(pkgNameFormat(FormatOptions{UseHiVisibilityIcons: true})),
+			name: "pkgname with hivis",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{UseHiVisibilityIcons: true})
+			},
 			expectedOut: "format/pkgname-hivis.out",
 		},
 		{
-			name:        "pkgname",
-			format:      withAdapter(pkgNameFormat(FormatOptions{HideEmptyPackages: true})),
+			name: "pkgname with hide-empty",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{HideEmptyPackages: true})
+			},
 			expectedOut: "format/pkgname-hide-empty.out",
 		},
 		{
 			name:        "standard-verbose",
-			format:      withAdapter(standardVerboseFormat),
+			format:      standardVerboseFormat,
 			expectedOut: "format/standard-verbose.out",
 		},
 		{
 			name:        "standard-quiet",
-			format:      withAdapter(standardQuietFormat),
+			format:      standardQuietFormat,
 			expectedOut: "format/standard-quiet.out",
 		},
 		{
@@ -158,18 +144,20 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 func TestFormats_Coverage(t *testing.T) {
 	type testCase struct {
 		name        string
-		format      func(event TestEvent, exec *Execution) string
+		format      func(writer io.Writer) EventFormatter
 		expectedOut string
 		expected    func(t *testing.T, exec *Execution)
 	}
 
 	run := func(t *testing.T, tc testCase) {
 		patchPkgPathPrefix(t, "gotest.tools")
-		shim := newFakeHandlerWithAdapter(tc.format, "input/go-test-json-with-cover")
+		out := new(bytes.Buffer)
+
+		shim := newFakeHandler(tc.format(out), "input/go-test-json-with-cover")
 		exec, err := ScanTestOutput(shim.Config(t))
 		assert.NilError(t, err)
 
-		golden.Assert(t, shim.out.String(), tc.expectedOut)
+		golden.Assert(t, out.String(), tc.expectedOut)
 		golden.Assert(t, shim.err.String(), "go-test.err")
 
 		if tc.expected != nil {
@@ -184,8 +172,10 @@ func TestFormats_Coverage(t *testing.T) {
 			expectedOut: "format/testname-coverage.out",
 		},
 		{
-			name:        "pkgname",
-			format:      pkgNameFormat(FormatOptions{}),
+			name: "pkgname",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{})
+			},
 			expectedOut: "format/pkgname-coverage.out",
 		},
 		{
@@ -210,17 +200,18 @@ func TestFormats_Coverage(t *testing.T) {
 func TestFormats_Shuffle(t *testing.T) {
 	type testCase struct {
 		name        string
-		format      func(event TestEvent, exec *Execution) string
+		format      func(io.Writer) EventFormatter
 		expectedOut string
 		expected    func(t *testing.T, exec *Execution)
 	}
 
 	run := func(t *testing.T, tc testCase) {
-		shim := newFakeHandlerWithAdapter(tc.format, "input/go-test-json-with-shuffle")
+		out := new(bytes.Buffer)
+		shim := newFakeHandler(tc.format(out), "input/go-test-json-with-shuffle")
 		exec, err := ScanTestOutput(shim.Config(t))
 		assert.NilError(t, err)
 
-		golden.Assert(t, shim.out.String(), tc.expectedOut)
+		golden.Assert(t, out.String(), tc.expectedOut)
 		golden.Assert(t, shim.err.String(), "go-test.err")
 
 		if tc.expected != nil {
@@ -235,8 +226,10 @@ func TestFormats_Shuffle(t *testing.T) {
 			expectedOut: "format/testname-shuffle.out",
 		},
 		{
-			name:        "pkgname",
-			format:      pkgNameFormat(FormatOptions{}),
+			name: "pkgname",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{})
+			},
 			expectedOut: "format/pkgname-shuffle.out",
 		},
 		{

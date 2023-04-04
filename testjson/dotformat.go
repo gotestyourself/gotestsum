@@ -1,6 +1,7 @@
 package testjson
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"os"
@@ -13,15 +14,21 @@ import (
 	"gotest.tools/gotestsum/internal/log"
 )
 
-func dotsFormatV1(event TestEvent, exec *Execution) string {
-	pkg := exec.Package(event.Package)
-	switch {
-	case event.PackageEvent():
-		return ""
-	case event.Action == ActionRun && pkg.Total == 1:
-		return "[" + RelativePackagePath(event.Package) + "]"
-	}
-	return fmtDot(event)
+func dotsFormatV1(out io.Writer) EventFormatter {
+	buf := bufio.NewWriter(out)
+	// nolint:errcheck
+	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
+		pkg := exec.Package(event.Package)
+		switch {
+		case event.PackageEvent():
+			return nil
+		case event.Action == ActionRun && pkg.Total == 1:
+			buf.WriteString("[" + RelativePackagePath(event.Package) + "]")
+			return buf.Flush()
+		}
+		buf.WriteString(fmtDot(event))
+		return buf.Flush()
+	})
 }
 
 func fmtDot(event TestEvent) string {
@@ -72,7 +79,7 @@ func newDotFormatter(out io.Writer, opts FormatOptions) EventFormatter {
 	w, _, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil || w == 0 {
 		log.Warnf("Failed to detect terminal width for dots format, error: %v", err)
-		return &formatAdapter{format: dotsFormatV1, out: out}
+		return dotsFormatV1(out)
 	}
 	return &dotFormatter{
 		pkgs:      make(map[string]*dotLine),

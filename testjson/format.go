@@ -9,37 +9,48 @@ import (
 	"github.com/fatih/color"
 )
 
-func debugFormat(event TestEvent, _ *Execution) string {
-	return fmt.Sprintf("%s %s %s (%.3f) [%d] %s\n",
-		event.Package,
-		event.Test,
-		event.Action,
-		event.Elapsed,
-		event.Time.Unix(),
-		event.Output)
+func debugFormat(out io.Writer) eventFormatterFunc {
+	return func(event TestEvent, _ *Execution) error {
+		_, err := fmt.Fprintf(out, "%s %s %s (%.3f) [%d] %s\n",
+			event.Package,
+			event.Test,
+			event.Action,
+			event.Elapsed,
+			event.Time.Unix(),
+			event.Output)
+		return err
+	}
 }
 
 // go test -v
-func standardVerboseFormat(event TestEvent, _ *Execution) string {
-	if event.Action == ActionOutput {
-		return event.Output
-	}
-	return ""
+func standardVerboseFormat(out io.Writer) EventFormatter {
+	buf := bufio.NewWriter(out)
+	return eventFormatterFunc(func(event TestEvent, _ *Execution) error {
+		if event.Action == ActionOutput {
+			_, _ = buf.WriteString(event.Output)
+			return buf.Flush()
+		}
+		return nil
+	})
 }
 
 // go test
-func standardQuietFormat(event TestEvent, _ *Execution) string {
-	if !event.PackageEvent() {
-		return ""
-	}
-	if event.Output == "PASS\n" || isCoverageOutput(event.Output) {
-		return ""
-	}
-	if isWarningNoTestsToRunOutput(event.Output) {
-		return ""
-	}
+func standardQuietFormat(out io.Writer) EventFormatter {
+	buf := bufio.NewWriter(out)
+	return eventFormatterFunc(func(event TestEvent, _ *Execution) error {
+		if !event.PackageEvent() {
+			return nil
+		}
+		if event.Output == "PASS\n" || isCoverageOutput(event.Output) {
+			return nil
+		}
+		if isWarningNoTestsToRunOutput(event.Output) {
+			return nil
+		}
 
-	return event.Output
+		_, _ = buf.WriteString(event.Output)
+		return buf.Flush()
+	})
 }
 
 // go test -json
@@ -53,43 +64,54 @@ func standardJSONFormat(out io.Writer) EventFormatter {
 	})
 }
 
-func testNameFormat(event TestEvent, exec *Execution) string {
-	result := colorEvent(event)(strings.ToUpper(string(event.Action)))
-	formatTest := func() string {
-		pkgPath := RelativePackagePath(event.Package)
+func testNameFormat(out io.Writer) EventFormatter {
+	buf := bufio.NewWriter(out)
+	// nolint:errcheck
+	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
+		formatTest := func() error {
+			pkgPath := RelativePackagePath(event.Package)
 
-		return fmt.Sprintf("%s %s%s %s\n",
-			result,
-			joinPkgToTestName(pkgPath, event.Test),
-			formatRunID(event.RunID),
-			event.ElapsedFormatted())
-	}
-
-	switch {
-	case isPkgFailureOutput(event):
-		return event.Output
-
-	case event.PackageEvent():
-		if !event.Action.IsTerminal() {
-			return ""
-		}
-		pkg := exec.Package(event.Package)
-		if event.Action == ActionSkip || (event.Action == ActionPass && pkg.Total == 0) {
-			result = colorEvent(event)("EMPTY")
+			fmt.Fprintf(buf, "%s %s%s %s\n",
+				colorEvent(event)(strings.ToUpper(string(event.Action))),
+				joinPkgToTestName(pkgPath, event.Test),
+				formatRunID(event.RunID),
+				event.ElapsedFormatted())
+			return buf.Flush()
 		}
 
-		event.Elapsed = 0 // hide elapsed for now, for backwards compat
-		return result + " " + packageLine(event, exec.Package(event.Package))
+		switch {
+		case isPkgFailureOutput(event):
+			buf.WriteString(event.Output)
+			return buf.Flush()
 
-	case event.Action == ActionFail:
-		pkg := exec.Package(event.Package)
-		tc := pkg.LastFailedByName(event.Test)
-		return pkg.Output(tc.ID) + formatTest()
+		case event.PackageEvent():
+			if !event.Action.IsTerminal() {
+				return nil
+			}
 
-	case event.Action == ActionPass:
-		return formatTest()
-	}
-	return ""
+			result := colorEvent(event)(strings.ToUpper(string(event.Action)))
+			pkg := exec.Package(event.Package)
+			if event.Action == ActionSkip || (event.Action == ActionPass && pkg.Total == 0) {
+				result = colorEvent(event)("EMPTY")
+			}
+
+			event.Elapsed = 0 // hide elapsed for now, for backwards compat
+			buf.WriteString(result)
+			buf.WriteRune(' ')
+			buf.WriteString(packageLine(event, exec.Package(event.Package)))
+			return buf.Flush()
+
+		case event.Action == ActionFail:
+			pkg := exec.Package(event.Package)
+			tc := pkg.LastFailedByName(event.Test)
+			pkg.WriteOutputTo(buf, tc.ID)
+			return formatTest()
+
+		case event.Action == ActionPass:
+			return formatTest()
+		}
+		return nil
+	})
 }
 
 // joinPkgToTestName for formatting.
@@ -140,12 +162,14 @@ func all(cond ...bool) bool {
 	return true
 }
 
-func pkgNameFormat(opts FormatOptions) func(event TestEvent, exec *Execution) string {
-	return func(event TestEvent, exec *Execution) string {
+func pkgNameFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
+	buf := bufio.NewWriter(out)
+	return func(event TestEvent, exec *Execution) error {
 		if !event.PackageEvent() {
-			return ""
+			return nil
 		}
-		return shortFormatPackageEvent(opts, event, exec)
+		_, _ = buf.WriteString(shortFormatPackageEvent(opts, event, exec))
+		return buf.Flush()
 	}
 }
 
@@ -210,17 +234,20 @@ func packageLine(event TestEvent, pkg *Package) string {
 	return buf.String()
 }
 
-func pkgNameWithFailuresFormat(opts FormatOptions) func(event TestEvent, exec *Execution) string {
-	return func(event TestEvent, exec *Execution) string {
+func pkgNameWithFailuresFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
+	buf := bufio.NewWriter(out)
+	return func(event TestEvent, exec *Execution) error {
 		if !event.PackageEvent() {
 			if event.Action == ActionFail {
 				pkg := exec.Package(event.Package)
 				tc := pkg.LastFailedByName(event.Test)
-				return pkg.Output(tc.ID)
+				pkg.WriteOutputTo(buf, tc.ID) // nolint:errcheck
+				return buf.Flush()
 			}
-			return ""
+			return nil
 		}
-		return shortFormatPackageEvent(opts, event, exec)
+		buf.WriteString(shortFormatPackageEvent(opts, event, exec)) // nolint:errcheck
+		return buf.Flush()
 	}
 }
 
@@ -259,35 +286,24 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 	case "none":
 		return eventFormatterFunc(func(TestEvent, *Execution) error { return nil })
 	case "debug":
-		return &formatAdapter{out, debugFormat}
+		return debugFormat(out)
 	case "standard-json":
 		return standardJSONFormat(out)
 	case "standard-verbose":
-		return &formatAdapter{out, standardVerboseFormat}
+		return standardVerboseFormat(out)
 	case "standard-quiet":
-		return &formatAdapter{out, standardQuietFormat}
+		return standardQuietFormat(out)
 	case "dots", "dots-v1":
-		return &formatAdapter{out, dotsFormatV1}
+		return dotsFormatV1(out)
 	case "dots-v2":
 		return newDotFormatter(out, formatOpts)
 	case "testname", "short-verbose":
-		return &formatAdapter{out, testNameFormat}
+		return testNameFormat(out)
 	case "pkgname", "short":
-		return &formatAdapter{out, pkgNameFormat(formatOpts)}
+		return pkgNameFormat(out, formatOpts)
 	case "pkgname-and-test-fails", "short-with-failures":
-		return &formatAdapter{out, pkgNameWithFailuresFormat(formatOpts)}
+		return pkgNameWithFailuresFormat(out, formatOpts)
 	default:
 		return nil
 	}
-}
-
-type formatAdapter struct {
-	out    io.Writer
-	format func(TestEvent, *Execution) string
-}
-
-func (f *formatAdapter) Format(event TestEvent, exec *Execution) error {
-	o := f.format(event, exec)
-	_, err := f.out.Write([]byte(o))
-	return err
 }
