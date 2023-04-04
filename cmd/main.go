@@ -71,6 +71,9 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags.StringVar(&opts.jsonFile, "jsonfile",
 		lookEnvWithDefault("GOTESTSUM_JSONFILE", ""),
 		"write all TestEvents to file")
+	flags.StringVar(&opts.jsonFileTimingEvents, "jsonfile-timing-events",
+		lookEnvWithDefault("GOTESTSUM_JSONFILE_TIMING_EVENTS", ""),
+		"write only the pass, skip, and fail TestEvents to the file")
 	flags.BoolVar(&opts.noColor, "no-color", defaultNoColor, "disable color output")
 
 	flags.Var(opts.hideSummary, "no-summary",
@@ -160,6 +163,7 @@ type options struct {
 	rawCommand                   bool
 	ignoreNonJSONOutputLines     bool
 	jsonFile                     string
+	jsonFileTimingEvents         string
 	junitFile                    string
 	postRunHookCmd               *commandValue
 	noColor                      bool
