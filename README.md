@@ -2,6 +2,7 @@
 
 `gotestsum` runs tests using `go test -json`, prints formatted test output, and a summary of the test run.
 It is designed to work well for both local development, and for automation like CI.
+`gotestsum` is [used by](#who-uses-gotestsum) some of the most popular Go projects.
 
 ## Install
 
@@ -411,6 +412,32 @@ Note that [delve] must be installed in order to use debug (`d`).
 ```
 gotestsum --watch --format testname
 ```
+
+## Who uses gotestsum?
+
+The projects below use (or have used) gotestsum.
+
+* [kubernetes](https://github.com/kubernetes/kubernetes/blob/master/hack/tools/tools.go)
+* [moby](https://github.com/moby/moby/blob/master/hack/test/unit) (aka Docker)
+* [etcd](https://github.com/etcd-io/etcd/blob/main/tools/mod/tools.go)
+* [hashicorp/vault](https://github.com/hashicorp/vault/blob/main/tools/tools.go)
+* [hashicorp/consul](https://github.com/hashicorp/consul/blob/main/.github/workflows/reusable-unit.yml)
+* [minikube](https://github.com/kubernetes/minikube/blob/master/hack/jenkins/common.ps1)
+* [influxdb](https://github.com/influxdata/influxdb/blob/master/scripts/ci/build-tests.sh)
+* [pulumi](https://github.com/pulumi/pulumi/blob/master/.github/workflows/ci.yml)
+* [grafana/k6](https://github.com/grafana/k6/issues/1986#issuecomment-996625874)
+* [grafana/loki](https://github.com/grafana/loki/blob/main/loki-build-image/Dockerfile)
+* [telegraf](https://github.com/influxdata/telegraf/blob/master/.circleci/config.yml)
+* [containerd](https://github.com/containerd/containerd/blob/main/.cirrus.yml)
+* [linkerd2](https://github.com/linkerd/linkerd2/blob/main/justfile)
+* [elastic/go-elasticsearch](https://github.com/elastic/go-elasticsearch/blob/main/Makefile)
+* [microsoft/hcsshim](https://github.com/microsoft/hcsshim/blob/main/.github/workflows/ci.yml)
+* [pingcap/tidb](https://github.com/pingcap/tidb/blob/master/Makefile)
+* [dex](https://github.com/dexidp/dex/blob/master/Makefile)
+* [coder](https://github.com/coder/coder/blob/main/Makefile)
+* [docker/cli](https://github.com/docker/cli/blob/master/Makefile)
+
+Please open a GitHub issue or pull request to add or remove projects from this list.
 
 ## Development
 
