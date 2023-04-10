@@ -422,6 +422,7 @@ The projects below use (or have used) gotestsum.
 * [etcd](https://github.com/etcd-io/etcd/blob/main/tools/mod/tools.go)
 * [hashicorp/vault](https://github.com/hashicorp/vault/blob/main/tools/tools.go)
 * [hashicorp/consul](https://github.com/hashicorp/consul/blob/main/.github/workflows/reusable-unit.yml)
+* [prometheus](https://github.com/prometheus/prometheus/blob/main/Makefile.common)
 * [minikube](https://github.com/kubernetes/minikube/blob/master/hack/jenkins/common.ps1)
 * [influxdb](https://github.com/influxdata/influxdb/blob/master/scripts/ci/build-tests.sh)
 * [pulumi](https://github.com/pulumi/pulumi/blob/master/.github/workflows/ci.yml)
