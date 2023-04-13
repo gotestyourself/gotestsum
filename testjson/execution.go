@@ -365,8 +365,8 @@ func (p *Package) addEvent(event TestEvent) {
 		p.action = event.Action
 		p.elapsed = elapsedDuration(event.Elapsed)
 	case ActionOutput:
-		if isCoverageOutput(event.Output) {
-			p.coverage = strings.TrimRight(event.Output, "\n")
+		if coverage, ok := isCoverageOutput(event.Output); ok {
+			p.coverage = coverage
 		}
 		if strings.Contains(event.Output, "\t(cached)") {
 			p.cached = true
@@ -466,10 +466,22 @@ func elapsedDuration(elapsed float64) time.Duration {
 	return time.Duration(elapsed*1000) * time.Millisecond
 }
 
-func isCoverageOutput(output string) bool {
-	return all(
-		strings.HasPrefix(output, "coverage:"),
-		strings.Contains(output, "% of statements"))
+func isCoverageOutput(output string) (string, bool) {
+	start := strings.Index(output, "coverage:")
+	if start < 0 {
+		return "", false
+	}
+
+	if !strings.Contains(output[start:], "% of statements") {
+		return "", false
+	}
+
+	return strings.TrimRight(output[start:], "\n"), true
+}
+
+func isCoverageOutputPreGo119(output string) bool {
+	return strings.HasPrefix(output, "coverage:") &&
+		strings.HasSuffix(output, "% of statements\n")
 }
 
 func isShuffleSeedOutput(output string) bool {

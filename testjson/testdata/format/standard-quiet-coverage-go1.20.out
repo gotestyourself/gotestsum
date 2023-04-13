@@ -1,0 +1,11 @@
+sometimes main can exit 2
+program not built with -cover
+FAIL	gotest.tools/gotestsum/testjson/internal/badmain	0.001s
+ok  	gotest.tools/gotestsum/testjson/internal/empty	(cached)	coverage: [no statements] [no tests to run]
+ok  	gotest.tools/gotestsum/testjson/internal/good	0.020s	coverage: 66.7% of statements
+FAIL
+coverage: [no statements]
+FAIL	gotest.tools/gotestsum/testjson/internal/parallelfails	0.021s
+FAIL
+coverage: [no statements]
+FAIL	gotest.tools/gotestsum/testjson/internal/withfails	0.020s

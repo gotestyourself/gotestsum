@@ -1,3 +1,4 @@
+//go:build stubpkg
 // +build stubpkg
 
 package good
@@ -12,6 +13,7 @@ import (
 func TestPassed(t *testing.T) {}
 
 func TestPassedWithLog(t *testing.T) {
+	Something()
 	t.Log("this is a log")
 }
 
