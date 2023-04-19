@@ -7,7 +7,8 @@ It is designed to work well for both local development, and for automation like 
 ## Install
 
 Download a binary from [releases](https://github.com/gotestyourself/gotestsum/releases), or build from
-source with `go install gotest.tools/gotestsum@latest`. With `go` version before 1.17, use `go get gotest.tools/gotestsum`.
+source with `go install gotest.tools/gotestsum@latest`. To run without installing use
+`go run gotest.tools/gotestsum@latest`.
 
 ## Documentation
 
