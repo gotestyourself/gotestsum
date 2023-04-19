@@ -2,7 +2,6 @@ package testjson
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -21,6 +20,13 @@ type PkgTracker struct {
 	col     int
 
 	startTime time.Time
+	pkgs      map[string]*pkgLine
+}
+
+type pkgLine struct {
+	pkg        string
+	event      TestEvent
+	lastUpdate time.Time
 }
 
 func shouldJoinPkgs(lastPkg, pkg string) (join bool, commonPrefix string) {
@@ -121,23 +127,10 @@ func multiPkgNameFormat(out io.Writer, opts FormatOptions, withFailures, withWal
 
 // ---
 
-type PkgTracker2 struct {
-	startTime time.Time
-	pkgs      map[string]*pkgLine
-	failOut   *bytes.Buffer
-}
-
-type pkgLine struct {
-	pkg        string
-	event      TestEvent
-	lastUpdate time.Time
-}
-
 func multiPkgNameFormat2(out io.Writer, opts FormatOptions, withFailures, withWallTime bool) eventFormatterFunc {
-	pkgTracker := &PkgTracker2{
+	pkgTracker := &PkgTracker{
 		startTime: time.Now(),
 		pkgs:      map[string]*pkgLine{},
-		failOut:   bytes.NewBuffer(nil),
 	}
 
 	writer := dotwriter.New(out)
@@ -176,13 +169,9 @@ func multiPkgNameFormat2(out io.Writer, opts FormatOptions, withFailures, withWa
 	}
 }
 
-func (pt *PkgTracker2) flush(writer *dotwriter.Writer, opts FormatOptions, exec *Execution,
+func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *Execution,
 	withWallTime bool) error {
 	writer.Write([]byte("\n\n"))
-	if pt.failOut.Len() > 0 {
-		writer.Write(pt.failOut.Bytes())
-		writer.Write([]byte("\n\n"))
-	}
 
 	var pkgPaths []string
 	for pkgPath := range pt.pkgs {
