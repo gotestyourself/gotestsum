@@ -15,15 +15,16 @@ import (
 )
 
 type PkgTracker struct {
-	lastPkg string
-	col     int
+	withWallTime bool
+	lastPkg      string
+	col          int
 
 	startTime time.Time
 	pkgs      map[string]*pkgLine
 }
 
 type pkgLine struct {
-	pkg        string
+	path       string
 	event      TestEvent
 	lastUpdate time.Time
 }
@@ -40,24 +41,11 @@ func shouldJoinPkgs(lastPkg, pkg string) (join bool, commonPrefix string) {
 	return false, ""
 }
 
-func isEmpty(event TestEvent, exec *Execution) bool {
-	pkg := exec.Package(event.Package)
-	switch event.Action {
-	case ActionSkip:
-		return true
-	case ActionPass:
-		if pkg.Total == 0 {
-			return true
-		}
-	}
-	return false
-}
-
 var colorRe = regexp.MustCompile(`\x1b\[[0-9;]*m`)
 
 func multiPkgNameFormat(out io.Writer, opts FormatOptions, withFailures, withWallTime bool) eventFormatterFunc {
 	buf := bufio.NewWriter(out)
-	pkgTracker := &PkgTracker{startTime: time.Now()}
+	pt := &PkgTracker{startTime: time.Now(), withWallTime: withWallTime}
 
 	w, _, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil || w == 0 {
@@ -67,10 +55,10 @@ func multiPkgNameFormat(out io.Writer, opts FormatOptions, withFailures, withWal
 	return func(event TestEvent, exec *Execution) error {
 		if !event.PackageEvent() {
 			if event.Action == ActionFail && withFailures {
-				if pkgTracker.col > 0 {
+				if pt.col > 0 {
 					buf.WriteString("\n")
 				}
-				pkgTracker.col = 0
+				pt.col = 0
 				pkg := exec.Package(event.Package)
 				tc := pkg.LastFailedByName(event.Test)
 				pkg.WriteOutputTo(buf, tc.ID) // nolint:errcheck
@@ -79,57 +67,63 @@ func multiPkgNameFormat(out io.Writer, opts FormatOptions, withFailures, withWal
 			return nil
 		}
 
-		// Remove newline from shortFormatPackageEvent
+		pkgPath := RelativePackagePath(event.Package)
+
 		eventStr := strings.TrimSuffix(shortFormatPackageEvent(opts, event, exec), "\n")
 		if eventStr == "" {
 			return nil
 		}
-		//eventStr = fmt.Sprintf("%d/%d %s", pkgTracker.col, w, eventStr)
 
-		pkgPath := RelativePackagePath(event.Package)
-		join, commonPrefix := shouldJoinPkgs(pkgTracker.lastPkg, pkgPath)
-		if event.Action == ActionFail {
-			join = false
-		}
-
-		if join {
-			eventStrJoin := strings.ReplaceAll(eventStr, commonPrefix, "")
-			eventStrJoin = strings.ReplaceAll(eventStrJoin, "  ", " ")
-			noColorJoinStr := colorRe.ReplaceAllString(eventStr, "")
-			if pkgTracker.col == 0 || pkgTracker.col+len([]rune(noColorJoinStr)) >= w {
-				join = false
-				eventStr = strings.ReplaceAll(eventStr, commonPrefix, "…/")
-			} else {
-				eventStr = eventStrJoin
-			}
-		}
-		if join {
-			buf.WriteString(" ")
-			pkgTracker.col++
-		} else {
-			buf.WriteString("\n")
-			pkgTracker.col = 0
-
-			if withWallTime {
-				elapsed := time.Since(pkgTracker.startTime).Round(time.Millisecond)
-				eventStr = fmtElapsed(elapsed, false) + eventStr
-			}
-		}
-		pkgTracker.lastPkg = pkgPath
-		noColorStr := colorRe.ReplaceAllString(eventStr, "")
-		pkgTracker.col += len([]rune(noColorStr))
-
-		buf.WriteString(eventStr) // nolint:errcheck
+		elapsed := time.Since(pt.startTime).Round(time.Millisecond)
+		pt.writeEventStr(pkgPath, eventStr, event, w, buf, elapsed)
 		return buf.Flush()
 	}
+}
+
+func (pt *PkgTracker) writeEventStr(pkgPath string, eventStr string, event TestEvent, w int, buf io.StringWriter,
+	elapsed time.Duration) {
+	join, commonPrefix := shouldJoinPkgs(pt.lastPkg, pkgPath)
+	pt.lastPkg = pkgPath
+	if event.Action == ActionFail || pt.col == 0 {
+		// put failures and lines after fail output on new lines, to include full package name
+		join = false
+	}
+
+	if join {
+		eventStrJoin := strings.ReplaceAll(eventStr, commonPrefix, "")
+		eventStrJoin = strings.ReplaceAll(eventStrJoin, "  ", " ")
+		noColorJoinStr := colorRe.ReplaceAllString(eventStr, "")
+		if pt.col+len([]rune(noColorJoinStr)) >= w {
+			join = false
+			eventStr = strings.ReplaceAll(eventStr, commonPrefix, "…/")
+		} else {
+			eventStr = eventStrJoin
+		}
+	}
+	if join {
+		buf.WriteString(" ")
+		pt.col++
+	} else {
+		buf.WriteString("\n")
+		pt.col = 0
+
+		if pt.withWallTime {
+			eventStr = fmtElapsed(elapsed, false) + eventStr
+		}
+	}
+	noColorStr := colorRe.ReplaceAllString(eventStr, "")
+	pt.col += len([]rune(noColorStr))
+
+	buf.WriteString(eventStr) // nolint:errcheck
 }
 
 // ---
 
 func multiPkgNameFormat2(out io.Writer, opts FormatOptions, withFailures, withWallTime bool) eventFormatterFunc {
 	pkgTracker := &PkgTracker{
-		startTime: time.Now(),
-		pkgs:      map[string]*pkgLine{},
+		startTime:    time.Now(),
+		withWallTime: withWallTime,
+		pkgs:         map[string]*pkgLine{},
 	}
 
 	writer := dotwriter.New(out)
@@ -143,7 +137,7 @@ func multiPkgNameFormat2(out io.Writer, opts FormatOptions, withFailures, withWa
 				failBuf := bufio.NewWriter(writer)
 				pkg.WriteOutputTo(failBuf, tc.ID) // nolint:errcheck
 				failBuf.Flush()                   // nolint:errcheck
-				writer.Flush()
+				writer.Flush()                    // nolint:errcheck
 				writer = dotwriter.New(out)
 				// continue to mark the package as failed early
 				//return pkgTracker.flush(writer, opts, exec, withWallTime)
@@ -164,19 +158,18 @@ func multiPkgNameFormat2(out io.Writer, opts FormatOptions, withFailures, withWa
 		}
 
 		pkgTracker.pkgs[pkgPath] = &pkgLine{
-			pkg:        pkgPath,
+			path:       pkgPath,
 			event:      event,
 			lastUpdate: time.Now(),
 		}
-		return pkgTracker.flush(writer, opts, exec, withWallTime)
+		return pkgTracker.flush(writer, opts, exec)
 	}
 }
 
-func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *Execution,
-	withWallTime bool) error {
-	writer.Write([]byte("\n\n"))
+func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *Execution) error {
+	//writer.Write([]byte("\n"))
 
-	var pkgPaths []string
+	var pkgPaths []string // nolint:prealloc
 	for pkgPath := range pt.pkgs {
 		pkgPaths = append(pkgPaths, pkgPath)
 	}
@@ -195,7 +188,7 @@ func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *
 		lastPkg = pkgPath
 	}
 
-	var groupPaths []string
+	var groupPaths []string // nolint:prealloc
 	for groupPath := range groupPkgs {
 		groupPaths = append(groupPaths, groupPath)
 	}
@@ -210,55 +203,23 @@ func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *
 
 	for _, groupPath := range groupPaths {
 		pkgs := groupPkgs[groupPath]
-		lastPkg := ""
-		col := 0
-		for pkgI, pkg := range pkgs {
-			join, commonPrefix := shouldJoinPkgs(lastPkg, pkg.pkg)
-			lastPkg = pkg.pkg
-			if pkg.event.Action == ActionFail {
-				// put failures on new lines, to include full package name
-				join = false
-			}
-
-			eventStr := strings.TrimSuffix(shortFormatPackageEvent(opts, pkg.event, exec), "\n")
-			if join {
-				eventStrJoin := strings.ReplaceAll(eventStr, commonPrefix, "")
-				eventStrJoin = strings.ReplaceAll(eventStrJoin, "  ", " ")
-				noColorJoinStr := colorRe.ReplaceAllString(eventStr, "")
-				if col+len([]rune(noColorJoinStr)) >= w {
-					join = false
-					eventStr = strings.ReplaceAll(eventStr, commonPrefix, "…/")
-				} else {
-					eventStr = eventStrJoin
+		pt.lastPkg = ""
+		pt.col = 0
+		for _, pkg := range pkgs {
+			var lastUpdatePkg *pkgLine
+			for _, p := range pkgs {
+				if lastUpdatePkg == nil || p.lastUpdate.After(lastUpdatePkg.lastUpdate) {
+					lastUpdatePkg = p
 				}
 			}
-			if join {
-				buf.WriteString(" ")
-				col++
-			} else {
-				if pkgI > 0 {
-					buf.WriteString("\n")
-				}
-				col = 0
+			elapsed := lastUpdatePkg.lastUpdate.Sub(pt.startTime).Round(time.Millisecond)
 
-				if withWallTime {
-					var lastUpdatePkg *pkgLine
-					for _, p := range pkgs {
-						if lastUpdatePkg == nil || p.lastUpdate.After(lastUpdatePkg.lastUpdate) {
-							lastUpdatePkg = p
-						}
-					}
-					elapsed := lastUpdatePkg.lastUpdate.Sub(pt.startTime)
-					eventStr = fmtElapsed(elapsed, false) + eventStr
-				}
-			}
-			noColorStr := colorRe.ReplaceAllString(eventStr, "")
-			col += len([]rune(noColorStr))
-
-			buf.WriteString(eventStr) // nolint:errcheck
+			event := pkg.event
+			eventStr := strings.TrimSuffix(shortFormatPackageEvent(opts, event, exec), "\n")
+			pt.writeEventStr(pkg.path, eventStr, event, w, buf, elapsed)
 		}
-		buf.WriteString("\n")
 	}
+	buf.WriteString("\n")
 	buf.Flush() // nolint:errcheck
 	PrintSummary(writer, exec, SummarizeNone)
 	return writer.Flush()
