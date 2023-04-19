@@ -131,13 +131,16 @@ func (d *dotFormatter) orderByLastUpdated(i, j int) bool {
 }
 
 func fmtDotElapsed(p *Package) string {
+	return fmtElapsed(p.Elapsed(), p.cached)
+}
+
+func fmtElapsed(elapsed time.Duration, cached bool) string {
 	f := func(v string) string {
 		return fmt.Sprintf(" %5s ", v)
 	}
 
-	elapsed := p.Elapsed()
 	switch {
-	case p.cached:
+	case cached:
 		return f("🖴 ")
 	case elapsed <= 0:
 		return f("")

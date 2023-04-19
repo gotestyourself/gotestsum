@@ -2,7 +2,6 @@ package testjson
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"os"
 	"regexp"
@@ -112,8 +111,8 @@ func multiPkgNameFormat(out io.Writer, opts FormatOptions, withFailures, withWal
 			pkgTracker.col = 0
 
 			if withWallTime {
-				t := time.Since(pkgTracker.startTime).Round(time.Millisecond)
-				eventStr = fmt.Sprintf("%.3fs %s", float64(t.Milliseconds())/1000, eventStr)
+				elapsed := time.Since(pkgTracker.startTime).Round(time.Millisecond)
+				eventStr = fmtElapsed(elapsed, false) + eventStr
 			}
 		}
 		pkgTracker.lastPkg = pkgPath
@@ -153,13 +152,17 @@ func multiPkgNameFormat2(out io.Writer, opts FormatOptions, withFailures, withWa
 			}
 		}
 
+		pkgPath := RelativePackagePath(event.Package)
+
 		// Remove newline from shortFormatPackageEvent
 		eventStr := strings.TrimSuffix(shortFormatPackageEvent(opts, event, exec), "\n")
 		if eventStr == "" {
+			if p := pkgTracker.pkgs[pkgPath]; p != nil {
+				p.lastUpdate = time.Now()
+			}
 			return nil // pkgTracker.flush(writer, opts, exec, withWallTime) // nil
 		}
 
-		pkgPath := RelativePackagePath(event.Package)
 		pkgTracker.pkgs[pkgPath] = &pkgLine{
 			pkg:        pkgPath,
 			event:      event,
@@ -245,7 +248,8 @@ func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *
 							lastUpdatePkg = p
 						}
 					}
-					eventStr = fmtDotElapsed(exec.Package(lastUpdatePkg.event.Package)) + eventStr
+					elapsed := lastUpdatePkg.lastUpdate.Sub(pt.startTime)
+					eventStr = fmtElapsed(elapsed, false) + eventStr
 				}
 			}
 			noColorStr := colorRe.ReplaceAllString(eventStr, "")
