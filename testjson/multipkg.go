@@ -15,10 +15,11 @@ import (
 )
 
 type PkgTracker struct {
-	withWallTime bool
-	lastPkg      string
-	col          int
-	lineLevel    int
+	withWallTime   bool
+	lastPkg        string
+	col            int
+	lineLevel      int
+	lineStartLevel int
 
 	startTime time.Time
 	pkgs      map[string]*pkgLine
@@ -105,7 +106,7 @@ func (pt *PkgTracker) writeEventStr(pkgPath string, eventStr string, event TestE
 		eventStrJoin = strings.ReplaceAll(eventStrJoin, "  ", " ")
 		if pt.col+noColorLen(eventStrJoin) >= w {
 			join = false
-			if len(commonPrefix) > 0 && !backUp {
+			if len(commonPrefix) > 0 && !backUp && pt.lineLevel == pt.lineStartLevel {
 				eventStr = strings.ReplaceAll(eventStr, pkgPath, "…/"+pkgShort)
 			}
 		} else {
@@ -120,6 +121,7 @@ func (pt *PkgTracker) writeEventStr(pkgPath string, eventStr string, event TestE
 		buf.WriteString("\n")
 		pt.col = 0
 		pt.lineLevel = strings.Count(eventStr, "/")
+		pt.lineStartLevel = pt.lineLevel
 
 		if pt.withWallTime {
 			eventStr = fmtElapsed(elapsed, false) + eventStr
