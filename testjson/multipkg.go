@@ -18,6 +18,7 @@ type PkgTracker struct {
 	withWallTime bool
 	lastPkg      string
 	col          int
+	lineLevel    int
 
 	startTime time.Time
 	pkgs      map[string]*pkgLine
@@ -29,19 +30,19 @@ type pkgLine struct {
 	lastUpdate time.Time
 }
 
-func shouldJoinPkgs(lastPkg, pkg string) (join bool, commonPrefix string) {
-	lastIndex := strings.LastIndex(lastPkg, "/")
-	if lastIndex < 0 || lastIndex+1 > len(pkg) {
-		return false, ""
+func shouldJoinPkgs(lastPkg, pkg string) (join bool, commonPrefix string, backStep bool) {
+	lastIndex := strings.LastIndex(lastPkg, "/") + 1
+	if lastIndex <= len(pkg) && pkg[:lastIndex] == lastPkg[:lastIndex] {
+		return true, pkg[:lastIndex], false // note: include the slash
 	}
-
-	if pkg[:lastIndex] == lastPkg[:lastIndex] {
-		return true, pkg[:lastIndex+1] // note: include the slash
+	if lastIndex > 0 {
+		nextToLastIndex := strings.LastIndex(lastPkg[:lastIndex-1], "/") + 1
+		if nextToLastIndex > 0 && nextToLastIndex <= len(pkg) && pkg[:nextToLastIndex] == lastPkg[:nextToLastIndex] {
+			return true, pkg[:nextToLastIndex], true // note: include the slash
+		}
 	}
-	return false, ""
+	return false, "", false
 }
-
-var colorRe = regexp.MustCompile(`\x1b\[[0-9;]*m`)
 
 func multiPkgNameFormat(out io.Writer, opts FormatOptions, withFailures, withWallTime bool) eventFormatterFunc {
 	buf := bufio.NewWriter(out)
@@ -82,22 +83,34 @@ func multiPkgNameFormat(out io.Writer, opts FormatOptions, withFailures, withWal
 
 func (pt *PkgTracker) writeEventStr(pkgPath string, eventStr string, event TestEvent, w int, buf io.StringWriter,
 	elapsed time.Duration) {
-	join, commonPrefix := shouldJoinPkgs(pt.lastPkg, pkgPath)
+	join, commonPrefix, backUp := shouldJoinPkgs(pt.lastPkg, pkgPath)
 	pt.lastPkg = pkgPath
 	if event.Action == ActionFail || pt.col == 0 {
 		// put failures and lines after fail output on new lines, to include full package name
 		join = false
 	}
+	if backUp {
+		pt.lineLevel--
+		if pt.lineLevel <= 0 {
+			join = false
+		}
+	}
 
 	if join {
-		eventStrJoin := strings.ReplaceAll(eventStr, commonPrefix, "")
+		pkgShort := strings.TrimPrefix(pkgPath, commonPrefix)
+		if backUp {
+			pkgShort = "↶" + pkgShort
+		}
+		eventStrJoin := strings.ReplaceAll(eventStr, pkgPath, pkgShort)
 		eventStrJoin = strings.ReplaceAll(eventStrJoin, "  ", " ")
-		noColorJoinStr := colorRe.ReplaceAllString(eventStr, "")
-		if pt.col+len([]rune(noColorJoinStr)) >= w {
+		if pt.col+noColorLen(eventStrJoin) >= w {
 			join = false
-			eventStr = strings.ReplaceAll(eventStr, commonPrefix, "…/")
+			if len(commonPrefix) > 0 && !backUp {
+				eventStr = strings.ReplaceAll(eventStr, pkgPath, "…/"+pkgShort)
+			}
 		} else {
 			eventStr = eventStrJoin
+			pt.lineLevel += strings.Count(pkgShort, "/")
 		}
 	}
 	if join {
@@ -106,15 +119,25 @@ func (pt *PkgTracker) writeEventStr(pkgPath string, eventStr string, event TestE
 	} else {
 		buf.WriteString("\n")
 		pt.col = 0
+		pt.lineLevel = strings.Count(eventStr, "/")
 
 		if pt.withWallTime {
 			eventStr = fmtElapsed(elapsed, false) + eventStr
 		}
 	}
-	noColorStr := colorRe.ReplaceAllString(eventStr, "")
-	pt.col += len([]rune(noColorStr))
+	pt.col += noColorLen(eventStr)
 
 	buf.WriteString(eventStr) // nolint:errcheck
+}
+
+var colorRe = regexp.MustCompile(`\x1b\[[0-9;]*m`)
+
+func noColorLen(s string) int {
+	var wideCount int
+	for _, wide := range "➖✅❌" {
+		wideCount += strings.Count(s, string(wide))
+	}
+	return len([]rune(colorRe.ReplaceAllString(s, ""))) + wideCount
 }
 
 // ---
@@ -180,7 +203,7 @@ func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *
 	groupPath := ""
 	lastPkg := ""
 	for _, pkgPath := range pkgPaths {
-		join, _ := shouldJoinPkgs(lastPkg, pkgPath)
+		join, _, _ := shouldJoinPkgs(lastPkg, pkgPath)
 		if !join {
 			groupPath = pkgPath
 		}
@@ -196,7 +219,7 @@ func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *
 
 	w, _, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil || w == 0 {
-		w = 800
+		w = 120
 	}
 
 	buf := bufio.NewWriter(writer)
@@ -205,15 +228,14 @@ func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *
 		pkgs := groupPkgs[groupPath]
 		pt.lastPkg = ""
 		pt.col = 0
-		for _, pkg := range pkgs {
-			var lastUpdatePkg *pkgLine
-			for _, p := range pkgs {
-				if lastUpdatePkg == nil || p.lastUpdate.After(lastUpdatePkg.lastUpdate) {
-					lastUpdatePkg = p
-				}
+		var lastUpdate time.Time
+		for i, p := range pkgs {
+			if i == 0 || p.lastUpdate.After(lastUpdate) {
+				lastUpdate = p.lastUpdate
 			}
-			elapsed := lastUpdatePkg.lastUpdate.Sub(pt.startTime).Round(time.Millisecond)
-
+		}
+		elapsed := lastUpdate.Sub(pt.startTime).Round(time.Millisecond)
+		for _, pkg := range pkgs {
 			event := pkg.event
 			eventStr := strings.TrimSuffix(shortFormatPackageEvent(opts, event, exec), "\n")
 			pt.writeEventStr(pkg.path, eventStr, event, w, buf, elapsed)
