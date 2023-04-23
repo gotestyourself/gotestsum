@@ -41,10 +41,20 @@ func TestFmtDotElapsed(t *testing.T) {
 		elapsed  time.Duration
 		expected string
 	}{
-		{
-			elapsed:  999 * time.Microsecond,
-			expected: " 999µs ",
-		},
+		{elapsed: 0 * time.Nanosecond, expected: "       "},
+		{elapsed: 1 * time.Nanosecond, expected: "   1ns "},
+		{elapsed: 14 * time.Nanosecond, expected: "  14ns "},
+		{elapsed: 148 * time.Nanosecond, expected: " 148ns "},
+		{elapsed: 999 * time.Nanosecond, expected: " 999ns "},
+		{elapsed: 1337 * time.Nanosecond, expected: " 1.3µs "},
+		{elapsed: 14821 * time.Nanosecond, expected: "  14µs "},
+		{elapsed: 148213 * time.Nanosecond, expected: " 148µs "},
+		{elapsed: 1482137 * time.Nanosecond, expected: " 1.4ms "},
+		{elapsed: 999 * time.Microsecond, expected: " 999µs "},
+		{elapsed: 1337 * time.Microsecond, expected: " 1.3ms "},
+		{elapsed: 14821 * time.Microsecond, expected: "  14ms "},
+		{elapsed: 148213 * time.Microsecond, expected: " 148ms "},
+		{elapsed: 1482137 * time.Microsecond, expected: " 1.48s "},
 		{
 			elapsed:  7 * time.Millisecond,
 			expected: "   7ms ",

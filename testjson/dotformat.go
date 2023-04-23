@@ -146,12 +146,15 @@ func fmtElapsed(elapsed time.Duration, cached bool) string {
 		return f("")
 	case elapsed >= time.Hour:
 		return f("⏳ ")
-	case elapsed < time.Second:
+	case elapsed < time.Microsecond:
 		return f(elapsed.String())
 	}
 
 	const maxWidth = 7
 	var steps = []time.Duration{
+		100 * time.Nanosecond,
+		time.Microsecond,
+		100 * time.Microsecond,
 		time.Millisecond,
 		10 * time.Millisecond,
 		100 * time.Millisecond,
@@ -163,7 +166,7 @@ func fmtElapsed(elapsed time.Duration, cached bool) string {
 
 	for _, trunc := range steps {
 		r := f(elapsed.Truncate(trunc).String())
-		if len(r) <= maxWidth {
+		if len([]rune(r)) <= maxWidth {
 			return r
 		}
 	}
