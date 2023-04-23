@@ -174,7 +174,11 @@ func pkgNameFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
 			}
 			return nil
 		}
-		buf.WriteString(shortFormatPackageEvent(opts, event, exec)) // nolint:errcheck
+		eventStr := shortFormatPackageEvent(opts, event, exec)
+		if eventStr != "" && opts.OutputWallTime {
+			buf.WriteString(fmtElapsed(exec.Elapsed(), false)) // nolint:errcheck
+		}
+		buf.WriteString(eventStr) // nolint:errcheck
 		return buf.Flush()
 	}
 }
