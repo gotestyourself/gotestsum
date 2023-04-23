@@ -64,13 +64,16 @@ func standardJSONFormat(out io.Writer) EventFormatter {
 	})
 }
 
-func testNameFormat(out io.Writer) EventFormatter {
+func testNameFormat(out io.Writer, opts FormatOptions) EventFormatter {
 	buf := bufio.NewWriter(out)
 	// nolint:errcheck
 	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
 		formatTest := func() error {
 			pkgPath := RelativePackagePath(event.Package)
 
+			if opts.OutputWallTime {
+				buf.WriteString(fmtElapsed(exec.Elapsed(), false)) // nolint:errcheck
+			}
 			fmt.Fprintf(buf, "%s %s%s %s\n",
 				colorEvent(event)(strings.ToUpper(string(event.Action))),
 				joinPkgToTestName(pkgPath, event.Test),
@@ -95,6 +98,9 @@ func testNameFormat(out io.Writer) EventFormatter {
 				result = colorEvent(event)("EMPTY")
 			}
 
+			if opts.OutputWallTime {
+				buf.WriteString(fmtElapsed(exec.Elapsed(), false)) // nolint:errcheck
+			}
 			event.Elapsed = 0 // hide elapsed for now, for backwards compat
 			buf.WriteString(result)
 			buf.WriteRune(' ')
@@ -293,7 +299,7 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 	case "dots-v2":
 		return newDotFormatter(out, formatOpts)
 	case "testname", "short-verbose":
-		return testNameFormat(out)
+		return testNameFormat(out, formatOpts)
 	case "pkgname", "short":
 		return pkgNameFormat(out, formatOpts)
 	case "pkgname-and-test-fails", "short-with-failures":
