@@ -268,6 +268,7 @@ type FormatOptions struct {
 	HideEmptyPackages    bool
 	UseHiVisibilityIcons bool
 	OutputTestFailures   bool
+	OutputWallTime       bool
 }
 
 // NewEventFormatter returns a formatter for printing events.
@@ -295,13 +296,9 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 		formatOpts.OutputTestFailures = true
 		return pkgNameFormat(out, formatOpts)
 	case "pkgname-compact":
-		return pkgNameCompactFormat(out, formatOpts, false)
-	case "pkgname-compact-time":
-		return pkgNameCompactFormat(out, formatOpts, true)
+		return pkgNameCompactFormat(out, formatOpts)
 	case "pkgname-compact2":
-		return pkgNameCompactFormat2(out, formatOpts, false)
-	case "pkgname-compact2-time":
-		return pkgNameCompactFormat2(out, formatOpts, true)
+		return pkgNameCompactFormat2(out, formatOpts)
 	default:
 		return nil
 	}

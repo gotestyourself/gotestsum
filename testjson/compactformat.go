@@ -21,14 +21,13 @@ type PkgTracker struct {
 	lineLevel      int
 	lineStartLevel int
 
-	startTime time.Time
-	pkgs      map[string]*pkgLine
+	pkgs map[string]*pkgLine
 }
 
 type pkgLine struct {
-	path       string
-	event      TestEvent
-	lastUpdate time.Time
+	path        string
+	event       TestEvent
+	lastElapsed time.Duration
 }
 
 func shouldJoinPkgs(lastPkg, pkg string) (join bool, commonPrefix string, backStep bool) {
@@ -45,9 +44,9 @@ func shouldJoinPkgs(lastPkg, pkg string) (join bool, commonPrefix string, backSt
 	return false, "", false
 }
 
-func pkgNameCompactFormat(out io.Writer, opts FormatOptions, withWallTime bool) eventFormatterFunc {
+func pkgNameCompactFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
 	buf := bufio.NewWriter(out)
-	pt := &PkgTracker{startTime: time.Now(), withWallTime: withWallTime}
+	pt := &PkgTracker{withWallTime: opts.OutputWallTime}
 
 	w, _, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil || w == 0 {
@@ -76,8 +75,7 @@ func pkgNameCompactFormat(out io.Writer, opts FormatOptions, withWallTime bool) 
 			return nil
 		}
 
-		elapsed := time.Since(pt.startTime).Round(time.Millisecond)
-		pt.writeEventStr(pkgPath, eventStr, event, w, buf, elapsed)
+		pt.writeEventStr(pkgPath, eventStr, event, w, buf, exec.Elapsed())
 		return buf.Flush()
 	}
 }
@@ -144,10 +142,9 @@ func noColorLen(s string) int {
 
 // ---
 
-func pkgNameCompactFormat2(out io.Writer, opts FormatOptions, withWallTime bool) eventFormatterFunc {
+func pkgNameCompactFormat2(out io.Writer, opts FormatOptions) eventFormatterFunc {
 	pkgTracker := &PkgTracker{
-		startTime:    time.Now(),
-		withWallTime: withWallTime,
+		withWallTime: opts.OutputWallTime,
 		pkgs:         map[string]*pkgLine{},
 	}
 
@@ -177,15 +174,15 @@ func pkgNameCompactFormat2(out io.Writer, opts FormatOptions, withWallTime bool)
 		eventStr := strings.TrimSuffix(shortFormatPackageEvent(opts, event, exec), "\n")
 		if eventStr == "" {
 			if p := pkgTracker.pkgs[pkgPath]; p != nil {
-				p.lastUpdate = time.Now()
+				p.lastElapsed = exec.Elapsed()
 			}
 			return nil // pkgTracker.flush(writer, opts, exec, withWallTime) // nil
 		}
 
 		pkgTracker.pkgs[pkgPath] = &pkgLine{
-			path:       pkgPath,
-			event:      event,
-			lastUpdate: time.Now(),
+			path:        pkgPath,
+			event:       event,
+			lastElapsed: exec.Elapsed(),
 		}
 		return pkgTracker.flush(writer, opts, exec)
 	}
@@ -230,13 +227,12 @@ func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *
 		pkgs := groupPkgs[groupPath]
 		pt.lastPkg = ""
 		pt.col = 0
-		var lastUpdate time.Time
-		for i, p := range pkgs {
-			if i == 0 || p.lastUpdate.After(lastUpdate) {
-				lastUpdate = p.lastUpdate
+		var elapsed time.Duration
+		for _, p := range pkgs {
+			if p.lastElapsed > elapsed {
+				elapsed = p.lastElapsed
 			}
 		}
-		elapsed := lastUpdate.Sub(pt.startTime).Round(time.Millisecond)
 		for _, pkg := range pkgs {
 			event := pkg.event
 			eventStr := strings.TrimSuffix(shortFormatPackageEvent(opts, event, exec), "\n")

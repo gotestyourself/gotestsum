@@ -28,6 +28,7 @@ Flags:
       --rerun-fails-report string                   write a report to the file, of the tests that were rerun
       --rerun-fails-run-root-test                   rerun the entire root testcase when any of its subtests fail, instead of only the failed subtest
       --version                                     show version and exit
+      --wall-time                                   print elapsed wall time
       --watch                                       watch go files, and run tests when a file is modified
       --watch-chdir                                 in watch mode change the working directory to the directory with the modified file before running tests
 
