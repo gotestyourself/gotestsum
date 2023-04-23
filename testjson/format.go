@@ -166,9 +166,15 @@ func pkgNameFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
 	buf := bufio.NewWriter(out)
 	return func(event TestEvent, exec *Execution) error {
 		if !event.PackageEvent() {
+			if event.Action == ActionFail && opts.OutputTestFailures {
+				pkg := exec.Package(event.Package)
+				tc := pkg.LastFailedByName(event.Test)
+				pkg.WriteOutputTo(buf, tc.ID) // nolint:errcheck
+				return buf.Flush()
+			}
 			return nil
 		}
-		_, _ = buf.WriteString(shortFormatPackageEvent(opts, event, exec))
+		buf.WriteString(shortFormatPackageEvent(opts, event, exec)) // nolint:errcheck
 		return buf.Flush()
 	}
 }
@@ -234,23 +240,6 @@ func packageLine(event TestEvent, pkg *Package) string {
 	return buf.String()
 }
 
-func pkgNameWithFailuresFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
-	buf := bufio.NewWriter(out)
-	return func(event TestEvent, exec *Execution) error {
-		if !event.PackageEvent() {
-			if event.Action == ActionFail {
-				pkg := exec.Package(event.Package)
-				tc := pkg.LastFailedByName(event.Test)
-				pkg.WriteOutputTo(buf, tc.ID) // nolint:errcheck
-				return buf.Flush()
-			}
-			return nil
-		}
-		buf.WriteString(shortFormatPackageEvent(opts, event, exec)) // nolint:errcheck
-		return buf.Flush()
-	}
-}
-
 func colorEvent(event TestEvent) func(format string, a ...interface{}) string {
 	switch event.Action {
 	case ActionPass:
@@ -278,6 +267,7 @@ func (e eventFormatterFunc) Format(event TestEvent, output *Execution) error {
 type FormatOptions struct {
 	HideEmptyPackages    bool
 	UseHiVisibilityIcons bool
+	OutputTestFailures   bool
 }
 
 // NewEventFormatter returns a formatter for printing events.
@@ -302,7 +292,8 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 	case "pkgname", "short":
 		return pkgNameFormat(out, formatOpts)
 	case "pkgname-and-test-fails", "short-with-failures":
-		return pkgNameWithFailuresFormat(out, formatOpts)
+		formatOpts.OutputTestFailures = true
+		return pkgNameFormat(out, formatOpts)
 	case "multipkg":
 		return multiPkgNameFormat(out, formatOpts, false, false)
 	case "multipkg-time":

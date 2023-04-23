@@ -63,6 +63,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		false, "do not print empty packages in compact formats")
 	flags.BoolVar(&opts.formatOptions.UseHiVisibilityIcons, "format-hivis",
 		false, "use high visibility characters in some formats")
+	flags.BoolVar(&opts.formatOptions.OutputTestFailures, "format-with-fails",
+		false, "include output from failed tests")
 	flags.BoolVar(&opts.rawCommand, "raw-command", false,
 		"don't prepend 'go test -json' to the 'go test' command")
 	flags.BoolVar(&opts.ignoreNonJSONOutputLines, "ignore-non-json-output-lines", false,
@@ -137,7 +139,6 @@ Formats:
     dots                     print a character for each test
     dots-v2                  experimental dots format, one package per line
     pkgname                  print a line for each package
-    pkgname-and-test-fails   print a line for each package and failed test output
     testname                 print a line for each test and package
     standard-quiet           standard go test format
     standard-verbose         standard go test -v format
