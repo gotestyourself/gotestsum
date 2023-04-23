@@ -45,7 +45,7 @@ func shouldJoinPkgs(lastPkg, pkg string) (join bool, commonPrefix string, backSt
 	return false, "", false
 }
 
-func multiPkgNameFormat(out io.Writer, opts FormatOptions, withFailures, withWallTime bool) eventFormatterFunc {
+func pkgNameCompactFormat(out io.Writer, opts FormatOptions, withWallTime bool) eventFormatterFunc {
 	buf := bufio.NewWriter(out)
 	pt := &PkgTracker{startTime: time.Now(), withWallTime: withWallTime}
 
@@ -56,7 +56,7 @@ func multiPkgNameFormat(out io.Writer, opts FormatOptions, withFailures, withWal
 
 	return func(event TestEvent, exec *Execution) error {
 		if !event.PackageEvent() {
-			if event.Action == ActionFail && withFailures {
+			if event.Action == ActionFail && opts.OutputTestFailures {
 				if pt.col > 0 {
 					buf.WriteString("\n")
 				}
@@ -144,7 +144,7 @@ func noColorLen(s string) int {
 
 // ---
 
-func multiPkgNameFormat2(out io.Writer, opts FormatOptions, withFailures, withWallTime bool) eventFormatterFunc {
+func pkgNameCompactFormat2(out io.Writer, opts FormatOptions, withWallTime bool) eventFormatterFunc {
 	pkgTracker := &PkgTracker{
 		startTime:    time.Now(),
 		withWallTime: withWallTime,
@@ -155,7 +155,7 @@ func multiPkgNameFormat2(out io.Writer, opts FormatOptions, withFailures, withWa
 
 	return func(event TestEvent, exec *Execution) error {
 		if !event.PackageEvent() {
-			if event.Action == ActionFail && withFailures {
+			if event.Action == ActionFail && opts.OutputTestFailures {
 				pkg := exec.Package(event.Package)
 				tc := pkg.LastFailedByName(event.Test)
 				// output failures by writing only them to the dotwriter, and then resetting it after those lines.

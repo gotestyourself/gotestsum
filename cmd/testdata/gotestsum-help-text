@@ -35,6 +35,7 @@ Formats:
     dots                     print a character for each test
     dots-v2                  experimental dots format, one package per line
     pkgname                  print a line for each package
+    pkgname-compact          print multiple packages per line in a compact format
     testname                 print a line for each test and package
     standard-quiet           standard go test format
     standard-verbose         standard go test -v format

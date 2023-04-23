@@ -294,22 +294,14 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 	case "pkgname-and-test-fails", "short-with-failures":
 		formatOpts.OutputTestFailures = true
 		return pkgNameFormat(out, formatOpts)
-	case "multipkg":
-		return multiPkgNameFormat(out, formatOpts, false, false)
-	case "multipkg-time":
-		return multiPkgNameFormat(out, formatOpts, false, true)
-	case "multipkg-and-test-fails":
-		return multiPkgNameFormat(out, formatOpts, true, false)
-	case "multipkg-and-test-fails-time":
-		return multiPkgNameFormat(out, formatOpts, true, true)
-	case "multipkg2":
-		return multiPkgNameFormat2(out, formatOpts, false, false)
-	case "multipkg2-time":
-		return multiPkgNameFormat2(out, formatOpts, false, true)
-	case "multipkg2-and-test-fails":
-		return multiPkgNameFormat2(out, formatOpts, true, false)
-	case "multipkg2-and-test-fails-time":
-		return multiPkgNameFormat2(out, formatOpts, true, true)
+	case "pkgname-compact":
+		return pkgNameCompactFormat(out, formatOpts, false)
+	case "pkgname-compact-time":
+		return pkgNameCompactFormat(out, formatOpts, true)
+	case "pkgname-compact2":
+		return pkgNameCompactFormat2(out, formatOpts, false)
+	case "pkgname-compact2-time":
+		return pkgNameCompactFormat2(out, formatOpts, true)
 	default:
 		return nil
 	}
