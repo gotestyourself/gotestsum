@@ -2,6 +2,7 @@ package testjson
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"os"
 	"regexp"
@@ -15,6 +16,17 @@ import (
 )
 
 const CompactFormats = "relative, short, partial, partial-back"
+
+func CompactFormatUsage(out io.Writer, name string) {
+	fmt.Fprintf(out, `
+Formats:
+	relative (default)       print the full relative path to the package
+	short                    print the last path segment of the package
+	partial                  print newly entered path segments for each package
+	partial-back             partial with an indication when it backs out
+
+`)
+}
 
 type PkgTracker struct {
 	opts    FormatOptions

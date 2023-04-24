@@ -28,6 +28,9 @@ func Run(name string, args []string) error {
 	case err != nil:
 		usage(os.Stderr, name, flags)
 		return err
+	case opts.formatOptions.CompactPkgNameFormat == "help":
+		testjson.CompactFormatUsage(os.Stderr, name)
+		return nil
 	}
 	opts.args = flags.Args()
 	setupLogging(opts)
@@ -144,7 +147,7 @@ Formats:
     dots                     print a character for each test
     dots-v2                  experimental dots format, one package per line
     pkgname                  print a line for each package
-    pkgname-compact          print multiple packages per line in a compact format
+    pkgname-compact          print multiple packages per line, see --format-compact help for options
     testname                 print a line for each test and package
     standard-quiet           standard go test format
     standard-verbose         standard go test -v format
