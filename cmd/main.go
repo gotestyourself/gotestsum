@@ -67,6 +67,9 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		false, "include output from failed tests")
 	flags.BoolVar(&opts.formatOptions.OutputWallTime, "wall-time",
 		false, "print elapsed wall time")
+	flags.StringVar(&opts.formatOptions.CompactPkgNameFormat, "format-compact",
+		"relative", "format package names as: "+testjson.CompactFormats)
+	flags.Lookup("format-compact").Hidden = true
 	flags.BoolVar(&opts.rawCommand, "raw-command", false,
 		"don't prepend 'go test -json' to the 'go test' command")
 	flags.BoolVar(&opts.ignoreNonJSONOutputLines, "ignore-non-json-output-lines", false,

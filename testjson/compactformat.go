@@ -14,12 +14,12 @@ import (
 	"golang.org/x/term"
 )
 
+const CompactFormats = "relative, short, partial, partial-back"
+
 type PkgTracker struct {
-	withWallTime   bool
-	lastPkg        string
-	col            int
-	lineLevel      int
-	lineStartLevel int
+	opts    FormatOptions
+	lastPkg string
+	col     int
 
 	pkgs map[string]*pkgLine
 }
@@ -30,27 +30,33 @@ type pkgLine struct {
 	lastElapsed time.Duration
 }
 
-func shouldJoinPkgs(lastPkg, pkg string) (join bool, commonPrefix string, backStep bool) {
-	lastIndex := strings.LastIndex(lastPkg, "/") + 1
-	if lastIndex <= len(pkg) && pkg[:lastIndex] == lastPkg[:lastIndex] {
-		return true, pkg[:lastIndex], false // note: include the slash
-	}
-	if lastIndex > 0 {
-		nextToLastIndex := strings.LastIndex(lastPkg[:lastIndex-1], "/") + 1
-		if nextToLastIndex > 0 && nextToLastIndex <= len(pkg) && pkg[:nextToLastIndex] == lastPkg[:nextToLastIndex] {
-			return true, pkg[:nextToLastIndex], true // note: include the slash
+func shouldJoinPkgs(opts FormatOptions, lastPkg, pkg string) (join bool, commonPrefix string, backUp int) {
+	switch opts.CompactPkgNameFormat {
+	case "relative":
+		return true, "", 0
+	case "short":
+		lastIndex := strings.LastIndex(pkg, "/") + 1
+		return true, pkg[:lastIndex], 0
+	case "partial", "partial-back":
+		lastIndex := strings.LastIndex(lastPkg, "/") + 1
+		for count := 0; lastIndex > 0; count++ {
+			if lastIndex <= len(pkg) && pkg[:lastIndex] == lastPkg[:lastIndex] {
+				return true, pkg[:lastIndex], count // note: include the slash
+			}
+			lastIndex = strings.LastIndex(lastPkg[:lastIndex-1], "/") + 1
 		}
+		return true, "", 0
 	}
-	return false, "", false
+	return false, "", 0
 }
 
 func pkgNameCompactFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
 	buf := bufio.NewWriter(out)
-	pt := &PkgTracker{withWallTime: opts.OutputWallTime}
+	pt := &PkgTracker{opts: opts}
 
 	w, _, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil || w == 0 {
-		w = 800
+		w = 120
 	}
 
 	return func(event TestEvent, exec *Execution) error {
@@ -82,52 +88,49 @@ func pkgNameCompactFormat(out io.Writer, opts FormatOptions) eventFormatterFunc 
 
 func (pt *PkgTracker) writeEventStr(pkgPath string, eventStr string, event TestEvent, w int, buf io.StringWriter,
 	elapsed time.Duration) {
-	join, commonPrefix, backUp := shouldJoinPkgs(pt.lastPkg, pkgPath)
+	initial := pt.lastPkg == ""
+	eventStr, join := pt.compactEventStr(pkgPath, eventStr, event, w)
+	if join && !initial {
+		buf.WriteString(" ") // nolint:errcheck
+	} else {
+		buf.WriteString("\n") // nolint:errcheck
+		if pt.opts.OutputWallTime {
+			elapsedStr := fmtElapsed(elapsed, false)
+			eventStr = elapsedStr + eventStr
+			pt.col += len([]rune(elapsedStr))
+		}
+	}
+	buf.WriteString(eventStr) // nolint:errcheck
+}
+
+func (pt *PkgTracker) compactEventStr(pkgPath string, eventStr string, event TestEvent, w int) (string, bool) {
+	join, commonPrefix, backUp := shouldJoinPkgs(pt.opts, pt.lastPkg, pkgPath)
 	pt.lastPkg = pkgPath
-	if event.Action == ActionFail || pt.col == 0 {
+	if event.Action == ActionFail || (pt.opts.CompactPkgNameFormat == "partial" && pt.col == 0) {
 		// put failures and lines after fail output on new lines, to include full package name
 		join = false
-	}
-	if backUp {
-		pt.lineLevel--
-		if pt.lineLevel <= 0 {
-			join = false
-		}
 	}
 
 	if join {
 		pkgShort := strings.TrimPrefix(pkgPath, commonPrefix)
-		if backUp {
+		if backUp > 0 && pt.opts.CompactPkgNameFormat == "partial-back" {
 			pkgShort = "↶" + pkgShort
 		}
 		eventStrJoin := strings.ReplaceAll(eventStr, pkgPath, pkgShort)
 		eventStrJoin = strings.ReplaceAll(eventStrJoin, "  ", " ")
 		if pt.col+noColorLen(eventStrJoin) >= w {
 			join = false
-			if len(commonPrefix) > 0 && !backUp && pt.lineLevel == pt.lineStartLevel {
-				eventStr = strings.ReplaceAll(eventStr, pkgPath, "…/"+pkgShort)
-			}
-		} else {
-			eventStr = eventStrJoin
-			pt.lineLevel += strings.Count(pkgShort, "/")
 		}
+		eventStr = eventStrJoin
 	}
 	if join {
-		buf.WriteString(" ")
 		pt.col++
 	} else {
-		buf.WriteString("\n")
 		pt.col = 0
-		pt.lineLevel = strings.Count(eventStr, "/")
-		pt.lineStartLevel = pt.lineLevel
-
-		if pt.withWallTime {
-			eventStr = fmtElapsed(elapsed, false) + eventStr
-		}
 	}
 	pt.col += noColorLen(eventStr)
 
-	buf.WriteString(eventStr) // nolint:errcheck
+	return eventStr, join
 }
 
 var colorRe = regexp.MustCompile(`\x1b\[[0-9;]*m`)
@@ -144,8 +147,8 @@ func noColorLen(s string) int {
 
 func pkgNameCompactFormat2(out io.Writer, opts FormatOptions) eventFormatterFunc {
 	pkgTracker := &PkgTracker{
-		withWallTime: opts.OutputWallTime,
-		pkgs:         map[string]*pkgLine{},
+		opts: opts,
+		pkgs: map[string]*pkgLine{},
 	}
 
 	writer := dotwriter.New(out)
@@ -162,9 +165,8 @@ func pkgNameCompactFormat2(out io.Writer, opts FormatOptions) eventFormatterFunc
 				writer.Flush()                    // nolint:errcheck
 				writer = dotwriter.New(out)
 				// continue to mark the package as failed early
-				//return pkgTracker.flush(writer, opts, exec, withWallTime)
 			} else {
-				return nil // pkgTracker.flush(writer, opts, exec, withWallTime) // nil
+				return nil
 			}
 		}
 
@@ -176,7 +178,7 @@ func pkgNameCompactFormat2(out io.Writer, opts FormatOptions) eventFormatterFunc
 			if p := pkgTracker.pkgs[pkgPath]; p != nil {
 				p.lastElapsed = exec.Elapsed()
 			}
-			return nil // pkgTracker.flush(writer, opts, exec, withWallTime) // nil
+			return pkgTracker.flush(writer, opts, exec)
 		}
 
 		pkgTracker.pkgs[pkgPath] = &pkgLine{
@@ -202,7 +204,7 @@ func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *
 	groupPath := ""
 	lastPkg := ""
 	for _, pkgPath := range pkgPaths {
-		join, _, _ := shouldJoinPkgs(lastPkg, pkgPath)
+		join, _, _ := shouldJoinPkgs(pt.opts, lastPkg, pkgPath)
 		if !join {
 			groupPath = pkgPath
 		}
@@ -223,21 +225,43 @@ func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *
 
 	buf := bufio.NewWriter(writer)
 
+	var wallTimeCol int
+	if pt.opts.OutputWallTime {
+		wallTimeCol = len([]rune(fmtElapsed(time.Second, false)))
+	}
+
 	for _, groupPath := range groupPaths {
 		pkgs := groupPkgs[groupPath]
 		pt.lastPkg = ""
 		pt.col = 0
 		var elapsed time.Duration
-		for _, p := range pkgs {
-			if p.lastElapsed > elapsed {
-				elapsed = p.lastElapsed
+		var parts []string
+		flushLine := func() {
+			if len(parts) == 0 {
+				return
 			}
+			buf.WriteString("\n")
+			if pt.opts.OutputWallTime {
+				buf.WriteString(fmtElapsed(elapsed, false))
+				elapsed = 0
+			}
+			buf.WriteString(strings.Join(parts, " "))
+			parts = nil
 		}
-		for _, pkg := range pkgs {
+		for i, pkg := range pkgs {
 			event := pkg.event
 			eventStr := strings.TrimSuffix(shortFormatPackageEvent(opts, event, exec), "\n")
-			pt.writeEventStr(pkg.path, eventStr, event, w, buf, elapsed)
+			compactStr, join := pt.compactEventStr(pkg.path, eventStr, event, w)
+			if !join || i == 0 {
+				flushLine()
+				pt.col += wallTimeCol
+			}
+			parts = append(parts, compactStr)
+			if pkg.lastElapsed > elapsed {
+				elapsed = pkg.lastElapsed
+			}
 		}
+		flushLine()
 	}
 	buf.WriteString("\n")
 	buf.Flush() // nolint:errcheck

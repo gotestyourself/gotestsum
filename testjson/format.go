@@ -279,6 +279,9 @@ type FormatOptions struct {
 	UseHiVisibilityIcons bool
 	OutputTestFailures   bool
 	OutputWallTime       bool
+
+	// for pkgname-compact format:
+	CompactPkgNameFormat string
 }
 
 // NewEventFormatter returns a formatter for printing events.
