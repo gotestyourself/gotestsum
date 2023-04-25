@@ -77,6 +77,10 @@ func pkgNameCompactFormat(out io.Writer, opts FormatOptions) eventFormatterFunc 
 	if err != nil || w == 0 {
 		w = 120
 	}
+	var wallTimeCol int
+	if pt.opts.OutputWallTime {
+		wallTimeCol = len([]rune(fmtElapsed(time.Second, false)))
+	}
 
 	return func(event TestEvent, exec *Execution) error {
 		pkgPath := RelativePackagePath(event.Package)
@@ -115,7 +119,8 @@ func pkgNameCompactFormat(out io.Writer, opts FormatOptions) eventFormatterFunc 
 		if eventStr == "" {
 			return nil
 		}
-		eventStr += dotSummary(p.dots, dotFmtRe.FindString(opts.CompactPkgNameFormat))
+		maxDots := w - wallTimeCol - noColorLen(eventStr)
+		eventStr += dotSummary(p.dots, dotFmtRe.FindString(opts.CompactPkgNameFormat), maxDots)
 
 		pt.writeEventStr(pkgPath, eventStr, event, w, buf, exec.Elapsed())
 		return buf.Flush()
@@ -306,11 +311,12 @@ func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *
 		for i, pkg := range pkgs {
 			event := pkg.event
 			eventStr := strings.TrimSuffix(shortFormatPackageEvent(opts, event, exec), "\n")
-			if dots := dotSummary(pkg.dots, dotFmtRe.FindString(opts.CompactPkgNameFormat)); dots != "" {
+			if len(pkg.dots) > 0 {
 				if eventStr == "" {
 					eventStr = pkg.path
 				}
-				eventStr += dots
+				maxDots := w - wallTimeCol - noColorLen(eventStr)
+				eventStr += dotSummary(pkg.dots, dotFmtRe.FindString(opts.CompactPkgNameFormat), maxDots)
 			}
 			compactStr, join := pt.compactEventStr(pkg.path, eventStr, event, w)
 			if !join || i == 0 {
@@ -332,12 +338,16 @@ func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *
 	return writer.Flush()
 }
 
-func dotSummary(dots []string, dotFmt string) string {
+func dotSummary(dots []string, dotFmt string, maxLen int) string {
 	var limit = 1
 	if nstr := strings.TrimLeft(dotFmt, "-dots"); nstr != "" {
 		if n, err := strconv.Atoi(nstr); err == nil {
 			limit = n
 		}
+	}
+	margin := 11
+	if maxLen > margin && limit+margin > maxLen {
+		limit = maxLen - margin
 	}
 	if len(dots) > limit {
 		sort.Strings(dots)
@@ -349,7 +359,7 @@ func dotSummary(dots []string, dotFmt string) string {
 		if count == 0 {
 			return
 		}
-		if count <= limit || (s == "" && count <= limit+3) {
+		if count <= limit+3 {
 			s += strings.Repeat(prev, count)
 		} else {
 			if s == "" {
@@ -358,6 +368,7 @@ func dotSummary(dots []string, dotFmt string) string {
 			reset := "\x1b[0m"
 			s += fmt.Sprintf("%s[%d]%s", strings.TrimSuffix(prev, reset), count, reset)
 		}
+		limit = 1
 	}
 	for _, dot := range dots {
 		if dot != prev {
