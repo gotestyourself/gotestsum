@@ -180,9 +180,9 @@ func goVersion() string {
 func packageTestCases(pkg *testjson.Package, cfg Config) []JUnitTestCase {
 	cases := []JUnitTestCase{}
 
+	var buf bytes.Buffer
+	pkg.WriteOutputTo(&buf, 0) //nolint:errcheck
 	if pkg.TestMainFailed() {
-		var buf bytes.Buffer
-		pkg.WriteOutputTo(&buf, 0) //nolint:errcheck
 		jtc := newJUnitTestCase(testjson.TestCase{Test: "TestMain"}, cfg.FormatTestCaseClassname)
 		jtc.Failure = &JUnitFailure{
 			Message:  "Failed",

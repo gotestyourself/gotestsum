@@ -9,10 +9,11 @@ import (
 	"testing"
 	"time"
 
-	"gotest.tools/gotestsum/testjson"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/env"
 	"gotest.tools/v3/golden"
+
+	"gotest.tools/gotestsum/testjson"
 )
 
 func TestWrite(t *testing.T) {
@@ -27,6 +28,21 @@ func TestWrite(t *testing.T) {
 	})
 	assert.NilError(t, err)
 	golden.Assert(t, out.String(), "junitxml-report.golden")
+}
+
+func TestWriteWithAlwaysIncludeOutput(t *testing.T) {
+	out := new(bytes.Buffer)
+	exec := createExecution(t)
+
+	t.Setenv("GOVERSION", "go7.7.7")
+	err := Write(out, exec, Config{
+		ProjectName:     "test",
+		customTimestamp: new(time.Time).Format(time.RFC3339),
+		customElapsed:   "2.1",
+		AlwaysIncludeOutput: true,
+	})
+	assert.NilError(t, err)
+	golden.Assert(t, out.String(), "junitxml-report-always-include-output.golden")
 }
 
 func TestWrite_HideEmptyPackages(t *testing.T) {
