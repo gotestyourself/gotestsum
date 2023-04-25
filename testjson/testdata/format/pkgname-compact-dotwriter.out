@@ -1,0 +1,229 @@
+
+
+ 0 tests, 1 error in 0.002s
+
+
+ 0 tests, 1 error in 0.004s
+
+
+ 0 tests, 1 error in 0.006s
+
+✖  testjson/internal/badmain (171ms)
+
+ 0 tests, 1 failure, 1 error in 0.008s
+
+✖  testjson/internal/badmain (171ms)
+
+ 0 tests, 1 failure, 1 error in 0.010s
+
+✖  testjson/internal/badmain (171ms)
+
+ 6 tests, 1 failure, 1 error in 0.012s
+
+✖  testjson/internal/badmain (171ms)
+
+ 6 tests, 1 failure, 1 error in 0.014s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+
+ 6 tests, 1 failure, 1 error in 0.016s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+
+ 6 tests, 1 failure, 1 error in 0.018s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+
+ 7 tests, 2 failures, 1 error in 0.020s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+
+ 7 tests, 2 failures, 1 error in 0.022s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms)
+
+ 7 tests, 2 failures, 1 error in 0.024s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms)
+
+ 7 tests, 2 failures, 1 error in 0.026s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms)
+
+ 13 tests, 2 failures, 1 error in 0.028s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms)
+
+ 13 tests, 2 failures, 1 error in 0.030s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+
+ 13 tests, 2 failures, 1 error in 0.032s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+
+ 13 tests, 2 failures, 1 error in 0.034s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+
+ 19 tests, 2 failures, 1 error in 0.036s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+
+ 19 tests, 2 failures, 1 error in 0.038s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms)
+
+ 19 tests, 2 failures, 1 error in 0.040s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms)
+
+ 19 tests, 2 failures, 1 error in 0.042s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms)
+
+ 25 tests, 2 failures, 1 error in 0.044s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms)
+
+ 25 tests, 2 failures, 1 error in 0.046s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms)
+
+ 25 tests, 2 failures, 1 error in 0.048s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms)
+
+ 25 tests, 2 failures, 1 error in 0.050s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms)
+
+ 25 tests, 2 failures, 1 error in 0.052s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms)
+
+ 25 tests, 2 failures, 1 error in 0.054s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms)
+
+ 25 tests, 2 failures, 1 error in 0.056s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms) ∅ testjson/internal/empty (282ms)
+
+ 25 tests, 2 failures, 1 error in 0.058s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms) ∅ testjson/internal/empty (282ms)
+
+ 25 tests, 2 failures, 1 error in 0.060s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms) ∅ testjson/internal/empty (282ms)
+
+ 43 tests, 2 skipped, 2 failures, 1 error in 0.062s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms) ∅ testjson/internal/empty (282ms)
+
+ 43 tests, 2 skipped, 2 failures, 1 error in 0.064s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms) ∅ testjson/internal/empty (282ms)
+✓ testjson/internal/good (292ms)
+
+ 43 tests, 2 skipped, 2 failures, 1 error in 0.066s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms) ∅ testjson/internal/empty (282ms)
+✓ testjson/internal/good (292ms)
+
+ 43 tests, 2 skipped, 2 failures, 1 error in 0.068s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms) ∅ testjson/internal/empty (282ms)
+✓ testjson/internal/good (292ms)
+
+ 55 tests, 2 skipped, 10 failures, 1 error in 0.070s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms) ∅ testjson/internal/empty (282ms)
+✓ testjson/internal/good (292ms)
+
+ 55 tests, 2 skipped, 10 failures, 1 error in 0.072s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms) ∅ testjson/internal/empty (282ms)
+✓ testjson/internal/good (292ms)
+✖  testjson/internal/parallelfails (219ms)
+
+ 55 tests, 2 skipped, 10 failures, 1 error in 0.074s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms) ∅ testjson/internal/empty (282ms)
+✓ testjson/internal/good (292ms)
+✖  testjson/internal/parallelfails (219ms)
+
+ 55 tests, 2 skipped, 10 failures, 1 error in 0.076s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms) ∅ testjson/internal/empty (282ms)
+✓ testjson/internal/good (292ms)
+✖  testjson/internal/parallelfails (219ms)
+
+ 84 tests, 5 skipped, 14 failures, 1 error in 0.078s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms) ∅ testjson/internal/empty (282ms)
+✓ testjson/internal/good (292ms)
+✖  testjson/internal/parallelfails (219ms)
+
+ 84 tests, 5 skipped, 14 failures, 1 error in 0.080s
+
+✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms) ∅ testjson/internal/empty (282ms)
+✓ testjson/internal/good (292ms)
+✖  testjson/internal/parallelfails (219ms)
+✖  testjson/internal/withfails (220ms)
+
+ 84 tests, 5 skipped, 14 failures, 1 error in 0.082s
+

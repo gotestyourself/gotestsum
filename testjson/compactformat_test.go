@@ -2,7 +2,9 @@ package testjson
 
 import (
 	"bytes"
+	"fmt"
 	"io"
+	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -26,6 +28,9 @@ func TestFormats_Deep(t *testing.T) {
 		expectedOut string
 		expected    func(t *testing.T, exec *Execution)
 	}
+	const ESC = 27
+	// remove clear-line terminal codes to keep golden files escape-code free
+	var clearRe = regexp.MustCompile(fmt.Sprintf("%c\\[[%d%d]A%c\\[2K\r?", ESC, 0, 1, ESC))
 
 	run := func(t *testing.T, tc testCase) {
 		out := new(bytes.Buffer)
@@ -34,6 +39,7 @@ func TestFormats_Deep(t *testing.T) {
 		assert.NilError(t, err)
 		// pkgNameCompactFormat -plain never line terminates
 		out.WriteString("\n")
+		out = bytes.NewBufferString(clearRe.ReplaceAllString(out.String(), ""))
 
 		golden.Assert(t, out.String(), tc.expectedOut)
 		golden.Assert(t, shim.err.String(), "input/go-test-json-deep.err")
@@ -61,6 +67,11 @@ func TestFormats_Deep(t *testing.T) {
 			name:        "pkgname-compact plain",
 			format:      compactFormat("plain"),
 			expectedOut: "format/pkgname-compact-plain.out",
+		},
+		{
+			name:        "pkgname-compact non-plain",
+			format:      compactFormat("relative"),
+			expectedOut: "format/pkgname-compact-dotwriter.out",
 		},
 		{
 			name:        "pkgname-compact short",
@@ -103,6 +114,8 @@ func TestFormats_Deep(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			if strings.Contains(t.Name(), "wall") {
 				patchTimeNowCounting(t, 337*time.Millisecond)
+			} else if strings.Contains(t.Name(), "non-plain") {
+				patchTimeNowCounting(t, 1*time.Millisecond)
 			}
 			run(t, tc)
 		})
