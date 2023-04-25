@@ -162,7 +162,7 @@ func (pt *PkgTracker) compactEventStr(pkgPath string, eventStr string, event Tes
 
 	if join {
 		pkgShort := strings.TrimPrefix(pkgPath, commonPrefix)
-		if backUp > 0 && pt.opts.CompactPkgNameFormat == "partial-back" {
+		if backUp > 0 && strings.Contains(pt.opts.CompactPkgNameFormat, "partial-back") {
 			pkgShort = "↶" + pkgShort
 		}
 		eventStrJoin := strings.ReplaceAll(eventStr, pkgPath, pkgShort)
@@ -385,6 +385,9 @@ func dotSummary(dots []string, dotFmt string, maxLen int) string {
 				s += strings.Repeat(prev, limit-1)
 			}
 			reset := "\x1b[0m"
+			if !strings.Contains(prev, reset) {
+				reset = ""
+			}
 			s += fmt.Sprintf("%s[%d]%s", strings.TrimSuffix(prev, reset), count, reset)
 		}
 		limit = 1

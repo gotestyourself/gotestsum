@@ -1,0 +1,7 @@
+
+ 337ms ✖  testjson/internal/badmain (171ms) ✓ testjson/internal/deep (278ms)
+ 1.01s ✖  testjson/internal/deep/failsub (192ms) ✓ testjson/internal/deep/sub1 (283ms)
+ 1.68s ✓ testjson/internal/deep/sub1/subsub1 (287ms) ✓ testjson/internal/deep/sub2 (274ms)
+ 2.35s ∅ testjson/internal/empty (282ms) ✓ testjson/internal/good (292ms)
+ 3.03s ✖  testjson/internal/parallelfails (219ms)
+ 3.37s ✖  testjson/internal/withfails (220ms)
