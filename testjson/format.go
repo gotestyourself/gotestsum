@@ -310,8 +310,6 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 		return pkgNameFormat(out, formatOpts)
 	case "pkgname-compact":
 		return pkgNameCompactFormat(out, formatOpts)
-	case "pkgname-compact2":
-		return pkgNameCompactFormat2(out, formatOpts)
 	default:
 		return nil
 	}

@@ -16,7 +16,7 @@ import (
 	"golang.org/x/term"
 )
 
-const CompactFormats = "relative, short, partial, partial-back, -dots"
+const CompactFormats = "relative, short, partial, partial-back, -dots, -plain"
 
 func CompactFormatUsage(out io.Writer, name string) {
 	fmt.Fprintf(out, `
@@ -26,6 +26,7 @@ Formats:
 	partial                  print newly entered path segments for each package
 	partial-back             partial with an indication when it backs out
 	-dots[N]                 print test dots summary after the package
+	-plain                   do not rewrite lines, print each package when finished
 
 `)
 }
@@ -47,8 +48,9 @@ type pkgLine struct {
 
 func shouldJoinPkgs(opts FormatOptions, lastPkg, pkg string) (join bool, commonPrefix string, backUp int) {
 	pkgNameFormat := dotFmtRe.ReplaceAllString(opts.CompactPkgNameFormat, "")
+	pkgNameFormat = strings.TrimSuffix(pkgNameFormat, "-plain")
 	switch pkgNameFormat {
-	case "relative":
+	case "relative", "plain", "":
 		return true, "", 0
 	case "short":
 		lastIndex := strings.LastIndex(pkg, "/") + 1
@@ -67,6 +69,13 @@ func shouldJoinPkgs(opts FormatOptions, lastPkg, pkg string) (join bool, commonP
 }
 
 func pkgNameCompactFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
+	if strings.Contains(opts.CompactPkgNameFormat, "plain") {
+		return pkgNameCompactFormatPlain(out, opts)
+	}
+	return pkgNameCompactFormatDotwriter(out, opts)
+}
+
+func pkgNameCompactFormatPlain(out io.Writer, opts FormatOptions) eventFormatterFunc {
 	buf := bufio.NewWriter(out)
 	pt := &PkgTracker{
 		opts: opts,
@@ -187,7 +196,7 @@ func noColorLen(s string) int {
 
 // ---
 
-func pkgNameCompactFormat2(out io.Writer, opts FormatOptions) eventFormatterFunc {
+func pkgNameCompactFormatDotwriter(out io.Writer, opts FormatOptions) eventFormatterFunc {
 	pt := &PkgTracker{
 		opts: opts,
 		pkgs: map[string]*pkgLine{},
