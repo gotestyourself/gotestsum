@@ -128,8 +128,7 @@ func pkgNameCompactFormatPlain(out io.Writer, opts FormatOptions) eventFormatter
 		if eventStr == "" {
 			return nil
 		}
-		maxDots := w - wallTimeCol - noColorLen(eventStr)
-		eventStr += dotSummary(p.dots, dotFmtRe.FindString(opts.CompactPkgNameFormat), maxDots)
+		eventStr = addPkgDots(p, eventStr, w, wallTimeCol, pt.opts)
 
 		pt.writeEventStr(pkgPath, eventStr, event, w, buf, exec.Elapsed())
 		return buf.Flush()
@@ -241,7 +240,7 @@ func pkgNameCompactFormatDotwriter(out io.Writer, opts FormatOptions) eventForma
 						return nil
 					}
 					lastNonEventFlush = time.Now()
-					return pt.flush(writer, opts, exec)
+					return pt.flush(writer, exec)
 				}
 				return nil
 			}
@@ -251,17 +250,15 @@ func pkgNameCompactFormatDotwriter(out io.Writer, opts FormatOptions) eventForma
 		// Remove newline from shortFormatPackageEvent
 		eventStr := strings.TrimSuffix(shortFormatPackageEvent(opts, event, exec), "\n")
 		if eventStr == "" {
-			return pt.flush(writer, opts, exec)
+			return pt.flush(writer, exec)
 		}
 
 		p.event = event
-		return pt.flush(writer, opts, exec)
+		return pt.flush(writer, exec)
 	}
 }
 
-func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *Execution) error {
-	//writer.Write([]byte("\n"))
-
+func (pt *PkgTracker) groups() (map[string][]*pkgLine, []string) {
 	var pkgPaths []string // nolint:prealloc
 	for pkgPath := range pt.pkgs {
 		pkgPaths = append(pkgPaths, pkgPath)
@@ -287,18 +284,24 @@ func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *
 	}
 	sort.Strings(groupPaths)
 
+	return groupPkgs, groupPaths
+}
+
+func (pt *PkgTracker) flush(writer *dotwriter.Writer, exec *Execution) error {
+	//writer.Write([]byte("\n"))
+
 	w, _, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil || w == 0 {
 		w = 120
 	}
-
-	buf := bufio.NewWriter(writer)
-
 	var wallTimeCol int
 	if pt.opts.OutputWallTime {
 		wallTimeCol = len([]rune(fmtElapsed(time.Second, false)))
 	}
 
+	buf := bufio.NewWriter(writer)
+
+	groupPkgs, groupPaths := pt.groups()
 	for _, groupPath := range groupPaths {
 		pkgs := groupPkgs[groupPath]
 		pt.lastPkg = ""
@@ -319,14 +322,8 @@ func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *
 		}
 		for i, pkg := range pkgs {
 			event := pkg.event
-			eventStr := strings.TrimSuffix(shortFormatPackageEvent(opts, event, exec), "\n")
-			if len(pkg.dots) > 0 {
-				if eventStr == "" {
-					eventStr = pkg.path
-				}
-				maxDots := w - wallTimeCol - noColorLen(eventStr)
-				eventStr += dotSummary(pkg.dots, dotFmtRe.FindString(opts.CompactPkgNameFormat), maxDots)
-			}
+			eventStr := strings.TrimSuffix(shortFormatPackageEvent(pt.opts, event, exec), "\n")
+			eventStr = addPkgDots(pkg, eventStr, w, wallTimeCol, pt.opts)
 			compactStr, join := pt.compactEventStr(pkg.path, eventStr, event, w)
 			if !join || i == 0 {
 				flushLine()
@@ -345,6 +342,19 @@ func (pt *PkgTracker) flush(writer *dotwriter.Writer, opts FormatOptions, exec *
 	buf.Flush() // nolint:errcheck
 	PrintSummary(writer, exec, SummarizeNone)
 	return writer.Flush()
+}
+
+func addPkgDots(pkg *pkgLine, eventStr string, w int, wallTimeCol int, opts FormatOptions) string {
+	dotFmt := dotFmtRe.FindString(opts.CompactPkgNameFormat)
+	if len(pkg.dots) > 0 {
+		if eventStr == "" {
+			eventStr = pkg.path
+		}
+		// TODO: maxDots should consider shortened package names from compactEventStr() but without updating pt.col
+		maxDots := w - wallTimeCol - noColorLen(eventStr)
+		eventStr += dotSummary(pkg.dots, dotFmt, maxDots)
+	}
+	return eventStr
 }
 
 func dotSummary(dots []string, dotFmt string, maxLen int) string {
