@@ -224,14 +224,6 @@ func (n TestName) Name() string {
 	return string(n)
 }
 
-func tcIDSet(skipped []TestCase) map[int]struct{} {
-	result := make(map[int]struct{})
-	for _, tc := range skipped {
-		result[tc.ID] = struct{}{}
-	}
-	return result
-}
-
 // TestMainFailed returns true if the package failed, but there were no tests.
 // This may occur if the package init() or TestMain exited non-zero.
 func (p *Package) TestMainFailed() bool {
