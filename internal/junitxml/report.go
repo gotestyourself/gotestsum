@@ -64,15 +64,17 @@ type JUnitProperty struct {
 
 // JUnitFailure contains data related to a failed test.
 type JUnitFailure struct {
-	Message  string `xml:"message,attr"`
-	Type     string `xml:"type,attr"`
-	Contents string `xml:",chardata"`
+	Message string   `xml:"message,attr"`
+	Type    string   `xml:"type,attr"`
+	XMLName xml.Name `xml:"failure"`
+	Text    string   `xml:",cdata"`
 }
 
 type JUnitSystemOut struct {
-	Message  string `xml:"message,attr"`
-	Type     string `xml:"type,attr"`
-	Contents string `xml:",chardata"`
+	XMLName xml.Name `xml:"system-out"`
+	Text    string   `xml:",cdata"`
+	Message string   `xml:"message,attr"`
+	Type    string   `xml:"type,attr"`
 }
 
 // Config used to write a junit XML document.
@@ -185,8 +187,8 @@ func packageTestCases(pkg *testjson.Package, cfg Config) []JUnitTestCase {
 	if pkg.TestMainFailed() {
 		jtc := newJUnitTestCase(testjson.TestCase{Test: "TestMain"}, cfg.FormatTestCaseClassname)
 		jtc.Failure = &JUnitFailure{
-			Message:  "Failed",
-			Contents: buf.String(),
+			Message: "Failed",
+			Text:    buf.String(),
 		}
 		cases = append(cases, jtc)
 	}
@@ -194,8 +196,8 @@ func packageTestCases(pkg *testjson.Package, cfg Config) []JUnitTestCase {
 	for _, tc := range pkg.Failed {
 		jtc := newJUnitTestCase(tc, cfg.FormatTestCaseClassname)
 		jtc.Failure = &JUnitFailure{
-			Message:  "Failed",
-			Contents: strings.Join(pkg.OutputLines(tc), ""),
+			Message: "Failed",
+			Text:    strings.Join(pkg.OutputLines(tc), ""),
 		}
 		cases = append(cases, jtc)
 	}
@@ -212,8 +214,8 @@ func packageTestCases(pkg *testjson.Package, cfg Config) []JUnitTestCase {
 		jtc := newJUnitTestCase(tc, cfg.FormatTestCaseClassname)
 		if cfg.AlwaysIncludeOutput {
 			jtc.SystemOut = &JUnitSystemOut{
-				Message:  "Output",
-				Contents: strings.Join(pkg.OutputLines(tc), ""),
+				Message: "Output",
+				Text:    strings.Join(pkg.OutputLines(tc), ""),
 			}
 		}
 		cases = append(cases, jtc)
