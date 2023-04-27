@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	"regexp"
 	"sort"
 	"strconv"
@@ -46,26 +47,25 @@ type pkgLine struct {
 	dots        []string
 }
 
-func shouldJoinPkgs(opts FormatOptions, lastPkg, pkg string) (join bool, commonPrefix string, backUp int) {
+func compactPkgPath(opts FormatOptions, lastPkg, pkg string) (join bool, compactPkg string, backUp int) {
 	pkgNameFormat := dotFmtRe.ReplaceAllString(opts.CompactPkgNameFormat, "")
 	pkgNameFormat = strings.TrimSuffix(pkgNameFormat, "-plain")
 	switch pkgNameFormat {
 	case "relative", "plain", "":
-		return true, "", 0
+		return true, pkg, 0
 	case "short":
-		lastIndex := strings.LastIndex(pkg, "/") + 1
-		return true, pkg[:lastIndex], 0
+		return true, path.Base(pkg), 0
 	case "partial", "partial-back":
 		lastIndex := strings.LastIndex(lastPkg, "/") + 1
 		for count := 0; lastIndex > 0; count++ {
 			if lastIndex <= len(pkg) && pkg[:lastIndex] == lastPkg[:lastIndex] {
-				return true, pkg[:lastIndex], count // note: include the slash
+				return true, pkg[lastIndex:], count
 			}
 			lastIndex = strings.LastIndex(lastPkg[:lastIndex-1], "/") + 1
 		}
-		return true, "", 0
+		return true, pkg, 0
 	}
-	return false, "", 0
+	return false, pkg, 0
 }
 
 func pkgNameCompactFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
@@ -153,7 +153,7 @@ func (pt *PkgTracker) writeEventStr(pkgPath string, eventStr string, event TestE
 }
 
 func (pt *PkgTracker) compactEventStr(pkgPath string, eventStr string, event TestEvent, w int) (string, bool) {
-	join, commonPrefix, backUp := shouldJoinPkgs(pt.opts, pt.lastPkg, pkgPath)
+	join, pkgShort, backUp := compactPkgPath(pt.opts, pt.lastPkg, pkgPath)
 	pt.lastPkg = pkgPath
 	if event.Action == ActionFail || (pt.opts.CompactPkgNameFormat == "partial" && pt.col == 0) {
 		// put failures and lines after fail output on new lines, to include full package name
@@ -161,7 +161,6 @@ func (pt *PkgTracker) compactEventStr(pkgPath string, eventStr string, event Tes
 	}
 
 	if join {
-		pkgShort := strings.TrimPrefix(pkgPath, commonPrefix)
 		if backUp > 0 && strings.Contains(pt.opts.CompactPkgNameFormat, "partial-back") {
 			pkgShort = "↶" + pkgShort
 		}
@@ -270,7 +269,7 @@ func (pt *PkgTracker) groups() (map[string][]*pkgLine, []string) {
 	groupPath := ""
 	lastPkg := ""
 	for _, pkgPath := range pkgPaths {
-		join, _, _ := shouldJoinPkgs(pt.opts, lastPkg, pkgPath)
+		join, _, _ := compactPkgPath(pt.opts, lastPkg, pkgPath)
 		if !join {
 			groupPath = pkgPath
 		}

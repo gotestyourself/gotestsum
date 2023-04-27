@@ -135,63 +135,63 @@ func patchTimeNowCounting(t *testing.T, step time.Duration) {
 
 func Test_shouldJoinPkgs(t *testing.T) {
 	tests := []struct {
-		name             string
-		fmt              string
-		lastPkg          string
-		pkg              string
-		wantJoin         bool
-		wantCommonPrefix string
-		wantBackUp       int
+		name       string
+		fmt        string
+		lastPkg    string
+		pkg        string
+		wantJoin   bool
+		wantShort  string
+		wantBackUp int
 	}{
 		{
-			name:             "relative",
-			fmt:              "relative",
-			lastPkg:          "pkg/sub/foo",
-			pkg:              "pkg/sub/bar",
-			wantJoin:         true,
-			wantCommonPrefix: "",
+			name:      "relative",
+			fmt:       "relative",
+			lastPkg:   "pkg/sub/foo",
+			pkg:       "pkg/sub/bar",
+			wantJoin:  true,
+			wantShort: "pkg/sub/bar",
 		},
 		{
-			name:             "short",
-			fmt:              "short",
-			lastPkg:          "pkg/sub/foo",
-			pkg:              "pkg/sub/bar",
-			wantJoin:         true,
-			wantCommonPrefix: "pkg/sub/",
+			name:      "short",
+			fmt:       "short",
+			lastPkg:   "pkg/sub/foo",
+			pkg:       "pkg/sub/bar",
+			wantJoin:  true,
+			wantShort: "bar",
 		},
 		{
-			name:             "partial-sibling",
-			fmt:              "partial",
-			lastPkg:          "pkg/sub/foo",
-			pkg:              "pkg/sub/bar",
-			wantJoin:         true,
-			wantCommonPrefix: "pkg/sub/",
+			name:      "partial-sibling",
+			fmt:       "partial",
+			lastPkg:   "pkg/sub/foo",
+			pkg:       "pkg/sub/bar",
+			wantJoin:  true,
+			wantShort: "bar",
 		},
 		{
-			name:             "partial-one-up",
-			fmt:              "partial",
-			lastPkg:          "pkg/sub/foo",
-			pkg:              "pkg/sub2/bar",
-			wantJoin:         true,
-			wantCommonPrefix: "pkg/",
-			wantBackUp:       1,
+			name:       "partial-one-up",
+			fmt:        "partial",
+			lastPkg:    "pkg/sub/foo",
+			pkg:        "pkg/sub2/bar",
+			wantJoin:   true,
+			wantShort:  "sub2/bar",
+			wantBackUp: 1,
 		},
 		{
-			name:             "partial-toplevel",
-			fmt:              "partial",
-			lastPkg:          "pkg/sub/foo",
-			pkg:              "pkg2/sub2/bar",
-			wantJoin:         true,
-			wantCommonPrefix: "",
+			name:      "partial-toplevel",
+			fmt:       "partial",
+			lastPkg:   "pkg/sub/foo",
+			pkg:       "pkg2/sub2/bar",
+			wantJoin:  true,
+			wantShort: "pkg2/sub2/bar",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var opts FormatOptions
 			opts.CompactPkgNameFormat = tt.fmt
-			gotJoin, gotCommonPrefix, gotBackUp := shouldJoinPkgs(opts, tt.lastPkg, tt.pkg)
+			gotJoin, gotCommonPrefix, gotBackUp := compactPkgPath(opts, tt.lastPkg, tt.pkg)
 			assert.Equal(t, gotJoin, tt.wantJoin)
-			assert.Equal(t, gotCommonPrefix, tt.wantCommonPrefix)
+			assert.Equal(t, gotCommonPrefix, tt.wantShort)
 			assert.Equal(t, gotBackUp, tt.wantBackUp)
 		})
 	}
