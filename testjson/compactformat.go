@@ -257,35 +257,6 @@ func pkgNameCompactFormatDotwriter(out io.Writer, opts FormatOptions) eventForma
 	}
 }
 
-func (pt *PkgTracker) groups() (map[string][]*pkgLine, []string) {
-	var pkgPaths []string // nolint:prealloc
-	for pkgPath := range pt.pkgs {
-		pkgPaths = append(pkgPaths, pkgPath)
-	}
-	sort.Strings(pkgPaths)
-
-	// with all packages in order, make a group of each run of packages that can be joined
-	groupPkgs := map[string][]*pkgLine{}
-	groupPath := ""
-	lastPkg := ""
-	for _, pkgPath := range pkgPaths {
-		join, _, _ := compactPkgPath(pt.opts, lastPkg, pkgPath)
-		if !join {
-			groupPath = pkgPath
-		}
-		groupPkgs[groupPath] = append(groupPkgs[groupPath], pt.pkgs[pkgPath])
-		lastPkg = pkgPath
-	}
-
-	var groupPaths []string // nolint:prealloc
-	for groupPath := range groupPkgs {
-		groupPaths = append(groupPaths, groupPath)
-	}
-	sort.Strings(groupPaths)
-
-	return groupPkgs, groupPaths
-}
-
 func (pt *PkgTracker) flush(writer *dotwriter.Writer, exec *Execution) error {
 	//writer.Write([]byte("\n"))
 
@@ -300,43 +271,47 @@ func (pt *PkgTracker) flush(writer *dotwriter.Writer, exec *Execution) error {
 
 	buf := bufio.NewWriter(writer)
 
-	groupPkgs, groupPaths := pt.groups()
-	for _, groupPath := range groupPaths {
-		pkgs := groupPkgs[groupPath]
-		pt.lastPkg = ""
-		pt.col = 0
-		var elapsed time.Duration
-		var parts []string
-		flushLine := func() {
-			if len(parts) == 0 {
-				return
-			}
-			buf.WriteString("\n")
-			if pt.opts.OutputWallTime {
-				buf.WriteString(fmtElapsed(elapsed, false))
-				elapsed = 0
-			}
-			buf.WriteString(strings.Join(parts, " "))
-			parts = nil
-		}
-		for i, pkg := range pkgs {
-			event := pkg.event
-			eventStr := strings.TrimSuffix(shortFormatPackageEvent(pt.opts, event, exec), "\n")
-			eventStr = addPkgDots(pkg, eventStr, w, wallTimeCol, pt.opts)
-			compactStr, join := pt.compactEventStr(pkg.path, eventStr, event, w)
-			if !join || i == 0 {
-				flushLine()
-				pt.col += wallTimeCol
-			}
-			if compactStr != "" {
-				parts = append(parts, compactStr)
-			}
-			if pkg.lastElapsed > elapsed {
-				elapsed = pkg.lastElapsed
-			}
-		}
-		flushLine()
+	var pkgPaths []string // nolint:prealloc
+	for pkgPath := range pt.pkgs {
+		pkgPaths = append(pkgPaths, pkgPath)
 	}
+	sort.Strings(pkgPaths)
+
+	pt.lastPkg = ""
+	pt.col = 0
+	var elapsed time.Duration
+	var parts []string
+	flushLine := func() {
+		if len(parts) == 0 {
+			return
+		}
+		buf.WriteString("\n")
+		if pt.opts.OutputWallTime {
+			buf.WriteString(fmtElapsed(elapsed, false))
+			elapsed = 0
+		}
+		buf.WriteString(strings.Join(parts, " "))
+		parts = nil
+	}
+	for i, pkgPath := range pkgPaths {
+		pkg := pt.pkgs[pkgPath]
+		event := pkg.event
+		eventStr := strings.TrimSuffix(shortFormatPackageEvent(pt.opts, event, exec), "\n")
+		eventStr = addPkgDots(pkg, eventStr, w, wallTimeCol, pt.opts)
+		compactStr, join := pt.compactEventStr(pkg.path, eventStr, event, w)
+		if !join || i == 0 {
+			flushLine()
+			pt.col += wallTimeCol
+		}
+		if compactStr != "" {
+			parts = append(parts, compactStr)
+		}
+		if pkg.lastElapsed > elapsed {
+			elapsed = pkg.lastElapsed
+		}
+	}
+	flushLine()
+
 	buf.WriteString("\n")
 	buf.Flush() // nolint:errcheck
 	PrintSummary(writer, exec, SummarizeNone)
