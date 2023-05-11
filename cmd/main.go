@@ -14,6 +14,7 @@ import (
 
 	"github.com/dnephin/pflag"
 	"github.com/fatih/color"
+	"github.com/jwalton/go-supportscolor"
 	"gotest.tools/gotestsum/internal/log"
 	"gotest.tools/gotestsum/testjson"
 )
@@ -201,7 +202,7 @@ func (o options) Validate() error {
 }
 
 var defaultNoColor = func() bool {
-	if os.Getenv("GITHUB_ACTIONS") == "true" {
+	if supportscolor.Stdout().SupportsColor {
 		return false
 	}
 	return color.NoColor
