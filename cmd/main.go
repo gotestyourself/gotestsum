@@ -214,13 +214,15 @@ var defaultNoColor = func() bool {
 			"GITEA_ACTIONS",
 			"GITHUB_ACTIONS",
 			"GITLAB_CI",
-			"TEAMCITY_VERSION",
 			"TRAVIS",
 		}
 		for _, ciEnvName := range ciEnvNames {
 			if _, exists := os.LookupEnv(ciEnvName); exists {
 				return false
 			}
+		}
+		if _, exists := os.LookupEnv("TEAMCITY_VERSION"); exists {
+			return false
 		}
 		if os.Getenv("CI_NAME") == "codeship" {
 			return false
