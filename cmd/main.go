@@ -201,8 +201,30 @@ func (o options) Validate() error {
 }
 
 var defaultNoColor = func() bool {
-	if os.Getenv("GITHUB_ACTIONS") == "true" {
-		return false
+	// fatih/color will only output color when stdout is a terminal which is not
+	// true for many CI environments which support color output. So instead, we
+	// try to detect these CI environments via their environment variables.
+	// This code is based on https://github.com/jwalton/go-supportscolor
+	if _, exists := os.LookupEnv("CI"); exists == true {
+		var ciEnvNames = []string{
+			"APPVEYOR",
+			"BUILDKITE",
+			"CIRCLECI",
+			"DRONE",
+			"GITEA_ACTIONS",
+			"GITHUB_ACTIONS",
+			"GITLAB_CI",
+			"TEAMCITY_VERSION",
+			"TRAVIS",
+		}
+		for _, ciEnvName := range ciEnvNames {
+			if _, exists := os.LookupEnv(ciEnvName); exists {
+				return false
+			}
+		}
+		if os.Getenv("CI_NAME") == "codeship" {
+			return false
+		}
 	}
 	return color.NoColor
 }()
