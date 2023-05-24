@@ -18,7 +18,7 @@ Flags:
       --junitfile-testcase-classname field-format   format the testcase classname field as: full, relative, short (default full)
       --junitfile-testsuite-name field-format       format the testsuite name field as: full, relative, short (default full)
       --max-fails int                               end the test run after this number of failures
-      --no-color                                    disable color output (default true)
+      --no-color                                    disable color output
       --packages list                               space separated list of package to test
       --post-run-command command                    command to run after the tests have completed
       --raw-command                                 don't prepend 'go test -json' to the 'go test' command
