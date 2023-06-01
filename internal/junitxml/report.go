@@ -197,15 +197,14 @@ func packageTestCases(pkg *testjson.Package, cfg Config) []JUnitTestCase {
 			Message:  "Failed",
 			Contents: strings.Join(pkg.OutputLines(tc), ""),
 		}
-		retried := false
-		for pos, testCase := range cases {
-			// if duplicate, keep the last one, it was a rerun
-			if testCase.Name == jtc.Name {
-				cases[pos] = jtc
-				retried = true
+
+		rerunPassed := false
+		for _, passedTc := range pkg.Passed {
+			if passedTc.Test.Name() == tc.Test.Name() {
+				rerunPassed = true
 			}
 		}
-		if !retried {
+		if !rerunPassed {
 			cases = append(cases, jtc)
 		}
 	}
@@ -228,6 +227,7 @@ func packageTestCases(pkg *testjson.Package, cfg Config) []JUnitTestCase {
 		}
 		cases = append(cases, jtc)
 	}
+
 	return cases
 }
 
