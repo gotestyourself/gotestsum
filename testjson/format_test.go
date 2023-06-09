@@ -145,6 +145,7 @@ func TestFormats_Coverage(t *testing.T) {
 	type testCase struct {
 		name        string
 		format      func(writer io.Writer) EventFormatter
+		input       string
 		expectedOut string
 		expected    func(t *testing.T, exec *Execution)
 	}
@@ -153,7 +154,11 @@ func TestFormats_Coverage(t *testing.T) {
 		patchPkgPathPrefix(t, "gotest.tools")
 		out := new(bytes.Buffer)
 
-		shim := newFakeHandler(tc.format(out), "input/go-test-json-with-cover")
+		if tc.input == "" {
+			tc.input = "input/go-test-json-with-cover"
+		}
+
+		shim := newFakeHandler(tc.format(out), tc.input)
 		exec, err := ScanTestOutput(shim.Config(t))
 		assert.NilError(t, err)
 
@@ -172,7 +177,7 @@ func TestFormats_Coverage(t *testing.T) {
 			expectedOut: "format/testname-coverage.out",
 		},
 		{
-			name: "pkgname",
+			name: "pkgname go1.19-",
 			format: func(out io.Writer) EventFormatter {
 				return pkgNameFormat(out, FormatOptions{})
 			},
@@ -184,9 +189,23 @@ func TestFormats_Coverage(t *testing.T) {
 			expectedOut: "format/standard-verbose-coverage.out",
 		},
 		{
-			name:        "standard-quiet",
+			name:        "standard-quiet go1.19-",
 			format:      standardQuietFormat,
 			expectedOut: "format/standard-quiet-coverage.out",
+		},
+		{
+			name: "pkgname go1.20+",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{})
+			},
+			input:       "input/go-test-json-with-cover-go1.20",
+			expectedOut: "format/pkgname-coverage-go1.20.out",
+		},
+		{
+			name:        "standard-quiet go.20+",
+			format:      standardQuietFormat,
+			input:       "input/go-test-json-with-cover-go1.20",
+			expectedOut: "format/standard-quiet-coverage-go1.20.out",
 		},
 	}
 

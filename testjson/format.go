@@ -41,9 +41,18 @@ func standardQuietFormat(out io.Writer) EventFormatter {
 		if !event.PackageEvent() {
 			return nil
 		}
-		if event.Output == "PASS\n" || isCoverageOutput(event.Output) {
+		if event.Output == "PASS\n" {
 			return nil
 		}
+
+		// Coverage line go1.20+
+		if strings.Contains(event.Output, event.Package+"\tcoverage:") {
+			return nil
+		}
+		if isCoverageOutputPreGo119(event.Output) {
+			return nil
+		}
+
 		if isWarningNoTestsToRunOutput(event.Output) {
 			return nil
 		}

@@ -1,0 +1,5 @@
+✖  gotestsum/testjson/internal/badmain (1ms)
+∅  gotestsum/testjson/internal/empty (cached)
+✓  gotestsum/testjson/internal/good (20ms) (coverage: 66.7% of statements)
+✖  gotestsum/testjson/internal/parallelfails (21ms)
+✖  gotestsum/testjson/internal/withfails (20ms)
