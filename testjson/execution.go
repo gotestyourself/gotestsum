@@ -734,7 +734,7 @@ func readStderr(config ScanConfig, execution *Execution) error {
 		if err := config.Handler.Err(line); err != nil {
 			return fmt.Errorf("failed to handle stderr: %v", err)
 		}
-		if isGoModuleOutput(line) {
+		if isGoModuleOutput(line) || isGoDebugOutput(line) {
 			continue
 		}
 		if strings.HasPrefix(line, "warning:") {
@@ -755,6 +755,20 @@ func isGoModuleOutput(scannerText string) bool {
 		"go: downloading",
 		"go: extracting",
 		"go: finding",
+	}
+
+	for _, prefix := range prefixes {
+		if strings.HasPrefix(scannerText, prefix) {
+			return true
+		}
+	}
+	return false
+}
+
+func isGoDebugOutput(scannerText string) bool {
+	prefixes := []string{
+		"HASH",       // Printed when tests are running with `GODEBUG=gocachehash=1`.
+		"testcache:", // Printed when tests are running with `GODEBUG=gocachetest=1`.
 	}
 
 	for _, prefix := range prefixes {
