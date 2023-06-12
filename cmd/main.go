@@ -221,12 +221,12 @@ var defaultNoColor = func() bool {
 				return false
 			}
 		}
-		if _, exists := os.LookupEnv("TEAMCITY_VERSION"); exists {
-			return false
-		}
 		if os.Getenv("CI_NAME") == "codeship" {
 			return false
 		}
+	}
+	if _, exists := os.LookupEnv("TEAMCITY_VERSION"); exists {
+		return false
 	}
 	return color.NoColor
 }()
