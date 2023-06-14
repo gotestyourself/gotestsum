@@ -77,6 +77,10 @@ func TestGoTestRunFlagFromTestCases(t *testing.T) {
 			input:    "TestOne/SubtestA",
 			expected: "-test.run=^TestOne$/^SubtestA$",
 		},
+		"sub test case with special characters": {
+			input:    "TestOne/Subtest(A)[100]",
+			expected: `-test.run=^TestOne$/^Subtest\(A\)\[100\]$`,
+		},
 	}
 
 	for name := range testCases {
