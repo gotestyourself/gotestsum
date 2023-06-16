@@ -67,6 +67,7 @@ func TestBucketPackages(t *testing.T) {
 	}
 
 	run := func(t *testing.T, tc testCase) {
+		t.Helper()
 		buckets := bucketPackages(timing, packages, tc.n)
 		assert.DeepEqual(t, buckets, tc.expected)
 	}
@@ -75,25 +76,25 @@ func TestBucketPackages(t *testing.T) {
 		{
 			n: 2,
 			expected: []bucket{
-				0: {Total: 4440 * ms, Packages: []string{"four", "two", "one", "five"}},
-				1: {Total: 4406 * ms, Packages: []string{"three", "six", "new2", "new1"}},
+				0: {Total: 4440 * ms, Packages: []string{"four", "two", "one", "five", "new2", "new1"}},
+				1: {Total: 4406 * ms, Packages: []string{"three", "six"}},
 			},
 		},
 		{
 			n: 3,
 			expected: []bucket{
 				0: {Total: 4000 * ms, Packages: []string{"four"}},
-				1: {Total: 3800 * ms, Packages: []string{"three"}},
-				2: {Total: 1046 * ms, Packages: []string{"six", "two", "one", "five", "new1", "new2"}},
+				1: {Total: 3800 * ms, Packages: []string{"three", "new1"}},
+				2: {Total: 1046 * ms, Packages: []string{"six", "two", "one", "five", "new2"}},
 			},
 		},
 		{
 			n: 4,
 			expected: []bucket{
-				0: {Total: 4000 * ms, Packages: []string{"four"}},
+				0: {Total: 4000 * ms, Packages: []string{"four", "new1"}},
 				1: {Total: 3800 * ms, Packages: []string{"three"}},
-				2: {Total: 606 * ms, Packages: []string{"six"}},
-				3: {Total: 440 * ms, Packages: []string{"two", "one", "five", "new2", "new1"}},
+				2: {Total: 606 * ms, Packages: []string{"six", "new2"}},
+				3: {Total: 440 * ms, Packages: []string{"two", "one", "five"}},
 			},
 		},
 		{
@@ -232,16 +233,16 @@ var expectedMatrix = `{
       "packages": "pkg2"
     },
     {
-      "description": "1 - pkg1",
+      "description": "1 - pkg1 and 1 others",
       "estimatedRuntime": "4s",
       "id": 1,
-      "packages": "pkg1"
+      "packages": "pkg1 other"
     },
     {
-      "description": "2 - pkg0 and 1 others",
+      "description": "2 - pkg0",
       "estimatedRuntime": "2s",
       "id": 2,
-      "packages": "pkg0 other"
+      "packages": "pkg0"
     }
   ]
 }`
