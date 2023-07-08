@@ -7,7 +7,8 @@ It is designed to work well for both local development, and for automation like 
 ## Install
 
 Download a binary from [releases](https://github.com/gotestyourself/gotestsum/releases), or build from
-source with `go install gotest.tools/gotestsum@latest`. With `go` version before 1.17, use `go get gotest.tools/gotestsum`.
+source with `go install gotest.tools/gotestsum@latest`. To run without installing use
+`go run gotest.tools/gotestsum@latest`.
 
 ## Documentation
 
@@ -422,6 +423,7 @@ The projects below use (or have used) gotestsum.
 * [etcd](https://github.com/etcd-io/etcd/blob/main/tools/mod/tools.go)
 * [hashicorp/vault](https://github.com/hashicorp/vault/blob/main/tools/tools.go)
 * [hashicorp/consul](https://github.com/hashicorp/consul/blob/main/.github/workflows/reusable-unit.yml)
+* [prometheus](https://github.com/prometheus/prometheus/blob/main/Makefile.common)
 * [minikube](https://github.com/kubernetes/minikube/blob/master/hack/jenkins/common.ps1)
 * [influxdb](https://github.com/influxdata/influxdb/blob/master/scripts/ci/build-tests.sh)
 * [pulumi](https://github.com/pulumi/pulumi/blob/master/.github/workflows/ci.yml)
