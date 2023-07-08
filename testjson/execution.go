@@ -742,6 +742,7 @@ func readStderr(config ScanConfig, execution *Execution) error {
 		}
 		execution.addError(line)
 	}
+
 	if err := scanner.Err(); err != nil {
 		return fmt.Errorf("failed to scan stderr: %v", err)
 	}

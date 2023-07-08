@@ -3,6 +3,7 @@ package testjson
 import (
 	"bytes"
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -217,6 +218,24 @@ func TestScanOutput_WithNonJSONLines(t *testing.T) {
 	}
 }
 
+func TestScanOutput_WithGODEBUG(t *testing.T) {
+	goDebugSource := `HASH[moduleIndex]
+HASH[moduleIndex]: "go1.20.4"
+HASH /usr/lib/go/src/runtime/debuglog_off.go: d6f147198
+testcache: package: input list not found: ...`
+
+	handler := &captureHandler{}
+	cfg := ScanConfig{
+		Stdout:  bytes.NewReader(nil),
+		Stderr:  strings.NewReader(goDebugSource),
+		Handler: handler,
+	}
+	exec, err := ScanTestOutput(cfg)
+	assert.NilError(t, err)
+	assert.DeepEqual(t, handler.errs, strings.Split(goDebugSource, "\n"))
+	assert.DeepEqual(t, exec.Errors(), []string(nil))
+}
+
 type captureHandler struct {
 	events []TestEvent
 	errs   []string
@@ -229,5 +248,5 @@ func (s *captureHandler) Event(event TestEvent, _ *Execution) error {
 
 func (s *captureHandler) Err(text string) error {
 	s.errs = append(s.errs, text)
-	return fmt.Errorf(text)
+	return nil
 }
