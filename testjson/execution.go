@@ -542,10 +542,18 @@ func (e *Execution) Failed() []TestCase {
 // case that have failed subtests.
 func FilterFailedUnique(tcs []TestCase) []TestCase {
 	var result []TestCase
+TestCaseLoop:
 	for _, tc := range tcs {
-		if !tc.hasSubTestFailed {
-			result = append(result, tc)
+		for _, ntc := range tcs {
+			if ntc == tc || ntc.Package != tc.Package || !ntc.Test.IsSubTest() {
+				continue
+			}
+			if strings.HasPrefix(string(ntc.Test), string(tc.Test)) {
+				// test name is a prefix of another test, so ignore
+				continue TestCaseLoop
+			}
 		}
+		result = append(result, tc)
 	}
 	return result
 }
