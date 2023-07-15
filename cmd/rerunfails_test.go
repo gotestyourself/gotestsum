@@ -81,6 +81,10 @@ func TestGoTestRunFlagFromTestCases(t *testing.T) {
 			input:    "TestOne/Subtest(A)[100]",
 			expected: `-test.run=^TestOne$/^Subtest\(A\)\[100\]$`,
 		},
+		"nested sub test case": {
+			input:    "TestOne/Nested/SubtestA",
+			expected: `-test.run=^TestOne$/^Nested$/^SubtestA$`,
+		},
 	}
 
 	for name := range testCases {
