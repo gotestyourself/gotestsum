@@ -257,18 +257,24 @@ func TestFilterFailedUnique_MultipleNested(t *testing.T) {
 	{"Package": "pkg", "Test": "TestParent/TestNested", "Action": "run"}
 	{"Package": "pkg", "Test": "TestParent/TestNested/TestOne", "Action": "run"}
 	{"Package": "pkg", "Test": "TestParent/TestNested/TestOne", "Action": "fail"}
+	{"Package": "pkg", "Test": "TestParent/TestNested/TestOnePrefix", "Action": "run"}
+	{"Package": "pkg", "Test": "TestParent/TestNested/TestOnePrefix", "Action": "fail"}
 	{"Package": "pkg", "Test": "TestParent/TestNested", "Action": "fail"}
 	{"Package": "pkg", "Test": "TestParent", "Action": "fail"}
 	{"Package": "pkg", "Test": "TestTop", "Action": "run"}
 	{"Package": "pkg", "Test": "TestTop", "Action": "fail"}
-	{"Package": "pkg", "Test": "TestTop2", "Action": "run"}
-	{"Package": "pkg", "Test": "TestTop2", "Action": "fail"}
+	{"Package": "pkg", "Test": "TestTopPrefix", "Action": "run"}
+	{"Package": "pkg", "Test": "TestTopPrefix", "Action": "fail"}
 	{"Package": "pkg", "Action": "fail"}
 	{"Package": "pkg2", "Action": "run"}
 	{"Package": "pkg2", "Test": "TestParent", "Action": "run"}
 	{"Package": "pkg2", "Test": "TestParent/TestNested", "Action": "run"}
 	{"Package": "pkg2", "Test": "TestParent/TestNested", "Action": "fail"}
+	{"Package": "pkg2", "Test": "TestParent/TestNestedPrefix", "Action": "run"}
+	{"Package": "pkg2", "Test": "TestParent/TestNestedPrefix", "Action": "fail"}
 	{"Package": "pkg2", "Test": "TestParent", "Action": "fail"}
+	{"Package": "pkg2", "Test": "TestParentPrefix", "Action": "run"}
+	{"Package": "pkg2", "Test": "TestParentPrefix", "Action": "fail"}
 	{"Package": "pkg2", "Action": "fail"}`)
 
 	handler := &captureHandler{}
@@ -278,14 +284,17 @@ func TestFilterFailedUnique_MultipleNested(t *testing.T) {
 	}
 	exec, err := ScanTestOutput(cfg)
 	assert.NilError(t, err)
-	res := FilterFailedUnique(exec.Failed())
+	actual := FilterFailedUnique(exec.Failed())
 
-	exp := []TestCase{
+	expected := []TestCase{
 		{ID: 3, Package: "pkg", Test: TestName("TestParent/TestNested/TestOne")},
-		{ID: 4, Package: "pkg", Test: TestName("TestTop")},
-		{ID: 5, Package: "pkg", Test: TestName("TestTop2")},
+		{ID: 4, Package: "pkg", Test: TestName("TestParent/TestNested/TestOnePrefix")},
+		{ID: 5, Package: "pkg", Test: TestName("TestTop")},
+		{ID: 6, Package: "pkg", Test: TestName("TestTopPrefix")},
 		{ID: 2, Package: "pkg2", Test: TestName("TestParent/TestNested")},
+		{ID: 3, Package: "pkg2", Test: TestName("TestParent/TestNestedPrefix")},
+		{ID: 4, Package: "pkg2", Test: TestName("TestParentPrefix")},
 	}
 	cmpTestCase := cmp.AllowUnexported(TestCase{})
-	assert.DeepEqual(t, exp, res, cmpTestCase)
+	assert.DeepEqual(t, expected, actual, cmpTestCase)
 }
