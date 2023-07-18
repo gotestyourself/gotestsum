@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"golang.org/x/sync/errgroup"
+
 	"gotest.tools/gotestsum/internal/log"
 )
 
@@ -221,25 +222,6 @@ func (n TestName) IsSubTest() bool {
 
 func (n TestName) Name() string {
 	return string(n)
-}
-
-func (p *Package) removeOutput(id int) {
-	delete(p.output, id)
-
-	skipped := tcIDSet(p.Skipped)
-	for _, sub := range p.subTests[id] {
-		if _, isSkipped := skipped[sub]; !isSkipped {
-			delete(p.output, sub)
-		}
-	}
-}
-
-func tcIDSet(skipped []TestCase) map[int]struct{} {
-	result := make(map[int]struct{})
-	for _, tc := range skipped {
-		result[tc.ID] = struct{}{}
-	}
-	return result
 }
 
 // TestMainFailed returns true if the package failed, but there were no tests.
@@ -456,9 +438,6 @@ func (p *Package) addTestEvent(event TestEvent) {
 		if tc.Test.IsSubTest() {
 			return
 		}
-
-		// Remove test output once a test passes, it wont be used.
-		p.removeOutput(tc.ID)
 	}
 }
 

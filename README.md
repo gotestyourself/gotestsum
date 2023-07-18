@@ -115,6 +115,8 @@ accept the following values:
 * `relative` - a package path relative to the root of the repository
 * `full` - the full package path (default)
 
+When using `--junitfile-always-include-output` the test output is included in the junit report even if the test passed. By default, it's only included if the test failed.
+
 
 Note: If Go is not installed, or the `go` binary is not in `PATH`, the `GOVERSION`
 environment variable can be set to remove the "failed to lookup go version for junit xml"

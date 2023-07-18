@@ -14,6 +14,7 @@ import (
 
 	"github.com/dnephin/pflag"
 	"github.com/fatih/color"
+
 	"gotest.tools/gotestsum/internal/log"
 	"gotest.tools/gotestsum/testjson"
 )
@@ -103,6 +104,9 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags.BoolVar(&opts.junitHideEmptyPackages, "junitfile-hide-empty-pkg",
 		truthyFlag(lookEnvWithDefault("GOTESTSUM_JUNIT_HIDE_EMPTY_PKG", "")),
 		"omit packages with no tests from the junit.xml file")
+	flags.BoolVar(&opts.junitAlwaysIncludeOutput, "junitfile-always-include-output",
+		truthyFlag(lookEnvWithDefault("GOTESTSUM_JUNIT_ALWAYS_INCLUDE_OUTPUT", "")),
+		"include output even on successful tests")
 
 	flags.IntVar(&opts.rerunFailsMaxAttempts, "rerun-fails", 0,
 		"rerun failed tests until they all pass, or attempts exceeds maximum. Defaults to max 2 reruns when enabled")
@@ -172,6 +176,7 @@ type options struct {
 	junitTestCaseClassnameFormat *junitFieldFormatValue
 	junitProjectName             string
 	junitHideEmptyPackages       bool
+	junitAlwaysIncludeOutput     bool
 	rerunFailsMaxAttempts        int
 	rerunFailsMaxInitialFailures int
 	rerunFailsReportFile         string
