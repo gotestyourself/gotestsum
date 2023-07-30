@@ -223,6 +223,14 @@ func (n TestName) Name() string {
 	return string(n)
 }
 
+func (n TestName) Parent() string {
+	idx := strings.LastIndex(string(n), "/")
+	if idx < 0 {
+		return ""
+	}
+	return string(n)[:idx]
+}
+
 func (p *Package) removeOutput(id int) {
 	delete(p.output, id)
 
@@ -538,15 +546,41 @@ func (e *Execution) Failed() []TestCase {
 	return failed
 }
 
-// FilterFailedUnique filters a slice of failed TestCases by removing root test
-// case that have failed subtests.
+// FilterFailedUnique filters a slice of failed TestCases to remove any parent
+// tests that have failed subtests. The parent test will always be run when
+// running any of its subtests.
 func FilterFailedUnique(tcs []TestCase) []TestCase {
-	var result []TestCase
-	for _, tc := range tcs {
-		if !tc.hasSubTestFailed {
-			result = append(result, tc)
+	sort.Slice(tcs, func(i, j int) bool {
+		a, b := tcs[i], tcs[j]
+		if a.Package != b.Package {
+			return a.Package < b.Package
 		}
+		return len(a.Test.Name()) > len(b.Test.Name())
+	})
+
+	var result []TestCase //nolint:prealloc
+	var parents = make(map[string]map[string]bool)
+	for _, tc := range tcs {
+		if _, exists := parents[tc.Package]; !exists {
+			parents[tc.Package] = make(map[string]bool)
+		}
+		if parent := tc.Test.Parent(); parent != "" {
+			parents[tc.Package][parent] = true
+		}
+		if _, exists := parents[tc.Package][tc.Test.Name()]; exists {
+			continue // tc is a parent of a failing subtest
+		}
+		result = append(result, tc)
 	}
+
+	// Restore the original order of test cases
+	sort.Slice(result, func(i, j int) bool {
+		a, b := result[i], result[j]
+		if a.Package != b.Package {
+			return a.Package < b.Package
+		}
+		return a.ID < b.ID
+	})
 	return result
 }
 

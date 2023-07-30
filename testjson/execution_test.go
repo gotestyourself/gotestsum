@@ -250,3 +250,51 @@ func (s *captureHandler) Err(text string) error {
 	s.errs = append(s.errs, text)
 	return nil
 }
+
+func TestFilterFailedUnique_MultipleNested(t *testing.T) {
+	source := []byte(`{"Package": "pkg", "Action": "run"}
+	{"Package": "pkg", "Test": "TestParent", "Action": "run"}
+	{"Package": "pkg", "Test": "TestParent/TestNested", "Action": "run"}
+	{"Package": "pkg", "Test": "TestParent/TestNested/TestOne", "Action": "run"}
+	{"Package": "pkg", "Test": "TestParent/TestNested/TestOne", "Action": "fail"}
+	{"Package": "pkg", "Test": "TestParent/TestNested/TestOnePrefix", "Action": "run"}
+	{"Package": "pkg", "Test": "TestParent/TestNested/TestOnePrefix", "Action": "fail"}
+	{"Package": "pkg", "Test": "TestParent/TestNested", "Action": "fail"}
+	{"Package": "pkg", "Test": "TestParent", "Action": "fail"}
+	{"Package": "pkg", "Test": "TestTop", "Action": "run"}
+	{"Package": "pkg", "Test": "TestTop", "Action": "fail"}
+	{"Package": "pkg", "Test": "TestTopPrefix", "Action": "run"}
+	{"Package": "pkg", "Test": "TestTopPrefix", "Action": "fail"}
+	{"Package": "pkg", "Action": "fail"}
+	{"Package": "pkg2", "Action": "run"}
+	{"Package": "pkg2", "Test": "TestParent", "Action": "run"}
+	{"Package": "pkg2", "Test": "TestParent/TestNested", "Action": "run"}
+	{"Package": "pkg2", "Test": "TestParent/TestNested", "Action": "fail"}
+	{"Package": "pkg2", "Test": "TestParent/TestNestedPrefix", "Action": "run"}
+	{"Package": "pkg2", "Test": "TestParent/TestNestedPrefix", "Action": "fail"}
+	{"Package": "pkg2", "Test": "TestParent", "Action": "fail"}
+	{"Package": "pkg2", "Test": "TestParentPrefix", "Action": "run"}
+	{"Package": "pkg2", "Test": "TestParentPrefix", "Action": "fail"}
+	{"Package": "pkg2", "Action": "fail"}`)
+
+	handler := &captureHandler{}
+	cfg := ScanConfig{
+		Stdout:  bytes.NewReader(source),
+		Handler: handler,
+	}
+	exec, err := ScanTestOutput(cfg)
+	assert.NilError(t, err)
+	actual := FilterFailedUnique(exec.Failed())
+
+	expected := []TestCase{
+		{ID: 3, Package: "pkg", Test: TestName("TestParent/TestNested/TestOne")},
+		{ID: 4, Package: "pkg", Test: TestName("TestParent/TestNested/TestOnePrefix")},
+		{ID: 5, Package: "pkg", Test: TestName("TestTop")},
+		{ID: 6, Package: "pkg", Test: TestName("TestTopPrefix")},
+		{ID: 2, Package: "pkg2", Test: TestName("TestParent/TestNested")},
+		{ID: 3, Package: "pkg2", Test: TestName("TestParent/TestNestedPrefix")},
+		{ID: 4, Package: "pkg2", Test: TestName("TestParentPrefix")},
+	}
+	cmpTestCase := cmp.AllowUnexported(TestCase{})
+	assert.DeepEqual(t, expected, actual, cmpTestCase)
+}
