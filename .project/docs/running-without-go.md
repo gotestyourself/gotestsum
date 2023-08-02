@@ -28,3 +28,5 @@ Example: running without a Go installation
 export GOVERSION=1.13
 gotestsum --raw-command -- test2json -t -p pkgname ./binary.test -test.v
 ```
+
+Note: Compiled test binaries *do not* cache test results, like the same `go test .` command would.
