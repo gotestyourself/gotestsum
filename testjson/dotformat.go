@@ -76,14 +76,14 @@ func (l *dotLine) checkWidth(prefix, terminal int) {
 }
 
 func newDotFormatter(out io.Writer, opts FormatOptions) EventFormatter {
-	w, _, err := term.GetSize(int(os.Stdout.Fd()))
+	w, h, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil || w == 0 {
 		log.Warnf("Failed to detect terminal width for dots format, error: %v", err)
 		return dotsFormatV1(out)
 	}
 	return &dotFormatter{
 		pkgs:      make(map[string]*dotLine),
-		writer:    dotwriter.New(out),
+		writer:    dotwriter.New(out, h),
 		termWidth: w,
 		opts:      opts,
 	}
