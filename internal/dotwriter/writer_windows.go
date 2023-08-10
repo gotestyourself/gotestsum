@@ -1,3 +1,4 @@
+//go:build windows
 // +build windows
 
 package dotwriter
@@ -69,4 +70,9 @@ func isConsole(fd uintptr) bool {
 	var mode uint32
 	err := windows.GetConsoleMode(windows.Handle(fd), &mode)
 	return err == nil
+}
+
+// This may work on Windows but I am not sure how to do it and its optional. For now, just do nothing.
+func (w *Writer) hideCursor() func() {
+	return func() {}
 }
