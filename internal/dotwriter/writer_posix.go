@@ -18,9 +18,9 @@ func (w *Writer) clearLines(count int) {
 }
 
 // hideCursor hides the cursor and returns a function to restore the cursor back.
-func (w *Writer) hideCursor() func() {
+func (w *Writer) hideCursor() {
 	_, _ = fmt.Fprint(w.out, hide)
-	return func() {
-		_, _ = fmt.Fprint(w.out, show)
-	}
+}
+func (w *Writer) showCursor() {
+	_, _ = fmt.Fprint(w.out, show)
 }

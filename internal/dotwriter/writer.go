@@ -5,6 +5,7 @@ terminal.
 package dotwriter
 
 import (
+	"bufio"
 	"bytes"
 	"io"
 	"time"
@@ -27,6 +28,7 @@ type Writer struct {
 // New returns a new Writer
 func New(out io.Writer, h int) *Writer {
 	t := time.NewTicker(time.Millisecond * 100)
+	out = bufio.NewWriter(out)
 	// Give some buffer from the terminals height so they can see the original command
 	w := &Writer{out: out, height: h - 2}
 	go func() {
@@ -51,7 +53,7 @@ func (w *Writer) emit() error {
 	if w.buf.Len() == 0 {
 		return nil
 	}
-	defer w.hideCursor()()
+	w.hideCursor()
 	w.clearLines(w.lineCount)
 	lines := bytes.Split(w.last, []byte{'\n'})
 	if len(lines) > w.height {
@@ -61,6 +63,8 @@ func (w *Writer) emit() error {
 	_, err := w.out.Write(bytes.Join(lines, []byte{'\n'}))
 	//w.lineCount = bytes.Count(w.buf.Bytes(), []byte{'\n'})
 	//_, err := w.out.Write(w.buf.Bytes())
+	w.showCursor()
+	w.out.(*bufio.Writer).Flush()
 	return err
 }
 
