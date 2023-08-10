@@ -51,6 +51,7 @@ func (w *Writer) emit() error {
 	if w.buf.Len() == 0 {
 		return nil
 	}
+	defer w.hideCursor()()
 	w.clearLines(w.lineCount)
 	lines := bytes.Split(w.last, []byte{'\n'})
 	if len(lines) > w.height {
