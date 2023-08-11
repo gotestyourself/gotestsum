@@ -22,13 +22,15 @@ func TestScanTestOutput_WithDotsFormatter(t *testing.T) {
 
 	out := new(bytes.Buffer)
 	dotfmt := &dotFormatter{
-		pkgs:      make(map[string]*dotLine),
-		writer:    dotwriter.New(out),
-		termWidth: 80,
+		pkgs:       make(map[string]*dotLine),
+		writer:     dotwriter.New(out),
+		termWidth:  80,
+		termHeight: 80,
 	}
 	shim := newFakeHandler(dotfmt, "input/go-test-json")
 	_, err := ScanTestOutput(shim.Config(t))
 	assert.NilError(t, err)
+	assert.NilError(t, dotfmt.write())
 
 	actual := text.ProcessLines(t, out, text.OpRemoveSummaryLineElapsedTime)
 	golden.Assert(t, actual, "format/dots-v2.out")

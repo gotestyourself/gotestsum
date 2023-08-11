@@ -95,7 +95,7 @@ func newDotFormatter(out io.Writer, opts FormatOptions) EventFormatter {
 	}
 	f := &dotFormatter{
 		pkgs:       make(map[string]*dotLine),
-		writer:     dotwriter.New(out, h),
+		writer:     dotwriter.New(out),
 		termWidth:  w,
 		termHeight: h - 5,
 		opts:       opts,
@@ -128,6 +128,7 @@ func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 		pkg := event.Package
 		pkgname := RelativePackagePath(pkg) + " "
 		prefix := fmtDotElapsed(exec.Package(pkg))
+		fmt.Println("Event", pkg, prefix, exec.Package(pkg).elapsed)
 		line.checkWidth(len(prefix+pkgname), d.termWidth)
 		line.out = prefix + pkgname + line.builder.String()
 	}

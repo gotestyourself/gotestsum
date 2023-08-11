@@ -22,14 +22,12 @@ type Writer struct {
 	last      []byte
 	lineCount int
 	t         *time.Timer
-	height    int
 }
 
 // New returns a new Writer
-func New(out io.Writer, h int) *Writer {
+func New(out io.Writer) *Writer {
 	out = bufio.NewWriter(out)
-	// Give some buffer from the terminals height so they can see the original command
-	w := &Writer{out: out, height: h - 2}
+	w := &Writer{out: out}
 	return w
 }
 
