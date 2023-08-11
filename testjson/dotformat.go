@@ -52,6 +52,7 @@ type dotFormatter struct {
 	termWidth  int
 	termHeight int
 	stop       chan struct{}
+	flushed    chan struct{}
 	mu         sync.RWMutex
 	last       string
 }
@@ -97,6 +98,7 @@ func newDotFormatter(out io.Writer, opts FormatOptions) EventFormatter {
 		termHeight: h - 5,
 		opts:       opts,
 		stop:       make(chan struct{}),
+		flushed:    make(chan struct{}),
 	}
 	go f.runWriter()
 	return f
@@ -104,6 +106,7 @@ func newDotFormatter(out io.Writer, opts FormatOptions) EventFormatter {
 
 func (d *dotFormatter) Close() error {
 	close(d.stop)
+	<-d.flushed // Wait until we write the last data
 	return nil
 }
 
@@ -142,6 +145,10 @@ func (d *dotFormatter) runWriter() {
 	for {
 		select {
 		case <-d.stop:
+			if err := d.write(); err != nil {
+				log.Warnf("failed to write: %v", err)
+			}
+			close(d.flushed)
 			return
 		case <-t.C:
 			if err := d.write(); err != nil {
