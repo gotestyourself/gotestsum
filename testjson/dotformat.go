@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -46,24 +45,30 @@ func fmtDot(event TestEvent) string {
 }
 
 type dotFormatter struct {
-	pkgs      map[string]*dotLine
-	order     []string
-	writer    *dotwriter.Writer
-	opts      FormatOptions
-	termWidth int
-	stop      chan struct{}
-	exec      *Execution
-	mu        sync.RWMutex
+	pkgs       map[string]*dotLine
+	order      []string
+	writer     *dotwriter.Writer
+	opts       FormatOptions
+	termWidth  int
+	termHeight int
+	stop       chan struct{}
+	mu         sync.RWMutex
+	last       string
 }
 
 type dotLine struct {
 	runes      int
 	builder    *strings.Builder
 	lastUpdate time.Time
+	out        string
+	empty      bool
 }
 
 func (l *dotLine) update(dot string) {
 	if dot == "" {
+		return
+	}
+	if l.runes == -1 {
 		return
 	}
 	l.builder.WriteString(dot)
@@ -73,9 +78,9 @@ func (l *dotLine) update(dot string) {
 // checkWidth marks the line as full when the width of the line hits the
 // terminal width.
 func (l *dotLine) checkWidth(prefix, terminal int) {
-	if prefix+l.runes >= terminal {
-		l.builder.WriteString("\n" + strings.Repeat(" ", prefix))
-		l.runes = 0
+	if prefix+l.runes >= terminal-1 {
+		//l.builder.WriteString("\n" + strings.Repeat(" ", prefix))
+		l.runes = -1
 	}
 }
 
@@ -86,11 +91,12 @@ func newDotFormatter(out io.Writer, opts FormatOptions) EventFormatter {
 		return dotsFormatV1(out)
 	}
 	f := &dotFormatter{
-		pkgs:      make(map[string]*dotLine),
-		writer:    dotwriter.New(out, h),
-		termWidth: w,
-		opts:      opts,
-		stop:      make(chan struct{}),
+		pkgs:       make(map[string]*dotLine),
+		writer:     dotwriter.New(out, h),
+		termWidth:  w,
+		termHeight: h - 5,
+		opts:       opts,
+		stop:       make(chan struct{}),
 	}
 	go f.runWriter()
 	return f
@@ -104,17 +110,23 @@ func (d *dotFormatter) Close() error {
 func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 	d.mu.Lock()
 	defer d.mu.Unlock()
-	d.exec = exec
 	if d.pkgs[event.Package] == nil {
 		d.pkgs[event.Package] = &dotLine{builder: new(strings.Builder)}
 		d.order = append(d.order, event.Package)
+		//sort.Slice(d.order, d.orderByLastUpdated)
 	}
 	line := d.pkgs[event.Package]
 	line.lastUpdate = event.Time
 
 	if !event.PackageEvent() {
 		line.update(fmtDot(event))
+		pkg := event.Package
+		pkgname := RelativePackagePath(pkg) + " "
+		prefix := fmtDotElapsed(exec.Package(pkg))
+		line.checkWidth(len(prefix+pkgname), d.termWidth)
+		line.out = prefix + pkgname + line.builder.String()
 	}
+	line.empty = exec.Package(event.Package).IsEmpty()
 
 	return nil
 }
@@ -126,7 +138,7 @@ func (d *dotFormatter) orderByLastUpdated(i, j int) bool {
 }
 
 func (d *dotFormatter) runWriter() {
-	t := time.NewTicker(time.Millisecond * 20)
+	t := time.NewTicker(time.Millisecond * 100)
 	for {
 		select {
 		case <-d.stop:
@@ -140,31 +152,39 @@ func (d *dotFormatter) runWriter() {
 }
 
 var i = 0
+var skips = 0
 
 func (d *dotFormatter) write() error {
-	d.mu.RLock()
+	d.mu.RLock() // TODO: lock is not sufficient, we need to read from d.exec in the event handler.
 	defer d.mu.RUnlock()
-	if d.exec == nil {
-		return nil
-	}
+
 	i++
 	// Add an empty header to work around incorrect line counting
-	fmt.Fprint(d.writer, fmt.Sprintf("\n%d\n", i))
 
-	sort.Slice(d.order, d.orderByLastUpdated)
+	lines := []string{}
 	for _, pkg := range d.order {
-		if d.opts.HideEmptyPackages && d.exec.Package(pkg).IsEmpty() {
+		line := d.pkgs[pkg]
+		if d.opts.HideEmptyPackages && line.empty {
 			continue
 		}
 
-		line := d.pkgs[pkg]
-		pkgname := RelativePackagePath(pkg) + " "
-		prefix := fmtDotElapsed(d.exec.Package(pkg))
-		line.checkWidth(len(prefix+pkgname), d.termWidth)
-		//fmt.Fprintf(d.writer, prefix+pkgname+line.builder.String()+"\n")
-		fmt.Fprintf(d.writer, fmt.Sprintf("%s%s: %d\n", prefix, pkgname, len(line.builder.String())))
+		lines = append(lines, line.out)
 	}
-	PrintSummary(d.writer, d.exec, SummarizeNone)
+	if len(lines) > d.termHeight {
+		// Pick the last lines
+		lines = lines[len(lines)-d.termHeight:]
+	}
+	lines = append(lines, "\n")
+	res := strings.Join(lines, "\n")
+	if res == d.last {
+		skips++
+		return nil
+	}
+	d.last = res
+	fmt.Fprint(d.writer, fmt.Sprintf("\n%d height: %v, orders: %v, skips: %v\n", i, d.termWidth, len(d.order), skips))
+
+	d.writer.Write([]byte(res))
+	//PrintSummary(d.writer, d.exec, SummarizeNone)
 	return d.writer.Flush()
 }
 
