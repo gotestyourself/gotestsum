@@ -1,10 +1,10 @@
 [?25l
 1 height: 80, orders: 5, skips: 0
-
-
-       testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷···
+   1ms testjson/internal/badmain 
+    🖴  testjson/internal/empty 
+    🖴  testjson/internal/good ···↷↷·············
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
+  20ms testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷···
 
 
  59 tests, 5 skipped, 13 failures, 1 error

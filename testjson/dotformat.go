@@ -97,7 +97,7 @@ func newDotFormatter(out io.Writer, opts FormatOptions) EventFormatter {
 		pkgs:       make(map[string]*dotLine),
 		writer:     dotwriter.New(out),
 		termWidth:  w,
-		termHeight: h - 5,
+		termHeight: h - 10,
 		opts:       opts,
 		stop:       make(chan struct{}),
 		flushed:    make(chan struct{}),
@@ -125,14 +125,17 @@ func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 
 	if !event.PackageEvent() {
 		line.update(fmtDot(event))
-		pkg := event.Package
-		pkgname := RelativePackagePath(pkg) + " "
-		prefix := fmtDotElapsed(exec.Package(pkg))
-		fmt.Println("Event", pkg, prefix, exec.Package(pkg).elapsed)
-		line.checkWidth(len(prefix+pkgname), d.termWidth)
-		line.out = prefix + pkgname + line.builder.String()
 	}
-	line.empty = exec.Package(event.Package).IsEmpty()
+	pkg := exec.Package(event.Package)
+
+	pkgname := RelativePackagePath(event.Package) + " "
+	prefix := fmtDotElapsed(pkg)
+	line.checkWidth(len(prefix+pkgname), d.termWidth)
+	line.checkWidth(len(prefix+pkgname), d.termWidth)
+	line.out = prefix + pkgname + line.builder.String()
+
+	// TODO display when package is complete
+	line.empty = pkg.IsEmpty()
 	buf := bytes.Buffer{}
 	PrintSummary(&buf, exec, SummarizeNone)
 	d.summary = buf.Bytes()
@@ -194,17 +197,29 @@ func (d *dotFormatter) write() error {
 		return nil
 	}
 	d.last = res
-	fmt.Fprint(d.writer, fmt.Sprintf("\n%d height: %v, orders: %v, skips: %v\n", i, d.termWidth, len(d.order), skips))
+	//fmt.Fprint(d.writer, fmt.Sprintf("\n%d height: %v, orders: %v, skips: %v\n", i, d.termWidth, len(d.order), skips))
+	fmt.Fprint(d.writer, "\n\n")
 
 	d.writer.Write([]byte(res))
 	// TODO summary time should update on each iteration ideally. Although that drops our "skip" optimization
+	// TODO: consider line height. Maybe not needed since this is always 1 line
 	d.writer.Write(d.summary)
 	return d.writer.Flush()
 }
 
 func fmtDotElapsed(p *Package) string {
 	f := func(v string) string {
-		return fmt.Sprintf(" %5s ", v)
+		c := colorEvent(TestEvent{Action: p.Result()})
+		act := c("⏱️")
+		switch p.Result() {
+		case ActionPass:
+			act = c("✔️")
+		case ActionFail:
+			act = c("✖")
+		case ActionSkip:
+			act = c("↷")
+		}
+		return fmt.Sprintf(" %5s %v ", v, act)
 	}
 
 	elapsed := p.Elapsed()
