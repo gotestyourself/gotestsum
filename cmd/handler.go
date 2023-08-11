@@ -82,6 +82,11 @@ func (h *eventHandler) Flush() {
 }
 
 func (h *eventHandler) Close() error {
+	if closer, ok := h.formatter.(io.Closer); ok {
+		if err := closer.Close(); err != nil {
+			log.Errorf("Failed to close formatter: %v", err)
+		}
+	}
 	if h.jsonFile != nil {
 		if err := h.jsonFile.Close(); err != nil {
 			log.Errorf("Failed to close JSON file: %v", err)

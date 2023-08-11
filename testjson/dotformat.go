@@ -7,6 +7,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	"golang.org/x/term"
@@ -50,6 +51,9 @@ type dotFormatter struct {
 	writer    *dotwriter.Writer
 	opts      FormatOptions
 	termWidth int
+	stop      chan struct{}
+	exec      *Execution
+	mu        sync.RWMutex
 }
 
 type dotLine struct {
@@ -81,15 +85,26 @@ func newDotFormatter(out io.Writer, opts FormatOptions) EventFormatter {
 		log.Warnf("Failed to detect terminal width for dots format, error: %v", err)
 		return dotsFormatV1(out)
 	}
-	return &dotFormatter{
+	f := &dotFormatter{
 		pkgs:      make(map[string]*dotLine),
 		writer:    dotwriter.New(out, h),
 		termWidth: w,
 		opts:      opts,
+		stop:      make(chan struct{}),
 	}
+	go f.runWriter()
+	return f
+}
+
+func (d *dotFormatter) Close() error {
+	close(d.stop)
+	return nil
 }
 
 func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	d.exec = exec
 	if d.pkgs[event.Package] == nil {
 		d.pkgs[event.Package] = &dotLine{builder: new(strings.Builder)}
 		d.order = append(d.order, event.Package)
@@ -100,34 +115,57 @@ func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 	if !event.PackageEvent() {
 		line.update(fmtDot(event))
 	}
-	switch event.Action {
-	case ActionOutput, ActionBench:
-		return nil
-	}
 
-	// Add an empty header to work around incorrect line counting
-	fmt.Fprint(d.writer, "\n\n")
-
-	sort.Slice(d.order, d.orderByLastUpdated)
-	for _, pkg := range d.order {
-		if d.opts.HideEmptyPackages && exec.Package(pkg).IsEmpty() {
-			continue
-		}
-
-		line := d.pkgs[pkg]
-		pkgname := RelativePackagePath(pkg) + " "
-		prefix := fmtDotElapsed(exec.Package(pkg))
-		line.checkWidth(len(prefix+pkgname), d.termWidth)
-		fmt.Fprintf(d.writer, prefix+pkgname+line.builder.String()+"\n")
-	}
-	PrintSummary(d.writer, exec, SummarizeNone)
-	return d.writer.Flush()
+	return nil
 }
 
 // orderByLastUpdated so that the most recently updated packages move to the
 // bottom of the list, leaving completed package in the same order at the top.
 func (d *dotFormatter) orderByLastUpdated(i, j int) bool {
 	return d.pkgs[d.order[i]].lastUpdate.Before(d.pkgs[d.order[j]].lastUpdate)
+}
+
+func (d *dotFormatter) runWriter() {
+	t := time.NewTicker(time.Millisecond * 20)
+	for {
+		select {
+		case <-d.stop:
+			return
+		case <-t.C:
+			if err := d.write(); err != nil {
+				log.Warnf("failed to write: %v", err)
+			}
+		}
+	}
+}
+
+var i = 0
+
+func (d *dotFormatter) write() error {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+	if d.exec == nil {
+		return nil
+	}
+	i++
+	// Add an empty header to work around incorrect line counting
+	fmt.Fprint(d.writer, fmt.Sprintf("\n%d\n", i))
+
+	sort.Slice(d.order, d.orderByLastUpdated)
+	for _, pkg := range d.order {
+		if d.opts.HideEmptyPackages && d.exec.Package(pkg).IsEmpty() {
+			continue
+		}
+
+		line := d.pkgs[pkg]
+		pkgname := RelativePackagePath(pkg) + " "
+		prefix := fmtDotElapsed(d.exec.Package(pkg))
+		line.checkWidth(len(prefix+pkgname), d.termWidth)
+		//fmt.Fprintf(d.writer, prefix+pkgname+line.builder.String()+"\n")
+		fmt.Fprintf(d.writer, fmt.Sprintf("%s%s: %d\n", prefix, pkgname, len(line.builder.String())))
+	}
+	PrintSummary(d.writer, d.exec, SummarizeNone)
+	return d.writer.Flush()
 }
 
 func fmtDotElapsed(p *Package) string {
