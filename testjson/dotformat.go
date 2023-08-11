@@ -2,6 +2,7 @@ package testjson
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -55,6 +56,7 @@ type dotFormatter struct {
 	flushed    chan struct{}
 	mu         sync.RWMutex
 	last       string
+	summary    []byte
 }
 
 type dotLine struct {
@@ -130,6 +132,9 @@ func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 		line.out = prefix + pkgname + line.builder.String()
 	}
 	line.empty = exec.Package(event.Package).IsEmpty()
+	buf := bytes.Buffer{}
+	PrintSummary(&buf, exec, SummarizeNone)
+	d.summary = buf.Bytes()
 
 	return nil
 }
@@ -191,7 +196,8 @@ func (d *dotFormatter) write() error {
 	fmt.Fprint(d.writer, fmt.Sprintf("\n%d height: %v, orders: %v, skips: %v\n", i, d.termWidth, len(d.order), skips))
 
 	d.writer.Write([]byte(res))
-	//PrintSummary(d.writer, d.exec, SummarizeNone)
+	// TODO summary time should update on each iteration ideally. Although that drops our "skip" optimization
+	d.writer.Write(d.summary)
 	return d.writer.Flush()
 }
 
