@@ -1,0 +1,38 @@
+{"Time":"2023-08-12T12:54:44.132409933-04:00","Action":"start","Package":"gotest.tools/gotestsum/example"}
+{"Time":"2023-08-12T12:54:44.133131471-04:00","Action":"run","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong"}
+{"Time":"2023-08-12T12:54:44.133140584-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"=== RUN   TestSleepsTooLong\n"}
+{"Time":"2023-08-12T12:54:46.135570065-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"panic: test timed out after 2s\n"}
+{"Time":"2023-08-12T12:54:46.135604434-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"running tests:\n"}
+{"Time":"2023-08-12T12:54:46.135608775-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"\tTestSleepsTooLong (2s)\n"}
+{"Time":"2023-08-12T12:54:46.135611536-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"\n"}
+{"Time":"2023-08-12T12:54:46.135614121-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"goroutine 17 [running]:\n"}
+{"Time":"2023-08-12T12:54:46.135643208-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"testing.(*M).startAlarm.func1()\n"}
+{"Time":"2023-08-12T12:54:46.135647115-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"\t/usr/lib/go/src/testing/testing.go:2241 +0x3c5\n"}
+{"Time":"2023-08-12T12:54:46.135652292-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"created by time.goFunc\n"}
+{"Time":"2023-08-12T12:54:46.135655313-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"\t/usr/lib/go/src/time/sleep.go:176 +0x32\n"}
+{"Time":"2023-08-12T12:54:46.135657739-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"\n"}
+{"Time":"2023-08-12T12:54:46.135660238-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"goroutine 1 [chan receive]:\n"}
+{"Time":"2023-08-12T12:54:46.135662906-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"testing.(*T).Run(0xc0000076c0, {0x52afd7?, 0x4baa25?}, 0x533d98)\n"}
+{"Time":"2023-08-12T12:54:46.135666381-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"\t/usr/lib/go/src/testing/testing.go:1630 +0x405\n"}
+{"Time":"2023-08-12T12:54:46.135668821-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"testing.runTests.func1(0x6102c0?)\n"}
+{"Time":"2023-08-12T12:54:46.135671151-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"\t/usr/lib/go/src/testing/testing.go:2036 +0x45\n"}
+{"Time":"2023-08-12T12:54:46.135673732-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"testing.tRunner(0xc0000076c0, 0xc000096c88)\n"}
+{"Time":"2023-08-12T12:54:46.135676164-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"\t/usr/lib/go/src/testing/testing.go:1576 +0x10b\n"}
+{"Time":"2023-08-12T12:54:46.135678759-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"testing.runTests(0xc000026140?, {0x606c80, 0x1, 0x1}, {0x0?, 0x100c0000a6598?, 0x60fae0?})\n"}
+{"Time":"2023-08-12T12:54:46.135684642-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"\t/usr/lib/go/src/testing/testing.go:2034 +0x489\n"}
+{"Time":"2023-08-12T12:54:46.135687261-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"testing.(*M).Run(0xc000026140)\n"}
+{"Time":"2023-08-12T12:54:46.135715549-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"\t/usr/lib/go/src/testing/testing.go:1906 +0x63a\n"}
+{"Time":"2023-08-12T12:54:46.135718294-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"main.main()\n"}
+{"Time":"2023-08-12T12:54:46.135726996-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"\t_testmain.go:47 +0x1aa\n"}
+{"Time":"2023-08-12T12:54:46.135729722-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"\n"}
+{"Time":"2023-08-12T12:54:46.135732073-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"goroutine 6 [sleep]:\n"}
+{"Time":"2023-08-12T12:54:46.135734314-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"time.Sleep(0x4a817c800)\n"}
+{"Time":"2023-08-12T12:54:46.13573659-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"\t/usr/lib/go/src/runtime/time.go:195 +0x135\n"}
+{"Time":"2023-08-12T12:54:46.135739011-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"gotest.tools/gotestsum/example.TestSleepsTooLong(0x0?)\n"}
+{"Time":"2023-08-12T12:54:46.135760842-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"\t/home/daniel/pers/code/gotestsum/example/testing_test.go:9 +0x25\n"}
+{"Time":"2023-08-12T12:54:46.135763588-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"testing.tRunner(0xc000007860, 0x533d98)\n"}
+{"Time":"2023-08-12T12:54:46.135766232-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"\t/usr/lib/go/src/testing/testing.go:1576 +0x10b\n"}
+{"Time":"2023-08-12T12:54:46.135768744-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"created by testing.(*T).Run\n"}
+{"Time":"2023-08-12T12:54:46.135771535-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Test":"TestSleepsTooLong","Output":"\t/usr/lib/go/src/testing/testing.go:1629 +0x3ea\n"}
+{"Time":"2023-08-12T12:54:46.135869063-04:00","Action":"output","Package":"gotest.tools/gotestsum/example","Output":"FAIL\tgotest.tools/gotestsum/example\t2.003s\n"}
+{"Time":"2023-08-12T12:54:46.135881864-04:00","Action":"fail","Package":"gotest.tools/gotestsum/example","Elapsed":2.003}

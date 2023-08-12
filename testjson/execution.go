@@ -250,9 +250,14 @@ func tcIDSet(skipped []TestCase) map[int]struct{} {
 	return result
 }
 
-// TestMainFailed returns true if the package failed, but there were no tests.
-// This may occur if the package init() or TestMain exited non-zero.
+// TestMainFailed returns true if the package has output related to a failure. This
+// may happen if a TestMain or init function panic, or if test timeout
+// is reached and output is associated with the package instead of the running
+// test.
 func (p *Package) TestMainFailed() bool {
+	if p.testTimeoutPanicInTest != "" {
+		return true
+	}
 	return p.action == ActionFail && len(p.Failed) == 0
 }
 
@@ -538,7 +543,7 @@ func (e *Execution) Failed() []TestCase {
 		// Add package-level failure output if there were no failed tests, or
 		// if the test timeout was reached (because we now have to store that
 		// output on the package).
-		if pkg.TestMainFailed() || pkg.testTimeoutPanicInTest != "" {
+		if pkg.TestMainFailed() {
 			failed = append(failed, TestCase{Package: name})
 		}
 		failed = append(failed, pkg.Failed...)

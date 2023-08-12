@@ -12,6 +12,7 @@ import (
 	"gotest.tools/gotestsum/internal/text"
 	"gotest.tools/gotestsum/testjson"
 	"gotest.tools/v3/assert"
+	"gotest.tools/v3/assert/cmp"
 	"gotest.tools/v3/env"
 	"gotest.tools/v3/fs"
 	"gotest.tools/v3/golden"
@@ -135,23 +136,38 @@ func TestWriteJunitFile_CreatesDirectory(t *testing.T) {
 }
 
 func TestScanTestOutput_TestTimeoutPanicRace(t *testing.T) {
-	format := testjson.NewEventFormatter(io.Discard, "testname", testjson.FormatOptions{})
+	run := func(t *testing.T, name string) {
+		format := testjson.NewEventFormatter(io.Discard, "testname", testjson.FormatOptions{})
 
-	source := golden.Get(t, "input/go-test-json-panic-race.out")
-	cfg := testjson.ScanConfig{
-		Stdout:  bytes.NewReader(source),
-		Handler: &eventHandler{formatter: format, maxFails: 2},
+		source := golden.Get(t, "input/go-test-json-"+name+".out")
+		cfg := testjson.ScanConfig{
+			Stdout:  bytes.NewReader(source),
+			Handler: &eventHandler{formatter: format},
+		}
+		exec, err := testjson.ScanTestOutput(cfg)
+		assert.NilError(t, err)
+
+		out := new(bytes.Buffer)
+		testjson.PrintSummary(out, exec, testjson.SummarizeAll)
+
+		actual := text.ProcessLines(t, out, text.OpRemoveSummaryLineElapsedTime)
+		golden.Assert(t, actual, "expected/"+name+"-summary")
+
+		var buf bytes.Buffer
+		err = junitxml.Write(&buf, exec, junitxml.Config{})
+		assert.NilError(t, err)
+
+		assert.Assert(t, cmp.Contains(buf.String(), "panic: test timed out"))
 	}
-	exec, err := testjson.ScanTestOutput(cfg)
-	assert.NilError(t, err)
 
-	out := new(bytes.Buffer)
-	testjson.PrintSummary(out, exec, testjson.SummarizeAll)
+	testCases := []string{
+		"panic-race-1",
+		"panic-race-2",
+	}
 
-	actual := text.ProcessLines(t, out, text.OpRemoveSummaryLineElapsedTime)
-	golden.Assert(t, actual, "expected/test-timeout-panic-race-summary")
-
-	var buf bytes.Buffer
-	err = junitxml.Write(&buf, exec, junitxml.Config{})
-	assert.NilError(t, err)
+	for _, tc := range testCases {
+		t.Run(tc, func(t *testing.T) {
+			run(t, tc)
+		})
+	}
 }
