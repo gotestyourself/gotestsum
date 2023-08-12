@@ -30,6 +30,7 @@ func (w *Writer) Flush() error {
 	if w.buf.Len() == 0 {
 		return nil
 	}
+	defer w.hideCursor()()
 	w.clearLines(w.lineCount)
 	w.lineCount = bytes.Count(w.buf.Bytes(), []byte{'\n'})
 	_, err := w.out.Write(w.buf.Bytes())

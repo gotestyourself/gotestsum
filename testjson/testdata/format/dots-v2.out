@@ -1,316 +1,316 @@
-
+[?25l
 
    1ms testjson/internal/badmain 
 
  0 tests, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
 
  0 tests, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good 
 
  1 tests, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ·
 
  1 tests, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ·
 
  2 tests, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ··
 
  2 tests, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ··
 
  3 tests, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···
 
  3 tests, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···
 
  4 tests, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷
 
  4 tests, 1 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷
 
  5 tests, 1 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷
 
  5 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷
 
  6 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·
 
  6 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·
 
  7 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·
 
  7 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·
 
  8 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·
 
  8 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·
 
  9 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·
 
  9 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·
 
  10 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·
 
  11 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·
 
  12 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·
 
  13 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·
 
  14 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·
 
  15 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·
 
  16 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·
 
  17 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷··
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷···
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷····
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·····
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷······
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·······
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷········
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·········
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷··········
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷··········
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷···········
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷···········
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷···········
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷············
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
        testjson/internal/good ···↷↷·············
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
     🖴  testjson/internal/good ···↷↷·············
 
  18 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -318,7 +318,7 @@
        testjson/internal/parallelfails 
 
  19 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -326,7 +326,7 @@
        testjson/internal/parallelfails ·
 
  19 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -334,7 +334,7 @@
        testjson/internal/parallelfails ·
 
  20 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -342,7 +342,7 @@
        testjson/internal/parallelfails ··
 
  20 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -350,7 +350,7 @@
        testjson/internal/parallelfails ··
 
  21 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -358,7 +358,7 @@
        testjson/internal/parallelfails ···
 
  21 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -366,7 +366,7 @@
        testjson/internal/parallelfails ···
 
  22 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -374,7 +374,7 @@
        testjson/internal/parallelfails ····
 
  22 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -382,7 +382,7 @@
        testjson/internal/parallelfails ····
 
  23 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -390,7 +390,7 @@
        testjson/internal/parallelfails ····
 
  23 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -398,7 +398,7 @@
        testjson/internal/parallelfails ····
 
  24 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -406,7 +406,7 @@
        testjson/internal/parallelfails ····
 
  24 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -414,7 +414,7 @@
        testjson/internal/parallelfails ····
 
  25 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -422,7 +422,7 @@
        testjson/internal/parallelfails ····
 
  25 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -430,7 +430,7 @@
        testjson/internal/parallelfails ····
 
  26 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -438,7 +438,7 @@
        testjson/internal/parallelfails ····
 
  27 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -446,7 +446,7 @@
        testjson/internal/parallelfails ····
 
  27 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -454,7 +454,7 @@
        testjson/internal/parallelfails ····
 
  28 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -462,7 +462,7 @@
        testjson/internal/parallelfails ····
 
  28 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -470,7 +470,7 @@
        testjson/internal/parallelfails ····
 
  29 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -478,7 +478,7 @@
        testjson/internal/parallelfails ····
 
  29 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -486,7 +486,7 @@
        testjson/internal/parallelfails ····
 
  30 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -494,7 +494,7 @@
        testjson/internal/parallelfails ····
 
  30 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -502,7 +502,7 @@
        testjson/internal/parallelfails ····
 
  30 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -510,7 +510,7 @@
        testjson/internal/parallelfails ····
 
  30 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -518,7 +518,7 @@
        testjson/internal/parallelfails ····
 
  30 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -526,7 +526,7 @@
        testjson/internal/parallelfails ····
 
  30 tests, 2 skipped, 1 failure, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -534,7 +534,7 @@
        testjson/internal/parallelfails ····✖
 
  30 tests, 2 skipped, 2 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -542,7 +542,7 @@
        testjson/internal/parallelfails ····✖✖
 
  30 tests, 2 skipped, 3 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -550,7 +550,7 @@
        testjson/internal/parallelfails ····✖✖✖
 
  30 tests, 2 skipped, 4 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -558,7 +558,7 @@
        testjson/internal/parallelfails ····✖✖✖✖
 
  30 tests, 2 skipped, 5 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -566,7 +566,7 @@
        testjson/internal/parallelfails ····✖✖✖✖✖
 
  30 tests, 2 skipped, 6 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -574,7 +574,7 @@
        testjson/internal/parallelfails ····✖✖✖✖✖
 
  30 tests, 2 skipped, 6 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -582,7 +582,7 @@
        testjson/internal/parallelfails ····✖✖✖✖✖✖
 
  30 tests, 2 skipped, 7 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -590,7 +590,7 @@
        testjson/internal/parallelfails ····✖✖✖✖✖✖
 
  30 tests, 2 skipped, 7 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -598,7 +598,7 @@
        testjson/internal/parallelfails ····✖✖✖✖✖✖✖
 
  30 tests, 2 skipped, 8 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -606,7 +606,7 @@
        testjson/internal/parallelfails ····✖✖✖✖✖✖✖
 
  30 tests, 2 skipped, 8 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -614,7 +614,7 @@
        testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
 
  30 tests, 2 skipped, 9 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -622,7 +622,7 @@
   20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
 
  30 tests, 2 skipped, 9 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -631,7 +631,7 @@
        testjson/internal/withfails 
 
  31 tests, 2 skipped, 9 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -640,7 +640,7 @@
        testjson/internal/withfails ·
 
  31 tests, 2 skipped, 9 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -649,7 +649,7 @@
        testjson/internal/withfails ·
 
  32 tests, 2 skipped, 9 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -658,7 +658,7 @@
        testjson/internal/withfails ··
 
  32 tests, 2 skipped, 9 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -667,7 +667,7 @@
        testjson/internal/withfails ··
 
  33 tests, 2 skipped, 9 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -676,7 +676,7 @@
        testjson/internal/withfails ···
 
  33 tests, 2 skipped, 9 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -685,7 +685,7 @@
        testjson/internal/withfails ···
 
  34 tests, 2 skipped, 9 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -694,7 +694,7 @@
        testjson/internal/withfails ···↷
 
  34 tests, 3 skipped, 9 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -703,7 +703,7 @@
        testjson/internal/withfails ···↷
 
  35 tests, 3 skipped, 9 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -712,7 +712,7 @@
        testjson/internal/withfails ···↷↷
 
  35 tests, 4 skipped, 9 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -721,7 +721,7 @@
        testjson/internal/withfails ···↷↷
 
  36 tests, 4 skipped, 9 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -730,7 +730,7 @@
        testjson/internal/withfails ···↷↷✖
 
  36 tests, 4 skipped, 10 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -739,7 +739,7 @@
        testjson/internal/withfails ···↷↷✖
 
  37 tests, 4 skipped, 10 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -748,7 +748,7 @@
        testjson/internal/withfails ···↷↷✖·
 
  37 tests, 4 skipped, 10 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -757,7 +757,7 @@
        testjson/internal/withfails ···↷↷✖·
 
  38 tests, 4 skipped, 10 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -766,7 +766,7 @@
        testjson/internal/withfails ···↷↷✖·✖
 
  38 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -775,7 +775,7 @@
        testjson/internal/withfails ···↷↷✖·✖
 
  39 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -784,7 +784,7 @@
        testjson/internal/withfails ···↷↷✖·✖
 
  39 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -793,7 +793,7 @@
        testjson/internal/withfails ···↷↷✖·✖
 
  40 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -802,7 +802,7 @@
        testjson/internal/withfails ···↷↷✖·✖
 
  40 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -811,7 +811,7 @@
        testjson/internal/withfails ···↷↷✖·✖
 
  41 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -820,7 +820,7 @@
        testjson/internal/withfails ···↷↷✖·✖
 
  41 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -829,7 +829,7 @@
        testjson/internal/withfails ···↷↷✖·✖
 
  42 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -838,7 +838,7 @@
        testjson/internal/withfails ···↷↷✖·✖
 
  43 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -847,7 +847,7 @@
        testjson/internal/withfails ···↷↷✖·✖
 
  44 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -856,7 +856,7 @@
        testjson/internal/withfails ···↷↷✖·✖
 
  45 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -865,7 +865,7 @@
        testjson/internal/withfails ···↷↷✖·✖
 
  46 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -874,7 +874,7 @@
        testjson/internal/withfails ···↷↷✖·✖
 
  47 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -883,7 +883,7 @@
        testjson/internal/withfails ···↷↷✖·✖
 
  48 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -892,7 +892,7 @@
        testjson/internal/withfails ···↷↷✖·✖
 
  49 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -901,7 +901,7 @@
        testjson/internal/withfails ···↷↷✖·✖·
 
  49 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -910,7 +910,7 @@
        testjson/internal/withfails ···↷↷✖·✖··
 
  49 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -919,7 +919,7 @@
        testjson/internal/withfails ···↷↷✖·✖···
 
  49 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -928,7 +928,7 @@
        testjson/internal/withfails ···↷↷✖·✖····
 
  49 tests, 4 skipped, 11 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -937,7 +937,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖
 
  49 tests, 4 skipped, 12 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -946,7 +946,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖·
 
  49 tests, 4 skipped, 12 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -955,7 +955,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··
 
  49 tests, 4 skipped, 12 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -964,7 +964,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖
 
  49 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -973,7 +973,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖
 
  50 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -982,7 +982,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖
 
  51 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -991,7 +991,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖
 
  52 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1000,7 +1000,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖
 
  53 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1009,7 +1009,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖
 
  54 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1018,7 +1018,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖
 
  55 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1027,7 +1027,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖
 
  56 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1036,7 +1036,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖
 
  57 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1045,7 +1045,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖
 
  58 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1054,7 +1054,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖·
 
  58 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1063,7 +1063,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖··
 
  58 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1072,7 +1072,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖···
 
  58 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1081,7 +1081,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖····
 
  58 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1090,7 +1090,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖·····
 
  58 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1099,7 +1099,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖······
 
  58 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1108,7 +1108,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖·······
 
  58 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1117,7 +1117,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖········
 
  58 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1126,7 +1126,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖·········
 
  58 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1135,7 +1135,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖·········
 
  59 tests, 4 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1144,7 +1144,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷
 
  59 tests, 5 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1153,7 +1153,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷
 
  59 tests, 5 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1162,7 +1162,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷·
 
  59 tests, 5 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1171,7 +1171,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷·
 
  59 tests, 5 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1180,7 +1180,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷··
 
  59 tests, 5 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1189,7 +1189,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷··
 
  59 tests, 5 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1198,7 +1198,7 @@
        testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷···
 
  59 tests, 5 skipped, 13 failures, 1 error
-[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
+[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
 
    1ms testjson/internal/badmain 
     🖴  testjson/internal/empty 
@@ -1207,3 +1207,4 @@
   20ms testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷···
 
  59 tests, 5 skipped, 13 failures, 1 error
+[?25h
