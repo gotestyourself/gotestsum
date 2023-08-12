@@ -43,7 +43,7 @@ func TestE2E_RerunFails(t *testing.T) {
 
 		envVars := osEnviron()
 		envVars["TEST_SEEDFILE"] = tmpFile.Path()
-		defer env.PatchAll(t, envVars)()
+		env.PatchAll(t, envVars)
 
 		flags, opts := setupFlags("gotestsum")
 		assert.NilError(t, flags.Parse(tc.args))
@@ -218,7 +218,7 @@ func TestE2E_MaxFails_EndTestRun(t *testing.T) {
 
 	envVars := osEnviron()
 	envVars["TEST_SEEDFILE"] = tmpFile.Path()
-	defer env.PatchAll(t, envVars)()
+	env.PatchAll(t, envVars)
 
 	flags, opts := setupFlags("gotestsum")
 	args := []string{"--max-fails=2", "--packages=./testdata/e2e/flaky/", "--", "-tags=testdata"}

@@ -157,7 +157,7 @@ func pkgOutput(id int, line string) map[int][]string {
 	return map[int][]string{id: {line}}
 }
 
-func TestScanOutput_WithMissingEvents(t *testing.T) {
+func TestScanTestOutput_WithMissingEvents(t *testing.T) {
 	source := golden.Get(t, "go-test-json-missing-test-events.out")
 	handler := &captureHandler{}
 	cfg := ScanConfig{
@@ -190,7 +190,7 @@ func TestScanOutput_WithMissingEvents(t *testing.T) {
 	assert.DeepEqual(t, expected, handler.events[start:], cmpTestEventShallow)
 }
 
-func TestScanOutput_WithNonJSONLines(t *testing.T) {
+func TestScanTestOutput_WithNonJSONLines(t *testing.T) {
 	source := golden.Get(t, "go-test-json-with-nonjson-stdout.out")
 	nonJSONLine := "|||This line is not valid test2json output.|||"
 
@@ -218,7 +218,7 @@ func TestScanOutput_WithNonJSONLines(t *testing.T) {
 	}
 }
 
-func TestScanOutput_WithGODEBUG(t *testing.T) {
+func TestScanTestOutput_WithGODEBUG(t *testing.T) {
 	goDebugSource := `HASH[moduleIndex]
 HASH[moduleIndex]: "go1.20.4"
 HASH /usr/lib/go/src/runtime/debuglog_off.go: d6f147198

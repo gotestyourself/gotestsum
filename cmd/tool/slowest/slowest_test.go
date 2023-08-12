@@ -9,7 +9,7 @@ import (
 )
 
 func TestUsage_WithFlagsFromSetupFlags(t *testing.T) {
-	defer env.PatchAll(t, nil)()
+	env.PatchAll(t, nil)
 
 	name := "gotestsum tool slowest"
 	flags, _ := setupFlags(name)
