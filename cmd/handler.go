@@ -112,6 +112,14 @@ func newEventHandler(opts *options) (*eventHandler, error) {
 		err:       bufio.NewWriter(opts.stderr),
 		maxFails:  opts.maxFails,
 	}
+
+	switch opts.format {
+	case "dots", "dots-v1", "dots-v2":
+		// Discard the error from the handler to prevent extra lines. The
+		// error will be printed in the summary.
+		handler.err = bufio.NewWriter(io.Discard)
+	}
+
 	var err error
 	if opts.jsonFile != "" {
 		_ = os.MkdirAll(filepath.Dir(opts.jsonFile), 0o755)
