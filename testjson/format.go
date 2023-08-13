@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strings"
 
+	"github.com/bitfield/gotestdox"
 	"github.com/fatih/color"
 )
 
@@ -77,11 +79,60 @@ func standardJSONFormat(out io.Writer) EventFormatter {
 func testNameFormatTestEvent(out io.Writer, event TestEvent) {
 	pkgPath := RelativePackagePath(event.Package)
 
-	fmt.Fprintf(out, "%s %s%s %s\n",
+	fmt.Fprintf(out, "%s %s%s (%.2fs)\n",
 		colorEvent(event)(strings.ToUpper(string(event.Action))),
 		joinPkgToTestName(pkgPath, event.Test),
 		formatRunID(event.RunID),
-		fmt.Sprintf("(%.2fs)", event.Elapsed))
+		event.Elapsed)
+}
+
+func testDoxFormat(out io.Writer) EventFormatter {
+	buf := bufio.NewWriter(out)
+	type Result struct {
+		Event    TestEvent
+		Sentence string
+	}
+	results := map[string][]Result{}
+	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
+		switch {
+		case event.PackageEvent():
+			if !event.Action.IsTerminal() {
+				return nil
+			}
+			if len(results[event.Package]) == 0 {
+				// No testdox for you
+				return nil
+			}
+			fmt.Fprintf(buf, "%s:\n", event.Package)
+			tests := results[event.Package]
+			sort.Slice(tests, func(i, j int) bool {
+				return tests[i].Sentence < tests[j].Sentence
+			})
+			for _, r := range tests {
+				status := color.RedString("x")
+				if r.Event.Action == ActionPass {
+					status = color.GreenString("✔")
+				}
+				fmt.Fprintf(buf, " %s %s (%.2fs)\n",
+					status,
+					r.Sentence,
+					r.Event.Elapsed)
+			}
+			fmt.Fprintln(buf)
+			return buf.Flush()
+		case event.Action == ActionFail, event.Action == ActionPass:
+			// Fuzz test cases tend not to have interesting names,
+			// so only report these if they're failures
+			if strings.HasPrefix(event.Test, "Fuzz") && event.Action == ActionPass {
+				return nil
+			}
+			results[event.Package] = append(results[event.Package], Result{
+				Event:    event,
+				Sentence: gotestdox.Prettify(event.Test),
+			})
+		}
+		return nil
+	})
 }
 
 func testNameFormat(out io.Writer) EventFormatter {
@@ -312,6 +363,8 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 		return dotsFormatV1(out)
 	case "dots-v2":
 		return newDotFormatter(out, formatOpts)
+	case "gotestdox", "testdox":
+		return testDoxFormat(out)
 	case "testname", "short-verbose":
 		if os.Getenv("GITHUB_ACTIONS") == "true" {
 			return githubActionsFormat(out)
