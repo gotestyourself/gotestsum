@@ -31,6 +31,8 @@ func New(out io.Writer) *Writer {
 	return w
 }
 
+var Clears int
+
 // Flush the buffer, writing all buffered lines to out
 func (w *Writer) Flush() error {
 	if w.buf.Len() == 0 {
@@ -38,6 +40,7 @@ func (w *Writer) Flush() error {
 	}
 	w.hideCursor()
 	b := w.buf.Bytes()
+	Clears = w.lineCount
 	w.clearLines(w.lineCount)
 	w.lineCount = bytes.Count(b, []byte{'\n'})
 	_, err := w.out.Write(b)

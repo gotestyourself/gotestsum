@@ -82,7 +82,7 @@ func (l *dotLine) update(dot string) {
 // terminal width.
 func (l *dotLine) checkWidth(prefix, terminal int) {
 	if prefix+l.runes >= terminal-1 {
-		//l.builder.WriteString("\n" + strings.Repeat(" ", prefix))
+		// l.builder.WriteString("\n" + strings.Repeat(" ", prefix))
 		l.runes = -1
 	}
 }
@@ -118,7 +118,7 @@ func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 	if d.pkgs[event.Package] == nil {
 		d.pkgs[event.Package] = &dotLine{builder: new(strings.Builder)}
 		d.order = append(d.order, event.Package)
-		//sort.Slice(d.order, d.orderByLastUpdated)
+		// sort.Slice(d.order, d.orderByLastUpdated)
 	}
 	line := d.pkgs[event.Package]
 	line.lastUpdate = event.Time
@@ -167,8 +167,10 @@ func (d *dotFormatter) runWriter() {
 	}
 }
 
-var i = 0
-var skips = 0
+var (
+	i     = 0
+	skips = 0
+)
 
 func (d *dotFormatter) write() error {
 	d.mu.RLock() // TODO: lock is not sufficient, we need to read from d.exec in the event handler.
@@ -176,6 +178,9 @@ func (d *dotFormatter) write() error {
 
 	i++
 	// Add an empty header to work around incorrect line counting
+
+	// TODO summary time should update on each iteration ideally. Although that drops our "skip" optimization
+	summaryLines := strings.Split(string(d.summary), "\n")
 
 	lines := []string{}
 	for _, pkg := range d.order {
@@ -186,24 +191,23 @@ func (d *dotFormatter) write() error {
 
 		lines = append(lines, line.out)
 	}
-	if len(lines) > d.termHeight {
+	maxTestLines := d.termHeight - len(summaryLines)
+	if len(lines) > maxTestLines {
 		// Pick the last lines
-		lines = lines[len(lines)-d.termHeight:]
+		lines = lines[len(lines)-maxTestLines:]
 	}
-	lines = append(lines, "\n")
+	lines = append(lines, summaryLines...)
 	res := strings.Join(lines, "\n")
 	if res == d.last {
 		skips++
 		return nil
 	}
 	d.last = res
-	//fmt.Fprint(d.writer, fmt.Sprintf("\n%d height: %v, orders: %v, skips: %v\n", i, d.termWidth, len(d.order), skips))
-	fmt.Fprint(d.writer, "\n\n")
+	// fmt.Fprint(d.writer, "\n\n")
+	fmt.Fprint(d.writer, fmt.Sprintf("\nwrite=%v,max=%v,len=%v,clears=%v\n", i, maxTestLines, len(lines), dotwriter.Clears))
 
 	d.writer.Write([]byte(res))
-	// TODO summary time should update on each iteration ideally. Although that drops our "skip" optimization
-	// TODO: consider line height. Maybe not needed since this is always 1 line
-	d.writer.Write(d.summary)
+
 	return d.writer.Flush()
 }
 
@@ -235,7 +239,7 @@ func fmtDotElapsed(p *Package) string {
 	}
 
 	const maxWidth = 7
-	var steps = []time.Duration{
+	steps := []time.Duration{
 		time.Millisecond,
 		10 * time.Millisecond,
 		100 * time.Millisecond,

@@ -206,7 +206,7 @@ var defaultNoColor = func() bool {
 	// try to detect these CI environments via their environment variables.
 	// This code is based on https://github.com/jwalton/go-supportscolor
 	if _, exists := os.LookupEnv("CI"); exists {
-		var ciEnvNames = []string{
+		ciEnvNames := []string{
 			"APPVEYOR",
 			"BUILDKITE",
 			"CIRCLECI",
@@ -255,7 +255,7 @@ func run(opts *options) error {
 	if err != nil {
 		return err
 	}
-	defer handler.Close() // nolint: errcheck
+	// defer handler.Close() // nolint: errcheck
 	cfg := testjson.ScanConfig{
 		Stdout:                   goTestProc.stdout,
 		Stderr:                   goTestProc.stderr,
@@ -263,38 +263,45 @@ func run(opts *options) error {
 		Stop:                     cancel,
 		IgnoreNonJSONOutputLines: opts.ignoreNonJSONOutputLines,
 	}
+
 	exec, err := testjson.ScanTestOutput(cfg)
-	handler.Flush()
-	if err != nil {
-		return finishRun(opts, exec, err)
-	}
+	// Run the rest in a function so we can simplify error handling and ensure we always Close the handler
+	// before we call finishRun.
+	runErr := func() error {
+		defer handler.Close()
+		handler.Flush()
+		if err != nil {
+			return err
+		}
 
-	exitErr := goTestProc.cmd.Wait()
-	if signum := atomic.LoadInt32(&goTestProc.signal); signum != 0 {
-		return finishRun(opts, exec, exitError{num: signalExitCode + int(signum)})
-	}
-	if exitErr == nil || opts.rerunFailsMaxAttempts == 0 {
-		return finishRun(opts, exec, exitErr)
-	}
-	if err := hasErrors(exitErr, exec); err != nil {
-		return finishRun(opts, exec, err)
-	}
+		exitErr := goTestProc.cmd.Wait()
+		if signum := atomic.LoadInt32(&goTestProc.signal); signum != 0 {
+			return exitError{num: signalExitCode + int(signum)}
+		}
+		if exitErr == nil || opts.rerunFailsMaxAttempts == 0 {
+			return exitErr
+		}
+		if err := hasErrors(exitErr, exec); err != nil {
+			return err
+		}
 
-	failed := len(rerunFailsFilter(opts)(exec.Failed()))
-	if failed > opts.rerunFailsMaxInitialFailures {
-		err := fmt.Errorf(
-			"number of test failures (%d) exceeds maximum (%d) set by --rerun-fails-max-failures",
-			failed, opts.rerunFailsMaxInitialFailures)
-		return finishRun(opts, exec, err)
-	}
+		failed := len(rerunFailsFilter(opts)(exec.Failed()))
+		if failed > opts.rerunFailsMaxInitialFailures {
+			err := fmt.Errorf(
+				"number of test failures (%d) exceeds maximum (%d) set by --rerun-fails-max-failures",
+				failed, opts.rerunFailsMaxInitialFailures)
+			return err
+		}
 
-	cfg = testjson.ScanConfig{Execution: exec, Handler: handler}
-	exitErr = rerunFailed(ctx, opts, cfg)
-	handler.Flush()
-	if err := writeRerunFailsReport(opts, exec); err != nil {
-		return err
-	}
-	return finishRun(opts, exec, exitErr)
+		cfg = testjson.ScanConfig{Execution: exec, Handler: handler}
+		exitErr = rerunFailed(ctx, opts, cfg)
+		handler.Flush()
+		if err := writeRerunFailsReport(opts, exec); err != nil {
+			return err
+		}
+		return exitErr
+	}()
+	return finishRun(opts, exec, runErr)
 }
 
 func finishRun(opts *options, exec *testjson.Execution, exitErr error) error {
