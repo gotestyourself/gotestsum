@@ -71,7 +71,7 @@ func (l *dotLine) update(dot string) {
 	if dot == "" {
 		return
 	}
-	if l.runes == -1 {
+	if l.runes == -1 { // Stop once we hit max length. TODO: add back line wrapping.
 		return
 	}
 	l.builder.WriteString(dot)
@@ -82,7 +82,6 @@ func (l *dotLine) update(dot string) {
 // terminal width.
 func (l *dotLine) checkWidth(prefix, terminal int) {
 	if prefix+l.runes >= terminal-1 {
-		// l.builder.WriteString("\n" + strings.Repeat(" ", prefix))
 		l.runes = -1
 	}
 }
@@ -118,7 +117,6 @@ func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 	if d.pkgs[event.Package] == nil {
 		d.pkgs[event.Package] = &dotLine{builder: new(strings.Builder)}
 		d.order = append(d.order, event.Package)
-		// sort.Slice(d.order, d.orderByLastUpdated)
 	}
 	line := d.pkgs[event.Package]
 	line.lastUpdate = event.Time
@@ -134,19 +132,12 @@ func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 	line.checkWidth(len(prefix+pkgname), d.termWidth)
 	line.out = prefix + pkgname + line.builder.String()
 
-	// TODO display when package is complete
 	line.empty = pkg.IsEmpty()
 	buf := bytes.Buffer{}
 	PrintSummary(&buf, exec, SummarizeNone)
 	d.summary = buf.Bytes()
 
 	return nil
-}
-
-// orderByLastUpdated so that the most recently updated packages move to the
-// bottom of the list, leaving completed package in the same order at the top.
-func (d *dotFormatter) orderByLastUpdated(i, j int) bool {
-	return d.pkgs[d.order[i]].lastUpdate.Before(d.pkgs[d.order[j]].lastUpdate)
 }
 
 func (d *dotFormatter) runWriter() {
@@ -167,17 +158,9 @@ func (d *dotFormatter) runWriter() {
 	}
 }
 
-var (
-	i     = 0
-	skips = 0
-)
-
 func (d *dotFormatter) write() error {
 	d.mu.RLock() // TODO: lock is not sufficient, we need to read from d.exec in the event handler.
 	defer d.mu.RUnlock()
-
-	i++
-	// Add an empty header to work around incorrect line counting
 
 	// TODO summary time should update on each iteration ideally. Although that drops our "skip" optimization
 	summaryLines := strings.Split(string(d.summary), "\n")
@@ -199,13 +182,12 @@ func (d *dotFormatter) write() error {
 	lines = append(lines, summaryLines...)
 	res := strings.Join(lines, "\n")
 	if res == d.last {
-		skips++
 		return nil
 	}
 	d.last = res
-	// fmt.Fprint(d.writer, "\n\n")
-	fmt.Fprint(d.writer, fmt.Sprintf("\nwrite=%v,max=%v,len=%v,clears=%v\n", i, maxTestLines, len(lines), dotwriter.Clears))
 
+	// Write empty lines for some padding
+	fmt.Fprint(d.writer, "\n")
 	d.writer.Write([]byte(res))
 
 	return d.writer.Flush()
