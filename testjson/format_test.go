@@ -87,8 +87,10 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 
 	testCases := []testCase{
 		{
-			name:        "testdox",
-			format:      testDoxFormat,
+			name: "testdox",
+			format: func(out io.Writer) EventFormatter {
+				return testDoxFormat(out, FormatOptions{})
+			},
 			expectedOut: "format/testdox.out",
 		},
 		{
@@ -182,8 +184,10 @@ func TestFormats_Coverage(t *testing.T) {
 
 	testCases := []testCase{
 		{
-			name:        "testdox",
-			format:      testDoxFormat,
+			name: "testdox",
+			format: func(out io.Writer) EventFormatter {
+				return testDoxFormat(out, FormatOptions{})
+			},
 			expectedOut: "format/testdox-coverage.out",
 		},
 		{
@@ -255,8 +259,10 @@ func TestFormats_Shuffle(t *testing.T) {
 
 	testCases := []testCase{
 		{
-			name:        "testdox",
-			format:      testDoxFormat,
+			name: "testdox",
+			format: func(out io.Writer) EventFormatter {
+				return testDoxFormat(out, FormatOptions{})
+			},
 			expectedOut: "format/testdox-shuffle.out",
 		},
 		{
