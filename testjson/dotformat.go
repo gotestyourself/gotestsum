@@ -131,24 +131,30 @@ func (d *dotFormatter) orderByLastUpdated(i, j int) bool {
 }
 
 func fmtDotElapsed(p *Package) string {
+	return fmtElapsed(p.Elapsed(), p.cached)
+}
+
+func fmtElapsed(elapsed time.Duration, cached bool) string {
 	f := func(v string) string {
 		return fmt.Sprintf(" %5s ", v)
 	}
 
-	elapsed := p.Elapsed()
 	switch {
-	case p.cached:
+	case cached:
 		return f("🖴 ")
 	case elapsed <= 0:
 		return f("")
 	case elapsed >= time.Hour:
 		return f("⏳ ")
-	case elapsed < time.Second:
+	case elapsed < time.Microsecond:
 		return f(elapsed.String())
 	}
 
 	const maxWidth = 7
 	var steps = []time.Duration{
+		100 * time.Nanosecond,
+		time.Microsecond,
+		100 * time.Microsecond,
 		time.Millisecond,
 		10 * time.Millisecond,
 		100 * time.Millisecond,
@@ -160,7 +166,7 @@ func fmtDotElapsed(p *Package) string {
 
 	for _, trunc := range steps {
 		r := f(elapsed.Truncate(trunc).String())
-		if len(r) <= maxWidth {
+		if len([]rune(r)) <= maxWidth {
 			return r
 		}
 	}

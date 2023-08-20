@@ -9,6 +9,7 @@ Flags:
   -f, --format string                               print format of test input (default "short")
       --format-hide-empty-pkg                       do not print empty packages in compact formats
       --format-hivis                                use high visibility characters in some formats
+      --format-with-fails                           include output from failed tests
       --hide-summary summary                        hide sections of the summary: skipped,failed,errors,output (default none)
       --jsonfile string                             write all TestEvents to file
       --jsonfile-timing-events string               write only the pass, skip, and fail TestEvents to the file
@@ -27,6 +28,7 @@ Flags:
       --rerun-fails-report string                   write a report to the file, of the tests that were rerun
       --rerun-fails-run-root-test                   rerun the entire root testcase when any of its subtests fail, instead of only the failed subtest
       --version                                     show version and exit
+      --wall-time                                   print elapsed wall time
       --watch                                       watch go files, and run tests when a file is modified
       --watch-chdir                                 in watch mode change the working directory to the directory with the modified file before running tests
 
@@ -34,7 +36,7 @@ Formats:
     dots                     print a character for each test
     dots-v2                  experimental dots format, one package per line
     pkgname                  print a line for each package
-    pkgname-and-test-fails   print a line for each package and failed test output
+    pkgname-compact          print multiple packages per line, see --format-compact help for options
     testname                 print a line for each test and package
     standard-quiet           standard go test format
     standard-verbose         standard go test -v format

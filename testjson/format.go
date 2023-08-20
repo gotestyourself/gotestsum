@@ -73,13 +73,16 @@ func standardJSONFormat(out io.Writer) EventFormatter {
 	})
 }
 
-func testNameFormat(out io.Writer) EventFormatter {
+func testNameFormat(out io.Writer, opts FormatOptions) EventFormatter {
 	buf := bufio.NewWriter(out)
 	// nolint:errcheck
 	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
 		formatTest := func() error {
 			pkgPath := RelativePackagePath(event.Package)
 
+			if opts.OutputWallTime {
+				buf.WriteString(fmtElapsed(exec.Elapsed(), false)) // nolint:errcheck
+			}
 			fmt.Fprintf(buf, "%s %s%s %s\n",
 				colorEvent(event)(strings.ToUpper(string(event.Action))),
 				joinPkgToTestName(pkgPath, event.Test),
@@ -104,6 +107,9 @@ func testNameFormat(out io.Writer) EventFormatter {
 				result = colorEvent(event)("EMPTY")
 			}
 
+			if opts.OutputWallTime {
+				buf.WriteString(fmtElapsed(exec.Elapsed(), false)) // nolint:errcheck
+			}
 			event.Elapsed = 0 // hide elapsed for now, for backwards compat
 			buf.WriteString(result)
 			buf.WriteRune(' ')
@@ -175,9 +181,19 @@ func pkgNameFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
 	buf := bufio.NewWriter(out)
 	return func(event TestEvent, exec *Execution) error {
 		if !event.PackageEvent() {
+			if event.Action == ActionFail && opts.OutputTestFailures {
+				pkg := exec.Package(event.Package)
+				tc := pkg.LastFailedByName(event.Test)
+				pkg.WriteOutputTo(buf, tc.ID) // nolint:errcheck
+				return buf.Flush()
+			}
 			return nil
 		}
-		_, _ = buf.WriteString(shortFormatPackageEvent(opts, event, exec))
+		eventStr := shortFormatPackageEvent(opts, event, exec)
+		if eventStr != "" && opts.OutputWallTime {
+			buf.WriteString(fmtElapsed(exec.Elapsed(), false)) // nolint:errcheck
+		}
+		buf.WriteString(eventStr) // nolint:errcheck
 		return buf.Flush()
 	}
 }
@@ -243,23 +259,6 @@ func packageLine(event TestEvent, pkg *Package) string {
 	return buf.String()
 }
 
-func pkgNameWithFailuresFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
-	buf := bufio.NewWriter(out)
-	return func(event TestEvent, exec *Execution) error {
-		if !event.PackageEvent() {
-			if event.Action == ActionFail {
-				pkg := exec.Package(event.Package)
-				tc := pkg.LastFailedByName(event.Test)
-				pkg.WriteOutputTo(buf, tc.ID) // nolint:errcheck
-				return buf.Flush()
-			}
-			return nil
-		}
-		buf.WriteString(shortFormatPackageEvent(opts, event, exec)) // nolint:errcheck
-		return buf.Flush()
-	}
-}
-
 func colorEvent(event TestEvent) func(format string, a ...interface{}) string {
 	switch event.Action {
 	case ActionPass:
@@ -287,6 +286,11 @@ func (e eventFormatterFunc) Format(event TestEvent, output *Execution) error {
 type FormatOptions struct {
 	HideEmptyPackages    bool
 	UseHiVisibilityIcons bool
+	OutputTestFailures   bool
+	OutputWallTime       bool
+
+	// for pkgname-compact format:
+	CompactPkgNameFormat string
 }
 
 // NewEventFormatter returns a formatter for printing events.
@@ -307,11 +311,14 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 	case "dots-v2":
 		return newDotFormatter(out, formatOpts)
 	case "testname", "short-verbose":
-		return testNameFormat(out)
+		return testNameFormat(out, formatOpts)
 	case "pkgname", "short":
 		return pkgNameFormat(out, formatOpts)
 	case "pkgname-and-test-fails", "short-with-failures":
-		return pkgNameWithFailuresFormat(out, formatOpts)
+		formatOpts.OutputTestFailures = true
+		return pkgNameFormat(out, formatOpts)
+	case "pkgname-compact":
+		return pkgNameCompactFormat(out, formatOpts)
 	default:
 		return nil
 	}

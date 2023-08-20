@@ -1,0 +1,5 @@
+
+✖  testjson/internal/badmain (171ms) ✓ deep (278ms)
+✖  testjson/internal/deep/failsub (192ms) ✓ sub1 (283ms) ✓ subsub1 (287ms) ✓ sub2 (274ms) ∅ empty (282ms) ✓ good (292ms)
+✖  testjson/internal/parallelfails (219ms)
+✖  testjson/internal/withfails (220ms)
