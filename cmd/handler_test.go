@@ -32,6 +32,7 @@ func TestPostRunHook(t *testing.T) {
 	env.Patch(t, "GOTESTSUM_FORMAT", "short")
 
 	exec := newExecFromTestData(t)
+	exec.SetElapsed(0)
 	err = postRunHook(opts, exec)
 	assert.NilError(t, err)
 	golden.Assert(t, buf.String(), "post-run-hook-expected")

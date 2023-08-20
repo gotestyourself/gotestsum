@@ -166,6 +166,7 @@ func postRunHook(opts *options, execution *testjson.Execution) error {
 		fmt.Sprintf("TESTS_FAILED=%d", len(execution.Failed())),
 		fmt.Sprintf("TESTS_SKIPPED=%d", len(execution.Skipped())),
 		fmt.Sprintf("TESTS_ERRORS=%d", len(execution.Errors())),
+		fmt.Sprintf("TESTS_ELAPSED=%.3f", execution.Elapsed().Seconds()),
 	)
 	return cmd.Run()
 }
