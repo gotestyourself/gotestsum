@@ -146,6 +146,7 @@ TESTS_ERRORS            # number of errors
 TESTS_FAILED            # number of failed tests
 TESTS_SKIPPED           # number of skipped tests
 TESTS_TOTAL             # number of tests run
+TESTS_ELAPSED           # test time elapsed, in seconds
 ```
 
 To get more details about the test run, such as failure messages or the full list of failed
