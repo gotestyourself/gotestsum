@@ -103,8 +103,7 @@ func testDoxFormat(out io.Writer, opts FormatOptions) EventFormatter {
 			if !event.Action.IsTerminal() {
 				return nil
 			}
-			if len(results[event.Package]) == 0 {
-				// No testdox for you
+			if opts.HideEmptyPackages && len(results[event.Package]) == 0 {
 				return nil
 			}
 			fmt.Fprintf(buf, "%s:\n", event.Package)
@@ -123,7 +122,7 @@ func testDoxFormat(out io.Writer, opts FormatOptions) EventFormatter {
 		case event.Action.IsTerminal():
 			// Fuzz test cases tend not to have interesting names,
 			// so only report these if they're failures
-			if strings.HasPrefix(event.Test, "Fuzz") && event.Action == ActionPass {
+			if isFuzzCase(event) {
 				return nil
 			}
 			results[event.Package] = append(results[event.Package], Result{
@@ -133,6 +132,12 @@ func testDoxFormat(out io.Writer, opts FormatOptions) EventFormatter {
 		}
 		return nil
 	})
+}
+
+func isFuzzCase(event TestEvent) bool {
+	return strings.HasPrefix(event.Test, "Fuzz") &&
+		event.Action == ActionPass &&
+		TestName(event.Test).IsSubTest()
 }
 
 func testNameFormat(out io.Writer) EventFormatter {

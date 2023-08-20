@@ -139,8 +139,8 @@ Formats:
     dots-v2                  experimental dots format, one package per line
     pkgname                  print a line for each package
     pkgname-and-test-fails   print a line for each package and failed test output
-    testdox                  TestDox format (print a sentence for each test)
     testname                 print a line for each test and package
+    testdox                  print a sentence for each test using gotestdox
     github-actions           testname format with github actions log grouping
     standard-quiet           standard go test format
     standard-verbose         standard go test -v format

@@ -1,3 +1,7 @@
+gotest.tools/gotestsum/testjson/internal/badmain:
+
+gotest.tools/gotestsum/testjson/internal/empty:
+
 gotest.tools/gotestsum/testjson/internal/good:
  ✓ Nested success (0.00s)
  ✓ Nested success a (0.00s)
