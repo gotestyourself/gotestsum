@@ -74,7 +74,7 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags.StringVar(&opts.jsonFileTimingEvents, "jsonfile-timing-events",
 		lookEnvWithDefault("GOTESTSUM_JSONFILE_TIMING_EVENTS", ""),
 		"write only the pass, skip, and fail TestEvents to the file")
-	flags.BoolVar(&opts.noColor, "no-color", defaultNoColor, "disable color output")
+	flags.BoolVar(&opts.noColor, "no-color", defaultNoColor(), "disable color output")
 
 	flags.Var(opts.hideSummary, "no-summary",
 		"do not print summary of: "+testjson.SummarizeAll.String())
@@ -200,7 +200,7 @@ func (o options) Validate() error {
 	return nil
 }
 
-var defaultNoColor = func() bool {
+func defaultNoColor() bool {
 	// fatih/color will only output color when stdout is a terminal which is not
 	// true for many CI environments which support color output. So instead, we
 	// try to detect these CI environments via their environment variables.
@@ -229,7 +229,7 @@ var defaultNoColor = func() bool {
 		return false
 	}
 	return color.NoColor
-}()
+}
 
 func setupLogging(opts *options) {
 	if opts.debug {

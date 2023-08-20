@@ -10,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/fatih/color"
 	"gotest.tools/gotestsum/testjson"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
@@ -19,7 +20,8 @@ import (
 )
 
 func TestUsage_WithFlagsFromSetupFlags(t *testing.T) {
-	defer env.PatchAll(t, nil)()
+	env.PatchAll(t, nil)
+	patchNoColor(t, false)
 
 	name := "gotestsum"
 	flags, _ := setupFlags(name)
@@ -27,6 +29,14 @@ func TestUsage_WithFlagsFromSetupFlags(t *testing.T) {
 	usage(buf, name, flags)
 
 	golden.Assert(t, buf.String(), "gotestsum-help-text")
+}
+
+func patchNoColor(t *testing.T, value bool) {
+	orig := color.NoColor
+	color.NoColor = value
+	t.Cleanup(func() {
+		color.NoColor = orig
+	})
 }
 
 func TestOptions_Validate_FromFlags(t *testing.T) {
@@ -97,7 +107,7 @@ func TestGoTestCmdArgs(t *testing.T) {
 	run := func(t *testing.T, name string, tc testCase) {
 		t.Helper()
 		runCase(t, name, func(t *testing.T) {
-			defer env.PatchAll(t, env.ToMap(tc.env))()
+			env.PatchAll(t, env.ToMap(tc.env))
 			actual := goTestCmdArgs(tc.opts, tc.rerunOpts)
 			assert.DeepEqual(t, actual, tc.expected)
 		})

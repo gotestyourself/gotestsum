@@ -1,0 +1,41 @@
+
+=== Failed
+=== FAIL: example  (0.00s)
+panic: test timed out after 2s
+running tests:
+	TestSleepsTooLong (2s)
+
+goroutine 17 [running]:
+testing.(*M).startAlarm.func1()
+	/usr/lib/go/src/testing/testing.go:2241 +0x3c5
+created by time.goFunc
+	/usr/lib/go/src/time/sleep.go:176 +0x32
+
+goroutine 1 [chan receive]:
+testing.(*T).Run(0xc0000076c0, {0x52afd7?, 0x4baa25?}, 0x533d98)
+	/usr/lib/go/src/testing/testing.go:1630 +0x405
+testing.runTests.func1(0x6102c0?)
+	/usr/lib/go/src/testing/testing.go:2036 +0x45
+testing.tRunner(0xc0000076c0, 0xc000096c88)
+	/usr/lib/go/src/testing/testing.go:1576 +0x10b
+testing.runTests(0xc000026140?, {0x606c80, 0x1, 0x1}, {0x0?, 0x100c0000a6598?, 0x60fae0?})
+	/usr/lib/go/src/testing/testing.go:2034 +0x489
+testing.(*M).Run(0xc000026140)
+	/usr/lib/go/src/testing/testing.go:1906 +0x63a
+main.main()
+	_testmain.go:47 +0x1aa
+
+goroutine 6 [sleep]:
+time.Sleep(0x4a817c800)
+	/usr/lib/go/src/runtime/time.go:195 +0x135
+gotest.tools/gotestsum/example.TestSleepsTooLong(0x0?)
+	/home/daniel/pers/code/gotestsum/example/testing_test.go:9 +0x25
+testing.tRunner(0xc000007860, 0x533d98)
+	/usr/lib/go/src/testing/testing.go:1576 +0x10b
+created by testing.(*T).Run
+	/usr/lib/go/src/testing/testing.go:1629 +0x3ea
+FAIL	gotest.tools/gotestsum/example	2.003s
+
+=== FAIL: example TestSleepsTooLong (unknown)
+
+DONE 1 tests, 2 failures
