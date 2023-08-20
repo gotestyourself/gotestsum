@@ -526,13 +526,6 @@ func (e *Execution) Elapsed() time.Duration {
 	return timeNow().Sub(e.started)
 }
 
-// SetElapsed sets the time elapsed to a fixed value, for testing.
-func (e *Execution) SetElapsed(t time.Duration) {
-	timeNow = func() time.Time {
-		return e.started.Add(t)
-	}
-}
-
 // Failed returns a list of all the failed test cases.
 func (e *Execution) Failed() []TestCase {
 	if e == nil {

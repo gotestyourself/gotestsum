@@ -8,6 +8,7 @@ import (
 	"strings"
 	"testing"
 
+	"gotest.tools/gotestsum/internal/text"
 	"gotest.tools/gotestsum/testjson"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/env"
@@ -32,10 +33,17 @@ func TestPostRunHook(t *testing.T) {
 	env.Patch(t, "GOTESTSUM_FORMAT", "short")
 
 	exec := newExecFromTestData(t)
-	exec.SetElapsed(0)
 	err = postRunHook(opts, exec)
 	assert.NilError(t, err)
-	golden.Assert(t, buf.String(), "post-run-hook-expected")
+
+	actual := text.ProcessLines(t, buf, func(line string) string {
+		if strings.HasPrefix(line, "TESTS_ELAPSED=0.0") {
+			i := strings.Index(line, "=")
+			return line[:i] + "=0.000"
+		}
+		return line
+	})
+	golden.Assert(t, actual, "post-run-hook-expected")
 }
 
 func newExecFromTestData(t *testing.T) *testjson.Execution {
