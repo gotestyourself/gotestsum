@@ -170,11 +170,11 @@ func postRunHook(opts *options, execution *testjson.Execution) error {
 		"GOTESTSUM_JSONFILE="+opts.jsonFile,
 		"GOTESTSUM_JSONFILE_TIMING_EVENTS="+opts.jsonFileTimingEvents,
 		"GOTESTSUM_JUNITFILE="+opts.junitFile,
+		fmt.Sprintf("GOTESTSUM_ELAPSED=%.3f", execution.Elapsed().Seconds()),
 		fmt.Sprintf("TESTS_TOTAL=%d", execution.Total()),
 		fmt.Sprintf("TESTS_FAILED=%d", len(execution.Failed())),
 		fmt.Sprintf("TESTS_SKIPPED=%d", len(execution.Skipped())),
 		fmt.Sprintf("TESTS_ERRORS=%d", len(execution.Errors())),
-		fmt.Sprintf("TESTS_ELAPSED=%.3f", execution.Elapsed().Seconds()),
 	)
 	return cmd.Run()
 }
