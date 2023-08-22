@@ -139,7 +139,7 @@ test run has completed. The binary will be run with the following environment
 variables set:
 
 ```
-GOTESTSUM_ELAPSED       # test time elapsed, in seconds
+GOTESTSUM_ELAPSED       # test time elapsed
 GOTESTSUM_FORMAT        # gotestsum format (ex: short)
 GOTESTSUM_JSONFILE      # path to the jsonfile, empty if no file path was given
 GOTESTSUM_JUNITFILE     # path to the junit.xml file, empty if no file path was given
