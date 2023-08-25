@@ -335,9 +335,12 @@ func githubActionsFormat(out io.Writer) eventFormatterFunc {
 
 	return func(event TestEvent, exec *Execution) error {
 		key := name{Package: event.Package, Test: event.Test}
+
 		// test case output
 		if event.Test != "" && event.Action == ActionOutput {
-			output[key] = append(output[key], event.Output)
+			if !isFramingLine(event.Output, event.Test) {
+				output[key] = append(output[key], event.Output)
+			}
 			return nil
 		}
 
@@ -349,7 +352,7 @@ func githubActionsFormat(out io.Writer) eventFormatterFunc {
 			for _, item := range output[key] {
 				buf.WriteString(item)
 			}
-			buf.WriteString("::endgroup::\n")
+			buf.WriteString("\n::endgroup::\n")
 			delete(output, key)
 			return buf.Flush()
 		}
@@ -366,10 +369,11 @@ func githubActionsFormat(out io.Writer) eventFormatterFunc {
 			result = colorEvent(event)("EMPTY")
 		}
 
-		buf.WriteString("\n  ")
+		buf.WriteString("  ")
 		buf.WriteString(result)
-		buf.WriteString(" ")
+		buf.WriteString(" Package ")
 		buf.WriteString(packageLine(event, exec.Package(event.Package)))
+		buf.WriteString("\n")
 		return buf.Flush()
 	}
 }
