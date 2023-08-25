@@ -222,5 +222,6 @@ func isFramingLine(line string, testName string) bool {
 		strings.HasPrefix(line, "=== PAUSE Test") ||
 		strings.HasPrefix(line, "=== CONT  Test") ||
 		strings.HasPrefix(line, "--- FAIL: "+testName+" ") ||
-		strings.HasPrefix(line, "--- SKIP: "+testName+" ")
+		strings.HasPrefix(line, "--- SKIP: "+testName+" ") ||
+		strings.HasPrefix(line, "--- PASS: "+testName+" ")
 }

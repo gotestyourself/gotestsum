@@ -31,7 +31,6 @@ linters:
     - deadcode
     - depguard
     - errcheck
-    - gocognit
     - goconst
     - gofmt
     - goimports

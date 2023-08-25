@@ -346,13 +346,19 @@ func githubActionsFormat(out io.Writer) eventFormatterFunc {
 
 		// test case end event
 		if event.Test != "" && event.Action.IsTerminal() {
-			buf.WriteString("::group::")
+			if len(output[key]) > 0 {
+				buf.WriteString("::group::")
+			} else {
+				buf.WriteString("  ")
+			}
 			testNameFormatTestEvent(buf, event)
 
 			for _, item := range output[key] {
 				buf.WriteString(item)
 			}
-			buf.WriteString("\n::endgroup::\n")
+			if len(output[key]) > 0 {
+				buf.WriteString("\n::endgroup::\n")
+			}
 			delete(output, key)
 			return buf.Flush()
 		}
