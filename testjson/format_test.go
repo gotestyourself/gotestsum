@@ -132,6 +132,11 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 			format:      standardJSONFormat,
 			expectedOut: "input/go-test-json.out",
 		},
+		{
+			name:        "github-actions",
+			format:      githubActionsFormat,
+			expectedOut: "format/github-actions.out",
+		},
 	}
 
 	for _, tc := range testCases {

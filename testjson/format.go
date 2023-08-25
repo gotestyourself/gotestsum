@@ -324,7 +324,7 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 	}
 }
 
-func githubActionsFormat(out io.Writer) eventFormatterFunc {
+func githubActionsFormat(out io.Writer) EventFormatter {
 	buf := bufio.NewWriter(out)
 
 	type name struct {
@@ -333,7 +333,7 @@ func githubActionsFormat(out io.Writer) eventFormatterFunc {
 	}
 	output := map[name][]string{}
 
-	return func(event TestEvent, exec *Execution) error {
+	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
 		key := name{Package: event.Package, Test: event.Test}
 
 		// test case output
@@ -381,5 +381,5 @@ func githubActionsFormat(out io.Writer) eventFormatterFunc {
 		buf.WriteString(packageLine(event, exec.Package(event.Package)))
 		buf.WriteString("\n")
 		return buf.Flush()
-	}
+	})
 }

@@ -1,0 +1,213 @@
+  FAIL Package testjson/internal/badmain (1ms)
+
+  EMPTY Package testjson/internal/empty (cached)
+
+  PASS testjson/internal/good.TestPassed (0.00s)
+::group::PASS testjson/internal/good.TestPassedWithLog (0.00s)
+    good_test.go:15: this is a log
+
+::endgroup::
+::group::PASS testjson/internal/good.TestPassedWithStdout (0.00s)
+this is a Print
+
+::endgroup::
+::group::SKIP testjson/internal/good.TestSkipped (0.00s)
+    good_test.go:23: 
+
+::endgroup::
+::group::SKIP testjson/internal/good.TestSkippedWitLog (0.00s)
+    good_test.go:27: the skip message
+
+::endgroup::
+::group::PASS testjson/internal/good.TestWithStderr (0.00s)
+this is stderr
+
+::endgroup::
+::group::PASS testjson/internal/good.TestNestedSuccess/a/sub (0.00s)
+        --- PASS: TestNestedSuccess/a/sub (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/good.TestNestedSuccess/a (0.00s)
+    --- PASS: TestNestedSuccess/a (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/good.TestNestedSuccess/b/sub (0.00s)
+        --- PASS: TestNestedSuccess/b/sub (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/good.TestNestedSuccess/b (0.00s)
+    --- PASS: TestNestedSuccess/b (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/good.TestNestedSuccess/c/sub (0.00s)
+        --- PASS: TestNestedSuccess/c/sub (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/good.TestNestedSuccess/c (0.00s)
+    --- PASS: TestNestedSuccess/c (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/good.TestNestedSuccess/d/sub (0.00s)
+        --- PASS: TestNestedSuccess/d/sub (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/good.TestNestedSuccess/d (0.00s)
+    --- PASS: TestNestedSuccess/d (0.00s)
+
+::endgroup::
+  PASS testjson/internal/good.TestNestedSuccess (0.00s)
+  PASS testjson/internal/good.TestParallelTheFirst (0.01s)
+  PASS testjson/internal/good.TestParallelTheThird (0.00s)
+  PASS testjson/internal/good.TestParallelTheSecond (0.01s)
+  PASS Package testjson/internal/good (cached)
+
+  PASS testjson/internal/parallelfails.TestPassed (0.00s)
+::group::PASS testjson/internal/parallelfails.TestPassedWithLog (0.00s)
+    fails_test.go:15: this is a log
+
+::endgroup::
+::group::PASS testjson/internal/parallelfails.TestPassedWithStdout (0.00s)
+this is a Print
+
+::endgroup::
+::group::PASS testjson/internal/parallelfails.TestWithStderr (0.00s)
+this is stderr
+
+::endgroup::
+::group::FAIL testjson/internal/parallelfails.TestNestedParallelFailures/a (0.00s)
+    fails_test.go:50: failed sub a
+    --- FAIL: TestNestedParallelFailures/a (0.00s)
+
+::endgroup::
+::group::FAIL testjson/internal/parallelfails.TestNestedParallelFailures/d (0.00s)
+    fails_test.go:50: failed sub d
+    --- FAIL: TestNestedParallelFailures/d (0.00s)
+
+::endgroup::
+::group::FAIL testjson/internal/parallelfails.TestNestedParallelFailures/c (0.00s)
+    fails_test.go:50: failed sub c
+    --- FAIL: TestNestedParallelFailures/c (0.00s)
+
+::endgroup::
+::group::FAIL testjson/internal/parallelfails.TestNestedParallelFailures/b (0.00s)
+    fails_test.go:50: failed sub b
+    --- FAIL: TestNestedParallelFailures/b (0.00s)
+
+::endgroup::
+  FAIL testjson/internal/parallelfails.TestNestedParallelFailures (0.00s)
+::group::FAIL testjson/internal/parallelfails.TestParallelTheFirst (0.01s)
+    fails_test.go:29: failed the first
+
+::endgroup::
+::group::FAIL testjson/internal/parallelfails.TestParallelTheThird (0.00s)
+    fails_test.go:41: failed the third
+
+::endgroup::
+::group::FAIL testjson/internal/parallelfails.TestParallelTheSecond (0.01s)
+    fails_test.go:35: failed the second
+
+::endgroup::
+  FAIL Package testjson/internal/parallelfails (20ms)
+
+  PASS testjson/internal/withfails.TestPassed (0.00s)
+::group::PASS testjson/internal/withfails.TestPassedWithLog (0.00s)
+    fails_test.go:18: this is a log
+
+::endgroup::
+::group::PASS testjson/internal/withfails.TestPassedWithStdout (0.00s)
+this is a Print
+
+::endgroup::
+::group::SKIP testjson/internal/withfails.TestSkipped (0.00s)
+    fails_test.go:26: 
+
+::endgroup::
+::group::SKIP testjson/internal/withfails.TestSkippedWitLog (0.00s)
+    fails_test.go:30: the skip message
+
+::endgroup::
+::group::FAIL testjson/internal/withfails.TestFailed (0.00s)
+    fails_test.go:34: this failed
+
+::endgroup::
+::group::PASS testjson/internal/withfails.TestWithStderr (0.00s)
+this is stderr
+
+::endgroup::
+::group::FAIL testjson/internal/withfails.TestFailedWithStderr (0.00s)
+this is stderr
+    fails_test.go:43: also failed
+
+::endgroup::
+::group::PASS testjson/internal/withfails.TestNestedWithFailure/a/sub (0.00s)
+        --- PASS: TestNestedWithFailure/a/sub (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/withfails.TestNestedWithFailure/a (0.00s)
+    --- PASS: TestNestedWithFailure/a (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/withfails.TestNestedWithFailure/b/sub (0.00s)
+        --- PASS: TestNestedWithFailure/b/sub (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/withfails.TestNestedWithFailure/b (0.00s)
+    --- PASS: TestNestedWithFailure/b (0.00s)
+
+::endgroup::
+::group::FAIL testjson/internal/withfails.TestNestedWithFailure/c (0.00s)
+    fails_test.go:65: failed
+    --- FAIL: TestNestedWithFailure/c (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/withfails.TestNestedWithFailure/d/sub (0.00s)
+        --- PASS: TestNestedWithFailure/d/sub (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/withfails.TestNestedWithFailure/d (0.00s)
+    --- PASS: TestNestedWithFailure/d (0.00s)
+
+::endgroup::
+  FAIL testjson/internal/withfails.TestNestedWithFailure (0.00s)
+::group::PASS testjson/internal/withfails.TestNestedSuccess/a/sub (0.00s)
+        --- PASS: TestNestedSuccess/a/sub (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/withfails.TestNestedSuccess/a (0.00s)
+    --- PASS: TestNestedSuccess/a (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/withfails.TestNestedSuccess/b/sub (0.00s)
+        --- PASS: TestNestedSuccess/b/sub (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/withfails.TestNestedSuccess/b (0.00s)
+    --- PASS: TestNestedSuccess/b (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/withfails.TestNestedSuccess/c/sub (0.00s)
+        --- PASS: TestNestedSuccess/c/sub (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/withfails.TestNestedSuccess/c (0.00s)
+    --- PASS: TestNestedSuccess/c (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/withfails.TestNestedSuccess/d/sub (0.00s)
+        --- PASS: TestNestedSuccess/d/sub (0.00s)
+
+::endgroup::
+::group::PASS testjson/internal/withfails.TestNestedSuccess/d (0.00s)
+    --- PASS: TestNestedSuccess/d (0.00s)
+
+::endgroup::
+  PASS testjson/internal/withfails.TestNestedSuccess (0.00s)
+::group::SKIP testjson/internal/withfails.TestTimeout (0.00s)
+    timeout_test.go:13: skipping slow test
+
+::endgroup::
+  PASS testjson/internal/withfails.TestParallelTheFirst (0.01s)
+  PASS testjson/internal/withfails.TestParallelTheThird (0.00s)
+  PASS testjson/internal/withfails.TestParallelTheSecond (0.01s)
+  FAIL Package testjson/internal/withfails (20ms)
+
