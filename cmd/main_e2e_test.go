@@ -220,6 +220,7 @@ func TestE2E_MaxFails_EndTestRun(t *testing.T) {
 	envVars["TEST_SEEDFILE"] = tmpFile.Path()
 	env.PatchAll(t, envVars)
 
+	t.Setenv("GOTESTSUM_FORMAT", "pkgname")
 	flags, opts := setupFlags("gotestsum")
 	args := []string{"--max-fails=2", "--packages=./testdata/e2e/flaky/", "--", "-tags=testdata"}
 	assert.NilError(t, flags.Parse(args))
