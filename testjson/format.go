@@ -105,6 +105,7 @@ func testNameFormat(out io.Writer) EventFormatter {
 			result := colorEvent(event)(strings.ToUpper(string(event.Action)))
 			pkg := exec.Package(event.Package)
 			if event.Action == ActionSkip || (event.Action == ActionPass && pkg.Total == 0) {
+				event.Action = ActionSkip // always color these as skip actions
 				result = colorEvent(event)("EMPTY")
 			}
 
@@ -361,13 +362,13 @@ func githubActionsFormat(out io.Writer) eventFormatterFunc {
 		result := colorEvent(event)(strings.ToUpper(string(event.Action)))
 		pkg := exec.Package(event.Package)
 		if event.Action == ActionSkip || (event.Action == ActionPass && pkg.Total == 0) {
-			event.Action = ActionSkip
+			event.Action = ActionSkip // always color these as skip actions
 			result = colorEvent(event)("EMPTY")
 		}
 
 		buf.WriteString("\n  ")
 		buf.WriteString(result)
-		buf.WriteRune(' ')
+		buf.WriteString(" ")
 		buf.WriteString(packageLine(event, exec.Package(event.Package)))
 		return buf.Flush()
 	}
