@@ -325,22 +325,50 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 
 func githubActionsFormat(out io.Writer) eventFormatterFunc {
 	buf := bufio.NewWriter(out)
+
+	type name struct {
+		Package string
+		Test    string
+	}
+	output := map[name][]string{}
+
 	return func(event TestEvent, exec *Execution) error {
+		key := name{Package: event.Package, Test: event.Test}
+		// test case output
+		if event.Test != "" && event.Action == ActionOutput {
+			output[key] = append(output[key], event.Output)
+			return nil
+		}
+
+		// test case end event
 		if event.Test != "" && event.Action.IsTerminal() {
 			buf.WriteString("::group::")
 			testNameFormatTestEvent(buf, event)
 
-			pkg := exec.Package(event.Package)
-			tc := pkg.LastFailedByName(event.Test)
-			buf.WriteString(strings.TrimRight(pkg.Output(tc.ID), "\n"))
-
+			for _, item := range output[key] {
+				buf.WriteString(item)
+			}
 			buf.WriteString("::endgroup::\n")
+			delete(output, key)
 			return buf.Flush()
 		}
 
-		if err := testNameFormat(buf).Format(event, exec); err != nil {
-			return err
+		// package event
+		if !event.Action.IsTerminal() {
+			return nil
 		}
+
+		result := colorEvent(event)(strings.ToUpper(string(event.Action)))
+		pkg := exec.Package(event.Package)
+		if event.Action == ActionSkip || (event.Action == ActionPass && pkg.Total == 0) {
+			event.Action = ActionSkip
+			result = colorEvent(event)("EMPTY")
+		}
+
+		buf.WriteString("\n  ")
+		buf.WriteString(result)
+		buf.WriteRune(' ')
+		buf.WriteString(packageLine(event, exec.Package(event.Package)))
 		return buf.Flush()
 	}
 }

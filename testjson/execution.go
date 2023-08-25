@@ -194,7 +194,6 @@ func (p *Package) addOutput(id int, output string) {
 	if strings.HasPrefix(output, "panic: ") {
 		p.panicked = true
 	}
-	// TODO: limit size of buffered test output
 	p.output[id] = append(p.output[id], output)
 }
 
