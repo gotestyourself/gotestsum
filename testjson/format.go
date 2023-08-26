@@ -305,6 +305,13 @@ func getIconFunc(opts FormatOptions) func(Action) string {
 			fail:  "\uf52f", // oct-x_circle
 			color: true,
 		}.forAction
+	case opts.Icons == "emoticons":
+		return icons{
+			pass:  "\U000f01f5", // md-emoticon_happy_outline
+			skip:  "\U000f01f6", // md-emoticon_neutral_outline
+			fail:  "\U000f01f8", // md-emoticon_sad_outline
+			color: true,
+		}.forAction
 	default:
 		return icons{
 			pass:  "✓", // CHECK MARK

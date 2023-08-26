@@ -48,6 +48,7 @@ Format icons:
   * nerdfonts                requires a font from https://www.nerdfonts.com/
     codicons                   
     octicons                   
+    emoticons                󰇵 󰇶 󰇸
 
 Commands:
     gotestsum tool slowest   find or skip the slowest tests

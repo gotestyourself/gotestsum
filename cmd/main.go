@@ -156,6 +156,7 @@ Format icons:
   * nerdfonts                requires a font from https://www.nerdfonts.com/
     codicons                   
     octicons                   
+    emoticons                󰇵 󰇶 󰇸
 
 Commands:
     %[1]s tool slowest   find or skip the slowest tests
