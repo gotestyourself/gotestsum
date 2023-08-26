@@ -3,6 +3,8 @@ FAIL gotestsum/testjson/internal/badmain
 PASS gotestsum/testjson/internal/good.TestPassed (0.00s)
 PASS gotestsum/testjson/internal/good.TestPassedWithLog (0.00s)
 PASS gotestsum/testjson/internal/good.TestPassedWithStdout (0.00s)
+SKIP gotestsum/testjson/internal/good.TestSkipped (0.00s)
+SKIP gotestsum/testjson/internal/good.TestSkippedWitLog (0.00s)
 PASS gotestsum/testjson/internal/good.TestWithStderr (0.00s)
 PASS gotestsum/testjson/internal/good.TestNestedSuccess/a/sub (0.00s)
 PASS gotestsum/testjson/internal/good.TestNestedSuccess/a (0.00s)
@@ -21,6 +23,8 @@ PASS gotestsum/testjson/internal/good (coverage: 0.0% of statements)
 PASS gotestsum/testjson/internal/stub.TestPassed (0.00s)
 PASS gotestsum/testjson/internal/stub.TestPassedWithLog (0.00s)
 PASS gotestsum/testjson/internal/stub.TestPassedWithStdout (0.00s)
+SKIP gotestsum/testjson/internal/stub.TestSkipped (0.00s)
+SKIP gotestsum/testjson/internal/stub.TestSkippedWitLog (0.00s)
 === RUN   TestFailed
 --- FAIL: TestFailed (0.00s)
     stub_test.go:34: this failed

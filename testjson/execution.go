@@ -63,11 +63,6 @@ func (e TestEvent) PackageEvent() bool {
 	return e.Test == ""
 }
 
-// ElapsedFormatted returns Elapsed formatted in the go test format, ex (0.00s).
-func (e TestEvent) ElapsedFormatted() string {
-	return fmt.Sprintf("(%.2fs)", e.Elapsed)
-}
-
 // Bytes returns the serialized JSON bytes that were parsed to create the event.
 func (e TestEvent) Bytes() []byte {
 	return e.raw
@@ -199,7 +194,6 @@ func (p *Package) addOutput(id int, output string) {
 	if strings.HasPrefix(output, "panic: ") {
 		p.panicked = true
 	}
-	// TODO: limit size of buffered test output
 	p.output[id] = append(p.output[id], output)
 }
 

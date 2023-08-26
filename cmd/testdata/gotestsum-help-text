@@ -6,7 +6,7 @@ See https://pkg.go.dev/gotest.tools/gotestsum#section-readme for detailed docume
 
 Flags:
       --debug                                       enabled debug logging
-  -f, --format string                               print format of test input (default "short")
+  -f, --format string                               print format of test input (default "pkgname")
       --format-hide-empty-pkg                       do not print empty packages in compact formats
       --format-hivis                                use high visibility characters in some formats
       --hide-summary summary                        hide sections of the summary: skipped,failed,errors,output (default none)
@@ -36,6 +36,7 @@ Formats:
     pkgname                  print a line for each package
     pkgname-and-test-fails   print a line for each package and failed test output
     testname                 print a line for each test and package
+    github-actions           testname format with github actions log grouping
     standard-quiet           standard go test format
     standard-verbose         standard go test -v format
 

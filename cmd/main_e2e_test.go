@@ -31,6 +31,7 @@ func TestE2E_RerunFails(t *testing.T) {
 	if testing.Short() {
 		t.Skip("too slow for short run")
 	}
+	t.Setenv("GITHUB_ACTIONS", "no")
 
 	type testCase struct {
 		name        string
@@ -220,6 +221,7 @@ func TestE2E_MaxFails_EndTestRun(t *testing.T) {
 	envVars["TEST_SEEDFILE"] = tmpFile.Path()
 	env.PatchAll(t, envVars)
 
+	t.Setenv("GOTESTSUM_FORMAT", "pkgname")
 	flags, opts := setupFlags("gotestsum")
 	args := []string{"--max-fails=2", "--packages=./testdata/e2e/flaky/", "--", "-tags=testdata"}
 	assert.NilError(t, flags.Parse(args))
@@ -244,6 +246,7 @@ func TestE2E_IgnoresWarnings(t *testing.T) {
 	if testing.Short() {
 		t.Skip("too slow for short run")
 	}
+	t.Setenv("GITHUB_ACTIONS", "no")
 
 	flags, opts := setupFlags("gotestsum")
 	args := []string{

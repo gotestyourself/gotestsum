@@ -71,6 +71,8 @@ func (bufferCloser) Close() error { return nil }
 func (bufferCloser) Sync() error { return nil }
 
 func TestEventHandler_Event_WithMissingActionFail(t *testing.T) {
+	t.Setenv("GITHUB_ACTIONS", "no")
+
 	buf := new(bufferCloser)
 	errBuf := new(bytes.Buffer)
 	format := testjson.NewEventFormatter(errBuf, "testname", testjson.FormatOptions{})
