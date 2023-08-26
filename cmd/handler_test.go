@@ -39,9 +39,10 @@ func TestPostRunHook(t *testing.T) {
 	assert.NilError(t, err)
 
 	actual := text.ProcessLines(t, buf, func(line string) string {
-		if strings.HasPrefix(line, "GOTESTSUM_ELAPSED=0.0") {
+		if strings.HasPrefix(line, "GOTESTSUM_ELAPSED=0.0") &&
+			strings.HasSuffix(line, "s") {
 			i := strings.Index(line, "=")
-			return line[:i] + "=0.000"
+			return line[:i] + "=0.000s"
 		}
 		return line
 	})

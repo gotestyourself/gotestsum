@@ -139,8 +139,8 @@ test run has completed. The binary will be run with the following environment
 variables set:
 
 ```
-GOTESTSUM_ELAPSED       # test time elapsed, in seconds
-GOTESTSUM_FORMAT        # gotestsum format (ex: short)
+GOTESTSUM_ELAPSED       # test run time in seconds (ex: 2.45s)
+GOTESTSUM_FORMAT        # gotestsum format (ex: pkgname)
 GOTESTSUM_JSONFILE      # path to the jsonfile, empty if no file path was given
 GOTESTSUM_JUNITFILE     # path to the junit.xml file, empty if no file path was given
 TESTS_ERRORS            # number of errors
