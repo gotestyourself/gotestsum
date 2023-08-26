@@ -31,6 +31,7 @@ func TestE2E_RerunFails(t *testing.T) {
 	if testing.Short() {
 		t.Skip("too slow for short run")
 	}
+	t.Setenv("GITHUB_ACTIONS", "no")
 
 	type testCase struct {
 		name        string
@@ -245,6 +246,7 @@ func TestE2E_IgnoresWarnings(t *testing.T) {
 	if testing.Short() {
 		t.Skip("too slow for short run")
 	}
+	t.Setenv("GITHUB_ACTIONS", "no")
 
 	flags, opts := setupFlags("gotestsum")
 	args := []string{

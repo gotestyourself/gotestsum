@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"os"
 	"strings"
 
 	"github.com/fatih/color"
@@ -312,6 +313,9 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 	case "dots-v2":
 		return newDotFormatter(out, formatOpts)
 	case "testname", "short-verbose":
+		if os.Getenv("GITHUB_ACTIONS") == "true" {
+			return githubActionsFormat(out)
+		}
 		return testNameFormat(out)
 	case "pkgname", "short":
 		return pkgNameFormat(out, formatOpts)

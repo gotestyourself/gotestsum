@@ -56,12 +56,9 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags.Usage = func() {
 		usage(os.Stdout, name, flags)
 	}
-	defaultFormat := "pkgname"
-	if os.Getenv("GITHUB_ACTIONS") == "true" {
-		defaultFormat = "github-actions"
-	}
+
 	flags.StringVarP(&opts.format, "format", "f",
-		lookEnvWithDefault("GOTESTSUM_FORMAT", defaultFormat),
+		lookEnvWithDefault("GOTESTSUM_FORMAT", "pkgname"),
 		"print format of test input")
 	flags.BoolVar(&opts.formatOptions.HideEmptyPackages, "format-hide-empty-pkg",
 		false, "do not print empty packages in compact formats")
@@ -143,6 +140,7 @@ Formats:
     pkgname                  print a line for each package
     pkgname-and-test-fails   print a line for each package and failed test output
     testname                 print a line for each test and package
+    github-actions           testname format with github actions log grouping
     standard-quiet           standard go test format
     standard-verbose         standard go test -v format
 
