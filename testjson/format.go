@@ -291,6 +291,20 @@ func getIconFunc(opts FormatOptions) func(Action) string {
 			fail:  "FAIL",
 			color: true,
 		}.forAction
+	case opts.Icons == "codicons":
+		return icons{
+			pass:  "\ueba4", // cod-pass
+			skip:  "\ueabd", // cod-circle_slash
+			fail:  "\uea87", // cod-error
+			color: true,
+		}.forAction
+	case opts.Icons == "octicons":
+		return icons{
+			pass:  "\uf49e", // oct-check_circle
+			skip:  "\uf517", // oct-skip
+			fail:  "\uf52f", // oct-x_circle
+			color: true,
+		}.forAction
 	default:
 		return icons{
 			pass:  "✓", // CHECK MARK

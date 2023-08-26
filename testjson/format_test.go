@@ -125,6 +125,20 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 			expectedOut: "format/pkgname-text.out",
 		},
 		{
+			name: "pkgname with codicons",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{Icons: "codicons"})
+			},
+			expectedOut: "format/pkgname-codicons.out",
+		},
+		{
+			name: "pkgname with octicons",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{Icons: "octicons"})
+			},
+			expectedOut: "format/pkgname-octicons.out",
+		},
+		{
 			name: "pkgname with hide-empty",
 			format: func(out io.Writer) EventFormatter {
 				return pkgNameFormat(out, FormatOptions{HideEmptyPackages: true})

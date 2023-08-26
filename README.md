@@ -42,6 +42,7 @@ outputs use color to highlight pass, fail, or skip.
 
 The `--format-icons` flag changes the icons used by `pkgname` and `testdox` formats.
 You can set the `GOTESTSUM_FORMAT_ICONS` environment variable, instead of the flag.
+The nerdfonts icons requires a font from [Nerd Fonts](https://www.nerdfonts.com/).
 
 Commonly used formats (see `--help` for a full list):
 
