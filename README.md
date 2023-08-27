@@ -165,6 +165,9 @@ example `notify` command only works on Linux with `notify-send` and on macOS wit
 On Linux, you need to have some "test-pass" and "test-fail" icons installed in your icon theme.
 Some sample icons can be found in `contrib/notify`, and can be installed with `make install`.
 
+On Windows, you can install [notify-send.exe](https://github.com/vaskovsky/notify-send)
+but it does not support custom icons so will have to use the basic "info" and "error".
+
 ```
 gotestsum --post-run-command notify
 ```
