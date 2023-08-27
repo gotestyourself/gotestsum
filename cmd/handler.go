@@ -161,6 +161,7 @@ func postRunHook(opts *options, execution *testjson.Execution) error {
 	if len(command) == 0 {
 		return nil
 	}
+	log.Debugf("exec: %s", command)
 
 	cmd := exec.Command(command[0], command[1:]...)
 	cmd.Stdout = opts.stdout

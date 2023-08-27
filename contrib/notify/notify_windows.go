@@ -38,14 +38,11 @@ func main() {
 		subtitle += fmt.Sprintf(", %d Skipped", skipped)
 	}
 
-	args := []string{
-		"-i", icon,
-		title,
-		subtitle,
-	}
-	log.Printf("notify-send %#v", args)
-	err := exec.Command("notify-send.exe", args...).Run()
-	if err != nil {
+	cmd := exec.Command("notify-send.exe", "-i", icon, title, subtitle)
+	log.Printf("%#v", cmd.Args)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
 		log.Fatalf("Failed to exec: %v", err)
 	}
 }

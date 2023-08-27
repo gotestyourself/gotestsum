@@ -43,9 +43,11 @@ func main() {
 		"-group", "gotestsum",
 		"-subtitle", subtitle,
 	}
-	log.Printf("terminal-notifier %#v", args)
-	err := exec.Command("terminal-notifier", args...).Run()
-	if err != nil {
+	cmd := exec.Command("terminal-notifier", args...)
+	log.Printf("%#v", cmd.Args)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
 		log.Fatalf("Failed to exec: %v", err)
 	}
 }
