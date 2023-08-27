@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strings"
 
+	"github.com/bitfield/gotestdox"
 	"github.com/fatih/color"
 )
 
@@ -77,11 +79,65 @@ func standardJSONFormat(out io.Writer) EventFormatter {
 func testNameFormatTestEvent(out io.Writer, event TestEvent) {
 	pkgPath := RelativePackagePath(event.Package)
 
-	fmt.Fprintf(out, "%s %s%s %s\n",
+	fmt.Fprintf(out, "%s %s%s (%.2fs)\n",
 		colorEvent(event)(strings.ToUpper(string(event.Action))),
 		joinPkgToTestName(pkgPath, event.Test),
 		formatRunID(event.RunID),
-		fmt.Sprintf("(%.2fs)", event.Elapsed))
+		event.Elapsed)
+}
+
+func testDoxFormat(out io.Writer, opts FormatOptions) EventFormatter {
+	buf := bufio.NewWriter(out)
+	type Result struct {
+		Event    TestEvent
+		Sentence string
+	}
+	getIcon := icon
+	if opts.UseHiVisibilityIcons {
+		getIcon = iconHiVis
+	}
+	results := map[string][]Result{}
+	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
+		switch {
+		case event.PackageEvent():
+			if !event.Action.IsTerminal() {
+				return nil
+			}
+			if opts.HideEmptyPackages && len(results[event.Package]) == 0 {
+				return nil
+			}
+			fmt.Fprintf(buf, "%s:\n", event.Package)
+			tests := results[event.Package]
+			sort.Slice(tests, func(i, j int) bool {
+				return tests[i].Sentence < tests[j].Sentence
+			})
+			for _, r := range tests {
+				fmt.Fprintf(buf, " %s %s (%.2fs)\n",
+					getIcon(r.Event.Action),
+					r.Sentence,
+					r.Event.Elapsed)
+			}
+			fmt.Fprintln(buf)
+			return buf.Flush()
+		case event.Action.IsTerminal():
+			// Fuzz test cases tend not to have interesting names,
+			// so only report these if they're failures
+			if isFuzzCase(event) {
+				return nil
+			}
+			results[event.Package] = append(results[event.Package], Result{
+				Event:    event,
+				Sentence: gotestdox.Prettify(event.Test),
+			})
+		}
+		return nil
+	})
+}
+
+func isFuzzCase(event TestEvent) bool {
+	return strings.HasPrefix(event.Test, "Fuzz") &&
+		event.Action == ActionPass &&
+		TestName(event.Test).IsSubTest()
 }
 
 func testNameFormat(out io.Writer) EventFormatter {
@@ -188,40 +244,59 @@ func pkgNameFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
 	}
 }
 
+func icon(action Action) string {
+	switch action {
+	case ActionPass:
+		return color.GreenString("✓")
+	case ActionSkip:
+		return color.YellowString("∅")
+	case ActionFail:
+		return color.RedString("✖")
+	default:
+		return ""
+	}
+}
+
+func iconHiVis(action Action) string {
+	switch action {
+	case ActionPass:
+		return "✅"
+	case ActionSkip:
+		return "➖"
+	case ActionFail:
+		return "❌"
+	default:
+		return ""
+	}
+}
+
 func shortFormatPackageEvent(opts FormatOptions, event TestEvent, exec *Execution) string {
 	pkg := exec.Package(event.Package)
 
-	var iconSkipped, iconSuccess, iconFailure string
+	getIcon := icon
 	if opts.UseHiVisibilityIcons {
-		iconSkipped = "➖"
-		iconSuccess = "✅"
-		iconFailure = "❌"
-	} else {
-		iconSkipped = "∅"
-		iconSuccess = "✓"
-		iconFailure = "✖"
+		getIcon = iconHiVis
 	}
 
 	fmtEvent := func(action string) string {
 		return action + "  " + packageLine(event, exec.Package(event.Package))
 	}
-	withColor := colorEvent(event)
 	switch event.Action {
 	case ActionSkip:
 		if opts.HideEmptyPackages {
 			return ""
 		}
-		return fmtEvent(withColor(iconSkipped))
+		return fmtEvent(getIcon(event.Action))
 	case ActionPass:
 		if pkg.Total == 0 {
 			if opts.HideEmptyPackages {
 				return ""
 			}
-			return fmtEvent(withColor(iconSkipped))
+			return fmtEvent(getIcon(ActionSkip))
 		}
-		return fmtEvent(withColor(iconSuccess))
+		return fmtEvent(getIcon(event.Action))
 	case ActionFail:
-		return fmtEvent(withColor(iconFailure))
+		return fmtEvent(getIcon(event.Action))
 	}
 	return ""
 }
@@ -312,6 +387,8 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 		return dotsFormatV1(out)
 	case "dots-v2":
 		return newDotFormatter(out, formatOpts)
+	case "gotestdox", "testdox":
+		return testDoxFormat(out, formatOpts)
 	case "testname", "short-verbose":
 		if os.Getenv("GITHUB_ACTIONS") == "true" {
 			return githubActionsFormat(out)

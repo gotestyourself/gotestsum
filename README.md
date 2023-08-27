@@ -48,6 +48,7 @@ Commonly used formats (see `--help` for a full list):
  * `dots` - print a character for each test.
  * `pkgname` (default) - print a line for each package.
  * `testname` - print a line for each test and package.
+ * `testdox` - print a sentence for each test using [gotestdox](https://github.com/bitfield/gotestdox).
  * `standard-quiet` - the standard `go test` format.
  * `standard-verbose` - the standard `go test -v` format.
 
