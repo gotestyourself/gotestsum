@@ -40,8 +40,7 @@ The `--format` flag or `GOTESTSUM_FORMAT` environment variable set the format th
 is used to print the test names, and possibly test output, as the tests run. Most
 outputs use color to highlight pass, fail, or skip.
 
-The `--format-hivis` flag changes the icons used by `pkgname` formats to higher
-visiblity unicode characters.
+The `--format-icons` flag changes the icons used by `pkgname` and `testdox` formats.
 
 Commonly used formats (see `--help` for a full list):
 

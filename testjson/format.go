@@ -92,10 +92,8 @@ func testDoxFormat(out io.Writer, opts FormatOptions) EventFormatter {
 		Event    TestEvent
 		Sentence string
 	}
-	getIcon := icon
-	if opts.UseHiVisibilityIcons {
-		getIcon = iconHiVis
-	}
+
+	getIcon := getIconFunc(opts)
 	results := map[string][]Result{}
 	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
 		switch {
@@ -244,40 +242,39 @@ func pkgNameFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
 	}
 }
 
-func icon(action Action) string {
-	switch action {
-	case ActionPass:
-		return color.GreenString("✓")
-	case ActionSkip:
-		return color.YellowString("∅")
-	case ActionFail:
-		return color.RedString("✖")
-	default:
-		return ""
+func getIconFunc(opts FormatOptions) func(Action) string {
+	if opts.UseHiVisibilityIcons || opts.Icons == "hivis" {
+		return func(action Action) string {
+			switch action {
+			case ActionPass:
+				return "✅"
+			case ActionSkip:
+				return "➖"
+			case ActionFail:
+				return "❌"
+			default:
+				return ""
+			}
+		}
 	}
-}
-
-func iconHiVis(action Action) string {
-	switch action {
-	case ActionPass:
-		return "✅"
-	case ActionSkip:
-		return "➖"
-	case ActionFail:
-		return "❌"
-	default:
-		return ""
+	return func(action Action) string {
+		switch action {
+		case ActionPass:
+			return color.GreenString("✓")
+		case ActionSkip:
+			return color.YellowString("∅")
+		case ActionFail:
+			return color.RedString("✖")
+		default:
+			return ""
+		}
 	}
 }
 
 func shortFormatPackageEvent(opts FormatOptions, event TestEvent, exec *Execution) string {
 	pkg := exec.Package(event.Package)
 
-	getIcon := icon
-	if opts.UseHiVisibilityIcons {
-		getIcon = iconHiVis
-	}
-
+	getIcon := getIconFunc(opts)
 	fmtEvent := func(action string) string {
 		return action + "  " + packageLine(event, exec.Package(event.Package))
 	}
@@ -367,7 +364,8 @@ func (e eventFormatterFunc) Format(event TestEvent, output *Execution) error {
 
 type FormatOptions struct {
 	HideEmptyPackages    bool
-	UseHiVisibilityIcons bool
+	UseHiVisibilityIcons bool // Deprecated
+	Icons                string
 }
 
 // NewEventFormatter returns a formatter for printing events.

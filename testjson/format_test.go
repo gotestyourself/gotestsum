@@ -113,7 +113,7 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 		{
 			name: "pkgname with hivis",
 			format: func(out io.Writer) EventFormatter {
-				return pkgNameFormat(out, FormatOptions{UseHiVisibilityIcons: true})
+				return pkgNameFormat(out, FormatOptions{Icons: "hivis"})
 			},
 			expectedOut: "format/pkgname-hivis.out",
 		},

@@ -64,6 +64,9 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		false, "do not print empty packages in compact formats")
 	flags.BoolVar(&opts.formatOptions.UseHiVisibilityIcons, "format-hivis",
 		false, "use high visibility characters in some formats")
+	_ = flags.MarkHidden("format-hivis")
+	flags.StringVar(&opts.formatOptions.Icons, "format-icons", "",
+		"use different icons, see help for options")
 	flags.BoolVar(&opts.rawCommand, "raw-command", false,
 		"don't prepend 'go test -json' to the 'go test' command")
 	flags.BoolVar(&opts.ignoreNonJSONOutputLines, "ignore-non-json-output-lines", false,
@@ -144,6 +147,10 @@ Formats:
     github-actions           testname format with github actions log grouping
     standard-quiet           standard go test format
     standard-verbose         standard go test -v format
+
+Format icons:
+    default                  the original unicode (✓, ∅, ✖)
+    hivis                    higher visibility unicode (✅, ➖, ❌)
 
 Commands:
     %[1]s tool slowest   find or skip the slowest tests
