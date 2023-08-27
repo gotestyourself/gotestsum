@@ -14,14 +14,14 @@ func main() {
 	failed := envInt("FAILED")
 	errors := envInt("ERRORS")
 
-	emoji := "✅"
+	icon := "test-pass"
 	title := "Passed"
 	switch {
 	case errors > 0:
-		emoji = "⚠️"
+		icon = "dialog-warning"
 		title = "Errored"
 	case failed > 0:
-		emoji = "❌"
+		icon = "test-fail"
 		title = "Failed"
 	case skipped > 0:
 		title = "Passed with skipped"
@@ -38,14 +38,11 @@ func main() {
 		subtitle += fmt.Sprintf(", %d Skipped", skipped)
 	}
 
-	args := []string{
-		"-title", emoji + " " + title,
-		"-group", "gotestsum",
-		"-subtitle", subtitle,
-	}
-	log.Printf("terminal-notifier %#v", args)
-	err := exec.Command("terminal-notifier", args...).Run()
-	if err != nil {
+	cmd := exec.Command("notify-send", "--icon", icon, title, subtitle)
+	log.Printf("%#v", cmd.Args)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
 		log.Fatalf("Failed to exec: %v", err)
 	}
 }

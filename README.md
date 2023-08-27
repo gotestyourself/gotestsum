@@ -160,8 +160,14 @@ package may be used to parse the JSON file output.
 
 First install the example notification command with `go get gotest.tools/gotestsum/contrib/notify`.
 The command will be downloaded to `$GOPATH/bin` as `notify`. Note that this
-example `notify` command only works on macOS with
+example `notify` command only works on Linux with `notify-send` and on macOS with
 [terminal-notifer](https://github.com/julienXX/terminal-notifier) installed.
+
+On Linux, you need to have some "test-pass" and "test-fail" icons installed in your icon theme.
+Some sample icons can be found in `contrib/notify`, and can be installed with `make install`.
+
+On Windows, you can install [notify-send.exe](https://github.com/vaskovsky/notify-send)
+but it does not support custom icons so will have to use the basic "info" and "error".
 
 ```
 gotestsum --post-run-command notify
