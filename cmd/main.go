@@ -65,7 +65,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags.BoolVar(&opts.formatOptions.UseHiVisibilityIcons, "format-hivis",
 		false, "use high visibility characters in some formats")
 	_ = flags.MarkHidden("format-hivis")
-	flags.StringVar(&opts.formatOptions.Icons, "format-icons", "",
+	flags.StringVar(&opts.formatOptions.Icons, "format-icons",
+		lookEnvWithDefault("GOTESTSUM_FORMAT_ICONS", ""),
 		"use different icons, see help for options")
 	flags.BoolVar(&opts.rawCommand, "raw-command", false,
 		"don't prepend 'go test -json' to the 'go test' command")

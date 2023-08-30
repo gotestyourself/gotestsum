@@ -41,6 +41,7 @@ is used to print the test names, and possibly test output, as the tests run. Mos
 outputs use color to highlight pass, fail, or skip.
 
 The `--format-icons` flag changes the icons used by `pkgname` and `testdox` formats.
+You can set the `GOTESTSUM_FORMAT_ICONS` environment variable, instead of the flag.
 
 Commonly used formats (see `--help` for a full list):
 
