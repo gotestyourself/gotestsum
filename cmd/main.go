@@ -152,6 +152,7 @@ Formats:
 Format icons:
     default                  the original unicode (✓, ∅, ✖)
     hivis                    higher visibility unicode (✅, ➖, ❌)
+    text                     simple text characters (PASS, SKIP, FAIL)
 
 Commands:
     %[1]s tool slowest   find or skip the slowest tests

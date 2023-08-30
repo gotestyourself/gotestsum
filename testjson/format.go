@@ -284,6 +284,13 @@ func getIconFunc(opts FormatOptions) func(Action) string {
 			fail:  "❌", // CROSS MARK
 			color: false,
 		}.forAction
+	case opts.Icons == "text":
+		return icons{
+			pass:  "PASS",
+			skip:  "SKIP",
+			fail:  "FAIL",
+			color: true,
+		}.forAction
 	default:
 		return icons{
 			pass:  "✓", // CHECK MARK
