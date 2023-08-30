@@ -242,32 +242,55 @@ func pkgNameFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
 	}
 }
 
-func getIconFunc(opts FormatOptions) func(Action) string {
-	if opts.UseHiVisibilityIcons || opts.Icons == "hivis" {
-		return func(action Action) string {
-			switch action {
-			case ActionPass:
-				return "✅"
-			case ActionSkip:
-				return "➖"
-			case ActionFail:
-				return "❌"
-			default:
-				return ""
-			}
-		}
-	}
-	return func(action Action) string {
+type icons struct {
+	pass  string
+	fail  string
+	skip  string
+	color bool
+}
+
+func (i icons) forAction(action Action) string {
+	if i.color {
 		switch action {
 		case ActionPass:
-			return color.GreenString("✓")
+			return color.GreenString(i.pass)
 		case ActionSkip:
-			return color.YellowString("∅")
+			return color.YellowString(i.skip)
 		case ActionFail:
-			return color.RedString("✖")
+			return color.RedString(i.fail)
 		default:
-			return ""
+			return " "
 		}
+	} else {
+		switch action {
+		case ActionPass:
+			return i.pass
+		case ActionSkip:
+			return i.skip
+		case ActionFail:
+			return i.fail
+		default:
+			return " "
+		}
+	}
+}
+
+func getIconFunc(opts FormatOptions) func(Action) string {
+	switch {
+	case opts.UseHiVisibilityIcons || opts.Icons == "hivis":
+		return icons{
+			pass:  "✅", // WHITE HEAVY CHECK MARK
+			skip:  "➖", // HEAVY MINUS SIGN
+			fail:  "❌", // CROSS MARK
+			color: false,
+		}.forAction
+	default:
+		return icons{
+			pass:  "✓", // CHECK MARK
+			skip:  "∅", // EMPTY SET
+			fail:  "✖", // HEAVY MULTIPLICATION X
+			color: true,
+		}.forAction
 	}
 }
 
