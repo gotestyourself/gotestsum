@@ -63,7 +63,7 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags.BoolVar(&opts.formatOptions.HideEmptyPackages, "format-hide-empty-pkg",
 		false, "do not print empty packages in compact formats")
 	flags.BoolVar(&opts.formatOptions.UseHiVisibilityIcons, "format-hivis",
-		false, "use high visibility characters in some formats")
+		lookEnvBoolWithDefault("GOTESTSUM_HIVIS", false), "use high visibility characters in some formats")
 	flags.BoolVar(&opts.rawCommand, "raw-command", false,
 		"don't prepend 'go test -json' to the 'go test' command")
 	flags.BoolVar(&opts.ignoreNonJSONOutputLines, "ignore-non-json-output-lines", false,
@@ -149,6 +149,13 @@ Commands:
     %[1]s tool slowest   find or skip the slowest tests
     %[1]s help           print this help next
 `, name)
+}
+
+func lookEnvBoolWithDefault(key string, defValue bool) bool {
+	if value := os.Getenv(key); value != "" {
+		return value == "true"
+	}
+	return defValue
 }
 
 func lookEnvWithDefault(key, defValue string) string {
