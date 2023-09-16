@@ -4,6 +4,7 @@
 package dotwriter
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"strings"
@@ -33,6 +34,19 @@ type coord struct {
 type fdWriter interface {
 	io.Writer
 	Fd() uintptr
+}
+
+// Flush implementation on windows is not ideal; we clear the entire screen before writing, which can result in flashing output
+// Windows likely can adopt the same approach as posix if someone invests some effort
+func (w *Writer) Flush() error {
+	if w.buf.Len() == 0 {
+		return nil
+	}
+	w.clearLines(w.lineCount)
+	w.lineCount = bytes.Count(w.buf.Bytes(), []byte{'\n'})
+	_, err := w.out.Write(w.buf.Bytes())
+	w.buf.Reset()
+	return err
 }
 
 func (w *Writer) clearLines(count int) {
@@ -70,9 +84,4 @@ func isConsole(fd uintptr) bool {
 	var mode uint32
 	err := windows.GetConsoleMode(windows.Handle(fd), &mode)
 	return err == nil
-}
-
-// This may work on Windows but I am not sure how to do it and its optional. For now, just do nothing.
-func (w *Writer) hideCursor() func() {
-	return func() {}
 }

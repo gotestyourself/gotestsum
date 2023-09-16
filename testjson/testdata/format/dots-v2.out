@@ -1,1210 +1,1210 @@
-[?25l
-
-   1ms testjson/internal/badmain 
-
+[?25l[0K
+[0K
+   1ms testjson/internal/badmain [0K
+[0K
  0 tests, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-
+[0K[?25h[?25l[5A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+[0K
  0 tests, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good 
-
+[0K[?25h[?25l[6A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good [0K
+[0K
  1 tests, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ·[0K
+[0K
  1 tests, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ·[0K
+[0K
  2 tests, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ··
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ··[0K
+[0K
  2 tests, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ··
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ··[0K
+[0K
  3 tests, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···[0K
+[0K
  3 tests, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···[0K
+[0K
  4 tests, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷[0K
+[0K
  4 tests, 1 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷[0K
+[0K
  5 tests, 1 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷[0K
+[0K
  5 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷[0K
+[0K
  6 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·[0K
+[0K
  6 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·[0K
+[0K
  7 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·[0K
+[0K
  7 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·[0K
+[0K
  8 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·[0K
+[0K
  8 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·[0K
+[0K
  9 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·[0K
+[0K
  9 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·[0K
+[0K
  10 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·[0K
+[0K
  11 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·[0K
+[0K
  12 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·[0K
+[0K
  13 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·[0K
+[0K
  14 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·[0K
+[0K
  15 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·[0K
+[0K
  16 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·[0K
+[0K
  17 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷··
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷··[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷···
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷···[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷····
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷····[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·····
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·····[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷······
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷······[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·······
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·······[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷········
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷········[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·········
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·········[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷··········
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷··········[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷··········
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷··········[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷···········
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷···········[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷···········
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷···········[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷···········
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷···········[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷············
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷············[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-       testjson/internal/good ···↷↷·············
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+       testjson/internal/good ···↷↷·············[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+[0K
  18 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails 
-
+[0K[?25h[?25l[7A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails [0K
+[0K
  19 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ·
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ·[0K
+[0K
  19 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ·
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ·[0K
+[0K
  20 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ··
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ··[0K
+[0K
  20 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ··
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ··[0K
+[0K
  21 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ···
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ···[0K
+[0K
  21 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ···
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ···[0K
+[0K
  22 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  22 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  23 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  23 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  24 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  24 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  25 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  25 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  26 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  27 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  27 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  28 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  28 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  29 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  29 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  30 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  30 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  30 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  30 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  30 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····[0K
+[0K
  30 tests, 2 skipped, 1 failure, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····✖
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····✖[0K
+[0K
  30 tests, 2 skipped, 2 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····✖✖
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····✖✖[0K
+[0K
  30 tests, 2 skipped, 3 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····✖✖✖
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····✖✖✖[0K
+[0K
  30 tests, 2 skipped, 4 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····✖✖✖✖
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····✖✖✖✖[0K
+[0K
  30 tests, 2 skipped, 5 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····✖✖✖✖✖
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····✖✖✖✖✖[0K
+[0K
  30 tests, 2 skipped, 6 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····✖✖✖✖✖
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····✖✖✖✖✖[0K
+[0K
  30 tests, 2 skipped, 6 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····✖✖✖✖✖✖
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····✖✖✖✖✖✖[0K
+[0K
  30 tests, 2 skipped, 7 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····✖✖✖✖✖✖
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····✖✖✖✖✖✖[0K
+[0K
  30 tests, 2 skipped, 7 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····✖✖✖✖✖✖✖
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····✖✖✖✖✖✖✖[0K
+[0K
  30 tests, 2 skipped, 8 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····✖✖✖✖✖✖✖
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····✖✖✖✖✖✖✖[0K
+[0K
  30 tests, 2 skipped, 8 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-       testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+       testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+[0K
  30 tests, 2 skipped, 9 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+[0K
  30 tests, 2 skipped, 9 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails 
-
+[0K[?25h[?25l[8A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails [0K
+[0K
  31 tests, 2 skipped, 9 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ·
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ·[0K
+[0K
  31 tests, 2 skipped, 9 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ·
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ·[0K
+[0K
  32 tests, 2 skipped, 9 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ··
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ··[0K
+[0K
  32 tests, 2 skipped, 9 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ··
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ··[0K
+[0K
  33 tests, 2 skipped, 9 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···[0K
+[0K
  33 tests, 2 skipped, 9 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···[0K
+[0K
  34 tests, 2 skipped, 9 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷[0K
+[0K
  34 tests, 3 skipped, 9 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷[0K
+[0K
  35 tests, 3 skipped, 9 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷[0K
+[0K
  35 tests, 4 skipped, 9 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷[0K
+[0K
  36 tests, 4 skipped, 9 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖[0K
+[0K
  36 tests, 4 skipped, 10 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖[0K
+[0K
  37 tests, 4 skipped, 10 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·[0K
+[0K
  37 tests, 4 skipped, 10 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·[0K
+[0K
  38 tests, 4 skipped, 10 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖[0K
+[0K
  38 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖[0K
+[0K
  39 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖[0K
+[0K
  39 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖[0K
+[0K
  40 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖[0K
+[0K
  40 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖[0K
+[0K
  41 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖[0K
+[0K
  41 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖[0K
+[0K
  42 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖[0K
+[0K
  43 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖[0K
+[0K
  44 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖[0K
+[0K
  45 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖[0K
+[0K
  46 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖[0K
+[0K
  47 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖[0K
+[0K
  48 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖[0K
+[0K
  49 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖·
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖·[0K
+[0K
  49 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖··
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖··[0K
+[0K
  49 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖···
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖···[0K
+[0K
  49 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····[0K
+[0K
  49 tests, 4 skipped, 11 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖[0K
+[0K
  49 tests, 4 skipped, 12 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖·
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖·[0K
+[0K
  49 tests, 4 skipped, 12 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··[0K
+[0K
  49 tests, 4 skipped, 12 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖[0K
+[0K
  49 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖[0K
+[0K
  50 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖[0K
+[0K
  51 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖[0K
+[0K
  52 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖[0K
+[0K
  53 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖[0K
+[0K
  54 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖[0K
+[0K
  55 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖[0K
+[0K
  56 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖[0K
+[0K
  57 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖[0K
+[0K
  58 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖·
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖·[0K
+[0K
  58 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖··
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖··[0K
+[0K
  58 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖···
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖···[0K
+[0K
  58 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖····
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖····[0K
+[0K
  58 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖·····
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖·····[0K
+[0K
  58 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖······
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖······[0K
+[0K
  58 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖·······
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖·······[0K
+[0K
  58 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖········
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖········[0K
+[0K
  58 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········[0K
+[0K
  58 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········[0K
+[0K
  59 tests, 4 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷[0K
+[0K
  59 tests, 5 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷[0K
+[0K
  59 tests, 5 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷·
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷·[0K
+[0K
  59 tests, 5 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷·
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷·[0K
+[0K
  59 tests, 5 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷··
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷··[0K
+[0K
  59 tests, 5 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷··
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷··[0K
+[0K
  59 tests, 5 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷···
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+       testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷···[0K
+[0K
  59 tests, 5 skipped, 13 failures, 1 error
-[?25h[?25l[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K
-
-   1ms testjson/internal/badmain 
-    🖴  testjson/internal/empty 
-    🖴  testjson/internal/good ···↷↷·············
-  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖
-  20ms testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷···
-
+[0K[?25h[?25l[9A[0K
+[0K
+   1ms testjson/internal/badmain [0K
+    🖴  testjson/internal/empty [0K
+    🖴  testjson/internal/good ···↷↷·············[0K
+  20ms testjson/internal/parallelfails ····✖✖✖✖✖✖✖✖[0K
+  20ms testjson/internal/withfails ···↷↷✖·✖····✖··✖·········↷···[0K
+[0K
  59 tests, 5 skipped, 13 failures, 1 error
-[?25h
+[0K[?25h

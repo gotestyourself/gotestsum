@@ -14,6 +14,7 @@ const ESC = 27
 
 // Writer buffers writes until Flush is called. Flush clears previously written
 // lines before writing new lines from the buffer.
+// The main logic is platform specific, see the related files.
 type Writer struct {
 	out       io.Writer
 	buf       bytes.Buffer
@@ -23,19 +24,6 @@ type Writer struct {
 // New returns a new Writer
 func New(out io.Writer) *Writer {
 	return &Writer{out: out}
-}
-
-// Flush the buffer, writing all buffered lines to out
-func (w *Writer) Flush() error {
-	if w.buf.Len() == 0 {
-		return nil
-	}
-	defer w.hideCursor()()
-	w.clearLines(w.lineCount)
-	w.lineCount = bytes.Count(w.buf.Bytes(), []byte{'\n'})
-	_, err := w.out.Write(w.buf.Bytes())
-	w.buf.Reset()
-	return err
 }
 
 // Write saves buf to a buffer
