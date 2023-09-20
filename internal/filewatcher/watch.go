@@ -213,7 +213,7 @@ func handleDirCreated(watcher *fsnotify.Watcher, event fsnotify.Event) (handled 
 
 	fileInfo, err := os.Stat(event.Name)
 	if err != nil {
-		log.Warnf("failed to stat %s: %s", event.Name, err)
+		log.Debugf("failed to stat %s: %s", event.Name, err)
 		return false
 	}
 
