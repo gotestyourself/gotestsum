@@ -153,10 +153,9 @@ Format icons:
     default                  the original unicode (✓, ∅, ✖)
     hivis                    higher visibility unicode (✅, ➖, ❌)
     text                     simple text characters (PASS, SKIP, FAIL)
-  * nerdfonts                requires a font from https://www.nerdfonts.com/
-    codicons                   
-    octicons                   
-    emoticons                󰇵 󰇶 󰇸
+    codicons                 requires a font from https://www.nerdfonts.com/ (  )
+    octicons                 requires a font from https://www.nerdfonts.com/ (  )
+    emoticons                requires a font from https://www.nerdfonts.com/ (󰇵 󰇶 󰇸)
 
 Commands:
     %[1]s tool slowest   find or skip the slowest tests
