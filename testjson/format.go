@@ -92,10 +92,8 @@ func testDoxFormat(out io.Writer, opts FormatOptions) EventFormatter {
 		Event    TestEvent
 		Sentence string
 	}
-	getIcon := icon
-	if opts.UseHiVisibilityIcons {
-		getIcon = iconHiVis
-	}
+
+	getIcon := getIconFunc(opts)
 	results := map[string][]Result{}
 	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
 		switch {
@@ -244,40 +242,90 @@ func pkgNameFormat(out io.Writer, opts FormatOptions) eventFormatterFunc {
 	}
 }
 
-func icon(action Action) string {
-	switch action {
-	case ActionPass:
-		return color.GreenString("✓")
-	case ActionSkip:
-		return color.YellowString("∅")
-	case ActionFail:
-		return color.RedString("✖")
-	default:
-		return ""
+type icons struct {
+	pass  string
+	fail  string
+	skip  string
+	color bool
+}
+
+func (i icons) forAction(action Action) string {
+	if i.color {
+		switch action {
+		case ActionPass:
+			return color.GreenString(i.pass)
+		case ActionSkip:
+			return color.YellowString(i.skip)
+		case ActionFail:
+			return color.RedString(i.fail)
+		default:
+			return " "
+		}
+	} else {
+		switch action {
+		case ActionPass:
+			return i.pass
+		case ActionSkip:
+			return i.skip
+		case ActionFail:
+			return i.fail
+		default:
+			return " "
+		}
 	}
 }
 
-func iconHiVis(action Action) string {
-	switch action {
-	case ActionPass:
-		return "✅"
-	case ActionSkip:
-		return "➖"
-	case ActionFail:
-		return "❌"
+func getIconFunc(opts FormatOptions) func(Action) string {
+	switch {
+	case opts.UseHiVisibilityIcons || opts.Icons == "hivis":
+		return icons{
+			pass:  "✅", // WHITE HEAVY CHECK MARK
+			skip:  "➖", // HEAVY MINUS SIGN
+			fail:  "❌", // CROSS MARK
+			color: false,
+		}.forAction
+	case opts.Icons == "text":
+		return icons{
+			pass:  "PASS",
+			skip:  "SKIP",
+			fail:  "FAIL",
+			color: true,
+		}.forAction
+	case opts.Icons == "codicons":
+		return icons{
+			pass:  "\ueba4", // cod-pass
+			skip:  "\ueabd", // cod-circle_slash
+			fail:  "\uea87", // cod-error
+			color: true,
+		}.forAction
+	case opts.Icons == "octicons":
+		return icons{
+			pass:  "\uf49e", // oct-check_circle
+			skip:  "\uf517", // oct-skip
+			fail:  "\uf52f", // oct-x_circle
+			color: true,
+		}.forAction
+	case opts.Icons == "emoticons":
+		return icons{
+			pass:  "\U000f01f5", // md-emoticon_happy_outline
+			skip:  "\U000f01f6", // md-emoticon_neutral_outline
+			fail:  "\U000f01f8", // md-emoticon_sad_outline
+			color: true,
+		}.forAction
 	default:
-		return ""
+		return icons{
+			pass:  "✓", // CHECK MARK
+			skip:  "∅", // EMPTY SET
+			fail:  "✖", // HEAVY MULTIPLICATION X
+			color: true,
+		}.forAction
 	}
 }
 
 func shortFormatPackageEvent(opts FormatOptions, event TestEvent, exec *Execution) string {
 	pkg := exec.Package(event.Package)
 
-	getIcon := icon
-	if opts.UseHiVisibilityIcons {
-		getIcon = iconHiVis
-	}
-
+	getIcon := getIconFunc(opts)
 	fmtEvent := func(action string) string {
 		return action + "  " + packageLine(event, exec.Package(event.Package))
 	}
@@ -367,7 +415,8 @@ func (e eventFormatterFunc) Format(event TestEvent, output *Execution) error {
 
 type FormatOptions struct {
 	HideEmptyPackages    bool
-	UseHiVisibilityIcons bool
+	UseHiVisibilityIcons bool // Deprecated
+	Icons                string
 }
 
 // NewEventFormatter returns a formatter for printing events.

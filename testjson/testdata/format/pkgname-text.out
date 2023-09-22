@@ -1,0 +1,5 @@
+FAIL  testjson/internal/badmain (1ms)
+SKIP  testjson/internal/empty (cached)
+PASS  testjson/internal/good (cached)
+FAIL  testjson/internal/parallelfails (20ms)
+FAIL  testjson/internal/withfails (20ms)

@@ -113,9 +113,37 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 		{
 			name: "pkgname with hivis",
 			format: func(out io.Writer) EventFormatter {
-				return pkgNameFormat(out, FormatOptions{UseHiVisibilityIcons: true})
+				return pkgNameFormat(out, FormatOptions{Icons: "hivis"})
 			},
 			expectedOut: "format/pkgname-hivis.out",
+		},
+		{
+			name: "pkgname with text",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{Icons: "text"})
+			},
+			expectedOut: "format/pkgname-text.out",
+		},
+		{
+			name: "pkgname with codicons",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{Icons: "codicons"})
+			},
+			expectedOut: "format/pkgname-codicons.out",
+		},
+		{
+			name: "pkgname with octicons",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{Icons: "octicons"})
+			},
+			expectedOut: "format/pkgname-octicons.out",
+		},
+		{
+			name: "pkgname with emoticons",
+			format: func(out io.Writer) EventFormatter {
+				return pkgNameFormat(out, FormatOptions{Icons: "emoticons"})
+			},
+			expectedOut: "format/pkgname-emoticons.out",
 		},
 		{
 			name: "pkgname with hide-empty",

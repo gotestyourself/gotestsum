@@ -33,6 +33,7 @@ func TestPostRunHook(t *testing.T) {
 	}
 
 	env.Patch(t, "GOTESTSUM_FORMAT", "short")
+	env.Patch(t, "GOTESTSUM_FORMAT_ICONS", "default")
 
 	exec := newExecFromTestData(t)
 	err = postRunHook(opts, exec)
