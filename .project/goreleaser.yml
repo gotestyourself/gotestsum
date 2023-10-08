@@ -13,6 +13,7 @@ builds:
       - freebsd
       - windows
       - linux
+      - illumos
     goarch:
       - amd64
       - arm64
@@ -35,6 +36,14 @@ builds:
       - goos: windows
         goarch: s390x
       - goos: windows
+        goarch: ppc64le
+      - goos: illumos
+        goarch: arm
+      - goos: illumos
+        goarch: arm64
+      - goos: illumos
+        goarch: s390x
+      - goos: illumos
         goarch: ppc64le
 
 checksum:
