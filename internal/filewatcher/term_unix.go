@@ -26,7 +26,8 @@ func newTerminal() *terminal {
 }
 
 // Start the terminal is non-blocking read mode. The terminal can be reset to
-// normal mode by calling Reset.
+// normal mode by calling Reset. If os.Stdin is not a terminal or cannot use
+// non-blocking reads then a warning is logged and the terminal is not reset.
 func (r *terminal) Start() {
 	if r == nil {
 		return
@@ -34,7 +35,7 @@ func (r *terminal) Start() {
 	fd := int(os.Stdin.Fd())
 	reset, err := enableNonBlockingRead(fd)
 	if err != nil {
-		log.Warnf("failed to put terminal (fd %d) into raw mode: %v", fd, err)
+		log.Warnf("no terminal input -- keyboard shortcuts disabled: %v", err)
 		return
 	}
 	r.reset = reset
