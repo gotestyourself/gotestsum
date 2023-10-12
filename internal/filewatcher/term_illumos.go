@@ -1,4 +1,6 @@
 package filewatcher
 
-const tcGet = 0x540d
-const tcSet = 0x540e
+import "golang.org/x/sys/unix"
+
+const tcGet = unix.TCGETS
+const tcSet = unix.TCSETS
