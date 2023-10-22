@@ -298,3 +298,17 @@ func TestFilterFailedUnique_MultipleNested(t *testing.T) {
 	cmpTestCase := cmp.AllowUnexported(TestCase{})
 	assert.DeepEqual(t, expected, actual, cmpTestCase)
 }
+
+func TestFilterFailedUnique_NestedWithGaps(t *testing.T) {
+	input := []TestCase{
+		{ID: 2, Package: "pkg", Test: "TestParent/foo/bar/baz"},
+		{ID: 1, Package: "pkg", Test: "TestParent"},
+	}
+	actual := FilterFailedUnique(input)
+
+	expected := []TestCase{
+		{ID: 2, Package: "pkg", Test: "TestParent/foo/bar/baz"},
+	}
+	cmpTestCase := cmp.AllowUnexported(TestCase{})
+	assert.DeepEqual(t, expected, actual, cmpTestCase)
+}

@@ -563,8 +563,15 @@ func FilterFailedUnique(tcs []TestCase) []TestCase {
 		if _, exists := parents[tc.Package]; !exists {
 			parents[tc.Package] = make(map[string]bool)
 		}
-		if parent := tc.Test.Parent(); parent != "" {
-			parents[tc.Package][parent] = true
+		currentTest := tc.Test
+		for {
+			parent := currentTest.Parent()
+			if parent == "" {
+				break
+			} else {
+				parents[tc.Package][parent] = true
+				currentTest = TestName(parent)
+			}
 		}
 		if _, exists := parents[tc.Package][tc.Test.Name()]; exists {
 			continue // tc is a parent of a failing subtest
