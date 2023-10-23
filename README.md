@@ -447,6 +447,7 @@ The projects below use (or have used) gotestsum.
 * [dex](https://github.com/dexidp/dex/blob/master/Makefile)
 * [coder](https://github.com/coder/coder/blob/main/Makefile)
 * [docker/cli](https://github.com/docker/cli/blob/master/Makefile)
+* [mattermost](https://github.com/mattermost/mattermost/blob/master/server/Makefile)
 
 Please open a GitHub issue or pull request to add or remove projects from this list.
 
