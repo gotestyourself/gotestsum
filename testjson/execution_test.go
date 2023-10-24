@@ -301,13 +301,16 @@ func TestFilterFailedUnique_MultipleNested(t *testing.T) {
 
 func TestFilterFailedUnique_NestedWithGaps(t *testing.T) {
 	input := []TestCase{
-		{ID: 2, Package: "pkg", Test: "TestParent/foo/bar/baz"},
-		{ID: 1, Package: "pkg", Test: "TestParent"},
+		{ID: 1, Package: "pkg", Test: "TestParent/foo/bar/baz"},
+		{ID: 2, Package: "pkg", Test: "TestParent"},
+		{ID: 3, Package: "pkg", Test: "TestParent1/foo/bar"},
+		{ID: 4, Package: "pkg", Test: "TestParent1"},
 	}
 	actual := FilterFailedUnique(input)
 
 	expected := []TestCase{
-		{ID: 2, Package: "pkg", Test: "TestParent/foo/bar/baz"},
+		{ID: 1, Package: "pkg", Test: "TestParent/foo/bar/baz"},
+		{ID: 3, Package: "pkg", Test: "TestParent1/foo/bar"},
 	}
 	cmpTestCase := cmp.AllowUnexported(TestCase{})
 	assert.DeepEqual(t, expected, actual, cmpTestCase)
