@@ -220,7 +220,7 @@ func defaultNoColor() bool {
 	// true for many CI environments which support color output. So instead, we
 	// try to detect these CI environments via their environment variables.
 	// This code is based on https://github.com/jwalton/go-supportscolor
-	if _, exists := os.LookupEnv("CI"); exists {
+	if value, exists := os.LookupEnv("CI"); exists {
 		var ciEnvNames = []string{
 			"APPVEYOR",
 			"BUILDKITE",
@@ -237,6 +237,9 @@ func defaultNoColor() bool {
 			}
 		}
 		if os.Getenv("CI_NAME") == "codeship" {
+			return false
+		}
+		if value == "woodpecker" {
 			return false
 		}
 	}
