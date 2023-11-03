@@ -335,7 +335,7 @@ func goTestCmdArgs(opts *options, rerunOpts rerunOpts) []string {
 		return result
 	}
 
-	args := opts.args
+	args := append([]string{}, opts.args...)
 	result := []string{"go", "test"}
 
 	if len(args) == 0 {

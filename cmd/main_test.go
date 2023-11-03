@@ -306,6 +306,21 @@ func TestGoTestCmdArgs(t *testing.T) {
 		},
 		expected: []string{"go", "test", "-json", "-run=TestOne|TestTwo", "-count", "1", "-run", "./fails"},
 	})
+	t.Run("rerun with -run flag", func(t *testing.T) {
+		tc := testCase{
+			opts: &options{
+				args:     []string{"-run", "TestExample", "-tags", "some", "-json"},
+				packages: []string{"./pkg"},
+			},
+			rerunOpts: rerunOpts{
+				runFlag: "-run=TestOne|TestTwo",
+				pkg:     "./fails",
+			},
+			expected: []string{"go", "test", "-run=TestOne|TestTwo", "-tags", "some", "-json", "./fails"},
+		}
+		run(t, "first", tc)
+		run(t, "second", tc)
+	})
 }
 
 func runCase(t *testing.T, name string, fn func(t *testing.T)) {
