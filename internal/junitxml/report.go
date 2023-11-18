@@ -16,6 +16,17 @@ import (
 	"gotest.tools/gotestsum/testjson"
 )
 
+type Encoder struct {
+}
+
+func (e *Encoder) Close() error {
+	return nil // TODO
+}
+
+func (e *Encoder) Encode(event testjson.TestEvent, execution *testjson.Execution) error {
+	return nil // TODO
+}
+
 // JUnitTestSuites is a collection of JUnit test suites.
 type JUnitTestSuites struct {
 	XMLName  xml.Name `xml:"testsuites"`

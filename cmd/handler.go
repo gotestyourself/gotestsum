@@ -18,6 +18,7 @@ type eventHandler struct {
 	err                  *bufio.Writer
 	jsonFile             writeSyncer
 	jsonFileTimingEvents writeSyncer
+	junitXMLEncoder      *junitxml.Encoder
 	maxFails             int
 }
 
@@ -36,6 +37,11 @@ func (h *eventHandler) Err(text string) error {
 }
 
 func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execution) error {
+	err := h.formatter.Format(event, execution)
+	if err != nil {
+		return fmt.Errorf("failed to format event: %w", err)
+	}
+
 	if err := writeWithNewline(h.jsonFile, event.Bytes()); err != nil {
 		return fmt.Errorf("failed to write JSON file: %w", err)
 	}
@@ -44,10 +50,10 @@ func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execu
 			return fmt.Errorf("failed to write JSON file: %w", err)
 		}
 	}
-
-	err := h.formatter.Format(event, execution)
-	if err != nil {
-		return fmt.Errorf("failed to format event: %w", err)
+	if h.junitXMLEncoder != nil {
+		if err := h.junitXMLEncoder.Encode(event, execution); err != nil {
+			return fmt.Errorf("failed to write JunitXML file: %w", err)
+		}
 	}
 
 	if h.maxFails > 0 && len(execution.Failed()) >= h.maxFails {
@@ -79,6 +85,7 @@ func (h *eventHandler) Flush() {
 			log.Errorf("Failed to sync JSON file: %v", err)
 		}
 	}
+	// TODO: sync xml file?
 }
 
 func (h *eventHandler) Close() error {
@@ -90,6 +97,11 @@ func (h *eventHandler) Close() error {
 	if h.jsonFileTimingEvents != nil {
 		if err := h.jsonFileTimingEvents.Close(); err != nil {
 			log.Errorf("Failed to close JSON file: %v", err)
+		}
+	}
+	if h.junitXMLEncoder != nil {
+		if err := h.junitXMLEncoder.Close(); err != nil {
+			log.Errorf("Failed to close JunitXML file: %v", err)
 		}
 	}
 	return nil
@@ -130,6 +142,10 @@ func newEventHandler(opts *options) (*eventHandler, error) {
 			return handler, fmt.Errorf("failed to create file: %w", err)
 		}
 	}
+	if opts.junitFile != "" {
+		// TODO: setup handler.junitXMLEncoder
+	}
+
 	return handler, nil
 }
 
