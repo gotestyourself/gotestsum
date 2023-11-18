@@ -127,12 +127,12 @@ func TestWriteJunitFile_CreatesDirectory(t *testing.T) {
 	junitFile := filepath.Join(dir.Path(), "new-path", "junit.xml")
 
 	opts := &options{
+		format:                       "debug",
 		junitFile:                    junitFile,
 		junitTestCaseClassnameFormat: &junitFieldFormatValue{},
 		junitTestSuiteNameFormat:     &junitFieldFormatValue{},
 	}
-	exec := &testjson.Execution{}
-	err := writeJUnitFile(opts, exec)
+	_, err := newEventHandler(opts)
 	assert.NilError(t, err)
 
 	_, err = os.Stat(junitFile)

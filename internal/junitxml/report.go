@@ -17,10 +17,25 @@ import (
 )
 
 type Encoder struct {
+	cfg       Config
+	out       *xml.Encoder
+	goVersion string
+}
+
+func NewEncoder(out io.Writer, cfg Config) *Encoder {
+	return &Encoder{
+		out:       xml.NewEncoder(out),
+		cfg:       configWithDefaults(cfg),
+		goVersion: goVersion(),
+	}
 }
 
 func (e *Encoder) Close() error {
-	return nil // TODO
+	return e.out.Close()
+}
+
+func (e *Encoder) Flush() error {
+	return e.out.Flush()
 }
 
 func (e *Encoder) Encode(event testjson.TestEvent, execution *testjson.Execution) error {

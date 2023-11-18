@@ -52,7 +52,7 @@ func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execu
 	}
 	if h.junitXMLEncoder != nil {
 		if err := h.junitXMLEncoder.Encode(event, execution); err != nil {
-			return fmt.Errorf("failed to write JunitXML file: %w", err)
+			return fmt.Errorf("failed to write Junit file: %w", err)
 		}
 	}
 
@@ -85,7 +85,11 @@ func (h *eventHandler) Flush() {
 			log.Errorf("Failed to sync JSON file: %v", err)
 		}
 	}
-	// TODO: sync xml file?
+	if h.junitXMLEncoder != nil {
+		if err := h.junitXMLEncoder.Flush(); err != nil {
+			log.Errorf("Failed to flush Junit file: %v", err)
+		}
+	}
 }
 
 func (h *eventHandler) Close() error {
@@ -101,7 +105,7 @@ func (h *eventHandler) Close() error {
 	}
 	if h.junitXMLEncoder != nil {
 		if err := h.junitXMLEncoder.Close(); err != nil {
-			log.Errorf("Failed to close JunitXML file: %v", err)
+			log.Errorf("Failed to close Junit file: %v", err)
 		}
 	}
 	return nil
@@ -143,33 +147,21 @@ func newEventHandler(opts *options) (*eventHandler, error) {
 		}
 	}
 	if opts.junitFile != "" {
-		// TODO: setup handler.junitXMLEncoder
+		_ = os.MkdirAll(filepath.Dir(opts.junitFile), 0o755)
+		junitFile, err := os.Create(opts.junitFile)
+		if err != nil {
+			return handler, fmt.Errorf("failed to open JUnit file: %v", err)
+		}
+
+		handler.junitXMLEncoder = junitxml.NewEncoder(junitFile, junitxml.Config{
+			ProjectName:             opts.junitProjectName,
+			FormatTestSuiteName:     opts.junitTestSuiteNameFormat.Value(),
+			FormatTestCaseClassname: opts.junitTestCaseClassnameFormat.Value(),
+			HideEmptyPackages:       opts.junitHideEmptyPackages,
+		})
 	}
 
 	return handler, nil
-}
-
-func writeJUnitFile(opts *options, execution *testjson.Execution) error {
-	if opts.junitFile == "" {
-		return nil
-	}
-	_ = os.MkdirAll(filepath.Dir(opts.junitFile), 0o755)
-	junitFile, err := os.Create(opts.junitFile)
-	if err != nil {
-		return fmt.Errorf("failed to open JUnit file: %v", err)
-	}
-	defer func() {
-		if err := junitFile.Close(); err != nil {
-			log.Errorf("Failed to close JUnit file: %v", err)
-		}
-	}()
-
-	return junitxml.Write(junitFile, execution, junitxml.Config{
-		ProjectName:             opts.junitProjectName,
-		FormatTestSuiteName:     opts.junitTestSuiteNameFormat.Value(),
-		FormatTestCaseClassname: opts.junitTestCaseClassnameFormat.Value(),
-		HideEmptyPackages:       opts.junitHideEmptyPackages,
-	})
 }
 
 func postRunHook(opts *options, execution *testjson.Execution) error {
