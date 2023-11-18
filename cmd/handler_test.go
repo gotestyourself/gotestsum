@@ -158,7 +158,7 @@ func TestScanTestOutput_TestTimeoutPanicRace(t *testing.T) {
 		golden.Assert(t, actual, "expected/"+name+"-summary")
 
 		var buf bytes.Buffer
-		err = junitxml.Write(&buf, exec, junitxml.Config{})
+		err = junitxml.writeToFile(&buf, exec, junitxml.Config{})
 		assert.NilError(t, err)
 
 		assert.Assert(t, cmp.Contains(buf.String(), "panic: test timed out"))

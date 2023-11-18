@@ -51,7 +51,7 @@ func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execu
 		}
 	}
 	if h.junitXMLEncoder != nil {
-		if err := h.junitXMLEncoder.Encode(event, execution); err != nil {
+		if err := h.junitXMLEncoder.Handle(event, execution); err != nil {
 			return fmt.Errorf("failed to write Junit file: %w", err)
 		}
 	}
@@ -85,17 +85,12 @@ func (h *eventHandler) Flush() {
 			log.Errorf("Failed to sync JSON file: %v", err)
 		}
 	}
-	if h.junitXMLEncoder != nil {
-		if err := h.junitXMLEncoder.Flush(); err != nil {
-			log.Errorf("Failed to flush Junit file: %v", err)
-		}
-	}
 }
 
 func (h *eventHandler) Close() error {
 	if h.jsonFile != nil {
 		if err := h.jsonFile.Close(); err != nil {
-			log.Errorf("Failed to close JSON file: %v", err)
+			log.Errorf("Failed to write JSON file: %v", err)
 		}
 	}
 	if h.jsonFileTimingEvents != nil {
