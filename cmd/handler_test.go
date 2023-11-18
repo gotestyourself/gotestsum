@@ -143,10 +143,15 @@ func TestScanTestOutput_TestTimeoutPanicRace(t *testing.T) {
 	run := func(t *testing.T, name string) {
 		format := testjson.NewEventFormatter(io.Discard, "testname", testjson.FormatOptions{})
 
+		buf := new(bufferCloser)
 		source := golden.Get(t, "input/go-test-json-"+name+".out")
+		encoder := junitxml.NewEncoder(buf, junitxml.Config{})
 		cfg := testjson.ScanConfig{
-			Stdout:  bytes.NewReader(source),
-			Handler: &eventHandler{formatter: format},
+			Stdout: bytes.NewReader(source),
+			Handler: &eventHandler{
+				formatter:       format,
+				junitXMLEncoder: encoder,
+			},
 		}
 		exec, err := testjson.ScanTestOutput(cfg)
 		assert.NilError(t, err)
@@ -157,10 +162,7 @@ func TestScanTestOutput_TestTimeoutPanicRace(t *testing.T) {
 		actual := text.ProcessLines(t, out, text.OpRemoveSummaryLineElapsedTime)
 		golden.Assert(t, actual, "expected/"+name+"-summary")
 
-		var buf bytes.Buffer
-		err = junitxml.writeToFile(&buf, exec, junitxml.Config{})
-		assert.NilError(t, err)
-
+		assert.NilError(t, encoder.Close())
 		assert.Assert(t, cmp.Contains(buf.String(), "panic: test timed out"))
 	}
 

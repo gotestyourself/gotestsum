@@ -25,8 +25,9 @@ type Encoder struct {
 
 func NewEncoder(out io.WriteCloser, cfg Config) *Encoder {
 	return &Encoder{
-		out: out,
-		cfg: configWithDefaults(cfg),
+		out:    out,
+		cfg:    configWithDefaults(cfg),
+		output: make(map[string]map[testjson.TestName][]string),
 	}
 }
 
@@ -128,6 +129,9 @@ type Config struct {
 type FormatFunc func(string) string
 
 func (e *Encoder) writeToFile() error {
+	if e.execution == nil {
+		return nil
+	}
 	if err := write(e.out, e.generate()); err != nil {
 		return fmt.Errorf("failed to write JUnit XML: %v", err)
 	}

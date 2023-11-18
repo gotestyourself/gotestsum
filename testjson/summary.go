@@ -217,6 +217,8 @@ func formatSkipped() testCaseFormatConfig {
 	}
 }
 
+// IsFramingLine returns true if line is output that indicates framing
+// of test events.
 // Deprecated: Do not use, will be removed when OutputType is added to stdlib
 // TODO: replace with check for OutputType=framing
 func IsFramingLine(line string, testName string) bool {
