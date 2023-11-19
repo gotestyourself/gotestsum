@@ -153,6 +153,7 @@ func newEventHandler(opts *options) (*eventHandler, error) {
 			FormatTestSuiteName:     opts.junitTestSuiteNameFormat.Value(),
 			FormatTestCaseClassname: opts.junitTestCaseClassnameFormat.Value(),
 			HideEmptyPackages:       opts.junitHideEmptyPackages,
+			Output:                  opts.junitOutput,
 		})
 	}
 

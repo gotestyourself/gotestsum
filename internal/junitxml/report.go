@@ -48,7 +48,9 @@ func (e *Encoder) Handle(event testjson.TestEvent, execution *testjson.Execution
 		return nil
 	}
 
-	// TODO: only store all output when cfg option is set
+	if e.cfg.Output != "all" {
+		return nil
+	}
 
 	pkg, ok := e.output[event.Package]
 	if !ok {
@@ -120,6 +122,7 @@ type Config struct {
 	FormatTestSuiteName     FormatFunc
 	FormatTestCaseClassname FormatFunc
 	HideEmptyPackages       bool
+	Output                  string
 	// This is used for tests to have a consistent timestamp
 	customTimestamp string
 	customElapsed   string
