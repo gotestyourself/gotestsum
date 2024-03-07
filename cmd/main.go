@@ -360,6 +360,15 @@ func goTestCmdArgs(opts *options, rerunOpts rerunOpts) []string {
 		result = append(result, rerunOpts.runFlag)
 	}
 
+	if rerunOpts.coverprofileFlag != "" {
+		// Replace the existing coverprofile arg with our new one in the re-run case.
+		coverprofileIndex, coverprofileIndexEnd := argIndex("coverprofile", args)
+		if coverprofileIndex >= 0 && coverprofileIndexEnd < len(args) {
+			args = append(args[:coverprofileIndex], args[coverprofileIndexEnd+1:]...)
+		}
+		result = append(result, rerunOpts.coverprofileFlag)
+	}
+
 	pkgArgIndex := findPkgArgPosition(args)
 	result = append(result, args[:pkgArgIndex]...)
 	result = append(result, cmdArgPackageList(opts, rerunOpts)...)

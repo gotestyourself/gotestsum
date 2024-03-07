@@ -8,12 +8,15 @@ import (
 	"sort"
 	"strings"
 
+	"golang.org/x/tools/cover"
+	"gotest.tools/gotestsum/internal/coverprofile"
 	"gotest.tools/gotestsum/testjson"
 )
 
 type rerunOpts struct {
-	runFlag string
-	pkg     string
+	runFlag          string
+	pkg              string
+	coverprofileFlag string
 }
 
 func (o rerunOpts) Args() []string {
@@ -24,13 +27,22 @@ func (o rerunOpts) Args() []string {
 	if o.pkg != "" {
 		result = append(result, o.pkg)
 	}
+	if o.coverprofileFlag != "" {
+		result = append(result, o.coverprofileFlag)
+	}
 	return result
+}
+
+func (o rerunOpts) withCoverprofile(coverprofile string) rerunOpts {
+	o.coverprofileFlag = "-coverprofile=" + coverprofile
+	return o
 }
 
 func newRerunOptsFromTestCase(tc testjson.TestCase) rerunOpts {
 	return rerunOpts{
-		runFlag: goTestRunFlagForTestCase(tc.Test),
-		pkg:     tc.Package,
+		runFlag:          goTestRunFlagForTestCase(tc.Test),
+		pkg:              tc.Package,
+		coverprofileFlag: "",
 	}
 }
 
@@ -56,18 +68,31 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 	defer cancel()
 	tcFilter := rerunFailsFilter(opts)
 
+	// We need to take special care for the coverprofile file in the rerun
+	// failed case. If we pass the same `-coverprofile` flag to the `go test`
+	// command, it will overwrite the file. We need to combine the coverprofile
+	// files from the original run and the rerun.
+	isCoverprofile, mainProfilePath := coverprofile.ParseCoverProfile(opts.args)
+	rerunProfiles := []*cover.Profile{}
+
 	rec := newFailureRecorderFromExecution(scanConfig.Execution)
 	for attempts := 0; rec.count() > 0 && attempts < opts.rerunFailsMaxAttempts; attempts++ {
 		testjson.PrintSummary(opts.stdout, scanConfig.Execution, testjson.SummarizeNone)
 		opts.stdout.Write([]byte("\n")) // nolint: errcheck
 
 		nextRec := newFailureRecorder(scanConfig.Handler)
-		for _, tc := range tcFilter(rec.failures) {
-			goTestProc, err := startGoTestFn(ctx, "", goTestCmdArgs(opts, newRerunOptsFromTestCase(tc)))
+		for i, tc := range tcFilter(rec.failures) {
+			rerunOpts := newRerunOptsFromTestCase(tc)
+			rerunProfilePath := ""
+			if isCoverprofile {
+				// create a new unique coverprofile filenames for each rerun
+				rerunProfilePath = fmt.Sprintf("%s.%d.%d", mainProfilePath, attempts, i)
+				rerunOpts = rerunOpts.withCoverprofile(rerunProfilePath)
+			}
+			goTestProc, err := startGoTestFn(ctx, "", goTestCmdArgs(opts, rerunOpts))
 			if err != nil {
 				return err
 			}
-
 			cfg := testjson.ScanConfig{
 				RunID:     attempts + 1,
 				Stdout:    goTestProc.stdout,
@@ -83,12 +108,41 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 			if exitErr != nil {
 				nextRec.lastErr = exitErr
 			}
+
+			// Need to wait for the go test command to finish before combining
+			// the coverprofile files, but before checking for errors.  Even if
+			// there is errors, we still need to combine the coverprofile files.
+			if isCoverprofile {
+				rerunProfile, err := cover.ParseProfiles(rerunProfilePath)
+				if err != nil {
+					return fmt.Errorf("failed to parse coverprofile %s: %v", rerunProfilePath, err)
+				}
+
+				rerunProfiles = append(rerunProfiles, rerunProfile...)
+
+				// Once we read the rerun profiles from files to memory, we can
+				// safely delete the rerun profile. This will allow us to avoid
+				// extra clean up in the case that we error out in future
+				// attempts.
+				if err := os.Remove(rerunProfilePath); err != nil {
+					return fmt.Errorf("failed to remove coverprofile %s after combined with the main profile: %v", rerunProfilePath, err)
+				}
+			}
+
 			if err := hasErrors(exitErr, scanConfig.Execution); err != nil {
 				return err
 			}
 		}
 		rec = nextRec
 	}
+
+	// Write the combined coverprofile files with the main coverprofile file
+	if isCoverprofile {
+		if err := coverprofile.Combine(mainProfilePath, rerunProfiles); err != nil {
+			return fmt.Errorf("failed to combine coverprofiles: %v", err)
+		}
+	}
+
 	return rec.lastErr
 }
 
