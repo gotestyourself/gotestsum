@@ -125,7 +125,8 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 				// extra clean up in the case that we error out in future
 				// attempts.
 				if err := os.Remove(rerunProfilePath); err != nil {
-					return fmt.Errorf("failed to remove coverprofile %s after combined with the main profile: %v", rerunProfilePath, err)
+					return fmt.Errorf("failed to remove coverprofile %s after combined with the main profile: %v",
+						rerunProfilePath, err)
 				}
 			}
 
