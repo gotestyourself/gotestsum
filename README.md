@@ -448,6 +448,7 @@ The projects below use (or have used) gotestsum.
 * [coder](https://github.com/coder/coder/blob/main/Makefile)
 * [docker/cli](https://github.com/docker/cli/blob/master/Makefile)
 * [mattermost](https://github.com/mattermost/mattermost/blob/master/server/Makefile)
+* [gofiber/fiber](https://github.com/gofiber/fiber/blob/main/.github/workflows/test.yml)
 
 Please open a GitHub issue or pull request to add or remove projects from this list.
 
