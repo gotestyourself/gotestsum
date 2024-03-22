@@ -1,5 +1,10 @@
+FAIL testjson/internal/broken
+
+=== Failed
+=== FAIL: testjson/internal/broken 
+FAIL	gotest.tools/gotestsum/testjson/internal/broken [build failed]
 
 === Errors
 ../testjson/internal/broken/broken.go:5:21: undefined: somepackage
 
-DONE 0 tests, 1 error
+DONE 0 tests, 1 failure, 1 error

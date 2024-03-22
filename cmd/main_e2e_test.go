@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	goversion "go/version"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -30,6 +31,9 @@ func TestMain(m *testing.M) {
 func TestE2E_RerunFails(t *testing.T) {
 	if testing.Short() {
 		t.Skip("too slow for short run")
+	}
+	if v := runtime.Version(); goversion.Compare(v, "go1.22") < 0 {
+		t.Skipf("version %v no longer supported by this test", v)
 	}
 	t.Setenv("GITHUB_ACTIONS", "no")
 
