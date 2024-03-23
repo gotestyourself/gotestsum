@@ -31,6 +31,9 @@ func TestE2E_RerunFails(t *testing.T) {
 	if testing.Short() {
 		t.Skip("too slow for short run")
 	}
+	if !isGoVersionAtLeast("go1.22") {
+		t.Skipf("version %v no longer supported by this test", runtime.Version())
+	}
 	t.Setenv("GITHUB_ACTIONS", "no")
 
 	type testCase struct {
