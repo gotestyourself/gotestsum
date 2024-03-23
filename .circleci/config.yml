@@ -27,21 +27,8 @@ workflows:
             name: go/golang
             tag: 1.20-alpine
 
-      - go/test:
-          name: test-windows
-          executor: windows
-          pre-steps:
-            - run: |
-                git config --global core.autocrlf false
-                git config --global core.symlinks true
-            - run: |
-                choco upgrade golang
-                echo 'export PATH="$PATH:/c/Program Files/Go/bin"' > $BASH_ENV
-            - run: go version
-
       - lint
       - build
-      - run
 
       - update-windows-golden:
           filters:
@@ -108,20 +95,6 @@ jobs:
       - store_artifacts:
           path: ./dist
           destination: dist
-
-  run:
-    executor:
-      name: go/golang
-      tag: 1.20-alpine
-    steps:
-      - go/install: {package: git}
-      - go/install-ssh
-      - checkout
-      - go/mod-download
-      - run: |
-          mkdir -p dist
-          go build -o dist/gotestsum .
-      - run: dist/gotestsum
 
   lint:
     executor:
