@@ -2,6 +2,7 @@ package testjson
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -56,6 +57,7 @@ type dotLine struct {
 	runes      int
 	builder    *strings.Builder
 	lastUpdate time.Time
+	terminal   bool
 }
 
 func (l *dotLine) update(dot string) {
@@ -96,6 +98,8 @@ func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 	}
 	line := d.pkgs[event.Package]
 	line.lastUpdate = event.Time
+	epkg := exec.Package(event.Package)
+	line.terminal = epkg.action.IsTerminal() || epkg.skipped
 
 	if !event.PackageEvent() {
 		line.update(fmtDot(event))
@@ -105,29 +109,46 @@ func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 		return nil
 	}
 
-	// Add an empty header to work around incorrect line counting
-	fmt.Fprint(d.writer, "\n\n")
-
-	sort.Slice(d.order, d.orderByLastUpdated)
+	persistent, progressing := []string{}, []string{}
+	sort.SliceStable(d.order, d.orderByLastUpdated)
 	for _, pkg := range d.order {
-		if d.opts.HideEmptyPackages && exec.Package(pkg).IsEmpty() {
+		p := exec.Package(pkg)
+		if d.opts.HideEmptyPackages && p.IsEmpty() {
+			continue
+		}
+		line := d.pkgs[pkg]
+		if line.terminal && pkg != event.Package {
+			// The package is done already, and the event is not for this package.
+			// This means we have already persistently emitted the package once; skip it
 			continue
 		}
 
-		line := d.pkgs[pkg]
 		pkgname := RelativePackagePath(pkg) + " "
-		prefix := fmtDotElapsed(exec.Package(pkg))
+		prefix := fmtDotElapsed(p)
 		line.checkWidth(len(prefix+pkgname), d.termWidth)
-		fmt.Fprintf(d.writer, prefix+pkgname+line.builder.String()+"\n")
+		lines := strings.Split(prefix+pkgname+line.builder.String(), "\n")
+
+		if line.terminal {
+			// This should happen exactly once per package, and any future times we filter our the line above
+			// Persist it so we permanently write the final line output
+			persistent = append(persistent, lines...)
+		} else {
+			progressing = append(progressing, lines...)
+		}
 	}
-	PrintSummary(d.writer, exec, SummarizeNone)
-	return d.writer.Flush()
+	buf := &bytes.Buffer{}
+	PrintSummary(buf, exec, SummarizeNone)
+	progressing = append(progressing, strings.Split(buf.String(), "\n")...)
+	d.writer.Write(persistent, progressing)
+	return nil
 }
 
 // orderByLastUpdated so that the most recently updated packages move to the
 // bottom of the list, leaving completed package in the same order at the top.
 func (d *dotFormatter) orderByLastUpdated(i, j int) bool {
-	return d.pkgs[d.order[i]].lastUpdate.Before(d.pkgs[d.order[j]].lastUpdate)
+	iterm := d.pkgs[d.order[i]].terminal
+	jterm := d.pkgs[d.order[j]].terminal
+	return iterm && !jterm
 }
 
 func fmtDotElapsed(p *Package) string {
@@ -139,6 +160,8 @@ func fmtDotElapsed(p *Package) string {
 	switch {
 	case p.cached:
 		return f("🖴 ")
+	case p.skipped:
+		return f("↷")
 	case elapsed <= 0:
 		return f("")
 	case elapsed >= time.Hour:
