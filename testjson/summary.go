@@ -178,7 +178,7 @@ func writeTestCaseSummary(out io.Writer, execution executionSummary, conf testCa
 			formatRunID(tc.RunID),
 			FormatDurationAsSeconds(tc.Elapsed, 2))
 		for _, line := range execution.OutputLines(tc) {
-			if isFramingLine(line, tc.Test.Name()) {
+			if IsFramingLine(line, tc.Test.Name()) {
 				continue
 			}
 			fmt.Fprint(out, line)
@@ -217,7 +217,11 @@ func formatSkipped() testCaseFormatConfig {
 	}
 }
 
-func isFramingLine(line string, testName string) bool {
+// IsFramingLine returns true if line is output that indicates framing
+// of test events.
+// Deprecated: Do not use, will be removed when OutputType is added to stdlib
+// TODO: replace with check for OutputType=framing
+func IsFramingLine(line string, testName string) bool {
 	return strings.HasPrefix(line, "=== RUN   Test") ||
 		strings.HasPrefix(line, "=== PAUSE Test") ||
 		strings.HasPrefix(line, "=== CONT  Test") ||

@@ -468,7 +468,7 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 
 		// test case output
 		if event.Test != "" && event.Action == ActionOutput {
-			if !isFramingLine(event.Output, event.Test) {
+			if !IsFramingLine(event.Output, event.Test) {
 				output[key] = append(output[key], event.Output)
 			}
 			return nil
