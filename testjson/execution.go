@@ -131,6 +131,21 @@ func (p *Package) TestCases() []TestCase {
 	return tc
 }
 
+// EarliestTime returns the earliest start time found within a child test case.
+func (p *Package) EarliestTime() time.Time {
+	found := false
+	earliest := time.Time{}
+
+	for _, tc := range p.TestCases() {
+		if !found || tc.Time.Before(earliest) {
+			earliest = tc.Time
+			found = true
+		}
+	}
+
+	return earliest
+}
+
 // LastFailedByName returns the most recent test with name in the list of Failed
 // tests. If no TestCase is found with that name, an empty TestCase is returned.
 //
@@ -650,6 +665,26 @@ func (e *Execution) end() []TestEvent {
 
 func (e *Execution) Started() time.Time {
 	return e.started
+}
+
+// EarliestTime returns the earliest runtime found in any of the packages within this execution.
+func (e *Execution) EarliestTime() time.Time {
+	found := false
+	earliest := time.Time{}
+
+	for _, p := range e.packages {
+		candidate := p.EarliestTime()
+		if candidate.IsZero() {
+			continue
+		}
+
+		if !found || candidate.Before(earliest) {
+			earliest = candidate
+			found = true
+		}
+	}
+
+	return earliest
 }
 
 // newExecution returns a new Execution and records the current time as the
