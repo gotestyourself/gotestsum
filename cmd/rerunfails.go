@@ -196,6 +196,10 @@ func writeRerunFailsReport(opts *options, exec *testjson.Execution) error {
 		return err
 	}
 
+	defer func() {
+		_ = fh.Close()
+	}()
+
 	sort.Strings(names)
 	for _, name := range names {
 		counts := results[name]
