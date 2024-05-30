@@ -16,30 +16,44 @@ import (
 )
 
 func TestWrite(t *testing.T) {
-	out := new(bytes.Buffer)
-	exec := createExecution(t)
+	t.Setenv("GOVERSION", "go7.7.7")
 
-	env.Patch(t, "GOVERSION", "go7.7.7")
-	err := Write(out, exec, Config{
+	out := new(bufferCloser)
+	exec := createExecution(t)
+	cfg := Config{
 		ProjectName:     "test",
 		customTimestamp: new(time.Time).Format(time.RFC3339),
 		customElapsed:   "2.1",
-	})
+	}
+	enc := NewEncoder(out, cfg)
+	assert.NilError(t, enc.Handle(testjson.TestEvent{}, exec))
+
+	err := enc.Close()
 	assert.NilError(t, err)
 	golden.Assert(t, out.String(), "junitxml-report.golden")
 }
 
-func TestWrite_HideEmptyPackages(t *testing.T) {
-	out := new(bytes.Buffer)
-	exec := createExecution(t)
+type bufferCloser struct {
+	bytes.Buffer
+}
 
-	env.Patch(t, "GOVERSION", "go7.7.7")
-	err := Write(out, exec, Config{
+func (bufferCloser) Close() error { return nil }
+
+func TestWrite_HideEmptyPackages(t *testing.T) {
+	t.Setenv("GOVERSION", "go7.7.7")
+
+	out := new(bufferCloser)
+	exec := createExecution(t)
+	cfg := Config{
 		ProjectName:       "test",
 		HideEmptyPackages: true,
 		customTimestamp:   new(time.Time).Format(time.RFC3339),
 		customElapsed:     "2.1",
-	})
+	}
+	enc := NewEncoder(out, cfg)
+	assert.NilError(t, enc.Handle(testjson.TestEvent{}, exec))
+
+	err := enc.Close()
 	assert.NilError(t, err)
 	golden.Assert(t, out.String(), "junitxml-report-skip-empty.golden")
 }

@@ -16,6 +16,53 @@ import (
 	"gotest.tools/gotestsum/testjson"
 )
 
+type Encoder struct {
+	out       io.WriteCloser
+	cfg       Config
+	output    map[string]map[testjson.TestName][]string
+	execution *testjson.Execution
+}
+
+func NewEncoder(out io.WriteCloser, cfg Config) *Encoder {
+	return &Encoder{
+		out:    out,
+		cfg:    configWithDefaults(cfg),
+		output: make(map[string]map[testjson.TestName][]string),
+	}
+}
+
+func (e *Encoder) Close() error {
+	if err := e.writeToFile(); err != nil {
+		return err
+	}
+	return e.out.Close()
+}
+
+func (e *Encoder) Handle(event testjson.TestEvent, execution *testjson.Execution) error {
+	e.execution = execution
+	if event.Action != testjson.ActionOutput {
+		return nil
+	}
+
+	if testjson.IsFramingLine(event.Output, event.Test) {
+		return nil
+	}
+
+	if e.cfg.Output != "all" {
+		return nil
+	}
+
+	pkg, ok := e.output[event.Package]
+	if !ok {
+		pkg = make(map[testjson.TestName][]string)
+		e.output[event.Package] = pkg
+	}
+
+	name := testjson.TestName(event.Test)
+	pkg[name] = append(pkg[name], event.Output)
+	return nil
+}
+
 // JUnitTestSuites is a collection of JUnit test suites.
 type JUnitTestSuites struct {
 	XMLName  xml.Name `xml:"testsuites"`
@@ -48,6 +95,7 @@ type JUnitTestCase struct {
 	Time        string            `xml:"time,attr"`
 	SkipMessage *JUnitSkipMessage `xml:"skipped,omitempty"`
 	Failure     *JUnitFailure     `xml:"failure,omitempty"`
+	SystemOut   string            `xml:"system-out,omitempty"`
 }
 
 // JUnitSkipMessage contains the reason why a testcase was skipped.
@@ -74,6 +122,7 @@ type Config struct {
 	FormatTestSuiteName     FormatFunc
 	FormatTestCaseClassname FormatFunc
 	HideEmptyPackages       bool
+	Output                  string
 	// This is used for tests to have a consistent timestamp
 	customTimestamp string
 	customElapsed   string
@@ -82,16 +131,19 @@ type Config struct {
 // FormatFunc converts a string from one format into another.
 type FormatFunc func(string) string
 
-// Write creates an XML document and writes it to out.
-func Write(out io.Writer, exec *testjson.Execution, cfg Config) error {
-	if err := write(out, generate(exec, cfg)); err != nil {
+func (e *Encoder) writeToFile() error {
+	if e.execution == nil {
+		return nil
+	}
+	if err := write(e.out, e.generate()); err != nil {
 		return fmt.Errorf("failed to write JUnit XML: %v", err)
 	}
 	return nil
 }
 
-func generate(exec *testjson.Execution, cfg Config) JUnitTestSuites {
-	cfg = configWithDefaults(cfg)
+func (e *Encoder) generate() JUnitTestSuites {
+	cfg := e.cfg
+	exec := e.execution
 	version := goVersion()
 	suites := JUnitTestSuites{
 		Name:     cfg.ProjectName,
@@ -114,7 +166,7 @@ func generate(exec *testjson.Execution, cfg Config) JUnitTestSuites {
 			Tests:      pkg.Total,
 			Time:       formatDurationAsSeconds(pkg.Elapsed()),
 			Properties: packageProperties(version),
-			TestCases:  packageTestCases(pkg, cfg.FormatTestCaseClassname),
+			TestCases:  packageTestCases(pkg, cfg.FormatTestCaseClassname, e.output[pkgname]),
 			Failures:   len(pkg.Failed),
 			Timestamp:  cfg.customTimestamp,
 		}
@@ -169,7 +221,11 @@ func goVersion() string {
 	return strings.TrimPrefix(strings.TrimSpace(string(out)), "go version ")
 }
 
-func packageTestCases(pkg *testjson.Package, formatClassname FormatFunc) []JUnitTestCase {
+func packageTestCases(
+	pkg *testjson.Package,
+	formatClassname FormatFunc,
+	output map[testjson.TestName][]string,
+) []JUnitTestCase {
 	cases := []JUnitTestCase{}
 
 	if pkg.TestMainFailed() {
@@ -185,23 +241,33 @@ func packageTestCases(pkg *testjson.Package, formatClassname FormatFunc) []JUnit
 
 	for _, tc := range pkg.Failed {
 		jtc := newJUnitTestCase(tc, formatClassname)
+
+		out := strings.Join(output[tc.Test], "")
+		if out == "" {
+			out = strings.Join(pkg.OutputLines(tc), "")
+		}
 		jtc.Failure = &JUnitFailure{
 			Message:  "Failed",
-			Contents: strings.Join(pkg.OutputLines(tc), ""),
+			Contents: out,
 		}
+		jtc.SystemOut = out
 		cases = append(cases, jtc)
 	}
 
 	for _, tc := range pkg.Skipped {
 		jtc := newJUnitTestCase(tc, formatClassname)
-		jtc.SkipMessage = &JUnitSkipMessage{
-			Message: strings.Join(pkg.OutputLines(tc), ""),
+		out := strings.Join(output[tc.Test], "")
+		if out == "" {
+			out = strings.Join(pkg.OutputLines(tc), "")
 		}
+		jtc.SkipMessage = &JUnitSkipMessage{Message: out}
+		jtc.SystemOut = out
 		cases = append(cases, jtc)
 	}
 
 	for _, tc := range pkg.Passed {
 		jtc := newJUnitTestCase(tc, formatClassname)
+		jtc.SystemOut = strings.Join(output[tc.Test], "")
 		cases = append(cases, jtc)
 	}
 	return cases
