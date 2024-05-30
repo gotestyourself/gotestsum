@@ -50,5 +50,6 @@ Format icons:
     emoticons                requires a font from https://www.nerdfonts.com/ (󰇵 󰇶 󰇸)
 
 Commands:
-    gotestsum tool slowest   find or skip the slowest tests
-    gotestsum help           print this help next
+    gotestsum tool ci-matrix   use previous test runtime to place packages into optimal buckets
+    gotestsum tool slowest     find or skip the slowest tests
+    gotestsum help             print this help next
