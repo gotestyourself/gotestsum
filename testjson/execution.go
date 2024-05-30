@@ -109,6 +109,7 @@ type Package struct {
 	// output caused by a test timeout. This is necessary to work around a race
 	// condition in test2json. See https://github.com/golang/go/issues/57305.
 	testTimeoutPanicInTest string
+	skipped                bool
 }
 
 // Result returns if the package passed, failed, or was skipped because there
@@ -371,6 +372,8 @@ func (p *Package) addEvent(event TestEvent) {
 	case ActionPass, ActionFail:
 		p.action = event.Action
 		p.elapsed = elapsedDuration(event.Elapsed)
+	case ActionSkip:
+		p.skipped = true
 	case ActionOutput:
 		if coverage, ok := isCoverageOutput(event.Output); ok {
 			p.coverage = coverage
