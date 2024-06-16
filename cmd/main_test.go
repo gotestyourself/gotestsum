@@ -88,6 +88,21 @@ func TestOptions_Validate_FromFlags(t *testing.T) {
 			args:     []string{"--rerun-fails", "--packages=./...", "--", "-failfast"},
 			expected: "-failfast can not be used with --rerun-fails",
 		},
+		{
+			name:     "raw-command and stdin mutually exclusive",
+			args:     []string{"--raw-command", "--stdin"},
+			expected: "--stdin and --raw-command are mutually exclusive",
+		},
+		{
+			name:     "stdin must not be used with args",
+			args:     []string{"--stdin", "--", "-coverprofile=/tmp/out"},
+			expected: `--stdin does not support additional arguments (["-coverprofile=/tmp/out"])`,
+		},
+		{
+			name:     "stderr depends on stdin",
+			args:     []string{"--stderr", "4"},
+			expected: "--stderr depends on --stdin",
+		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
