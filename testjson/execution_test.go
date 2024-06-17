@@ -251,6 +251,38 @@ func (s *captureHandler) Err(text string) error {
 	return nil
 }
 
+func TestScanTestOuput_SubtestWithNoRunningRoot(t *testing.T) {
+	source := []byte(`{"Action":"start","Package":"k8s.io/kubernetes/test/integration/scheduler_perf"}
+{"Action":"skip","Package":"k8s.io/kubernetes/test/integration/scheduler_perf","Test":"BenchmarkPerfScheduling/SchedulingBasic/500Nodes"}
+{"Action":"skip","Package":"k8s.io/kubernetes/test/integration/scheduler_perf","Test":"BenchmarkPerfScheduling/SchedulingPodAntiAffinity/500Nodes"}
+{"Action":"skip","Package":"k8s.io/kubernetes/test/integration/scheduler_perf","Test":"BenchmarkPerfScheduling/SchedulingSecrets/500Nodes"}
+{"Action":"skip","Package":"k8s.io/kubernetes/test/integration/scheduler_perf","Test":"BenchmarkPerfScheduling/SchedulingPodAffinity/500Nodes"}
+{"Action":"skip","Package":"k8s.io/kubernetes/test/integration/scheduler_perf","Test":"BenchmarkPerfScheduling/SchedulingPreferredPodAntiAffinity/500Nodes"}
+{"Action":"fail","Package":"k8s.io/kubernetes/test/integration/scheduler_perf","Test":"BenchmarkPerfScheduling/SchedulingDaemonset/15000Nodes"}
+{"Action":"fail","Package":"k8s.io/kubernetes/test/integration/scheduler_perf","Test":"BenchmarkPerfScheduling/SchedulingDaemonset"}
+{"Action":"skip","Package":"k8s.io/kubernetes/test/integration/scheduler_perf","Test":"BenchmarkPerfScheduling/SchedulingNodeAffinity/500Nodes"}
+{"Action":"fail","Package":"k8s.io/kubernetes/test/integration/scheduler_perf","Elapsed":660.472}`)
+
+	handler := &captureHandler{}
+	cfg := ScanConfig{
+		Stdout:  bytes.NewReader(source),
+		Handler: handler,
+	}
+	exec, err := ScanTestOutput(cfg)
+	assert.NilError(t, err)
+	actual := FilterFailedUnique(exec.Failed())
+
+	expected := []TestCase{
+		{
+			ID:      6,
+			Package: "k8s.io/kubernetes/test/integration/scheduler_perf",
+			Test:    "BenchmarkPerfScheduling/SchedulingDaemonset/15000Nodes",
+		},
+	}
+	cmpTestCase := cmp.AllowUnexported(TestCase{})
+	assert.DeepEqual(t, expected, actual, cmpTestCase)
+}
+
 func TestFilterFailedUnique_MultipleNested(t *testing.T) {
 	source := []byte(`{"Package": "pkg", "Action": "run"}
 	{"Package": "pkg", "Test": "TestParent", "Action": "run"}

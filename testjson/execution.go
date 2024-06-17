@@ -447,7 +447,11 @@ func (p *Package) addTestEvent(event TestEvent) {
 		// If this is a subtest, mark the root test as having a failed subtest
 		if tc.Test.IsSubTest() {
 			root, _ := TestName(event.Test).Split()
-			rootTestCase := p.running[root]
+			rootTestCase, ok := p.running[root]
+			if !ok {
+				rootTestCase = p.newTestCaseFromEvent(event)
+				rootTestCase.Test = TestName(root)
+			}
 			rootTestCase.hasSubTestFailed = true
 			p.running[root] = rootTestCase
 		}
