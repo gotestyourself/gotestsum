@@ -159,9 +159,7 @@ Format icons:
 
 Commands:
     %[1]s tool slowest   find or skip the slowest tests
-
     %[1]s help           print this help text
-
 `, name)
 }
 
