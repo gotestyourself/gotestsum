@@ -51,4 +51,4 @@ Format icons:
 
 Commands:
     gotestsum tool slowest   find or skip the slowest tests
-    gotestsum help           print this help next
+    gotestsum help           print this help text
