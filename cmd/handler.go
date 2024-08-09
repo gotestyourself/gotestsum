@@ -18,6 +18,7 @@ type eventHandler struct {
 	err                  *bufio.Writer
 	jsonFile             writeSyncer
 	jsonFileTimingEvents writeSyncer
+	junitXMLEncoder      *junitxml.Encoder
 	maxFails             int
 }
 
@@ -36,6 +37,11 @@ func (h *eventHandler) Err(text string) error {
 }
 
 func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execution) error {
+	err := h.formatter.Format(event, execution)
+	if err != nil {
+		return fmt.Errorf("failed to format event: %w", err)
+	}
+
 	if err := writeWithNewline(h.jsonFile, event.Bytes()); err != nil {
 		return fmt.Errorf("failed to write JSON file: %w", err)
 	}
@@ -44,10 +50,10 @@ func (h *eventHandler) Event(event testjson.TestEvent, execution *testjson.Execu
 			return fmt.Errorf("failed to write JSON file: %w", err)
 		}
 	}
-
-	err := h.formatter.Format(event, execution)
-	if err != nil {
-		return fmt.Errorf("failed to format event: %w", err)
+	if h.junitXMLEncoder != nil {
+		if err := h.junitXMLEncoder.Handle(event, execution); err != nil {
+			return fmt.Errorf("failed to write Junit file: %w", err)
+		}
 	}
 
 	if h.maxFails > 0 && len(execution.Failed()) >= h.maxFails {
@@ -84,12 +90,17 @@ func (h *eventHandler) Flush() {
 func (h *eventHandler) Close() error {
 	if h.jsonFile != nil {
 		if err := h.jsonFile.Close(); err != nil {
-			log.Errorf("Failed to close JSON file: %v", err)
+			log.Errorf("Failed to write JSON file: %v", err)
 		}
 	}
 	if h.jsonFileTimingEvents != nil {
 		if err := h.jsonFileTimingEvents.Close(); err != nil {
 			log.Errorf("Failed to close JSON file: %v", err)
+		}
+	}
+	if h.junitXMLEncoder != nil {
+		if err := h.junitXMLEncoder.Close(); err != nil {
+			log.Errorf("Failed to close Junit file: %v", err)
 		}
 	}
 	return nil
@@ -130,30 +141,23 @@ func newEventHandler(opts *options) (*eventHandler, error) {
 			return handler, fmt.Errorf("failed to create file: %w", err)
 		}
 	}
-	return handler, nil
-}
-
-func writeJUnitFile(opts *options, execution *testjson.Execution) error {
-	if opts.junitFile == "" {
-		return nil
-	}
-	_ = os.MkdirAll(filepath.Dir(opts.junitFile), 0o755)
-	junitFile, err := os.Create(opts.junitFile)
-	if err != nil {
-		return fmt.Errorf("failed to open JUnit file: %v", err)
-	}
-	defer func() {
-		if err := junitFile.Close(); err != nil {
-			log.Errorf("Failed to close JUnit file: %v", err)
+	if opts.junitFile != "" {
+		_ = os.MkdirAll(filepath.Dir(opts.junitFile), 0o755)
+		junitFile, err := os.Create(opts.junitFile)
+		if err != nil {
+			return handler, fmt.Errorf("failed to open JUnit file: %v", err)
 		}
-	}()
 
-	return junitxml.Write(junitFile, execution, junitxml.Config{
-		ProjectName:             opts.junitProjectName,
-		FormatTestSuiteName:     opts.junitTestSuiteNameFormat.Value(),
-		FormatTestCaseClassname: opts.junitTestCaseClassnameFormat.Value(),
-		HideEmptyPackages:       opts.junitHideEmptyPackages,
-	})
+		handler.junitXMLEncoder = junitxml.NewEncoder(junitFile, junitxml.Config{
+			ProjectName:             opts.junitProjectName,
+			FormatTestSuiteName:     opts.junitTestSuiteNameFormat.Value(),
+			FormatTestCaseClassname: opts.junitTestCaseClassnameFormat.Value(),
+			HideEmptyPackages:       opts.junitHideEmptyPackages,
+			Output:                  opts.junitOutput,
+		})
+	}
+
+	return handler, nil
 }
 
 func postRunHook(opts *options, execution *testjson.Execution) error {
