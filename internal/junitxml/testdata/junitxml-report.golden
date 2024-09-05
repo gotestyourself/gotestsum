@@ -13,7 +13,7 @@
 			<property name="go.version" value="go7.7.7"></property>
 		</properties>
 	</testsuite>
-	<testsuite tests="18" failures="0" time="0.000000" name="gotest.tools/gotestsum/testjson/internal/good" timestamp="0001-01-01T00:00:00Z">
+	<testsuite tests="18" failures="0" skipped="2" time="0.000000" name="gotest.tools/gotestsum/testjson/internal/good" timestamp="0001-01-01T00:00:00Z">
 		<properties>
 			<property name="go.version" value="go7.7.7"></property>
 		</properties>
@@ -73,7 +73,7 @@
 		<testcase classname="gotest.tools/gotestsum/testjson/internal/parallelfails" name="TestPassedWithStdout" time="0.000000"></testcase>
 		<testcase classname="gotest.tools/gotestsum/testjson/internal/parallelfails" name="TestWithStderr" time="0.000000"></testcase>
 	</testsuite>
-	<testsuite tests="29" failures="4" time="0.020000" name="gotest.tools/gotestsum/testjson/internal/withfails" timestamp="0001-01-01T00:00:00Z">
+	<testsuite tests="29" failures="4" skipped="3" time="0.020000" name="gotest.tools/gotestsum/testjson/internal/withfails" timestamp="0001-01-01T00:00:00Z">
 		<properties>
 			<property name="go.version" value="go7.7.7"></property>
 		</properties>
