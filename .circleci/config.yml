@@ -6,27 +6,6 @@ orbs:
 workflows:
   ci:
     jobs:
-      - go/test:
-          name: test-go-1.22
-          gotestsum-format: testname
-          executor:
-            name: go/golang
-            tag: 1.18-alpine
-
-      - go/test:
-          name: test-go-1.21
-          gotestsum-format: testname
-          executor:
-            name: go/golang
-            tag: 1.19-alpine
-
-      - go/test:
-          name: test-go-1.20
-          gotestsum-format: testname
-          executor:
-            name: go/golang
-            tag: 1.20-alpine
-
       - lint
       - build
 
@@ -72,7 +51,7 @@ jobs:
         default: false
     executor:
       name: go/golang
-      tag: 1.20-alpine
+      tag: 1.23-alpine
     steps:
       - go/install: {package: git}
       - go/install-ssh
@@ -99,7 +78,7 @@ jobs:
   lint:
     executor:
       name: go/golang
-      tag: 1.20-alpine
+      tag: 1.23-alpine
     steps:
       - checkout
       - run: go mod download
