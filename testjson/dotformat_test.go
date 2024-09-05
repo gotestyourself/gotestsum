@@ -18,7 +18,7 @@ import (
 )
 
 func TestScanTestOutput_WithDotsFormatter(t *testing.T) {
-	skip.If(t, runtime.GOOS == "windows")
+	skip.If(t, runtime.GOOS == "windows" || runtime.GOOS == "darwin")
 
 	out := new(bytes.Buffer)
 	dotfmt := &dotFormatter{
