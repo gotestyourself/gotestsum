@@ -3,6 +3,7 @@ module gotest.tools/gotestsum
 require (
 	github.com/bitfield/gotestdox v0.2.2
 	github.com/dnephin/pflag v1.0.7
+	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/fatih/color v1.17.0
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/google/go-cmp v0.6.0

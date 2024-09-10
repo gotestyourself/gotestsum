@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"regexp"
-	"sort"
 	"strings"
 
 	"gotest.tools/gotestsum/testjson"
@@ -159,38 +158,6 @@ func writeRerunFailsReport(opts *options, exec *testjson.Execution) error {
 		return nil
 	}
 
-	type testCaseCounts struct {
-		total  int
-		failed int
-	}
-
-	names := []string{}
-	results := map[string]testCaseCounts{}
-	for _, failure := range exec.Failed() {
-		name := failure.Package + "." + failure.Test.Name()
-		if _, ok := results[name]; ok {
-			continue
-		}
-		names = append(names, name)
-
-		pkg := exec.Package(failure.Package)
-		counts := testCaseCounts{}
-
-		for _, tc := range pkg.Failed {
-			if tc.Test == failure.Test {
-				counts.total++
-				counts.failed++
-			}
-		}
-		for _, tc := range pkg.Passed {
-			if tc.Test == failure.Test {
-				counts.total++
-			}
-		}
-		// Skipped tests are not counted, but presumably skipped tests can not fail
-		results[name] = counts
-	}
-
 	fh, err := os.Create(opts.rerunFailsReportFile)
 	if err != nil {
 		return err
@@ -200,10 +167,15 @@ func writeRerunFailsReport(opts *options, exec *testjson.Execution) error {
 		_ = fh.Close()
 	}()
 
-	sort.Strings(names)
-	for _, name := range names {
-		counts := results[name]
-		fmt.Fprintf(fh, "%s: %d runs, %d failures\n", name, counts.total, counts.failed)
-	}
+	exec.Results().Each(func(key interface{}, value interface{}) {
+		name := key.(string)
+		tr := value.(testjson.TestResult)
+		if tr.IsFlaky() {
+			fmt.Fprintf(fh, "%s: FLAKY, failed in %d out of %d runs\n", name, len(tr.Failed), tr.Total())
+		} else if len(tr.Failed) > 0 {
+			fmt.Fprintf(fh, "%s: FAILED in all %d runs\n", name, len(tr.Failed))
+		}
+	})
+
 	return nil
 }
