@@ -576,7 +576,9 @@ func (e *Execution) Results() *treemap.Map {
 		pkg := e.packages[pkgName]
 
 		if pkg.TestMainFailed() {
-			results.Put(pkgName, TestResult{})
+			result := TestResult{}
+			result.Failed = append(result.Failed, TestCase{Package: pkgName})
+			results.Put(pkgName, result)
 			continue
 		}
 
