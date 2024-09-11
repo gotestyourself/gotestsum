@@ -1,0 +1,8 @@
+
+=== Failed
+=== FAIL: github.com/go-logr/logr/benchmark BenchmarkDiscardLogInfoOneArg (unknown)
+=== RUN   BenchmarkDiscardLogInfoOneArg
+BenchmarkDiscardLogInfoOneArg
+BenchmarkDiscardLogInfoOneArg-36    	12695464	        91.33 ns/op
+
+DONE 1 tests, 1 failure in 0.000s

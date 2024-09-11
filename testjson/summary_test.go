@@ -305,6 +305,16 @@ func TestPrintSummary(t *testing.T) {
 			},
 			expectedOut: "summary/with-run-id",
 		},
+		{
+			name:        "Go 1.20 benchmark",
+			config:      scanConfigFromGolden("input/go-1-20-benchmark.out"),
+			expectedOut: "summary/go-1-20-benchmark",
+		},
+		{
+			name:        "Go 1.20 benchmark panic",
+			config:      scanConfigFromGolden("input/go-1-20-panicked-benchmark.out"),
+			expectedOut: "summary/go-1-20-benchmark-panic",
+		},
 	}
 
 	for _, tc := range testCases {

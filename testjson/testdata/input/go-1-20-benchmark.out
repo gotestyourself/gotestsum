@@ -1,0 +1,12 @@
+{"Time":"2024-09-11T12:03:43.407422644+02:00","Action":"start","Package":"github.com/go-logr/logr/benchmark"}
+{"Time":"2024-09-11T12:03:43.412315359+02:00","Action":"output","Package":"github.com/go-logr/logr/benchmark","Output":"goos: linux\n"}
+{"Time":"2024-09-11T12:03:43.41235901+02:00","Action":"output","Package":"github.com/go-logr/logr/benchmark","Output":"goarch: amd64\n"}
+{"Time":"2024-09-11T12:03:43.412368425+02:00","Action":"output","Package":"github.com/go-logr/logr/benchmark","Output":"pkg: github.com/go-logr/logr/benchmark\n"}
+{"Time":"2024-09-11T12:03:43.412375551+02:00","Action":"output","Package":"github.com/go-logr/logr/benchmark","Output":"cpu: Intel(R) Core(TM) i9-7980XE CPU @ 2.60GHz\n"}
+{"Time":"2024-09-11T12:03:43.412385223+02:00","Action":"run","Package":"github.com/go-logr/logr/benchmark","Test":"BenchmarkDiscardLogInfoOneArg"}
+{"Time":"2024-09-11T12:03:43.412392388+02:00","Action":"output","Package":"github.com/go-logr/logr/benchmark","Test":"BenchmarkDiscardLogInfoOneArg","Output":"=== RUN   BenchmarkDiscardLogInfoOneArg\n"}
+{"Time":"2024-09-11T12:03:43.412399638+02:00","Action":"output","Package":"github.com/go-logr/logr/benchmark","Test":"BenchmarkDiscardLogInfoOneArg","Output":"BenchmarkDiscardLogInfoOneArg\n"}
+{"Time":"2024-09-11T12:03:44.671541518+02:00","Action":"output","Package":"github.com/go-logr/logr/benchmark","Test":"BenchmarkDiscardLogInfoOneArg","Output":"BenchmarkDiscardLogInfoOneArg-36    \t12695464\t        91.33 ns/op\n"}
+{"Time":"2024-09-11T12:03:44.671596547+02:00","Action":"output","Package":"github.com/go-logr/logr/benchmark","Output":"PASS\n"}
+{"Time":"2024-09-11T12:03:44.672577312+02:00","Action":"output","Package":"github.com/go-logr/logr/benchmark","Output":"ok  \tgithub.com/go-logr/logr/benchmark\t1.265s\n"}
+{"Time":"2024-09-11T12:03:44.67260672+02:00","Action":"pass","Package":"github.com/go-logr/logr/benchmark","Elapsed":1.2650000000000001}
