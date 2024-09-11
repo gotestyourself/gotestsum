@@ -81,11 +81,24 @@ func PrintSummary(out io.Writer, execution *Execution, opts Summary) {
 		writeErrorSummary(out, errors)
 	}
 
-	fmt.Fprintf(out, "\n%s %d tests%s%s%s in %s\n",
+	var total, failed, flaky int
+	execution.Results().Each(func(key interface{}, value interface{}) {
+		tr := value.(TestResult)
+		if tr.IsFlaky() {
+			flaky++
+		} else if len(tr.Failed) > 0 {
+			failed++
+		}
+		total++
+	})
+	total = total + len(execution.Skipped())
+
+	fmt.Fprintf(out, "\n%s %d tests%s%s%s%s in %s\n",
 		formatExecStatus(execution),
-		execution.Total(),
+		total,
 		formatTestCount(len(execution.Skipped()), "skipped", ""),
-		formatTestCount(len(execution.Failed()), "failure", "s"),
+		formatTestCount(flaky, "flaky", ""),
+		formatTestCount(failed, "failed", ""),
 		formatTestCount(countErrors(errors), "error", "s"),
 		FormatDurationAsSeconds(execution.Elapsed(), 3))
 }

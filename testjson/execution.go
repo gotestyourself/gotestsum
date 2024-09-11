@@ -12,6 +12,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/emirpasic/gods/maps/treemap"
+	"github.com/emirpasic/gods/utils"
 	"golang.org/x/sync/errgroup"
 	"gotest.tools/gotestsum/internal/log"
 )
@@ -316,6 +318,20 @@ func rootTestPassed(p *Package, subtest TestCase) bool {
 	return false
 }
 
+type TestResult struct {
+	Failed []TestCase
+	Passed []TestCase
+}
+
+// isFlaky checks if any test case is present in both Failed and Passed slices.
+func (tr *TestResult) IsFlaky() bool {
+	return len(tr.Passed) > 0 && len(tr.Failed) > 0
+}
+
+func (tr *TestResult) Total() int {
+	return len(tr.Passed) + len(tr.Failed)
+}
+
 // TestCase stores the name and elapsed time for a test case.
 type TestCase struct {
 	// ID is unique ID for each test case. A test run may include multiple instances
@@ -333,6 +349,11 @@ type TestCase struct {
 	hasSubTestFailed bool
 	// Time when the test was run.
 	Time time.Time
+}
+
+// FQN returns the fully qualified name of the test case.
+func (tc *TestCase) FullyQualifiedName() string {
+	return tc.Package + "." + tc.Test.Name()
 }
 
 func newPackage() *Package {
@@ -543,6 +564,54 @@ func (e *Execution) Failed() []TestCase {
 		failed = append(failed, pkg.Failed...)
 	}
 	return failed
+}
+
+// Collapse all test cases by by unique {package.test_name}
+func (e *Execution) Results() *treemap.Map {
+
+	// Skipped tests are not included in results
+	results := treemap.NewWith(utils.StringComparator)
+
+	for _, pkgName := range sortedKeys(e.packages) {
+		pkg := e.packages[pkgName]
+
+		if pkg.TestMainFailed() {
+			result := TestResult{}
+			result.Failed = append(result.Failed, TestCase{Package: pkgName})
+			results.Put(pkgName, result)
+			continue
+		}
+
+		for _, tc := range pkg.Failed {
+			name := tc.FullyQualifiedName()
+
+			// Check if the name exists in the results map
+			if _, ok := results.Get(name); !ok {
+				// If it doesn't exist, create a new TestResult and add it to the map
+				results.Put(name, TestResult{})
+			}
+			value, _ := results.Get(name)
+			tr := value.(TestResult)
+			tr.Failed = append(tr.Failed, tc)
+			results.Put(name, tr)
+		}
+
+		for _, tc := range pkg.Passed {
+			name := tc.FullyQualifiedName()
+
+			// Check if the name exists in the results map
+			if _, ok := results.Get(name); !ok {
+				// If it doesn't exist, create a new TestResult and add it to the map
+				results.Put(name, TestResult{})
+			}
+			value, _ := results.Get(name)
+			tr := value.(TestResult)
+			tr.Passed = append(tr.Passed, tc)
+			results.Put(name, tr)
+		}
+	}
+
+	return results
 }
 
 // FilterFailedUnique filters a slice of failed TestCases to remove any parent
