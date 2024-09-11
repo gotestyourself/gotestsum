@@ -95,7 +95,7 @@ func PrintSummary(out io.Writer, execution *Execution, opts Summary) {
 
 	fmt.Fprintf(out, "\n%s %d tests%s%s%s%s in %s\n",
 		formatExecStatus(execution),
-		total+len(execution.Skipped()),
+		total,
 		formatTestCount(len(execution.Skipped()), "skipped", ""),
 		formatTestCount(flaky, "flaky", ""),
 		formatTestCount(failed, "failed", ""),
