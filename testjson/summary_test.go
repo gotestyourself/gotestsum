@@ -3,6 +3,7 @@ package testjson
 import (
 	"bytes"
 	"io"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -51,13 +52,18 @@ func TestPrintSummary_NoFailures(t *testing.T) {
 	out := new(bytes.Buffer)
 	start := time.Now()
 	exec := &Execution{
-		started: start,
-		done:    true,
-		packages: map[string]*Package{
-			"foo":   {Total: 12},
-			"other": {Total: 1},
-		},
+		started:  start,
+		done:     true,
+		packages: map[string]*Package{},
 	}
+	foo := Package{Total: 12}
+	foo.Passed = createTestCases("foo", &foo, 12)
+	exec.packages["foo"] = &foo
+
+	other := Package{Total: 1}
+	other.Passed = createTestCases("other", &other, 1)
+	exec.packages["other"] = &other
+
 	timeNow = func() time.Time {
 		return start.Add(34123111 * time.Microsecond)
 	}
@@ -65,6 +71,18 @@ func TestPrintSummary_NoFailures(t *testing.T) {
 
 	expected := "\nDONE 13 tests in 34.123s\n"
 	assert.Equal(t, out.String(), expected)
+}
+
+func createTestCases(pkgName string, pkg *Package, count int) []TestCase {
+	var tests []TestCase
+	for i := 0; i < count; i++ {
+		tests = append(tests, TestCase{
+			Package: pkgName,
+			Test:    TestName("Test" + strconv.Itoa(i)),
+			ID:      1,
+		})
+	}
+	return tests
 }
 
 func TestPrintSummary_WithFailures(t *testing.T) {
@@ -174,7 +192,7 @@ Some stdout/stderr here
 === Errors
 pkg/file.go:99:12: missing ',' before newline
 
-DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
+DONE 5 tests, 1 skipped, 4 failed, 1 error in 34.123s
 `
 		assert.Equal(t, out.String(), expected)
 	})
@@ -196,7 +214,7 @@ DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
 === Errors
 pkg/file.go:99:12: missing ',' before newline
 
-DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
+DONE 5 tests, 1 skipped, 4 failed, 1 error in 34.123s
 `
 		assert.Equal(t, out.String(), expected)
 	})
@@ -209,7 +227,7 @@ DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
 === Errors
 pkg/file.go:99:12: missing ',' before newline
 
-DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
+DONE 5 tests, 1 skipped, 4 failed, 1 error in 34.123s
 `
 		assert.Equal(t, out.String(), expected)
 	})
