@@ -307,6 +307,10 @@ func rootTestPassed(p *Package, subtest TestCase) bool {
 			continue
 		}
 
+		// A TestCase name can exist more than once in an Execution due to
+		// the go test -count=n flag or when the input contains multiple separate
+		// test runs.
+		// Check the testcase has the correct ID for this subtest.
 		for _, subID := range p.subTests[tc.ID] {
 			if subID == subtest.ID {
 				return true
