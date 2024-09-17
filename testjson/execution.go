@@ -262,12 +262,12 @@ func (p *Package) IsEmpty() bool {
 
 const neverFinished time.Duration = -1
 
-// end adds any tests that were missing an ActionFail TestEvent to the list of
+// strays adds any tests that were missing an ActionFail TestEvent to the list of
 // Failed, and returns a slice of artificial TestEvent for the missing ones.
 //
 // This is done to work around 'go test' not sending the ActionFail TestEvents
 // in some cases, when a test panics.
-func (p *Package) end() []TestEvent {
+func (p *Package) strays() []TestEvent {
 	result := make([]TestEvent, 0, len(p.running))
 	for k, tc := range p.running {
 		if tc.Test.IsSubTest() && rootTestPassed(p, tc) {
@@ -307,6 +307,10 @@ func rootTestPassed(p *Package, subtest TestCase) bool {
 			continue
 		}
 
+		// A TestCase name can exist more than once in an Execution due to
+		// the go test -count=n flag or when the input contains multiple separate
+		// test runs.
+		// Check the testcase has the correct ID for this subtest.
 		for _, subID := range p.subTests[tc.ID] {
 			if subID == subtest.ID {
 				return true
@@ -447,7 +451,11 @@ func (p *Package) addTestEvent(event TestEvent) {
 		// If this is a subtest, mark the root test as having a failed subtest
 		if tc.Test.IsSubTest() {
 			root, _ := TestName(event.Test).Split()
-			rootTestCase := p.running[root]
+			rootTestCase, ok := p.running[root]
+			if !ok {
+				rootTestCase = p.newTestCaseFromEvent(event)
+				rootTestCase.Test = TestName(root)
+			}
 			rootTestCase.hasSubTestFailed = true
 			p.running[root] = rootTestCase
 		}
@@ -639,11 +647,10 @@ func (e *Execution) HasPanic() bool {
 	return false
 }
 
-func (e *Execution) end() []TestEvent {
-	e.done = true
+func (e *Execution) Strays() []TestEvent {
 	var result []TestEvent // nolint: prealloc
 	for _, pkg := range e.packages {
-		result = append(result, pkg.end()...)
+		result = append(result, pkg.strays()...)
 	}
 	return result
 }
@@ -726,11 +733,12 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 	})
 
 	err := group.Wait()
-	for _, event := range execution.end() {
+	for _, event := range execution.Strays() {
 		if err := config.Handler.Event(event, execution); err != nil {
 			return execution, err
 		}
 	}
+	execution.done = true
 	return execution, err
 }
 
