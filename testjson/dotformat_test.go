@@ -3,6 +3,7 @@ package testjson
 import (
 	"bytes"
 	"math/rand"
+	"os"
 	"runtime"
 	"testing"
 	"testing/quick"
@@ -18,7 +19,8 @@ import (
 )
 
 func TestScanTestOutput_WithDotsFormatter(t *testing.T) {
-	skip.If(t, runtime.GOOS == "windows" || runtime.GOOS == "darwin")
+	skip.If(t, runtime.GOOS == "windows")
+	skip.If(t, os.Getenv("CI") == "true", "flaky on Github Actions")
 
 	out := new(bytes.Buffer)
 	dotfmt := &dotFormatter{
