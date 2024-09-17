@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -70,6 +71,10 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		"use different icons, see help for options")
 	flags.BoolVar(&opts.rawCommand, "raw-command", false,
 		"don't prepend 'go test -json' to the 'go test' command")
+	flags.BoolVar(&opts.readStdin, "stdin", false,
+		"don't run any command, instead read go test stdout from stdin")
+	flags.IntVar(&opts.readStderrFD, "stderr", 0,
+		"read go test stderr from a certain `file descriptor` (only valid in combination with -stdin)")
 	flags.BoolVar(&opts.ignoreNonJSONOutputLines, "ignore-non-json-output-lines", false,
 		"write non-JSON 'go test' output lines to stderr instead of failing")
 	flags.Lookup("ignore-non-json-output-lines").Hidden = true
@@ -176,6 +181,8 @@ type options struct {
 	formatOptions                testjson.FormatOptions
 	debug                        bool
 	rawCommand                   bool
+	readStdin                    bool
+	readStderrFD                 int
 	ignoreNonJSONOutputLines     bool
 	jsonFile                     string
 	jsonFileTimingEvents         string
@@ -198,6 +205,8 @@ type options struct {
 	version                      bool
 
 	// shims for testing
+	stdin  io.Reader
+	fd3    io.Reader
 	stdout io.Writer
 	stderr io.Writer
 }
@@ -211,6 +220,15 @@ func (o options) Validate() error {
 	if o.rerunFailsMaxAttempts > 0 && boolArgIndex("failfast", o.args) > -1 {
 		return fmt.Errorf("-failfast can not be used with --rerun-fails " +
 			"because not all test cases will run")
+	}
+	if o.rawCommand && o.readStdin {
+		return errors.New("--stdin and --raw-command are mutually exclusive")
+	}
+	if o.readStdin && len(o.args) > 0 {
+		return fmt.Errorf("--stdin does not support additional arguments (%q)", o.args)
+	}
+	if o.readStderrFD > 0 && !o.readStdin {
+		return errors.New("--stderr depends on --stdin")
 	}
 	return nil
 }
@@ -264,27 +282,50 @@ func run(opts *options) error {
 		return err
 	}
 
-	goTestProc, err := startGoTestFn(ctx, "", goTestCmdArgs(opts, rerunOpts{}))
-	if err != nil {
-		return err
-	}
-
 	handler, err := newEventHandler(opts)
 	if err != nil {
 		return err
 	}
 	defer handler.Close() // nolint: errcheck
 	cfg := testjson.ScanConfig{
-		Stdout:                   goTestProc.stdout,
-		Stderr:                   goTestProc.stderr,
 		Handler:                  handler,
 		Stop:                     cancel,
 		IgnoreNonJSONOutputLines: opts.ignoreNonJSONOutputLines,
 	}
+
+	var goTestProc *proc
+	if opts.readStdin {
+		cfg.Stdout = os.Stdin
+		if opts.stdin != nil {
+			cfg.Stdout = opts.stdin
+		}
+		if opts.readStderrFD > 0 {
+			if opts.readStderrFD == 3 && opts.fd3 != nil {
+				cfg.Stderr = opts.fd3
+			} else {
+				cfg.Stderr = os.NewFile(uintptr(opts.readStderrFD), fmt.Sprintf("go test stderr on fd %d", opts.stderr))
+			}
+		} else {
+			cfg.Stderr = bytes.NewReader(nil)
+		}
+	} else {
+		p, err := startGoTestFn(ctx, "", goTestCmdArgs(opts, rerunOpts{}))
+		if err != nil {
+			return err
+		}
+		goTestProc = p
+		cfg.Stdout = p.stdout
+		cfg.Stderr = p.stderr
+	}
+
 	exec, err := testjson.ScanTestOutput(cfg)
 	handler.Flush()
 	if err != nil {
 		return finishRun(opts, exec, err)
+	}
+
+	if opts.readStdin {
+		return finishRun(opts, exec, nil)
 	}
 
 	exitErr := goTestProc.cmd.Wait()

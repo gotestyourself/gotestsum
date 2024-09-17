@@ -1,0 +1,7 @@
+PASS example.com/test.TestSomething
+PASS example.com/test
+
+=== Errors
+build failure
+
+DONE 1 tests, 1 error
