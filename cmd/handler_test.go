@@ -13,7 +13,6 @@ import (
 	"gotest.tools/gotestsum/testjson"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
-	"gotest.tools/v3/env"
 	"gotest.tools/v3/fs"
 	"gotest.tools/v3/golden"
 )
@@ -32,8 +31,8 @@ func TestPostRunHook(t *testing.T) {
 		stdout:               buf,
 	}
 
-	env.Patch(t, "GOTESTSUM_FORMAT", "short")
-	env.Patch(t, "GOTESTSUM_FORMAT_ICONS", "default")
+	t.Setenv("GOTESTSUM_FORMAT", "short")
+	t.Setenv("GOTESTSUM_FORMAT_ICONS", "default")
 
 	exec := newExecFromTestData(t)
 	err = postRunHook(opts, exec)

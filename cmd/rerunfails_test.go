@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 	"testing"
 
@@ -31,7 +31,7 @@ func TestWriteRerunFailsReport(t *testing.T) {
 	err = writeRerunFailsReport(opts, exec)
 	assert.NilError(t, err)
 
-	raw, err := ioutil.ReadFile(reportFile.Path())
+	raw, err := os.ReadFile(reportFile.Path())
 	assert.NilError(t, err)
 	golden.Assert(t, string(raw), t.Name()+"-expected")
 }
@@ -53,7 +53,7 @@ func TestWriteRerunFailsReport_HandlesMissingActionRunEvents(t *testing.T) {
 	err = writeRerunFailsReport(opts, exec)
 	assert.NilError(t, err)
 
-	raw, err := ioutil.ReadFile(reportFile.Path())
+	raw, err := os.ReadFile(reportFile.Path())
 	assert.NilError(t, err)
 	golden.Assert(t, string(raw), t.Name()+"-expected")
 }
@@ -117,7 +117,7 @@ func TestRerunFailed_ReturnsAnErrorWhenTheLastTestIsSuccessful(t *testing.T) {
 		},
 	}
 
-	fn := func(args []string) *proc {
+	fn := func([]string) *proc {
 		next := events[0]
 		events = events[1:]
 		return &proc{
@@ -146,7 +146,7 @@ func TestRerunFailed_ReturnsAnErrorWhenTheLastTestIsSuccessful(t *testing.T) {
 
 func patchStartGoTestFn(f func(args []string) *proc) func() {
 	orig := startGoTestFn
-	startGoTestFn = func(ctx context.Context, dir string, args []string) (*proc, error) {
+	startGoTestFn = func(_ context.Context, _ string, args []string) (*proc, error) {
 		return f(args), nil
 	}
 	return func() {
@@ -190,7 +190,7 @@ func (e exitCodeError) ExitCode() int {
 }
 
 func newExitCode(msg string, code int) error {
-	return exitCodeError{error: fmt.Errorf(msg), code: code}
+	return exitCodeError{error: fmt.Errorf("%v", msg), code: code}
 }
 
 type noopHandler struct{}

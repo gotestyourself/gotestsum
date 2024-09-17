@@ -341,7 +341,7 @@ func TestRun_RerunFails_WithTooManyInitialFailures(t *testing.T) {
 {"Package": "pkg", "Action": "fail"}
 `
 
-	fn := func(args []string) *proc {
+	fn := func([]string) *proc {
 		return &proc{
 			cmd:    fakeWaiter{result: newExitCode("failed", 1)},
 			stdout: strings.NewReader(jsonFailed),
@@ -375,7 +375,7 @@ func TestRun_RerunFails_BuildErrorPreventsRerun(t *testing.T) {
 {"Package": "pkg", "Action": "fail"}
 `
 
-	fn := func(args []string) *proc {
+	fn := func([]string) *proc {
 		return &proc{
 			cmd:    fakeWaiter{result: newExitCode("failed", 1)},
 			stdout: strings.NewReader(jsonFailed),
@@ -411,7 +411,7 @@ func TestRun_RerunFails_PanicPreventsRerun(t *testing.T) {
 {"Package": "pkg", "Action": "fail"}
 `
 
-	fn := func(args []string) *proc {
+	fn := func([]string) *proc {
 		return &proc{
 			cmd:    fakeWaiter{result: newExitCode("failed", 1)},
 			stdout: strings.NewReader(jsonFailed),
@@ -479,7 +479,7 @@ func TestRun_JsonFileIsSyncedBeforePostRunCommand(t *testing.T) {
 
 	input := golden.Get(t, "../../testjson/testdata/input/go-test-json.out")
 
-	fn := func(args []string) *proc {
+	fn := func([]string) *proc {
 		return &proc{
 			cmd:    fakeWaiter{},
 			stdout: bytes.NewReader(input),
@@ -515,7 +515,7 @@ func TestRun_JsonFileIsSyncedBeforePostRunCommand(t *testing.T) {
 func TestRun_JsonFileTimingEvents(t *testing.T) {
 	input := golden.Get(t, "../../testjson/testdata/input/go-test-json.out")
 
-	fn := func(args []string) *proc {
+	fn := func([]string) *proc {
 		return &proc{
 			cmd:    fakeWaiter{},
 			stdout: bytes.NewReader(input),

@@ -118,7 +118,7 @@ func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 		pkgname := RelativePackagePath(pkg) + " "
 		prefix := fmtDotElapsed(exec.Package(pkg))
 		line.checkWidth(len(prefix+pkgname), d.termWidth)
-		fmt.Fprintf(d.writer, prefix+pkgname+line.builder.String()+"\n")
+		fmt.Fprint(d.writer, prefix+pkgname+line.builder.String()+"\n")
 	}
 	PrintSummary(d.writer, exec, SummarizeNone)
 	return d.writer.Flush()

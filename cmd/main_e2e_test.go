@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -174,8 +173,7 @@ func compileBinary(t *testing.T) string {
 	}
 
 	binaryFixture.Do(func() string {
-		tmpDir, err := ioutil.TempDir("", "gotestsum-binary")
-		assert.NilError(t, err)
+		tmpDir := t.TempDir()
 
 		path := filepath.Join(tmpDir, "gotestsum")
 		result := icmd.RunCommand("go", "build", "-o", path, "..")
