@@ -4,14 +4,13 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
+	"os"
 	"runtime"
 	"testing"
 	"time"
 
 	"gotest.tools/gotestsum/testjson"
 	"gotest.tools/v3/assert"
-	"gotest.tools/v3/env"
 	"gotest.tools/v3/golden"
 )
 
@@ -19,7 +18,7 @@ func TestWrite(t *testing.T) {
 	out := new(bytes.Buffer)
 	exec := createExecution(t)
 
-	env.Patch(t, "GOVERSION", "go7.7.7")
+	t.Setenv("GOVERSION", "go7.7.7")
 	err := Write(out, exec, Config{
 		ProjectName:     "test",
 		customTimestamp: new(time.Time).Format(time.RFC3339),
@@ -33,7 +32,7 @@ func TestWrite_HideEmptyPackages(t *testing.T) {
 	out := new(bytes.Buffer)
 	exec := createExecution(t)
 
-	env.Patch(t, "GOVERSION", "go7.7.7")
+	t.Setenv("GOVERSION", "go7.7.7")
 	err := Write(out, exec, Config{
 		ProjectName:       "test",
 		HideEmptyPackages: true,
@@ -54,14 +53,14 @@ func createExecution(t *testing.T) *testjson.Execution {
 }
 
 func readTestData(t *testing.T, stream string) io.Reader {
-	raw, err := ioutil.ReadFile("../../testjson/testdata/input/go-test-json." + stream)
+	raw, err := os.ReadFile("../../testjson/testdata/input/go-test-json." + stream)
 	assert.NilError(t, err)
 	return bytes.NewReader(raw)
 }
 
 func TestGoVersion(t *testing.T) {
 	t.Run("unknown", func(t *testing.T) {
-		env.Patch(t, "PATH", "/bogus")
+		t.Setenv("PATH", "/bogus")
 		assert.Equal(t, goVersion(), "unknown")
 	})
 

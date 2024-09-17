@@ -1,10 +1,10 @@
+//go:build testdata
 // +build testdata
 
 package flaky
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strconv"
 	"sync"
@@ -17,7 +17,7 @@ var once = new(sync.Once)
 
 func setup(t *testing.T) {
 	once.Do(func() {
-		raw, err := ioutil.ReadFile(seedfile)
+		raw, err := os.ReadFile(seedfile)
 		if err != nil {
 			t.Fatalf("failed to read seed: %v", err)
 		}
@@ -27,7 +27,7 @@ func setup(t *testing.T) {
 		}
 		seed = int(n)
 
-		err = ioutil.WriteFile(seedfile, []byte(strconv.Itoa(seed+1)), 0644)
+		err = os.WriteFile(seedfile, []byte(strconv.Itoa(seed+1)), 0644)
 		if err != nil {
 			t.Fatalf("failed to write seed: %v", err)
 		}

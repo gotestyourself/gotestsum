@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/signal"
 	"strconv"
@@ -17,7 +16,7 @@ func main() {
 	}
 
 	pid := []byte(strconv.Itoa(os.Getpid()))
-	if err := ioutil.WriteFile(os.Args[1], pid, 0644); err != nil {
+	if err := os.WriteFile(os.Args[1], pid, 0644); err != nil {
 		log("failed to write file:", err.Error())
 		os.Exit(1)
 	}

@@ -95,7 +95,7 @@ func testDoxFormat(out io.Writer, opts FormatOptions) EventFormatter {
 
 	getIcon := getIconFunc(opts)
 	results := map[string][]Result{}
-	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
+	return eventFormatterFunc(func(event TestEvent, _ *Execution) error {
 		switch {
 		case event.PackageEvent():
 			if !event.Action.IsTerminal() {
