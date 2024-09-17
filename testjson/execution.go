@@ -213,6 +213,11 @@ func (n TestName) IsSubTest() bool {
 	return strings.Contains(string(n), "/")
 }
 
+// IsBenchmark returns true if the name indicates that the test is a benchmark.
+func (n TestName) IsBenchmark() bool {
+	return strings.HasPrefix(string(n), "Bench")
+}
+
 func (n TestName) Name() string {
 	return string(n)
 }
@@ -273,6 +278,13 @@ func (p *Package) end() []TestEvent {
 		if tc.Test.IsSubTest() && rootTestPassed(p, tc) {
 			// mitigate github.com/golang/go/issues/40771 (gotestsum/issues/141)
 			// by skipping missing subtest end events when the root test passed.
+			continue
+		}
+
+		if tc.Test.IsBenchmark() && !p.panicked {
+			// Mitigate go >= 1.20 issuing `run` events for benchmarks without
+			// a matching `pass` or `fail` event (https://github.com/gotestyourself/gotestsum/issues/413#issuecomment-2343206787,
+			// https://github.com/golang/go/issues/66825#issuecomment-2343229005).
 			continue
 		}
 
