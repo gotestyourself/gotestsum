@@ -262,12 +262,12 @@ func (p *Package) IsEmpty() bool {
 
 const neverFinished time.Duration = -1
 
-// end adds any tests that were missing an ActionFail TestEvent to the list of
+// strays adds any tests that were missing an ActionFail TestEvent to the list of
 // Failed, and returns a slice of artificial TestEvent for the missing ones.
 //
 // This is done to work around 'go test' not sending the ActionFail TestEvents
 // in some cases, when a test panics.
-func (p *Package) end() []TestEvent {
+func (p *Package) strays() []TestEvent {
 	result := make([]TestEvent, 0, len(p.running))
 	for k, tc := range p.running {
 		if tc.Test.IsSubTest() && rootTestPassed(p, tc) {
@@ -647,11 +647,10 @@ func (e *Execution) HasPanic() bool {
 	return false
 }
 
-func (e *Execution) end() []TestEvent {
-	e.done = true
+func (e *Execution) Strays() []TestEvent {
 	var result []TestEvent // nolint: prealloc
 	for _, pkg := range e.packages {
-		result = append(result, pkg.end()...)
+		result = append(result, pkg.strays()...)
 	}
 	return result
 }
@@ -734,11 +733,12 @@ func ScanTestOutput(config ScanConfig) (*Execution, error) {
 	})
 
 	err := group.Wait()
-	for _, event := range execution.end() {
+	for _, event := range execution.Strays() {
 		if err := config.Handler.Event(event, execution); err != nil {
 			return execution, err
 		}
 	}
+	execution.done = true
 	return execution, err
 }
 
