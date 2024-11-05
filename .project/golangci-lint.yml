@@ -2,8 +2,6 @@ linters-settings:
   goconst:
     min-len: 2
     min-occurrences: 4
-  lll:
-    line-length: 120
 
 issues:
   exclude-use-default: false
@@ -34,7 +32,6 @@ linters:
     - gosimple
     - govet
     - ineffassign
-    - lll
     - misspell
     - nakedret
     - prealloc
