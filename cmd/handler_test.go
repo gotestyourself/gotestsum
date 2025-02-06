@@ -53,7 +53,7 @@ func newExecFromTestData(t *testing.T) *testjson.Execution {
 	t.Helper()
 	f, err := os.Open("../testjson/testdata/input/go-test-json.out")
 	assert.NilError(t, err)
-	defer f.Close() // nolint: errcheck
+	defer f.Close() //nolint:errcheck
 
 	exec, err := testjson.ScanTestOutput(testjson.ScanConfig{
 		Stdout: f,

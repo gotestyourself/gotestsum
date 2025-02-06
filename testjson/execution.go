@@ -19,7 +19,6 @@ import (
 // Action of TestEvent
 type Action string
 
-// nolint: unused
 const (
 	ActionRun    Action = "run"
 	ActionPause  Action = "pause"
@@ -530,7 +529,7 @@ func (e *Execution) Failed() []TestCase {
 	if e == nil {
 		return nil
 	}
-	var failed []TestCase //nolint:prealloc
+	var failed []TestCase
 	for _, name := range sortedKeys(e.packages) {
 		pkg := e.packages[name]
 
@@ -641,7 +640,7 @@ func (e *Execution) HasPanic() bool {
 
 func (e *Execution) end() []TestEvent {
 	e.done = true
-	var result []TestEvent // nolint: prealloc
+	var result []TestEvent
 	for _, pkg := range e.packages {
 		result = append(result, pkg.end()...)
 	}
@@ -749,12 +748,12 @@ func readStdout(config ScanConfig, execution *Execution) error {
 		event, err := parseEvent(raw)
 		switch {
 		case err == errBadEvent:
-			// nolint: errcheck
+			//nolint:errcheck
 			config.Handler.Err(errBadEvent.Error() + ": " + scanner.Text())
 			continue
 		case err != nil:
 			if config.IgnoreNonJSONOutputLines {
-				// nolint: errcheck
+				//nolint:errcheck
 				config.Handler.Err(string(raw))
 				continue
 			}

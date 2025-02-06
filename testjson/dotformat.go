@@ -16,7 +16,6 @@ import (
 
 func dotsFormatV1(out io.Writer) EventFormatter {
 	buf := bufio.NewWriter(out)
-	// nolint:errcheck
 	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
 		pkg := exec.Package(event.Package)
 		switch {

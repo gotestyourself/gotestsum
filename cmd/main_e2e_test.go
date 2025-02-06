@@ -152,7 +152,7 @@ func (p *pkgFixtureFile) Do(f func() string) {
 	p.once.Do(func() {
 		p.filename = f()
 		p.cleanup = func() {
-			os.RemoveAll(p.filename) // nolint: errcheck
+			os.RemoveAll(p.filename) //nolint:errcheck
 		}
 	})
 }

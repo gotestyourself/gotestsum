@@ -37,6 +37,7 @@ linters:
     - lll
     - misspell
     - nakedret
+    - nolintlint
     - prealloc
     - revive
     - staticcheck
