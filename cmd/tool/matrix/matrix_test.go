@@ -222,7 +222,6 @@ func TestRun(t *testing.T) {
 }
 
 // expectedMatrix can be automatically updated by running tests with -update
-// nolint:lll
 var expectedMatrix = `{
   "include": [
     {
