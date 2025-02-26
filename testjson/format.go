@@ -29,7 +29,7 @@ func debugFormat(out io.Writer) eventFormatterFunc {
 func standardVerboseFormat(out io.Writer) EventFormatter {
 	buf := bufio.NewWriter(out)
 	return eventFormatterFunc(func(event TestEvent, _ *Execution) error {
-		if event.Action == ActionOutput {
+		if event.Action == ActionOutput || event.Action == ActionBuild {
 			_, _ = buf.WriteString(event.Output)
 			return buf.Flush()
 		}
@@ -467,7 +467,7 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 		key := name{Package: event.Package, Test: event.Test}
 
 		// test case output
-		if event.Test != "" && event.Action == ActionOutput {
+		if event.Test != "" && (event.Action == ActionOutput || event.Action == ActionBuild) {
 			if !isFramingLine(event.Output, event.Test) {
 				output[key] = append(output[key], event.Output)
 			}

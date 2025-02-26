@@ -27,6 +27,7 @@ const (
 	ActionBench  Action = "bench"
 	ActionFail   Action = "fail"
 	ActionOutput Action = "output"
+	ActionBuild  Action = "build-output"
 	ActionSkip   Action = "skip"
 )
 
@@ -69,6 +70,8 @@ func (e TestEvent) Bytes() []byte {
 
 // Package is the set of TestEvents for a single go package
 type Package struct {
+	Execution *Execution
+
 	Total   int
 	running map[string]TestCase
 	Failed  []TestCase
@@ -334,11 +337,12 @@ type TestCase struct {
 	Time time.Time
 }
 
-func newPackage() *Package {
+func newPackage(e *Execution) *Package {
 	return &Package{
-		output:   make(map[int][]string),
-		running:  make(map[string]TestCase),
-		subTests: make(map[int][]int),
+		Execution: e,
+		output:    make(map[int][]string),
+		running:   make(map[string]TestCase),
+		subTests:  make(map[int][]int),
 	}
 }
 
@@ -355,7 +359,7 @@ type Execution struct {
 func (e *Execution) add(event TestEvent) {
 	pkg, ok := e.packages[event.Package]
 	if !ok {
-		pkg = newPackage()
+		pkg = newPackage(e)
 		e.packages[event.Package] = pkg
 	}
 	if event.PackageEvent() {
@@ -370,6 +374,8 @@ func (p *Package) addEvent(event TestEvent) {
 	case ActionPass, ActionFail:
 		p.action = event.Action
 		p.elapsed = elapsedDuration(event.Elapsed)
+	case ActionBuild:
+		p.Execution.addError(event.Output)
 	case ActionOutput:
 		if coverage, ok := isCoverageOutput(event.Output); ok {
 			p.coverage = coverage
@@ -419,7 +425,7 @@ func (p *Package) addTestEvent(event TestEvent) {
 	}
 
 	switch event.Action {
-	case ActionOutput, ActionBench:
+	case ActionOutput, ActionBuild, ActionBench:
 		if strings.HasPrefix(event.Output, "panic: test timed out") {
 			p.testTimeoutPanicInTest = event.Test
 		}

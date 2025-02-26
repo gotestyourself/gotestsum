@@ -100,7 +100,7 @@ func (d *dotFormatter) Format(event TestEvent, exec *Execution) error {
 		line.update(fmtDot(event))
 	}
 	switch event.Action {
-	case ActionOutput, ActionBench:
+	case ActionOutput, ActionBuild, ActionBench:
 		return nil
 	}
 

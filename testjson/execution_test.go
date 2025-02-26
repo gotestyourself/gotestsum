@@ -104,7 +104,7 @@ func TestPackage_AddEvent(t *testing.T) {
 		te, err := parseEvent([]byte(tc.event))
 		assert.NilError(t, err)
 
-		p := newPackage()
+		p := newPackage(nil)
 		p.addEvent(te)
 		assert.DeepEqual(t, p, &tc.expected, cmpPackage)
 	}
