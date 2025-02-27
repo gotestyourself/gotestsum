@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"gotest.tools/gotestsum/cmd/tool/parser"
 	"gotest.tools/gotestsum/internal/log"
 	"gotest.tools/gotestsum/testjson"
 )
@@ -47,6 +48,8 @@ type JUnitTestCase struct {
 	Classname   string            `xml:"classname,attr"`
 	Name        string            `xml:"name,attr"`
 	Time        string            `xml:"time,attr"`
+	File        string            `xml:"file,attr,omitempty"`
+	Line        int               `xml:"line,attr,omitempty"`
 	SkipMessage *JUnitSkipMessage `xml:"skipped,omitempty"`
 	Failure     *JUnitFailure     `xml:"failure,omitempty"`
 }
@@ -192,18 +195,22 @@ func packageTestCases(pkg *testjson.Package, formatClassname FormatFunc) []JUnit
 		var buf bytes.Buffer
 		pkg.WriteOutputTo(&buf, 0) //nolint:errcheck
 		jtc := newJUnitTestCase(testjson.TestCase{Test: "TestMain"}, formatClassname)
+		failureOutput := buf.String()
+		appendFailFileLine(&jtc, failureOutput)
 		jtc.Failure = &JUnitFailure{
 			Message:  "Failed",
-			Contents: buf.String(),
+			Contents: failureOutput,
 		}
 		cases = append(cases, jtc)
 	}
 
 	for _, tc := range pkg.Failed {
 		jtc := newJUnitTestCase(tc, formatClassname)
+		failureOutput := strings.Join(pkg.OutputLines(tc), "")
+		appendFailFileLine(&jtc, failureOutput)
 		jtc.Failure = &JUnitFailure{
 			Message:  "Failed",
-			Contents: strings.Join(pkg.OutputLines(tc), ""),
+			Contents: failureOutput,
 		}
 		cases = append(cases, jtc)
 	}
@@ -242,4 +249,13 @@ func write(out io.Writer, suites JUnitTestSuites) error {
 	}
 	_, err = out.Write(doc)
 	return err
+}
+
+func appendFailFileLine(jtc *JUnitTestCase, failureOutput string) {
+	file, line, err := parser.ParseFailure(failureOutput)
+	if err != nil {
+		log.Warnf("Failed to parse failure output: %v", err)
+	}
+	jtc.File = file
+	jtc.Line = line
 }
