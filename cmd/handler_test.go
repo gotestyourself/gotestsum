@@ -174,3 +174,49 @@ func TestScanTestOutput_TestTimeoutPanicRace(t *testing.T) {
 		})
 	}
 }
+
+func TestEventHandler_TestBuildFail(t *testing.T) {
+	t.Setenv("GITHUB_ACTIONS", "no")
+	t.Setenv("NO_COLOR", "true")
+
+	buf := new(bufferCloser)
+	errBuf := new(bytes.Buffer)
+	format := testjson.NewEventFormatter(errBuf, "testname", testjson.FormatOptions{})
+
+	source := golden.Get(t, "input/go-test-build-failed.out")
+	cfg := testjson.ScanConfig{
+		Stdout:  bytes.NewReader(source),
+		Handler: &eventHandler{jsonFile: buf, formatter: format},
+	}
+	exec, err := testjson.ScanTestOutput(cfg)
+	assert.NilError(t, err)
+
+	out := new(bytes.Buffer)
+	testjson.PrintSummary(out, exec, testjson.SummarizeAll)
+
+	actual := text.ProcessLines(t, out, text.OpRemoveSummaryLineElapsedTime)
+	golden.Assert(t, actual, "expected/build-fail-expected")
+}
+
+func TestEventHandler_SetupFail(t *testing.T) {
+	t.Setenv("GITHUB_ACTIONS", "no")
+	t.Setenv("NO_COLOR", "true")
+
+	buf := new(bufferCloser)
+	errBuf := new(bytes.Buffer)
+	format := testjson.NewEventFormatter(errBuf, "testname", testjson.FormatOptions{})
+
+	source := golden.Get(t, "input/go-test-setup-failed.out")
+	cfg := testjson.ScanConfig{
+		Stdout:  bytes.NewReader(source),
+		Handler: &eventHandler{jsonFile: buf, formatter: format},
+	}
+	exec, err := testjson.ScanTestOutput(cfg)
+	assert.NilError(t, err)
+
+	out := new(bytes.Buffer)
+	testjson.PrintSummary(out, exec, testjson.SummarizeAll)
+
+	actual := text.ProcessLines(t, out, text.OpRemoveSummaryLineElapsedTime)
+	golden.Assert(t, actual, "expected/setup-fail-expected")
+}

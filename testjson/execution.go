@@ -20,14 +20,16 @@ import (
 type Action string
 
 const (
-	ActionRun    Action = "run"
-	ActionPause  Action = "pause"
-	ActionCont   Action = "cont"
-	ActionPass   Action = "pass"
-	ActionBench  Action = "bench"
-	ActionFail   Action = "fail"
-	ActionOutput Action = "output"
-	ActionSkip   Action = "skip"
+	ActionRun         Action = "run"
+	ActionPause       Action = "pause"
+	ActionCont        Action = "cont"
+	ActionPass        Action = "pass"
+	ActionBench       Action = "bench"
+	ActionFail        Action = "fail"
+	ActionOutput      Action = "output"
+	ActionSkip        Action = "skip"
+	ActionBuildOutput Action = "build-output"
+	ActionBuildFail   Action = "build-fail"
 )
 
 // IsTerminal returns true if the Action is one of: pass, fail, skip.
@@ -43,10 +45,11 @@ func (a Action) IsTerminal() bool {
 // TestEvent is a structure output by go tool test2json and go test -json.
 type TestEvent struct {
 	// Time encoded as an RFC3339-format string
-	Time    time.Time
-	Action  Action
-	Package string
-	Test    string
+	Time       time.Time
+	Action     Action
+	Package    string
+	ImportPath string
+	Test       string
 	// Elapsed time in seconds
 	Elapsed float64
 	// Output of test or benchmark
@@ -173,7 +176,6 @@ func (p *Package) WriteOutputTo(out io.StringWriter, id int) error {
 // See https://github.com/golang/go/issues/29755.
 func (p *Package) OutputLines(tc TestCase) []string {
 	lines := p.output[tc.ID]
-
 	// If this is a subtest, or a root test case with subtest failures the
 	// subtest failure output should contain the relevant lines, so we don't need
 	// extra lines.
@@ -353,11 +355,28 @@ type Execution struct {
 }
 
 func (e *Execution) add(event TestEvent) {
+	if event.Action == ActionBuildOutput || event.Action == ActionBuildFail {
+		event.Action = ActionOutput
+		// ImportPath may be in one of the following formats:
+		//  - "github.com/example/foo"
+		//  - "github.com/example/foo.test"
+		//  - "github.com/example/foo [github.com/example/foo.test]"
+		//
+		// These must all map back to "github.com/example/foo" as the package name.
+		// See https://pkg.go.dev/cmd/go#:~:text=The%20%2Dtest%20flag,the%20previous%20examples
+
+		// split by space, take first element
+		parts := strings.Split(event.ImportPath, " ")
+		event.Package = parts[0]
+		event.Package = strings.TrimSuffix(parts[0], ".test")
+	}
+
 	pkg, ok := e.packages[event.Package]
 	if !ok {
 		pkg = newPackage()
 		e.packages[event.Package] = pkg
 	}
+
 	if event.PackageEvent() {
 		pkg.addEvent(event)
 		return

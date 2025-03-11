@@ -29,7 +29,7 @@ func debugFormat(out io.Writer) eventFormatterFunc {
 func standardVerboseFormat(out io.Writer) EventFormatter {
 	buf := bufio.NewWriter(out)
 	return eventFormatterFunc(func(event TestEvent, _ *Execution) error {
-		if event.Action == ActionOutput {
+		if event.Action == ActionOutput || event.Action == ActionBuildOutput {
 			_, _ = buf.WriteString(event.Output)
 			return buf.Flush()
 		}
