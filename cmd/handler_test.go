@@ -175,9 +175,10 @@ func TestScanTestOutput_TestTimeoutPanicRace(t *testing.T) {
 	}
 }
 
+// Tests output when a package fails to build because of a compilation error
+// and no tests are run in the package.
 func TestEventHandler_TestBuildFail(t *testing.T) {
 	t.Setenv("GITHUB_ACTIONS", "no")
-	t.Setenv("NO_COLOR", "true")
 
 	buf := new(bufferCloser)
 	errBuf := new(bytes.Buffer)
@@ -198,9 +199,10 @@ func TestEventHandler_TestBuildFail(t *testing.T) {
 	golden.Assert(t, actual, "expected/build-fail-expected")
 }
 
+// Tests output when a package fails to build because of a compilation error
+// due to syntax errors and the like.
 func TestEventHandler_SetupFail(t *testing.T) {
 	t.Setenv("GITHUB_ACTIONS", "no")
-	t.Setenv("NO_COLOR", "true")
 
 	buf := new(bufferCloser)
 	errBuf := new(bytes.Buffer)

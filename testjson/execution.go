@@ -29,7 +29,6 @@ const (
 	ActionOutput      Action = "output"
 	ActionSkip        Action = "skip"
 	ActionBuildOutput Action = "build-output"
-	ActionBuildFail   Action = "build-fail"
 )
 
 // IsTerminal returns true if the Action is one of: pass, fail, skip.
@@ -355,8 +354,8 @@ type Execution struct {
 }
 
 func (e *Execution) add(event TestEvent) {
-	if event.Action == ActionBuildOutput || event.Action == ActionBuildFail {
-		event.Action = ActionOutput
+	if event.Action == ActionBuildOutput {
+		// event.Action = ActionOutput
 		// ImportPath may be in one of the following formats:
 		//  - "github.com/example/foo"
 		//  - "github.com/example/foo.test"
@@ -365,10 +364,9 @@ func (e *Execution) add(event TestEvent) {
 		// These must all map back to "github.com/example/foo" as the package name.
 		// See https://pkg.go.dev/cmd/go#:~:text=The%20%2Dtest%20flag,the%20previous%20examples
 
-		// split by space, take first element
-		parts := strings.Split(event.ImportPath, " ")
-		event.Package = parts[0]
-		event.Package = strings.TrimSuffix(parts[0], ".test")
+		pkg, _, _ := strings.Cut(event.ImportPath, " ") // "foo [bar]" -> "foo"
+		pkg = strings.TrimSuffix(pkg, ".test")          // "foo.test" -> "foo"
+		event.Package = pkg
 	}
 
 	pkg, ok := e.packages[event.Package]
@@ -389,7 +387,7 @@ func (p *Package) addEvent(event TestEvent) {
 	case ActionPass, ActionFail:
 		p.action = event.Action
 		p.elapsed = elapsedDuration(event.Elapsed)
-	case ActionOutput:
+	case ActionOutput, ActionBuildOutput:
 		if coverage, ok := isCoverageOutput(event.Output); ok {
 			p.coverage = coverage
 		}
