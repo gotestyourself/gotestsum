@@ -1,0 +1,10 @@
+
+=== Failed
+=== FAIL: example.com/internal/cacher  (0.00s)
+FAIL	example.com/internal/cacher [build failed]
+
+=== Errors
+./directory_test.go:321:10: undefined: assert.foo
+
+
+DONE 0 tests, 1 failure, 1 error

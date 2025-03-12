@@ -1,0 +1,15 @@
+
+=== Failed
+=== FAIL: example.com/internal/cacher  (0.00s)
+FAIL	example.com/internal/cacher [setup failed]
+
+=== FAIL: example.com/internal/cacher/subpkg  (0.00s)
+FAIL	example.com/internal/cacher/subpkg [setup failed]
+
+=== Errors
+directory_test.go:321:13: expected ';', found o
+
+subpkg/main_test.go:1:1: expected 'package', found aldfjadskfs
+
+
+DONE 0 tests, 2 failures, 2 errors

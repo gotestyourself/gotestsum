@@ -1,0 +1,12 @@
+{"ImportPath":"example.com/internal/cacher.test","Action":"build-output","Output":"# example.com/internal/cacher\n"}
+{"ImportPath":"example.com/internal/cacher.test","Action":"build-output","Output":"directory_test.go:321:13: expected ';', found o\n"}
+{"ImportPath":"example.com/internal/cacher.test","Action":"build-fail"}
+{"Time":"2025-03-11T10:08:34.978868-07:00","Action":"start","Package":"example.com/internal/cacher"}
+{"Time":"2025-03-11T10:08:34.978905-07:00","Action":"output","Package":"example.com/internal/cacher","Output":"FAIL\texample.com/internal/cacher [setup failed]\n"}
+{"Time":"2025-03-11T10:08:34.978914-07:00","Action":"fail","Package":"example.com/internal/cacher","Elapsed":0,"FailedBuild":"example.com/internal/cacher.test"}
+{"ImportPath":"example.com/internal/cacher/subpkg","Action":"build-output","Output":"# example.com/internal/cacher/subpkg\n"}
+{"ImportPath":"example.com/internal/cacher/subpkg","Action":"build-output","Output":"subpkg/main_test.go:1:1: expected 'package', found aldfjadskfs\n"}
+{"ImportPath":"example.com/internal/cacher/subpkg","Action":"build-fail"}
+{"Time":"2025-03-11T10:08:34.978928-07:00","Action":"start","Package":"example.com/internal/cacher/subpkg"}
+{"Time":"2025-03-11T10:08:34.979019-07:00","Action":"output","Package":"example.com/internal/cacher/subpkg","Output":"FAIL\texample.com/internal/cacher/subpkg [setup failed]\n"}
+{"Time":"2025-03-11T10:08:34.979028-07:00","Action":"fail","Package":"example.com/internal/cacher/subpkg","Elapsed":0,"FailedBuild":"example.com/internal/cacher/subpkg"}

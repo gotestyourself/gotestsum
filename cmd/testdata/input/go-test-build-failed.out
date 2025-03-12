@@ -1,0 +1,6 @@
+{"ImportPath":"example.com/internal/cacher [example.com/internal/cacher.test]","Action":"build-output","Output":"# example.com/internal/cacher [example.com/internal/cacher.test]\n"}
+{"ImportPath":"example.com/internal/cacher [example.com/internal/cacher.test]","Action":"build-output","Output":"./directory_test.go:321:10: undefined: assert.foo\n"}
+{"ImportPath":"example.com/internal/cacher [example.com/internal/cacher.test]","Action":"build-fail"}
+{"Time":"2025-03-10T17:34:31.493978-07:00","Action":"start","Package":"example.com/internal/cacher"}
+{"Time":"2025-03-10T17:34:31.494027-07:00","Action":"output","Package":"example.com/internal/cacher","Output":"FAIL\texample.com/internal/cacher [build failed]\n"}
+{"Time":"2025-03-10T17:34:31.494039-07:00","Action":"fail","Package":"example.com/internal/cacher","Elapsed":0,"FailedBuild":"example.com/internal/cacher [example.com/internal/cacher.test]"}

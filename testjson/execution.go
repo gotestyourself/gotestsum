@@ -28,6 +28,7 @@ const (
 	ActionFail   Action = "fail"
 	ActionOutput Action = "output"
 	ActionSkip   Action = "skip"
+	ActionBuild  Action = "build-output"
 )
 
 // IsTerminal returns true if the Action is one of: pass, fail, skip.
@@ -43,10 +44,11 @@ func (a Action) IsTerminal() bool {
 // TestEvent is a structure output by go tool test2json and go test -json.
 type TestEvent struct {
 	// Time encoded as an RFC3339-format string
-	Time    time.Time
-	Action  Action
-	Package string
-	Test    string
+	Time       time.Time
+	Action     Action
+	Package    string
+	Test       string
+	ImportPath string
 	// Elapsed time in seconds
 	Elapsed float64
 	// Output of test or benchmark
@@ -357,6 +359,10 @@ func (e *Execution) add(event TestEvent) {
 	if !ok {
 		pkg = newPackage()
 		e.packages[event.Package] = pkg
+	}
+	if event.Action == ActionBuild {
+		e.addError(event.Output)
+		return
 	}
 	if event.PackageEvent() {
 		pkg.addEvent(event)
