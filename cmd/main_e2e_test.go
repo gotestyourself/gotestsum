@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	goversion "go/version"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -123,17 +124,16 @@ func osEnviron() map[string]string {
 func expectedFilename(name string) string {
 	ver := runtime.Version()
 	switch {
-	case isPreGo120(ver):
-		return name + "-go1.19"
+	case isPreGo124(ver):
+		return name + "-go1.23"
 	default:
 		return name
 	}
 }
 
-// go1.20.0 changed how it prints messages from subtests. It seems the output
-// has changed back to match the output from go1.14 and earlier.
-func isPreGo120(ver string) bool {
-	return strings.HasPrefix(ver, "go1.1")
+// go1.24 changed how it handles build output
+func isPreGo124(ver string) bool {
+	return goversion.Compare(ver, "go1.24") < 0
 }
 
 var binaryFixture pkgFixtureFile
