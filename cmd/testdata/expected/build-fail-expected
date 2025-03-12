@@ -1,8 +1,10 @@
 
 === Failed
 === FAIL: example.com/internal/cacher  (0.00s)
-# example.com/internal/cacher [example.com/internal/cacher.test]
-./directory_test.go:321:10: undefined: assert.foo
 FAIL	example.com/internal/cacher [build failed]
 
-DONE 0 tests, 1 failure
+=== Errors
+./directory_test.go:321:10: undefined: assert.foo
+
+
+DONE 0 tests, 1 failure, 1 error
