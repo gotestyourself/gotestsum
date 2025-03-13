@@ -14,6 +14,7 @@ Flags:
       --jsonfile-timing-events string               write only the pass, skip, and fail TestEvents to the file
       --junitfile string                            write a JUnit XML file
       --junitfile-hide-empty-pkg                    omit packages with no tests from the junit.xml file
+      --junitfile-hide-skipped-tests                omit skipped tests from the junit.xml file
       --junitfile-project-name string               name of the project used in the junit.xml file
       --junitfile-testcase-classname field-format   format the testcase classname field as: full, relative, short (default full)
       --junitfile-testsuite-name field-format       format the testsuite name field as: full, relative, short (default full)
