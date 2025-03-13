@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/bitfield/gotestdox v0.2.2
 	github.com/dnephin/pflag v1.0.7
-	github.com/fatih/color v1.17.0
+	github.com/fatih/color v1.18.0
 	github.com/fsnotify/fsnotify v1.8.0
 	github.com/google/go-cmp v0.7.0
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
