@@ -7,7 +7,7 @@ require (
 	github.com/dnephin/pflag v1.0.7
 	github.com/fatih/color v1.17.0
 	github.com/fsnotify/fsnotify v1.8.0
-	github.com/google/go-cmp v0.6.0
+	github.com/google/go-cmp v0.7.0
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
 	golang.org/x/sync v0.8.0
 	golang.org/x/sys v0.30.0
