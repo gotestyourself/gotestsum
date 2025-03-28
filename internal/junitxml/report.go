@@ -99,17 +99,19 @@ func generate(exec *testjson.Execution, cfg Config) JUnitTestSuites {
 		Tests:    exec.Total(),
 		Failures: len(exec.Failed()),
 		Errors:   len(exec.Errors()),
-		Time:     formatDurationAsSeconds(time.Since(exec.Started())),
+		Time:     formatDurationAsSeconds(exec.Elapsed()),
 	}
 
 	if cfg.customElapsed != "" {
 		suites.Time = cfg.customElapsed
 	}
+
 	for _, pkgname := range exec.Packages() {
 		pkg := exec.Package(pkgname)
 		if cfg.HideEmptyPackages && pkg.IsEmpty() {
 			continue
 		}
+
 		junitpkg := JUnitTestSuite{
 			Name:       cfg.FormatTestSuiteName(pkgname),
 			Tests:      pkg.Total,
@@ -121,7 +123,7 @@ func generate(exec *testjson.Execution, cfg Config) JUnitTestSuites {
 			Timestamp:  cfg.customTimestamp,
 		}
 		if cfg.customTimestamp == "" {
-			junitpkg.Timestamp = exec.Started().Format(time.RFC3339)
+			junitpkg.Timestamp = pkg.Start.Format(time.RFC3339)
 		}
 		suites.Suites = append(suites.Suites, junitpkg)
 	}
