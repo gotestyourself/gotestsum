@@ -27,4 +27,4 @@
 === FAIL: testjson/internal/parallelfails TestParallelTheSecond (0.01s)
     TestParallelTheSecond: fails_test.go:35: failed the second
 
-DONE 12 tests, 8 failures in 0.000s
+DONE 12 tests, 8 failures in 0.025s

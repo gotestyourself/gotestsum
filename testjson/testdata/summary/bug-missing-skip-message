@@ -8,4 +8,4 @@ WARN Failed to detect terminal width for dots format, error: inappropriate ioctl
     TestGetPkgPathPrefix/with_go_path: pkgpathprefix_test.go:22: isGoModuleEnabled()
     --- SKIP: TestGetPkgPathPrefix/with_go_path (0.00s)
 
-DONE 42 tests, 2 skipped in 0.000s
+DONE 42 tests, 2 skipped in 0.328s

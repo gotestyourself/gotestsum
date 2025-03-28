@@ -46,13 +46,14 @@ func TestSummary_String(t *testing.T) {
 }
 
 func TestPrintSummary_NoFailures(t *testing.T) {
-	patchTimeNow(t)
+	now := time.Date(2022, 1, 2, 3, 4, 5, 600, time.UTC)
+	patchTimeNow(t, now)
 
 	out := new(bytes.Buffer)
 	start := time.Now()
 	exec := &Execution{
-		started: start,
-		done:    true,
+		testStart: start,
+		done:      true,
 		packages: map[string]*Package{
 			"foo":   {Total: 12},
 			"other": {Total: 1},
@@ -69,12 +70,13 @@ func TestPrintSummary_NoFailures(t *testing.T) {
 
 func TestPrintSummary_WithFailures(t *testing.T) {
 	patchPkgPathPrefix(t, "example.com")
-	patchTimeNow(t)
+	now := time.Date(2022, 1, 2, 3, 4, 5, 600, time.UTC)
+	patchTimeNow(t, now)
 
 	start := time.Now()
 	exec := &Execution{
-		started: start,
-		done:    true,
+		testStart: start,
+		done:      true,
 		packages: map[string]*Package{
 			"example.com/project/fs": {
 				Total: 12,
@@ -215,9 +217,9 @@ DONE 13 tests, 1 skipped, 4 failures, 1 error in 34.123s
 	})
 }
 
-func patchTimeNow(t *testing.T) {
+func patchTimeNow(t *testing.T, to time.Time) {
 	timeNow = func() time.Time {
-		return time.Date(2022, 1, 2, 3, 4, 5, 600, time.UTC)
+		return to
 	}
 	t.Cleanup(func() {
 		timeNow = time.Now
@@ -229,8 +231,6 @@ func multiLine(s string) []string {
 }
 
 func TestPrintSummary(t *testing.T) {
-	patchTimeNow(t)
-
 	type testCase struct {
 		name        string
 		config      func(t *testing.T) ScanConfig

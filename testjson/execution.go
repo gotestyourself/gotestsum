@@ -77,6 +77,9 @@ type Package struct {
 	Skipped []TestCase
 	Passed  []TestCase
 
+	// Start is the earliest timestamp reported by any event for this package.
+	Start time.Time
+
 	// elapsed time reported by the pass or fail event for the package.
 	elapsed time.Duration
 
@@ -130,21 +133,6 @@ func (p *Package) TestCases() []TestCase {
 	tc = append(tc, p.Failed...)
 	tc = append(tc, p.Skipped...)
 	return tc
-}
-
-// EarliestTime returns the earliest start time found within a child test case.
-func (p *Package) EarliestTime() time.Time {
-	found := false
-	earliest := time.Time{}
-
-	for _, tc := range p.TestCases() {
-		if !found || tc.Time.Before(earliest) {
-			earliest = tc.Time
-			found = true
-		}
-	}
-
-	return earliest
 }
 
 // LastFailedByName returns the most recent test with name in the list of Failed
@@ -361,7 +349,9 @@ func newPackage() *Package {
 
 // Execution of one or more test packages
 type Execution struct {
-	started    time.Time
+	procStart  time.Time
+	testStart  time.Time
+	testEnd    time.Time
 	packages   map[string]*Package
 	errorsLock sync.RWMutex
 	errors     []string
@@ -375,10 +365,24 @@ func (e *Execution) add(event TestEvent) {
 		pkg = newPackage()
 		e.packages[event.Package] = pkg
 	}
+
+	if !event.Time.IsZero() {
+		if e.testStart.IsZero() || event.Time.Before(e.testStart) {
+			e.testStart = event.Time
+		}
+		if event.Time.After(e.testEnd) {
+			e.testEnd = event.Time
+		}
+		if pkg.Start.IsZero() || event.Time.Before(pkg.Start) {
+			pkg.Start = event.Time
+		}
+	}
+
 	if event.Action == ActionBuild {
 		e.addError(event.Output)
 		return
 	}
+
 	if event.PackageEvent() {
 		pkg.addEvent(event)
 		return
@@ -542,7 +546,10 @@ var timeNow = time.Now
 
 // Elapsed returns the time elapsed since the execution started.
 func (e *Execution) Elapsed() time.Duration {
-	return timeNow().Sub(e.started)
+	if !e.testEnd.IsZero() {
+		return e.testEnd.Sub(e.Started())
+	}
+	return timeNow().Sub(e.Started())
 }
 
 // Failed returns a list of all the failed test cases.
@@ -669,35 +676,18 @@ func (e *Execution) end() []TestEvent {
 }
 
 func (e *Execution) Started() time.Time {
-	return e.started
-}
-
-// EarliestTime returns the earliest runtime found in any of the packages within this execution.
-func (e *Execution) EarliestTime() time.Time {
-	found := false
-	earliest := time.Time{}
-
-	for _, p := range e.packages {
-		candidate := p.EarliestTime()
-		if candidate.IsZero() {
-			continue
-		}
-
-		if !found || candidate.Before(earliest) {
-			earliest = candidate
-			found = true
-		}
+	if e.testStart.IsZero() {
+		return e.procStart
 	}
-
-	return earliest
+	return e.testStart
 }
 
 // newExecution returns a new Execution and records the current time as the
 // time the test execution started.
 func newExecution() *Execution {
 	return &Execution{
-		started:  timeNow(),
-		packages: make(map[string]*Package),
+		procStart: time.Now(),
+		packages:  make(map[string]*Package),
 	}
 }
 
