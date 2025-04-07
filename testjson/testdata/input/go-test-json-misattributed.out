@@ -1,4 +1,4 @@
-{"Action":"run","Test":"TestOutputWithSubtest"}
+{"Time":"2020-04-10T14:52:44.192693974-04:00","Action":"run","Test":"TestOutputWithSubtest"}
 {"Action":"output","Test":"TestOutputWithSubtest","Output":"=== RUN   TestOutputWithSubtest\n"}
 {"Action":"run","Test":"TestOutputWithSubtest/sub_test"}
 {"Action":"output","Test":"TestOutputWithSubtest/sub_test","Output":"=== RUN   TestOutputWithSubtest/sub_test\n"}

@@ -60,4 +60,4 @@ this is stderr
 
 === FAIL: testjson/internal/withfails TestNestedWithFailure (re-run 7) (0.00s)
 
-DONE 8 runs, 59 tests, 5 skipped, 13 failures in 0.000s
+DONE 8 runs, 59 tests, 5 skipped, 13 failures in 0.157s

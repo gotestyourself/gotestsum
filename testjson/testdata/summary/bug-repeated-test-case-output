@@ -174,4 +174,4 @@ this is stderr
 
 === FAIL: testjson/internal/withfails TestNestedWithFailure (0.00s)
 
-DONE 177 tests, 15 skipped, 37 failures in 0.000s
+DONE 177 tests, 15 skipped, 37 failures in 0.157s
