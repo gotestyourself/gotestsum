@@ -43,6 +43,21 @@ func TestWrite_HideEmptyPackages(t *testing.T) {
 	golden.Assert(t, out.String(), "junitxml-report-skip-empty.golden")
 }
 
+func TestWrite_HideSkippedTests(t *testing.T) {
+	out := new(bytes.Buffer)
+	exec := createExecution(t)
+
+	t.Setenv("GOVERSION", "go7.7.7")
+	err := Write(out, exec, Config{
+		ProjectName:      "test",
+		HideSkippedTests: true,
+		customTimestamp:  new(time.Time).Format(time.RFC3339),
+		customElapsed:    "2.1",
+	})
+	assert.NilError(t, err)
+	golden.Assert(t, out.String(), "junitxml-report-hide-skipped-tests.golden")
+}
+
 func createExecution(t *testing.T) *testjson.Execution {
 	exec, err := testjson.ScanTestOutput(testjson.ScanConfig{
 		Stdout: readTestData(t, "out"),
