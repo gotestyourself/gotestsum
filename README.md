@@ -56,6 +56,11 @@ Commonly used formats (see `--help` for a full list):
 Have an idea for a new format?
 Please [share it on github](https://github.com/gotestyourself/gotestsum/issues/new)!
 
+> [!NOTE]
+> When running with the `testname` or `standard-verbose` format, if the `GITHUB_ACTIONS` environment variable is
+> set, the format will automatically be changed to `github-actions` by default. To prevent this, pass the
+> `--format-disable-gha` flag.
+
 #### Demo
 
 A demonstration of three `--format` options.

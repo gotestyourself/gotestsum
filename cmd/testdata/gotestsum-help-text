@@ -7,6 +7,7 @@ See https://pkg.go.dev/gotest.tools/gotestsum#section-readme for detailed docume
 Flags:
       --debug                                       enabled debug logging
   -f, --format string                               print format of test input (default "pkgname")
+      --format-disable-gha                          do not force-enable github actions format on 'testname' or 'short-verbose' formats
       --format-hide-empty-pkg                       do not print empty packages in compact formats
       --format-icons string                         use different icons, see help for options
       --hide-summary summary                        hide sections of the summary: skipped,failed,errors,output (default none)
