@@ -414,9 +414,10 @@ func (e eventFormatterFunc) Format(event TestEvent, output *Execution) error {
 }
 
 type FormatOptions struct {
-	HideEmptyPackages    bool
-	UseHiVisibilityIcons bool // Deprecated
-	Icons                string
+	HideEmptyPackages          bool
+	UseHiVisibilityIcons       bool // Deprecated
+	Icons                      string
+	DisableGithubActionsFormat bool
 }
 
 // NewEventFormatter returns a formatter for printing events.
@@ -439,7 +440,7 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 	case "gotestdox", "testdox":
 		return testDoxFormat(out, formatOpts)
 	case "testname", "short-verbose":
-		if os.Getenv("GITHUB_ACTIONS") == "true" {
+		if !formatOpts.DisableGithubActionsFormat && os.Getenv("GITHUB_ACTIONS") == "true" {
 			return githubActionsFormat(out)
 		}
 		return testNameFormat(out)
