@@ -108,6 +108,10 @@ type Package struct {
 	// shuffleSeed is the seed used to shuffle the tests. The value is set when
 	// tests are run with -shuffle
 	shuffleSeed string
+	// panickingTestID stores the ID of the test that panicked, if known.
+	// ID 0 means the panic was not associated with a specific test (e.g.,
+	// package-level panic or panic occurred before test ID could be determined).
+	panickingTestID int
 
 	// testTimeoutPanicInTest stores the name of a test that received the panic
 	// output caused by a test timeout. This is necessary to work around a race
@@ -197,6 +201,12 @@ func (p *Package) OutputLines(tc TestCase) []string {
 func (p *Package) addOutput(id int, output string) {
 	if strings.HasPrefix(output, "panic: ") {
 		p.panicked = true
+		// Only record the test ID if it's not a package-level panic (id 0)
+		// and if we haven't already recorded a panicking test ID for this package.
+		// This helps pinpoint the first test that triggered a panic.
+		if id != 0 && p.panickingTestID == 0 {
+			p.panickingTestID = id
+		}
 	}
 	p.output[id] = append(p.output[id], output)
 }
@@ -879,4 +889,15 @@ func (s noopHandler) Event(TestEvent, *Execution) error {
 
 func (s noopHandler) Err(string) error {
 	return nil
+}
+
+// Panicked returns true if the package or one of its tests panicked.
+func (p *Package) Panicked() bool {
+	return p.panicked
+}
+
+// PanickingTestID returns the ID of the test case that panicked, or 0 if the
+// panic was not associated with a specific test case.
+func (p *Package) PanickingTestID() int {
+	return p.panickingTestID
 }
