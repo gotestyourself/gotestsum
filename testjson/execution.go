@@ -105,6 +105,9 @@ type Package struct {
 	// github.com/golang/go/issues/45508. This field may be removed in the future
 	// if the issue is fixed in Go.
 	panicked bool
+	// hasDataRace is true if the package, or one of the tests in the package,
+	// contained output that looked like a data race.
+	hasDataRace bool
 	// shuffleSeed is the seed used to shuffle the tests. The value is set when
 	// tests are run with -shuffle
 	shuffleSeed string
@@ -197,6 +200,9 @@ func (p *Package) OutputLines(tc TestCase) []string {
 func (p *Package) addOutput(id int, output string) {
 	if strings.HasPrefix(output, "panic: ") {
 		p.panicked = true
+	}
+	if strings.HasPrefix(output, "WARNING: DATA RACE") {
+		p.hasDataRace = true
 	}
 	p.output[id] = append(p.output[id], output)
 }
@@ -660,6 +666,15 @@ func (e *Execution) Errors() []string {
 func (e *Execution) HasPanic() bool {
 	for _, pkg := range e.packages {
 		if pkg.panicked {
+			return true
+		}
+	}
+	return false
+}
+
+func (e *Execution) HasDataRace() bool {
+	for _, pkg := range e.packages {
+		if pkg.hasDataRace {
 			return true
 		}
 	}
