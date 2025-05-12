@@ -144,6 +144,76 @@ func TestRerunFailed_ReturnsAnErrorWhenTheLastTestIsSuccessful(t *testing.T) {
 	assert.Error(t, err, "run-failed-3")
 }
 
+func TestRerunFailed_AbortOnDataRace(t *testing.T) {
+	for _, tc := range []struct {
+		name            string
+		abortOnDataRace bool
+	}{
+		{name: "abort", abortOnDataRace: true},
+		{name: "do not abort", abortOnDataRace: false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			opts := &options{
+				rerunFailsMaxInitialFailures: 10,
+				rerunFailsMaxAttempts:        1,
+				rerunFailsAbortOnDataRace:    tc.abortOnDataRace,
+				stdout:                       new(bytes.Buffer),
+			}
+
+			ctx := context.Background()
+
+			out := dedentOutput(`
+				{"Package": "pkg", "Action": "run"}
+				{"Package": "pkg", "Test": "TestOne", "Action": "run"}
+				{"Package": "pkg", "Test": "TestOne", "Action": "output", "Output": "WARNING: DATA RACE"}
+				{"Package": "pkg", "Test": "TestOne", "Action": "fail"}
+				{"Package": "pkg", "Action": "fail"}
+			`)
+			exec, err := testjson.ScanTestOutput(testjson.ScanConfig{
+				Stdout: strings.NewReader(out),
+				Stderr: strings.NewReader(""),
+			})
+			assert.NilError(t, err)
+
+			fn := func([]string) *proc {
+				return &proc{
+					cmd: fakeWaiter{result: nil},
+					stdout: strings.NewReader(dedentOutput(`
+						{"Package": "pkg", "Action": "run"}
+						{"Package": "pkg", "Test": "TestOne", "Action": "run"}
+						{"Package": "pkg", "Test": "TestOne", "Action": "pass"}
+						{"Package": "pkg", "Action": "pass"}
+					`)),
+					stderr: bytes.NewReader(nil),
+				}
+			}
+			reset := patchStartGoTestFn(fn)
+			defer reset()
+
+			err = rerunFailed(ctx, opts, testjson.ScanConfig{
+				Execution: exec,
+				Handler:   noopHandler{},
+			})
+			if tc.abortOnDataRace {
+				assert.Error(t, err, "rerun aborted because previous run had a data race")
+			} else {
+				assert.NilError(t, err)
+			}
+		})
+	}
+}
+
+func dedentOutput(s string) string {
+	lines := strings.Split(s, "\n")
+	for i, line := range lines {
+		lines[i] = strings.TrimSpace(line)
+	}
+	if len(lines) > 0 && lines[0] == "" {
+		lines = lines[1:]
+	}
+	return strings.Join(lines, "\n")
+}
+
 func patchStartGoTestFn(f func(args []string) *proc) func() {
 	orig := startGoTestFn
 	startGoTestFn = func(_ context.Context, _ string, args []string) (*proc, error) {
