@@ -192,13 +192,3 @@ func (e exitCodeError) ExitCode() int {
 func newExitCode(msg string, code int) error {
 	return exitCodeError{error: fmt.Errorf("%v", msg), code: code}
 }
-
-type noopHandler struct{}
-
-func (s noopHandler) Event(testjson.TestEvent, *testjson.Execution) error {
-	return nil
-}
-
-func (s noopHandler) Err(string) error {
-	return nil
-}

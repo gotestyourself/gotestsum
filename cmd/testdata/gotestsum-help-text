@@ -6,6 +6,7 @@ See https://pkg.go.dev/gotest.tools/gotestsum#section-readme for detailed docume
 
 Flags:
       --debug                                       enabled debug logging
+      --failed-first string                         path to previous run's JSON file. Failed tests from this file will be run first
   -f, --format string                               print format of test input (default "pkgname")
       --format-hide-empty-pkg                       do not print empty packages in compact formats
       --format-icons string                         use different icons, see help for options
