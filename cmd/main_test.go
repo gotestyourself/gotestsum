@@ -550,3 +550,14 @@ func TestRun_JsonFileTimingEvents(t *testing.T) {
 	assert.NilError(t, err)
 	golden.Assert(t, string(raw), "expected-jsonfile-timing-events")
 }
+
+func TestParseFailedFirstFlag(t *testing.T) {
+	flags, opts := setupFlags("gotestsum")
+	err := flags.Parse([]string{"--failed-first"})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !opts.failedFirst {
+		t.Errorf("expected failedFirst to be true when --failed-first is set")
+	}
+}
