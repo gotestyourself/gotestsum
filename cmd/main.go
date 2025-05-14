@@ -126,6 +126,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 
 	flags.BoolVar(&opts.debug, "debug", false, "enabled debug logging")
 	flags.BoolVar(&opts.version, "version", false, "show version and exit")
+	flags.BoolVar(&opts.failedFirst, "failed-first", false, "run failed tests first, requires --jsonfile to be specified")
+
 	return flags, opts
 }
 
@@ -200,6 +202,7 @@ type options struct {
 	watchChdir                   bool
 	maxFails                     int
 	version                      bool
+	failedFirst                  bool
 
 	// shims for testing
 	stdout io.Writer
