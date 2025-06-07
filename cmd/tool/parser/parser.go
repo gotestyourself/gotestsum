@@ -51,5 +51,5 @@ func ParseFailure(output string) (file string, line int, err error) {
 			break
 		}
 	}
-	return file, line, err
+	return file, line, scanner.Err()
 }
