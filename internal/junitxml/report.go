@@ -254,7 +254,7 @@ func write(out io.Writer, suites JUnitTestSuites) error {
 func appendFailFileLine(jtc *JUnitTestCase, failureOutput string) {
 	file, line, err := parser.ParseFailure(failureOutput)
 	if err != nil {
-		log.Warnf("Failed to parse failure output: %v", err)
+		log.Warnf("Failed to parse file:line from test output: %v", err)
 	}
 	jtc.File = file
 	jtc.Line = line
