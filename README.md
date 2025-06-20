@@ -17,6 +17,7 @@ source with `go install gotest.tools/gotestsum@latest`. To run without installin
 - Print a [summary](#summary) of the test run after running all the tests.
 - Use any [`go test` flag](#custom-go-test-command),
   run a script with [`--raw-command`](#custom-go-test-command),
+  run `go test` manually and [pipe the output](#pipe) into `gotestsum`
   or [run a compiled test binary](#executing-a-compiled-test-binary).
 
 **CI and Automation**
@@ -307,6 +308,41 @@ gotestsum --raw-command ./profile.sh ./...
 **Example: using `TEST_DIRECTORY`**
 ```
 TEST_DIRECTORY=./io/http gotestsum
+```
+
+### Pipe into gotestsum
+
+When using a shell script which decides how to invoke `go test`, it can be
+difficult to generate a script for use with `--raw-command`. A more natural
+approach in a shell script is using a pipe:
+
+**Example: simple pipe**
+```
+go test . | gotestsum --stdin
+```
+
+As with `--raw-command` above, only `test2json` output is allowed on
+stdin. Anything else causes `gotestsum` to fail with a parser error.
+
+In this simple example, stderr of the test goes to the console and is not
+captured by `gotestsum`. To get that behavior, stderr of the first command can
+be redirected to a named pipe and then be read from there by `gotestsum`:
+
+**Example: redirect stdout and stderr**
+```
+mkfifo /tmp/stderr-pipe
+
+go test 2>/tmp/stderr-pipe | gotestsum --stdin --stderr 3 3</tmp/stderr-pipe
+```
+
+Note that `gotestsum` is not aware of a non-zero exit code of the test
+command. Bash's `pipefile` can be used to detect such a failure:
+
+**Example: pipefail**
+```
+set -o pipefail # bashism
+go test . | gotestsum --stdin
+res=$? # captures result of `go test` or `gotestsum`
 ```
 
 ### Executing a compiled test binary
