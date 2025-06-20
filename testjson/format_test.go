@@ -3,6 +3,7 @@ package testjson
 import (
 	"bytes"
 	"io"
+	"os"
 	"testing"
 
 	"gotest.tools/v3/assert"
@@ -99,6 +100,26 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 			expectedOut: "format/testname.out",
 		},
 		{
+			name: "testname-with-enabled-gha",
+			format: func(out io.Writer) EventFormatter {
+				err := os.Setenv("GITHUB_ACTIONS", "true")
+				assert.NilError(t, err)
+				return NewEventFormatter(out, "testname", FormatOptions{})
+			},
+			expectedOut: "format/github-actions.out",
+		},
+		{
+			name: "testname-with-disabled-gha",
+			format: func(out io.Writer) EventFormatter {
+				err := os.Setenv("GITHUB_ACTIONS", "true")
+				assert.NilError(t, err)
+				return NewEventFormatter(out, "testname", FormatOptions{
+					DisableGithubActionsFormat: true,
+				})
+			},
+			expectedOut: "format/testname.out",
+		},
+		{
 			name:        "dots-v1",
 			format:      dotsFormatV1,
 			expectedOut: "format/dots-v1.out",
@@ -156,6 +177,26 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 			name:        "standard-verbose",
 			format:      standardVerboseFormat,
 			expectedOut: "format/standard-verbose.out",
+		},
+		{
+			name: "short-verbose-with-enabled-gha",
+			format: func(out io.Writer) EventFormatter {
+				err := os.Setenv("GITHUB_ACTIONS", "true")
+				assert.NilError(t, err)
+				return NewEventFormatter(out, "short-verbose", FormatOptions{})
+			},
+			expectedOut: "format/github-actions.out",
+		},
+		{
+			name: "short-verbose-with-disabled-gha",
+			format: func(out io.Writer) EventFormatter {
+				err := os.Setenv("GITHUB_ACTIONS", "true")
+				assert.NilError(t, err)
+				return NewEventFormatter(out, "short-verbose", FormatOptions{
+					DisableGithubActionsFormat: true,
+				})
+			},
+			expectedOut: "format/short-verbose.out",
 		},
 		{
 			name:        "standard-quiet",
