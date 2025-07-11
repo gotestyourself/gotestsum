@@ -90,6 +90,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		"command to run after the tests have completed")
 	flags.BoolVar(&opts.watch, "watch", false,
 		"watch go files, and run tests when a file is modified")
+	flags.BoolVar(&opts.watchClear, "watch-clear", false,
+		"in watch mode clear screen when rerun tests")
 	flags.BoolVar(&opts.watchChdir, "watch-chdir", false,
 		"in watch mode change the working directory to the directory with the modified file before running tests")
 	flags.IntVar(&opts.maxFails, "max-fails", 0,
@@ -200,6 +202,7 @@ type options struct {
 	rerunFailsAbortOnDataRace    bool
 	packages                     []string
 	watch                        bool
+	watchClear                   bool
 	watchChdir                   bool
 	maxFails                     int
 	version                      bool
