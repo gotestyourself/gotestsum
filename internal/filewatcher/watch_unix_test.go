@@ -31,7 +31,7 @@ func TestWatch(t *testing.T) {
 	}
 
 	go func() {
-		err := Watch(ctx, []string{dir.Path()}, capture)
+		err := Watch(ctx, []string{dir.Path()}, false, capture)
 		assert.Check(t, err)
 	}()
 
