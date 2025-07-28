@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"context"
 	goversion "go/version"
 	"os"
 	"path/filepath"
@@ -11,7 +12,6 @@ import (
 	"testing"
 	"time"
 
-	"gotest.tools/gotestsum/internal/text"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/env"
 	"gotest.tools/v3/fs"
@@ -19,6 +19,8 @@ import (
 	"gotest.tools/v3/icmd"
 	"gotest.tools/v3/poll"
 	"gotest.tools/v3/skip"
+
+	"gotest.tools/gotestsum/internal/text"
 )
 
 func TestMain(m *testing.M) {
@@ -41,6 +43,10 @@ func TestE2E_RerunFails(t *testing.T) {
 		args        []string
 		expectedErr string
 	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
+
 	fn := func(t *testing.T, tc testCase) {
 		tmpFile := fs.NewFile(t, t.Name()+"-seedfile", fs.WithContent("0"))
 		defer tmpFile.Remove()
@@ -58,7 +64,9 @@ func TestE2E_RerunFails(t *testing.T) {
 		bufStderr := new(bytes.Buffer)
 		opts.stderr = bufStderr
 
-		err := run(opts)
+		err := run(ctx, cancel, opts)
+		// when we expect an error, it may be wrapped so we do a substring match
+		// rather than an exact match
 		if tc.expectedErr != "" {
 			assert.Error(t, err, tc.expectedErr)
 		} else {
@@ -215,6 +223,9 @@ func TestE2E_MaxFails_EndTestRun(t *testing.T) {
 		t.Skip("too slow for short run")
 	}
 
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
+
 	tmpFile := fs.NewFile(t, t.Name()+"-seedfile", fs.WithContent("0"))
 	defer tmpFile.Remove()
 
@@ -233,7 +244,7 @@ func TestE2E_MaxFails_EndTestRun(t *testing.T) {
 	bufStderr := new(bytes.Buffer)
 	opts.stderr = bufStderr
 
-	err := run(opts)
+	err := run(ctx, cancel, opts)
 	assert.Error(t, err, "ending test run because max failures was reached")
 	out := text.ProcessLines(t, bufStdout,
 		text.OpRemoveSummaryLineElapsedTime,
@@ -248,6 +259,9 @@ func TestE2E_IgnoresWarnings(t *testing.T) {
 		t.Skip("too slow for short run")
 	}
 	t.Setenv("GITHUB_ACTIONS", "no")
+
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
 
 	flags, opts := setupFlags("gotestsum")
 	args := []string{
@@ -264,7 +278,7 @@ func TestE2E_IgnoresWarnings(t *testing.T) {
 	bufStderr := new(bytes.Buffer)
 	opts.stderr = bufStderr
 
-	err := run(opts)
+	err := run(ctx, cancel, opts)
 	assert.Error(t, err, "exit status 1")
 	out := text.ProcessLines(t, bufStdout,
 		text.OpRemoveSummaryLineElapsedTime,

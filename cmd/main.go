@@ -32,14 +32,32 @@ func Run(name string, args []string) error {
 	opts.args = flags.Args()
 	setupLogging(opts)
 
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, os.Interrupt)
+
+	go func() {
+		// NOTE: when a signal is catch, we cancel the context, all subsystems that use this context
+		// should clean up their resources and exits.
+		// This because if you simply run, it creates a process for testing, if you are in watch mode,
+		// under the hood it creates process multiple times and it should stop/clean it when
+		// you interrupts the watch mode.
+		<-signalChan
+		cancel()
+
+		signal.Stop(signalChan) // stop receiving any further signals
+	}()
+
 	switch {
 	case opts.version:
 		fmt.Fprintf(os.Stdout, "gotestsum version %s\n", version)
 		return nil
 	case opts.watch:
-		return runWatcher(opts)
+		return runWatcher(ctx, cancel, opts)
 	}
-	return run(opts)
+	return run(ctx, cancel, opts)
 }
 
 func setupFlags(name string) (*pflag.FlagSet, *options) {
@@ -268,10 +286,7 @@ func setupLogging(opts *options) {
 	color.NoColor = opts.noColor
 }
 
-func run(opts *options) error {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
+func run(ctx context.Context, cancel context.CancelFunc, opts *options) error {
 	if err := opts.Validate(); err != nil {
 		return err
 	}
@@ -464,9 +479,8 @@ func startGoTest(ctx context.Context, dir string, args []string) (*proc, error) 
 	}
 	log.Debugf("go test pid: %d", cmd.Process.Pid)
 
-	ctx, cancel := context.WithCancel(ctx)
 	newSignalHandler(ctx, cmd.Process.Pid, &p)
-	p.cmd = &cancelWaiter{cancel: cancel, wrapped: p.cmd}
+	p.cmd = &cancelWaiter{wrapped: p.cmd}
 	return &p, nil
 }
 
@@ -510,27 +524,17 @@ func (e exitError) ExitCode() int {
 const signalExitCode = 128
 
 func newSignalHandler(ctx context.Context, pid int, p *proc) {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-
 	go func() {
-		defer signal.Stop(c)
-
-		select {
-		case <-ctx.Done():
+		<-ctx.Done() // when ctx is cancelled, find process and kill it
+		atomic.StoreInt32(&p.signal, int32(syscall.SIGINT))
+		proc, err := os.FindProcess(pid)
+		if err != nil {
+			log.Errorf("failed to find pid of 'go test': %v", err)
 			return
-		case s := <-c:
-			atomic.StoreInt32(&p.signal, int32(s.(syscall.Signal)))
-
-			proc, err := os.FindProcess(pid)
-			if err != nil {
-				log.Errorf("failed to find pid of 'go test': %v", err)
-				return
-			}
-			if err := proc.Signal(s); err != nil {
-				log.Errorf("failed to interrupt 'go test': %v", err)
-				return
-			}
+		}
+		if err := proc.Signal(os.Interrupt); err != nil {
+			log.Errorf("failed to interrupt 'go test': %v", err)
+			return
 		}
 	}()
 }
@@ -538,12 +542,10 @@ func newSignalHandler(ctx context.Context, pid int, p *proc) {
 // cancelWaiter wraps a waiter to cancel the context after the wrapped
 // Wait exits.
 type cancelWaiter struct {
-	cancel  func()
 	wrapped waiter
 }
 
 func (w *cancelWaiter) Wait() error {
 	err := w.wrapped.Wait()
-	w.cancel()
 	return err
 }

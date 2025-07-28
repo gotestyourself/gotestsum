@@ -11,17 +11,16 @@ import (
 	"gotest.tools/gotestsum/testjson"
 )
 
-func runWatcher(opts *options) error {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	w := &watchRuns{opts: *opts}
+func runWatcher(ctx context.Context, cancelFunc context.CancelFunc, opts *options) error {
+	w := &watchRuns{opts: *opts, ctx: ctx, cancel: cancelFunc}
 	return filewatcher.Watch(ctx, opts.packages, opts.watchClear, w.run)
 }
 
 type watchRuns struct {
 	opts     options
 	prevExec *testjson.Execution
+	ctx      context.Context
+	cancel   context.CancelFunc
 }
 
 func (w *watchRuns) run(event filewatcher.Event) error {
@@ -53,7 +52,7 @@ func (w *watchRuns) run(event filewatcher.Event) error {
 	opts.packages = append(opts.packages, event.Args...)
 
 	var err error
-	if w.prevExec, err = runSingle(&opts, dir); !IsExitCoder(err) {
+	if w.prevExec, err = runSingle(w.ctx, &opts, dir); !IsExitCoder(err) {
 		return err
 	}
 	return nil
@@ -62,8 +61,8 @@ func (w *watchRuns) run(event filewatcher.Event) error {
 // runSingle is similar to run. It doesn't support rerun-fails. It may be
 // possible to share runSingle with run, but the defer close on the handler
 // would require at least 3 return values, so for now it is a copy.
-func runSingle(opts *options, dir string) (*testjson.Execution, error) {
-	ctx, cancel := context.WithCancel(context.Background())
+func runSingle(ctx context.Context, opts *options, dir string) (*testjson.Execution, error) {
+	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
 	if err := opts.Validate(); err != nil {
