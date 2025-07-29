@@ -511,7 +511,7 @@ const signalExitCode = 128
 
 func newSignalHandler(ctx context.Context, pid int, p *proc) {
 	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
+	signal.Notify(c, os.Interrupt, syscall.SIGUSR1)
 
 	go func() {
 		defer signal.Stop(c)
@@ -526,6 +526,11 @@ func newSignalHandler(ctx context.Context, pid int, p *proc) {
 			if err != nil {
 				log.Errorf("failed to find pid of 'go test': %v", err)
 				return
+			}
+
+			// send go test the SIGABRT signal to get a stack trace before exit
+			if ss, ok := s.(syscall.Signal); ok && ss == syscall.SIGUSR1 {
+				s = syscall.SIGABRT
 			}
 			if err := proc.Signal(s); err != nil {
 				log.Errorf("failed to interrupt 'go test': %v", err)
