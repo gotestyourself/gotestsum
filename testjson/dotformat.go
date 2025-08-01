@@ -31,7 +31,7 @@ func dotsFormatV1(out io.Writer) EventFormatter {
 }
 
 func fmtDot(event TestEvent) string {
-	withColor := colorEvent(event)
+	withColor := colorEvent(event.Action)
 	switch event.Action {
 	case ActionPass:
 		return withColor("·")

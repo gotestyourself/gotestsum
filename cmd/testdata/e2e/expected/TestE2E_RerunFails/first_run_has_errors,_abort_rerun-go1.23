@@ -1,4 +1,4 @@
-FAIL testjson/internal/broken
+FAIL  testjson/internal/broken
 
 === Failed
 === FAIL: testjson/internal/broken 
