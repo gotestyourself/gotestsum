@@ -94,13 +94,29 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 			expectedOut: "format/testdox.out",
 		},
 		{
-			name: "testname",
+			name: "testname with text",
 			format: func(out io.Writer) EventFormatter {
 				return testNameFormat(out, FormatOptions{
 					Icons: "text",
 				})
 			},
-			expectedOut: "format/testname.out",
+			expectedOut: "format/testname-text.out",
+		},
+		{
+			name: "testname with octicons",
+			format: func(out io.Writer) EventFormatter {
+				return testNameFormat(out, FormatOptions{
+					Icons: "octicons",
+				})
+			},
+			expectedOut: "format/testname-octicons.out",
+		},
+		{
+			name: "testname with default icons",
+			format: func(out io.Writer) EventFormatter {
+				return testNameFormat(out, FormatOptions{})
+			},
+			expectedOut: "format/testname-default.out",
 		},
 		{
 			name:        "dots-v1",
