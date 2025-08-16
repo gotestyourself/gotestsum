@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"runtime/debug"
 	"strings"
 	"sync/atomic"
 	"syscall"
@@ -17,8 +18,6 @@ import (
 	"gotest.tools/gotestsum/internal/log"
 	"gotest.tools/gotestsum/testjson"
 )
-
-var version = "dev"
 
 func Run(name string, args []string) error {
 	flags, opts := setupFlags(name)
@@ -34,8 +33,12 @@ func Run(name string, args []string) error {
 
 	switch {
 	case opts.version:
-		fmt.Fprintf(os.Stdout, "gotestsum version %s\n", version)
-		return nil
+		info, ok := debug.ReadBuildInfo()
+		if !ok {
+			return fmt.Errorf("failed to read version info")
+		} else {
+			fmt.Fprintf(os.Stdout, "gotestsum version %s\n", info.Main.Version)
+		}
 	case opts.watch:
 		return runWatcher(opts)
 	}
