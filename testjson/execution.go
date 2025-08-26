@@ -29,6 +29,7 @@ const (
 	ActionOutput Action = "output"
 	ActionSkip   Action = "skip"
 	ActionBuild  Action = "build-output"
+	ActionAttr   Action = "attr"
 )
 
 // IsTerminal returns true if the Action is one of: pass, fail, skip.
@@ -57,6 +58,10 @@ type TestEvent struct {
 	raw []byte
 	// RunID from the ScanConfig which produced this test event.
 	RunID int
+	// Key for the attribute key
+	Key string
+	// Value for the attribute value
+	Value string
 }
 
 // PackageEvent returns true if the event is a package start or end event
