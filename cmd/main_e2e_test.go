@@ -76,6 +76,7 @@ func TestE2E_RerunFails(t *testing.T) {
 			name: "reruns until success",
 			args: []string{
 				"-f=testname",
+				"--format-icons=text",
 				"--rerun-fails=4",
 				"--packages=./testdata/e2e/flaky/",
 				"--", "-count=1", "-tags=testdata",
@@ -85,6 +86,7 @@ func TestE2E_RerunFails(t *testing.T) {
 			name: "reruns continues to fail",
 			args: []string{
 				"-f=testname",
+				"--format-icons=text",
 				"--rerun-fails=2",
 				"--packages=./testdata/e2e/flaky/",
 				"--", "-count=1", "-tags=testdata",
@@ -95,6 +97,7 @@ func TestE2E_RerunFails(t *testing.T) {
 			name: "first run has errors, abort rerun",
 			args: []string{
 				"-f=testname",
+				"--format-icons=text",
 				"--rerun-fails=2",
 				"--packages=../testjson/internal/broken",
 				"--", "-count=1", "-tags=stubpkg",
@@ -254,6 +257,7 @@ func TestE2E_IgnoresWarnings(t *testing.T) {
 		"--rerun-fails=1",
 		"--packages=./testdata/e2e/ignore_warnings/",
 		"--format=testname",
+		"--format-icons=text",
 		"--", "-tags=testdata", "-cover", "-coverpkg=./cmd/internal",
 	}
 	assert.NilError(t, flags.Parse(args))

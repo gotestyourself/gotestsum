@@ -94,9 +94,29 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 			expectedOut: "format/testdox.out",
 		},
 		{
-			name:        "testname",
-			format:      testNameFormat,
-			expectedOut: "format/testname.out",
+			name: "testname with text",
+			format: func(out io.Writer) EventFormatter {
+				return testNameFormat(out, FormatOptions{
+					Icons: "text",
+				})
+			},
+			expectedOut: "format/testname-text.out",
+		},
+		{
+			name: "testname with octicons",
+			format: func(out io.Writer) EventFormatter {
+				return testNameFormat(out, FormatOptions{
+					Icons: "octicons",
+				})
+			},
+			expectedOut: "format/testname-octicons.out",
+		},
+		{
+			name: "testname with default icons",
+			format: func(out io.Writer) EventFormatter {
+				return testNameFormat(out, FormatOptions{})
+			},
+			expectedOut: "format/testname-default.out",
 		},
 		{
 			name:        "dots-v1",
@@ -219,8 +239,12 @@ func TestFormats_Coverage(t *testing.T) {
 			expectedOut: "format/testdox-coverage.out",
 		},
 		{
-			name:        "testname",
-			format:      testNameFormat,
+			name: "testname",
+			format: func(out io.Writer) EventFormatter {
+				return testNameFormat(out, FormatOptions{
+					Icons: "text",
+				})
+			},
 			expectedOut: "format/testname-coverage.out",
 		},
 		{
@@ -294,8 +318,12 @@ func TestFormats_Shuffle(t *testing.T) {
 			expectedOut: "format/testdox-shuffle.out",
 		},
 		{
-			name:        "testname",
-			format:      testNameFormat,
+			name: "testname",
+			format: func(out io.Writer) EventFormatter {
+				return testNameFormat(out, FormatOptions{
+					Icons: "text",
+				})
+			},
 			expectedOut: "format/testname-shuffle.out",
 		},
 		{

@@ -76,7 +76,9 @@ func TestEventHandler_Event_WithMissingActionFail(t *testing.T) {
 
 	buf := new(bufferCloser)
 	errBuf := new(bytes.Buffer)
-	format := testjson.NewEventFormatter(errBuf, "testname", testjson.FormatOptions{})
+	format := testjson.NewEventFormatter(errBuf, "testname", testjson.FormatOptions{
+		Icons: "text",
+	})
 
 	source := golden.Get(t, "../../testjson/testdata/input/go-test-json-missing-test-fail.out")
 	cfg := testjson.ScanConfig{

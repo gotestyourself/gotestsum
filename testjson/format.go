@@ -76,11 +76,12 @@ func standardJSONFormat(out io.Writer) EventFormatter {
 	})
 }
 
-func testNameFormatTestEvent(out io.Writer, event TestEvent) {
+func testNameFormatTestEvent(out io.Writer, event TestEvent, space string, getIcon func(Action) string) {
 	pkgPath := RelativePackagePath(event.Package)
 
-	fmt.Fprintf(out, "%s %s%s (%.2fs)\n",
-		colorEvent(event)(strings.ToUpper(string(event.Action))),
+	fmt.Fprintf(out, "%s%s%s%s (%.2fs)\n",
+		getIcon(event.Action),
+		space,
 		joinPkgToTestName(pkgPath, event.Test),
 		formatRunID(event.RunID),
 		event.Elapsed)
@@ -138,12 +139,13 @@ func isFuzzCase(event TestEvent) bool {
 		TestName(event.Test).IsSubTest()
 }
 
-func testNameFormat(out io.Writer) EventFormatter {
+func testNameFormat(out io.Writer, opts FormatOptions) EventFormatter {
 	buf := bufio.NewWriter(out)
+	getIcon := getIconFunc(opts)
 	//nolint:errcheck
 	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
 		formatTest := func() error {
-			testNameFormatTestEvent(buf, event)
+			testNameFormatTestEvent(buf, event, "  ", getIcon)
 			return buf.Flush()
 		}
 
@@ -157,16 +159,21 @@ func testNameFormat(out io.Writer) EventFormatter {
 				return nil
 			}
 
-			result := colorEvent(event)(strings.ToUpper(string(event.Action)))
+			icon := getIcon(event.Action)
 			pkg := exec.Package(event.Package)
 			if event.Action == ActionSkip || (event.Action == ActionPass && pkg.Total == 0) {
 				event.Action = ActionSkip // always color these as skip actions
-				result = colorEvent(event)("EMPTY")
+				if opts.Icons == "text" {
+					icon = colorEvent(event.Action)("EMPTY")
+				} else {
+					// update with the skip icon
+					icon = getIcon(event.Action)
+				}
 			}
 
 			event.Elapsed = 0 // hide elapsed for now, for backwards compat
-			buf.WriteString(result)
-			buf.WriteRune(' ')
+			buf.WriteString(icon)
+			buf.WriteString("  ")
 			buf.WriteString(packageLine(event, exec.Package(event.Package)))
 			return buf.Flush()
 
@@ -389,8 +396,8 @@ func pkgNameWithFailuresFormat(out io.Writer, opts FormatOptions) eventFormatter
 	}
 }
 
-func colorEvent(event TestEvent) func(format string, a ...interface{}) string {
-	switch event.Action {
+func colorEvent(action Action) func(format string, a ...interface{}) string {
+	switch action {
 	case ActionPass:
 		return color.GreenString
 	case ActionFail:
@@ -442,7 +449,7 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 		if os.Getenv("GITHUB_ACTIONS") == "true" {
 			return githubActionsFormat(out)
 		}
-		return testNameFormat(out)
+		return testNameFormat(out, formatOpts)
 	case "pkgname", "short":
 		return pkgNameFormat(out, formatOpts)
 	case "pkgname-and-test-fails", "short-with-failures":
@@ -481,7 +488,7 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 			} else {
 				buf.WriteString("  ")
 			}
-			testNameFormatTestEvent(buf, event)
+			testNameFormatTestEvent(buf, event, " ", githubActionsIcon)
 
 			for _, item := range output[key] {
 				buf.WriteString(item)
@@ -498,11 +505,11 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 			return nil
 		}
 
-		result := colorEvent(event)(strings.ToUpper(string(event.Action)))
+		result := colorEvent(event.Action)(strings.ToUpper(string(event.Action)))
 		pkg := exec.Package(event.Package)
 		if event.Action == ActionSkip || (event.Action == ActionPass && pkg.Total == 0) {
 			event.Action = ActionSkip // always color these as skip actions
-			result = colorEvent(event)("EMPTY")
+			result = colorEvent(event.Action)("EMPTY")
 		}
 
 		buf.WriteString("  ")
@@ -512,4 +519,8 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 		buf.WriteString("\n")
 		return buf.Flush()
 	})
+}
+
+func githubActionsIcon(action Action) string {
+	return colorEvent(action)(strings.ToUpper(string(action)))
 }
