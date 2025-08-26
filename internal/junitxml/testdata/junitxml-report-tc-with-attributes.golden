@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="test" tests="1" failures="0" errors="0" time="2.1">
+	<testsuite tests="1" failures="0" time="0.183000" name="gotest.tools/gotestsum/testjson/internal/withattributes" timestamp="0001-01-01T00:00:00Z">
+		<properties>
+			<property name="go.version" value="go7.7.7"></property>
+		</properties>
+		<testcase classname="gotest.tools/gotestsum/testjson/internal/withattributes" name="TestSomeAttributes" time="0.000000">
+			<properties>
+				<property name="hello" value="world"></property>
+				<property name="other" value="side"></property>
+			</properties>
+		</testcase>
+	</testsuite>
+</testsuites>
