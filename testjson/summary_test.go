@@ -278,6 +278,11 @@ func TestPrintSummary(t *testing.T) {
 			expectedOut: "summary/parallel-failures",
 		},
 		{
+			name:        "with attributes",
+			config:      scanConfigFromGolden("input/go-test-json-with-attributes.out"),
+			expectedOut: "summary/with-attributes",
+		},
+		{
 			name:        "missing skip message",
 			config:      scanConfigFromGolden("input/go-test-json-missing-skip-msg.out"),
 			expectedOut: "summary/bug-missing-skip-message",

@@ -1,0 +1,12 @@
+{"Time":"2025-08-26T21:42:33.484071+02:00","Action":"start","Package":"gotest.tools/gotestsum/testjson/internal/withattributes"}
+{"Time":"2025-08-26T21:42:33.666137+02:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/withattributes","Test":"TestSomeAttributes"}
+{"Time":"2025-08-26T21:42:33.666238+02:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withattributes","Test":"TestSomeAttributes","Output":"=== RUN   TestSomeAttributes\n"}
+{"Time":"2025-08-26T21:42:33.666268+02:00","Action":"attr","Package":"gotest.tools/gotestsum/testjson/internal/withattributes","Test":"TestSomeAttributes","Key":"hello","Value":"world"}
+{"Time":"2025-08-26T21:42:33.666278+02:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withattributes","Test":"TestSomeAttributes","Output":"=== ATTR  TestSomeAttributes hello world\n"}
+{"Time":"2025-08-26T21:42:33.666282+02:00","Action":"attr","Package":"gotest.tools/gotestsum/testjson/internal/withattributes","Test":"TestSomeAttributes","Key":"other","Value":"side"}
+{"Time":"2025-08-26T21:42:33.666285+02:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withattributes","Test":"TestSomeAttributes","Output":"=== ATTR  TestSomeAttributes other side\n"}
+{"Time":"2025-08-26T21:42:33.666294+02:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withattributes","Test":"TestSomeAttributes","Output":"--- PASS: TestSomeAttributes (0.00s)\n"}
+{"Time":"2025-08-26T21:42:33.666299+02:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withattributes","Test":"TestSomeAttributes","Elapsed":0}
+{"Time":"2025-08-26T21:42:33.666311+02:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withattributes","Output":"PASS\n"}
+{"Time":"2025-08-26T21:42:33.666549+02:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/withattributes","Output":"ok  \tgotest.tools/gotestsum/testjson/internal/withattributes\t0.182s\n"}
+{"Time":"2025-08-26T21:42:33.667446+02:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/withattributes","Elapsed":0.183}
