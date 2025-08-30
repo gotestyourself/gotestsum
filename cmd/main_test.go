@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/fatih/color"
@@ -32,11 +33,15 @@ func TestUsage_WithFlagsFromSetupFlags(t *testing.T) {
 	golden.Assert(t, buf.String(), "gotestsum-help-text")
 }
 
+var noColorMu sync.Mutex // prevent data race in parallel tests
+
 func patchNoColor(t *testing.T, value bool) {
+	noColorMu.Lock()
 	orig := color.NoColor
 	color.NoColor = value
 	t.Cleanup(func() {
 		color.NoColor = orig
+		noColorMu.Unlock()
 	})
 }
 
