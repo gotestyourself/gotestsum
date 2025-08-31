@@ -11,8 +11,8 @@ import (
 	"gotest.tools/gotestsum/testjson"
 )
 
-func runWatcher(ctx context.Context, cancelFunc context.CancelFunc, opts *options) error {
-	w := &watchRuns{opts: *opts} 
+func runWatcher(ctx context.Context, opts *options) error {
+	w := &watchRuns{opts: *opts}
 	return filewatcher.Watch(ctx, opts.packages, opts.watchClear, w.run)
 }
 

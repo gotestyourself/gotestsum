@@ -32,30 +32,15 @@ func Run(name string, args []string) error {
 	opts.args = flags.Args()
 	setupLogging(opts)
 
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
-
-	signalChan := make(chan os.Signal, 1)
-	signal.Notify(signalChan, os.Interrupt)
-
-	go func() {
-		// NOTE: when a signal is catch, we cancel the context, all subsystems that use this context
-		// should clean up their resources and exits.
-		// This because if you simply run, it creates a process for testing, if you are in watch mode,
-		// under the hood it creates process multiple times and it should stop/clean it when
-		// you interrupts the watch mode.
-		<-signalChan
-		cancel()
-
-		signal.Stop(signalChan) // stop receiving any further signals
-	}()
 
 	switch {
 	case opts.version:
 		fmt.Fprintf(os.Stdout, "gotestsum version %s\n", version)
 		return nil
 	case opts.watch:
-		return runWatcher(ctx, cancel, opts)
+		return runWatcher(ctx, opts)
 	}
 	return run(ctx, cancel, opts)
 }
