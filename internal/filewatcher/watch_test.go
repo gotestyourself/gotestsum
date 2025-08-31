@@ -1,6 +1,7 @@
 package filewatcher
 
 import (
+	"context"
 	"fmt"
 	"path/filepath"
 	"testing"
@@ -22,13 +23,15 @@ func TestFSEventHandler_HandleEvent(t *testing.T) {
 
 	fn := func(t *testing.T, tc testCase) {
 		var ran bool
-		run := func(Event) error {
+		run := func(context.Context, Event) error {
 			ran = true
 			return nil
 		}
 
+		ctx := context.Background()
+
 		h := fsEventHandler{last: tc.last, fn: run}
-		err := h.handleEvent(tc.event)
+		err := h.handleEvent(ctx, tc.event)
 		assert.NilError(t, err)
 		assert.Equal(t, ran, tc.expectedRun)
 		if tc.expectedRun {

@@ -12,18 +12,16 @@ import (
 )
 
 func runWatcher(ctx context.Context, cancelFunc context.CancelFunc, opts *options) error {
-	w := &watchRuns{opts: *opts, ctx: ctx, cancel: cancelFunc}
+	w := &watchRuns{opts: *opts} 
 	return filewatcher.Watch(ctx, opts.packages, opts.watchClear, w.run)
 }
 
 type watchRuns struct {
 	opts     options
 	prevExec *testjson.Execution
-	ctx      context.Context
-	cancel   context.CancelFunc
 }
 
-func (w *watchRuns) run(event filewatcher.Event) error {
+func (w *watchRuns) run(ctx context.Context, event filewatcher.Event) error {
 	if event.Debug {
 		path, cleanup, err := delveInitFile(w.prevExec)
 		if err != nil {
@@ -52,7 +50,7 @@ func (w *watchRuns) run(event filewatcher.Event) error {
 	opts.packages = append(opts.packages, event.Args...)
 
 	var err error
-	if w.prevExec, err = runSingle(w.ctx, &opts, dir); !IsExitCoder(err) {
+	if w.prevExec, err = runSingle(ctx, &opts, dir); !IsExitCoder(err) {
 		return err
 	}
 	return nil

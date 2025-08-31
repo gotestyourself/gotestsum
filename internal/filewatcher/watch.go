@@ -38,7 +38,7 @@ type Event struct {
 // Watch dirs for filesystem events, and run tests when .go files are saved.
 //
 //nolint:gocyclo
-func Watch(ctx context.Context, dirs []string, clearScreen bool, run func(Event) error) error {
+func Watch(ctx context.Context, dirs []string, clearScreen bool, run func(context.Context, Event) error) error {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		return fmt.Errorf("failed to create file watcher: %w", err)
@@ -80,7 +80,7 @@ func Watch(ctx context.Context, dirs []string, clearScreen bool, run func(Event)
 			}
 
 			term.Reset()
-			if err := h.runTests(event); err != nil {
+			if err := h.runTests(ctx, event); err != nil {
 				return fmt.Errorf("failed to rerun tests for %v: %v", event.PkgPath, err)
 			}
 			term.Start()
@@ -94,7 +94,7 @@ func Watch(ctx context.Context, dirs []string, clearScreen bool, run func(Event)
 				continue
 			}
 
-			if err := h.handleEvent(event); err != nil {
+			if err := h.handleEvent(ctx, event); err != nil {
 				return fmt.Errorf("failed to run tests for %v: %v", event.Name, err)
 			}
 
@@ -236,12 +236,12 @@ type fsEventHandler struct {
 	last        time.Time
 	lastPath    string
 	clearScreen bool
-	fn          func(opts Event) error
+	fn          func(ctx context.Context, opts Event) error
 }
 
 var floodThreshold = 250 * time.Millisecond
 
-func (h *fsEventHandler) handleEvent(event fsnotify.Event) error {
+func (h *fsEventHandler) handleEvent(ctx context.Context, event fsnotify.Event) error {
 	if event.Op&(fsnotify.Write|fsnotify.Create|fsnotify.Rename) == 0 {
 		return nil
 	}
@@ -254,10 +254,10 @@ func (h *fsEventHandler) handleEvent(event fsnotify.Event) error {
 		log.Debugf("skipping event received less than %v after the previous", floodThreshold)
 		return nil
 	}
-	return h.runTests(Event{PkgPath: "./" + filepath.Dir(event.Name)})
+	return h.runTests(ctx, Event{PkgPath: "./" + filepath.Dir(event.Name)})
 }
 
-func (h *fsEventHandler) runTests(opts Event) error {
+func (h *fsEventHandler) runTests(ctx context.Context, opts Event) error {
 	if opts.useLastPath {
 		opts.PkgPath = h.lastPath
 	}
@@ -268,7 +268,7 @@ func (h *fsEventHandler) runTests(opts Event) error {
 
 	fmt.Printf("\nRunning tests in %v\n", opts.PkgPath)
 
-	if err := h.fn(opts); err != nil {
+	if err := h.fn(ctx, opts); err != nil {
 		return err
 	}
 	h.last = time.Now()
