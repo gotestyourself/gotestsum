@@ -64,7 +64,7 @@ func TestE2E_RerunFails(t *testing.T) {
 		bufStderr := new(bytes.Buffer)
 		opts.stderr = bufStderr
 
-		err := run(ctx, cancel, opts)
+		err := run(ctx, opts)
 		// when we expect an error, it may be wrapped so we do a substring match
 		// rather than an exact match
 		if tc.expectedErr != "" {
@@ -244,7 +244,7 @@ func TestE2E_MaxFails_EndTestRun(t *testing.T) {
 	bufStderr := new(bytes.Buffer)
 	opts.stderr = bufStderr
 
-	err := run(ctx, cancel, opts)
+	err := run(ctx, opts)
 	assert.Error(t, err, "ending test run because max failures was reached")
 	out := text.ProcessLines(t, bufStdout,
 		text.OpRemoveSummaryLineElapsedTime,
@@ -278,7 +278,7 @@ func TestE2E_IgnoresWarnings(t *testing.T) {
 	bufStderr := new(bytes.Buffer)
 	opts.stderr = bufStderr
 
-	err := run(ctx, cancel, opts)
+	err := run(ctx, opts)
 	assert.Error(t, err, "exit status 1")
 	out := text.ProcessLines(t, bufStdout,
 		text.OpRemoveSummaryLineElapsedTime,

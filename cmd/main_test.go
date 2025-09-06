@@ -64,7 +64,7 @@ func TestOptions_Validate_FromFlags(t *testing.T) {
 		}
 		assert.ErrorContains(t, err, tc.expected, "opts: %#v", opts)
 	}
-	var testCases = []testCase{
+	testCases := []testCase{
 		{
 			name: "no flags",
 		},
@@ -376,7 +376,7 @@ func TestRun_RerunFails_WithTooManyInitialFailures(t *testing.T) {
 		stderr:                       os.Stderr,
 		hideSummary:                  newHideSummaryValue(),
 	}
-	err := run(ctx, cancel, opts)
+	err := run(ctx, opts)
 	assert.ErrorContains(t, err, "number of test failures (2) exceeds maximum (1)", out.String())
 }
 
@@ -413,7 +413,7 @@ func TestRun_RerunFails_BuildErrorPreventsRerun(t *testing.T) {
 		stderr:                       os.Stderr,
 		hideSummary:                  newHideSummaryValue(),
 	}
-	err := run(ctx, cancel, opts)
+	err := run(ctx, opts)
 	assert.ErrorContains(t, err, "rerun aborted because previous run had errors", out.String())
 }
 
@@ -451,7 +451,7 @@ func TestRun_RerunFails_PanicPreventsRerun(t *testing.T) {
 		stderr:                       os.Stderr,
 		hideSummary:                  newHideSummaryValue(),
 	}
-	err := run(ctx, cancel, opts)
+	err := run(ctx, opts)
 	assert.ErrorContains(t, err, "rerun aborted because previous run had a suspected panic", out.String())
 }
 
@@ -483,7 +483,7 @@ func TestRun_InputFromStdin(t *testing.T) {
 	}()
 
 	stdout := new(bytes.Buffer)
-	err = run(ctx, cancel, &options{
+	err = run(ctx, &options{
 		args:        []string{"cat"},
 		format:      "testname",
 		hideSummary: newHideSummaryValue(),
@@ -530,7 +530,7 @@ func TestRun_JsonFileIsSyncedBeforePostRunCommand(t *testing.T) {
 			command: []string{"cat", jsonFile},
 		},
 	}
-	err := run(ctx, cancel, opts)
+	err := run(ctx, opts)
 	assert.NilError(t, err)
 	expected := string(input)
 	_, actual, _ := strings.Cut(out.String(), "s\n") // remove the DONE line
@@ -566,7 +566,7 @@ func TestRun_JsonFileTimingEvents(t *testing.T) {
 		hideSummary:          &hideSummaryValue{value: testjson.SummarizeNone},
 		jsonFileTimingEvents: jsonFileTiming,
 	}
-	err := run(ctx, cancel, opts)
+	err := run(ctx, opts)
 	assert.NilError(t, err)
 
 	raw, err := os.ReadFile(jsonFileTiming)

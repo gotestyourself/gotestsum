@@ -42,7 +42,7 @@ func Run(name string, args []string) error {
 	case opts.watch:
 		return runWatcher(ctx, opts)
 	}
-	return run(ctx, cancel, opts)
+	return run(ctx, opts)
 }
 
 func setupFlags(name string) (*pflag.FlagSet, *options) {
@@ -271,7 +271,10 @@ func setupLogging(opts *options) {
 	color.NoColor = opts.noColor
 }
 
-func run(ctx context.Context, cancel context.CancelFunc, opts *options) error {
+func run(ctx context.Context, opts *options) error {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
 	if err := opts.Validate(); err != nil {
 		return err
 	}
@@ -518,6 +521,9 @@ func newSignalHandler(ctx context.Context, pid int, p *proc) {
 			return
 		}
 		if err := proc.Signal(os.Interrupt); err != nil {
+			if errors.Is(err, os.ErrProcessDone) {
+				return // process already exited
+			}
 			log.Errorf("failed to interrupt 'go test': %v", err)
 			return
 		}
