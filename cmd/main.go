@@ -438,6 +438,7 @@ type proc struct {
 	signal int32
 }
 
+// waiter interface is used to allow testing with mocks.
 type waiter interface {
 	Wait() error
 }
