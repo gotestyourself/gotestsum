@@ -79,7 +79,7 @@ func TestE2E_RerunFails(t *testing.T) {
 		)
 		golden.Assert(t, out, "e2e/expected/"+expectedFilename(t.Name()))
 	}
-	var testCases = []testCase{
+	testCases := []testCase{
 		{
 			name: "reruns until success",
 			args: []string{

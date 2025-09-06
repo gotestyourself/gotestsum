@@ -236,7 +236,7 @@ func defaultNoColor() bool {
 	// try to detect these CI environments via their environment variables.
 	// This code is based on https://github.com/jwalton/go-supportscolor
 	if value, exists := os.LookupEnv("CI"); exists {
-		var ciEnvNames = []string{
+		ciEnvNames := []string{
 			"APPVEYOR",
 			"BUILDKITE",
 			"CIRCLECI",
@@ -468,7 +468,6 @@ func startGoTest(ctx context.Context, dir string, args []string) (*proc, error) 
 	log.Debugf("go test pid: %d", cmd.Process.Pid)
 
 	newSignalHandler(ctx, cmd.Process.Pid, &p)
-	p.cmd = &cancelWaiter{wrapped: p.cmd}
 	return &p, nil
 }
 
@@ -528,15 +527,4 @@ func newSignalHandler(ctx context.Context, pid int, p *proc) {
 			return
 		}
 	}()
-}
-
-// cancelWaiter wraps a waiter to cancel the context after the wrapped
-// Wait exits.
-type cancelWaiter struct {
-	wrapped waiter
-}
-
-func (w *cancelWaiter) Wait() error {
-	err := w.wrapped.Wait()
-	return err
 }
