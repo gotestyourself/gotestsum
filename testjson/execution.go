@@ -29,6 +29,7 @@ const (
 	ActionOutput Action = "output"
 	ActionSkip   Action = "skip"
 	ActionBuild  Action = "build-output"
+	ActionAttr   Action = "attr"
 )
 
 // IsTerminal returns true if the Action is one of: pass, fail, skip.
@@ -57,6 +58,10 @@ type TestEvent struct {
 	raw []byte
 	// RunID from the ScanConfig which produced this test event.
 	RunID int
+	// Key for the attribute key
+	Key string
+	// Value for the attribute value
+	Value string
 }
 
 // PackageEvent returns true if the event is a package start or end event
@@ -343,6 +348,18 @@ type TestCase struct {
 	hasSubTestFailed bool
 	// Time when the test was run.
 	Time time.Time
+	// Attributes are the attributes emitted from T.Attr.
+	Attributes map[string]string
+}
+
+// addAttribute adds an attribute with both key and value
+// and returns the updated TestCase with it.
+func (c TestCase) addAttribute(key string, value string) TestCase {
+	if c.Attributes == nil {
+		c.Attributes = make(map[string]string)
+	}
+	c.Attributes[key] = value
+	return c
 }
 
 func newPackage() *Package {
@@ -461,6 +478,9 @@ func (p *Package) addTestEvent(event TestEvent) {
 
 		tc := p.running[event.Test]
 		p.addOutput(tc.ID, event.Output)
+		return
+	case ActionAttr:
+		p.running[event.Test] = tc.addAttribute(event.Key, event.Value)
 		return
 	case ActionPause, ActionCont:
 		return
