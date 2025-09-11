@@ -19,7 +19,7 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.symlinks true
       - name: Fetch Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install Go
         uses: actions/setup-go@v6
         with:
