@@ -88,7 +88,7 @@ jobs:
             mkdir -p /go/bin
 
             download=https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh
-            wget -O- -q "$download" | sh -s -- -b /go/bin/ v1.64.8
+            wget -O- -q "$download" | sh -s -- -b /go/bin/ v2.4.0
       - run:
           name: Lint
           command: |

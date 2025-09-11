@@ -1,37 +1,10 @@
-linters-settings:
-  goconst:
-    min-len: 2
-    min-occurrences: 4
-  lll:
-    line-length: 120
-
-issues:
-  exclude-use-default: false
-  exclude-rules:
-    - linters: [revive]
-      text: 'should have comment .*or be unexported'
-    - linters: [revive]
-      text: 'package-comments: should have a package comment'
-    - linters: [stylecheck]
-      text: 'ST1000: at least one file in a package should have a package comment'
-    - linters: [errcheck]
-      text: 'Error return value of `.*\.WriteString` is not checked'
-    - linters: [errcheck]
-      text: 'Error return value of `fmt.Fprint.*` is not checked'
-    - linters: [unparam]
-      text: 'result .* is always'
-    - linters: [unparam]
-      text: 'always receives'
-
+version: "2"
 linters:
-  disable-all: true
+  default: none
   enable:
     - bodyclose
     - errcheck
     - goconst
-    - gofmt
-    - goimports
-    - gosimple
     - govet
     - ineffassign
     - lll
@@ -41,9 +14,51 @@ linters:
     - prealloc
     - revive
     - staticcheck
-    - stylecheck
-    - typecheck
     - unconvert
     - unparam
     - unused
     - whitespace
+  settings:
+    goconst:
+      min-len: 2
+      min-occurrences: 4
+    lll:
+      line-length: 120
+  exclusions:
+    generated: lax
+    rules:
+      - linters:
+          - revive
+        text: should have comment .*or be unexported
+      - linters:
+          - revive
+        text: 'package-comments: should have a package comment'
+      - linters:
+          - staticcheck
+        text: 'ST1000: at least one file in a package should have a package comment'
+      - linters:
+          - errcheck
+        text: Error return value of `.*\.WriteString` is not checked
+      - linters:
+          - errcheck
+        text: Error return value of `fmt.Fprint.*` is not checked
+      - linters:
+          - unparam
+        text: result .* is always
+      - linters:
+          - unparam
+        text: always receives
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
