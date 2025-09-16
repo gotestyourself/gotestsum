@@ -19,6 +19,8 @@ import (
 	"gotest.tools/gotestsum/testjson"
 )
 
+var version = ""
+
 func Run(name string, args []string) error {
 	flags, opts := setupFlags(name)
 	switch err := flags.Parse(args); {
@@ -33,11 +35,14 @@ func Run(name string, args []string) error {
 
 	switch {
 	case opts.version:
-		info, ok := debug.ReadBuildInfo()
-		if !ok {
-			return fmt.Errorf("failed to read version info")
+		if len(version) == 0 {
+			info, ok := debug.ReadBuildInfo()
+			if !ok {
+				return fmt.Errorf("failed to read version info")
+			}
+			version = info.Main.Version
 		}
-		fmt.Fprintf(os.Stdout, "gotestsum version %s\n", info.Main.Version)
+		fmt.Fprintf(os.Stdout, "gotestsum version %s\n", version)
 		return nil
 	case opts.watch:
 		return runWatcher(opts)
