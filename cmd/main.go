@@ -72,6 +72,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		false, "do not print empty packages in compact formats")
 	flags.BoolVar(&opts.formatOptions.UseHiVisibilityIcons, "format-hivis",
 		false, "use high visibility characters in some formats")
+	flags.BoolVar(&opts.formatOptions.DisableGithubActionsFormat, "format-disable-gha",
+		false, "do not force-enable github actions format on 'testname' or 'short-verbose' formats")
 	_ = flags.MarkHidden("format-hivis")
 	flags.StringVar(&opts.formatOptions.Icons, "format-icons",
 		lookEnvWithDefault("GOTESTSUM_FORMAT_ICONS", ""),
