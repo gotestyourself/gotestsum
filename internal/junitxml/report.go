@@ -209,8 +209,14 @@ func packageTestCases(pkg *testjson.Package, formatClassname FormatFunc) []JUnit
 
 	for _, tc := range pkg.Failed {
 		jtc := newJUnitTestCase(tc, formatClassname)
+		msg := "Failed"
+		// Check if this specific test case is the one identified as panicking
+		// within the package. If so, mark its failure message specifically as "Panic".
+		if pkg.Panicked() && tc.ID == pkg.PanickingTestID() {
+			msg = "Panic"
+		}
 		jtc.Failure = &JUnitFailure{
-			Message:  "Failed",
+			Message:  msg,
 			Contents: strings.Join(pkg.OutputLines(tc), ""),
 		}
 		cases = append(cases, jtc)
