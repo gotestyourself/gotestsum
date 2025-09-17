@@ -1,0 +1,4 @@
+PASS example.com/test.TestSomething
+PASS example.com/test
+
+DONE 1 tests

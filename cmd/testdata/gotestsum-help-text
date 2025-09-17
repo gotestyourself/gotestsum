@@ -28,6 +28,8 @@ Flags:
       --rerun-fails-max-failures int                do not rerun any tests if the initial run has more than this number of failures (default 10)
       --rerun-fails-report string                   write a report to the file, of the tests that were rerun
       --rerun-fails-run-root-test                   rerun the entire root testcase when any of its subtests fail, instead of only the failed subtest
+      --stderr file descriptor                      read go test stderr from a certain file descriptor (only valid in combination with -stdin)
+      --stdin                                       don't run any command, instead read go test stdout from stdin
       --version                                     show version and exit
       --watch                                       watch go files, and run tests when a file is modified
       --watch-chdir                                 in watch mode change the working directory to the directory with the modified file before running tests

@@ -273,3 +273,104 @@ func TestE2E_IgnoresWarnings(t *testing.T) {
 	)
 	golden.Assert(t, out, "e2e/expected/"+t.Name())
 }
+
+func TestE2E_StdinNoError(t *testing.T) {
+	t.Setenv("GITHUB_ACTIONS", "no")
+
+	flags, opts := setupFlags("gotestsum")
+	args := []string{
+		"--stdin",
+		"--format=testname",
+	}
+	assert.NilError(t, flags.Parse(args))
+	opts.args = flags.Args()
+
+	bufStdout := new(bytes.Buffer)
+	opts.stdout = bufStdout
+	bufStderr := new(bytes.Buffer)
+	opts.stderr = bufStderr
+
+	in := `{"Time":"2024-06-16T14:46:00.343974039+02:00","Action":"start","Package":"example.com/test"}
+{"Time":"2024-06-16T14:46:00.378597503+02:00","Action":"run","Package":"example.com/test","Test":"TestSomething"}
+{"Time":"2024-06-16T14:46:00.378798569+02:00","Action":"pass","Package":"example.com/test","Test":"TestSomething","Elapsed":0}
+{"Time":"2024-06-16T14:46:00.404809796+02:00","Action":"pass","Package":"example.com/test","Elapsed":0.061}
+`
+	opts.stdin = strings.NewReader(in)
+
+	err := run(opts)
+	assert.NilError(t, err)
+	out := text.ProcessLines(t, bufStdout,
+		text.OpRemoveSummaryLineElapsedTime,
+		text.OpRemoveTestElapsedTime,
+		filepath.ToSlash, // for windows
+	)
+	golden.Assert(t, out, "e2e/expected/"+t.Name())
+}
+
+func TestE2E_StdinFailure(t *testing.T) {
+	t.Setenv("GITHUB_ACTIONS", "no")
+
+	flags, opts := setupFlags("gotestsum")
+	args := []string{
+		"--stdin",
+		"--format=testname",
+	}
+	assert.NilError(t, flags.Parse(args))
+	opts.args = flags.Args()
+
+	bufStdout := new(bytes.Buffer)
+	opts.stdout = bufStdout
+	bufStderr := new(bytes.Buffer)
+	opts.stderr = bufStderr
+
+	in := `{"Time":"2024-06-16T14:46:00.343974039+02:00","Action":"start","Package":"example.com/test"}
+{"Time":"2024-06-16T14:46:00.378597503+02:00","Action":"run","Package":"example.com/test","Test":"TestSomething"}
+{"Time":"2024-06-16T14:46:00.378798569+02:00","Action":"fail","Package":"example.com/test","Test":"TestSomething","Elapsed":0}
+{"Time":"2024-06-16T14:46:00.404809796+02:00","Action":"pass","Package":"example.com/test","Elapsed":0.061}
+`
+	opts.stdin = strings.NewReader(in)
+
+	err := run(opts)
+	assert.NilError(t, err)
+	out := text.ProcessLines(t, bufStdout,
+		text.OpRemoveSummaryLineElapsedTime,
+		text.OpRemoveTestElapsedTime,
+		filepath.ToSlash, // for windows
+	)
+	golden.Assert(t, out, "e2e/expected/"+t.Name())
+}
+
+func TestE2E_StdinStderr(t *testing.T) {
+	t.Setenv("GITHUB_ACTIONS", "no")
+
+	flags, opts := setupFlags("gotestsum")
+	args := []string{
+		"--stdin",
+		"--stderr=3",
+		"--format=testname",
+	}
+	assert.NilError(t, flags.Parse(args))
+	opts.args = flags.Args()
+
+	bufStdout := new(bytes.Buffer)
+	opts.stdout = bufStdout
+	bufStderr := new(bytes.Buffer)
+	opts.stderr = bufStderr
+
+	in := `{"Time":"2024-06-16T14:46:00.343974039+02:00","Action":"start","Package":"example.com/test"}
+{"Time":"2024-06-16T14:46:00.378597503+02:00","Action":"run","Package":"example.com/test","Test":"TestSomething"}
+{"Time":"2024-06-16T14:46:00.378798569+02:00","Action":"pass","Package":"example.com/test","Test":"TestSomething","Elapsed":0}
+{"Time":"2024-06-16T14:46:00.404809796+02:00","Action":"pass","Package":"example.com/test","Elapsed":0.061}
+`
+	opts.stdin = strings.NewReader(in)
+	opts.fd3 = strings.NewReader(`build failure`)
+
+	err := run(opts)
+	assert.NilError(t, err)
+	out := text.ProcessLines(t, bufStdout,
+		text.OpRemoveSummaryLineElapsedTime,
+		text.OpRemoveTestElapsedTime,
+		filepath.ToSlash, // for windows
+	)
+	golden.Assert(t, out, "e2e/expected/"+t.Name())
+}
