@@ -1,4 +1,4 @@
-FAIL gotest.tools/v3/poll
+FAIL  gotest.tools/v3/poll
 === RUN   TestWaitOn_WithCompare
 panic: runtime error: index out of range [1] with length 1
 
@@ -17,4 +17,4 @@ gotest.tools/v3/poll.WaitOn.func1(0xc00001e3c0, 0x67df50, 0x6c1960, 0xc00016c240
 	/home/daniel/pers/code/gotest.tools/poll/poll.go:125 +0x62
 created by gotest.tools/v3/poll.WaitOn
 	/home/daniel/pers/code/gotest.tools/poll/poll.go:124 +0x16f
-FAIL gotest.tools/v3/poll.TestWaitOn_WithCompare (-1.00s)
+FAIL  gotest.tools/v3/poll.TestWaitOn_WithCompare (-1.00s)
