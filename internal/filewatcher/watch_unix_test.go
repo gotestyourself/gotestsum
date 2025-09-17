@@ -25,7 +25,8 @@ func TestWatch(t *testing.T) {
 	patchFloodThreshold(t, 0)
 
 	chEvents := make(chan Event, 1)
-	capture := func(event Event) error {
+	capture := func(ctx context.Context, event Event) error {
+		_ = ctx
 		chEvents <- event
 		return nil
 	}

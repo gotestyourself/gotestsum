@@ -2,12 +2,14 @@ package cmd
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/fatih/color"
@@ -31,11 +33,15 @@ func TestUsage_WithFlagsFromSetupFlags(t *testing.T) {
 	golden.Assert(t, buf.String(), "gotestsum-help-text")
 }
 
+var noColorMu sync.Mutex // prevent data race in parallel tests
+
 func patchNoColor(t *testing.T, value bool) {
+	noColorMu.Lock()
 	orig := color.NoColor
 	color.NoColor = value
 	t.Cleanup(func() {
 		color.NoColor = orig
+		noColorMu.Unlock()
 	})
 }
 
@@ -58,7 +64,7 @@ func TestOptions_Validate_FromFlags(t *testing.T) {
 		}
 		assert.ErrorContains(t, err, tc.expected, "opts: %#v", opts)
 	}
-	var testCases = []testCase{
+	testCases := []testCase{
 		{
 			name: "no flags",
 		},
@@ -338,6 +344,9 @@ func runCase(t *testing.T, name string, fn func(t *testing.T)) {
 }
 
 func TestRun_RerunFails_WithTooManyInitialFailures(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
+
 	jsonFailed := `{"Package": "pkg", "Action": "run"}
 {"Package": "pkg", "Test": "TestOne", "Action": "run"}
 {"Package": "pkg", "Test": "TestOne", "Action": "fail"}
@@ -367,11 +376,14 @@ func TestRun_RerunFails_WithTooManyInitialFailures(t *testing.T) {
 		stderr:                       os.Stderr,
 		hideSummary:                  newHideSummaryValue(),
 	}
-	err := run(opts)
+	err := run(ctx, opts)
 	assert.ErrorContains(t, err, "number of test failures (2) exceeds maximum (1)", out.String())
 }
 
 func TestRun_RerunFails_BuildErrorPreventsRerun(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
+
 	jsonFailed := `{"Package": "pkg", "Action": "run"}
 {"Package": "pkg", "Test": "TestOne", "Action": "run"}
 {"Package": "pkg", "Test": "TestOne", "Action": "fail"}
@@ -401,7 +413,7 @@ func TestRun_RerunFails_BuildErrorPreventsRerun(t *testing.T) {
 		stderr:                       os.Stderr,
 		hideSummary:                  newHideSummaryValue(),
 	}
-	err := run(opts)
+	err := run(ctx, opts)
 	assert.ErrorContains(t, err, "rerun aborted because previous run had errors", out.String())
 }
 
@@ -415,6 +427,8 @@ func TestRun_RerunFails_PanicPreventsRerun(t *testing.T) {
 {"Package": "pkg", "Test": "TestOne", "Action": "output","Output":"panic: something went wrong\n"}
 {"Package": "pkg", "Action": "fail"}
 `
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
 
 	fn := func([]string) *proc {
 		return &proc{
@@ -437,13 +451,16 @@ func TestRun_RerunFails_PanicPreventsRerun(t *testing.T) {
 		stderr:                       os.Stderr,
 		hideSummary:                  newHideSummaryValue(),
 	}
-	err := run(opts)
+	err := run(ctx, opts)
 	assert.ErrorContains(t, err, "rerun aborted because previous run had a suspected panic", out.String())
 }
 
 func TestRun_InputFromStdin(t *testing.T) {
 	stdin := os.Stdin
 	t.Cleanup(func() { os.Stdin = stdin })
+
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
 
 	r, w, err := os.Pipe()
 	assert.NilError(t, err)
@@ -466,7 +483,7 @@ func TestRun_InputFromStdin(t *testing.T) {
 	}()
 
 	stdout := new(bytes.Buffer)
-	err = run(&options{
+	err = run(ctx, &options{
 		args:        []string{"cat"},
 		format:      "testname",
 		hideSummary: newHideSummaryValue(),
@@ -483,6 +500,9 @@ func TestRun_JsonFileIsSyncedBeforePostRunCommand(t *testing.T) {
 	skip.If(t, runtime.GOOS == "windows")
 
 	input := golden.Get(t, "../../testjson/testdata/input/go-test-json.out")
+
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
 
 	fn := func([]string) *proc {
 		return &proc{
@@ -510,7 +530,7 @@ func TestRun_JsonFileIsSyncedBeforePostRunCommand(t *testing.T) {
 			command: []string{"cat", jsonFile},
 		},
 	}
-	err := run(opts)
+	err := run(ctx, opts)
 	assert.NilError(t, err)
 	expected := string(input)
 	_, actual, _ := strings.Cut(out.String(), "s\n") // remove the DONE line
@@ -519,6 +539,9 @@ func TestRun_JsonFileIsSyncedBeforePostRunCommand(t *testing.T) {
 
 func TestRun_JsonFileTimingEvents(t *testing.T) {
 	input := golden.Get(t, "../../testjson/testdata/input/go-test-json.out")
+
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
 
 	fn := func([]string) *proc {
 		return &proc{
@@ -543,7 +566,7 @@ func TestRun_JsonFileTimingEvents(t *testing.T) {
 		hideSummary:          &hideSummaryValue{value: testjson.SummarizeNone},
 		jsonFileTimingEvents: jsonFileTiming,
 	}
-	err := run(opts)
+	err := run(ctx, opts)
 	assert.NilError(t, err)
 
 	raw, err := os.ReadFile(jsonFileTiming)

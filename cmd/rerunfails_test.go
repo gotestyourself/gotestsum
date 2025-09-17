@@ -68,7 +68,7 @@ func TestGoTestRunFlagFromTestCases(t *testing.T) {
 		assert.Equal(t, actual, tc.expected)
 	}
 
-	var testCases = map[string]testCase{
+	testCases := map[string]testCase{
 		"root test case": {
 			input:    "TestOne",
 			expected: "-test.run=^TestOne$",

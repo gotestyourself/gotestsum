@@ -33,6 +33,9 @@ func Run(name string, args []string) error {
 	opts.args = flags.Args()
 	setupLogging(opts)
 
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer cancel()
+
 	switch {
 	case opts.version:
 		if len(version) == 0 {
@@ -45,9 +48,9 @@ func Run(name string, args []string) error {
 		fmt.Fprintf(os.Stdout, "gotestsum version %s\n", version)
 		return nil
 	case opts.watch:
-		return runWatcher(opts)
+		return runWatcher(ctx, opts)
 	}
-	return run(opts)
+	return run(ctx, opts)
 }
 
 func setupFlags(name string) (*pflag.FlagSet, *options) {
@@ -241,7 +244,7 @@ func defaultNoColor() bool {
 	// try to detect these CI environments via their environment variables.
 	// This code is based on https://github.com/jwalton/go-supportscolor
 	if value, exists := os.LookupEnv("CI"); exists {
-		var ciEnvNames = []string{
+		ciEnvNames := []string{
 			"APPVEYOR",
 			"BUILDKITE",
 			"CIRCLECI",
@@ -276,8 +279,8 @@ func setupLogging(opts *options) {
 	color.NoColor = opts.noColor
 }
 
-func run(opts *options) error {
-	ctx, cancel := context.WithCancel(context.Background())
+func run(ctx context.Context, opts *options) error {
+	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
 	if err := opts.Validate(); err != nil {
@@ -443,6 +446,7 @@ type proc struct {
 	signal int32
 }
 
+// waiter interface is used to allow testing with mocks.
 type waiter interface {
 	Wait() error
 }
@@ -472,9 +476,7 @@ func startGoTest(ctx context.Context, dir string, args []string) (*proc, error) 
 	}
 	log.Debugf("go test pid: %d", cmd.Process.Pid)
 
-	ctx, cancel := context.WithCancel(ctx)
 	newSignalHandler(ctx, cmd.Process.Pid, &p)
-	p.cmd = &cancelWaiter{cancel: cancel, wrapped: p.cmd}
 	return &p, nil
 }
 
@@ -518,40 +520,20 @@ func (e exitError) ExitCode() int {
 const signalExitCode = 128
 
 func newSignalHandler(ctx context.Context, pid int, p *proc) {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-
 	go func() {
-		defer signal.Stop(c)
-
-		select {
-		case <-ctx.Done():
+		<-ctx.Done() // when ctx is cancelled, find process and kill it
+		atomic.StoreInt32(&p.signal, int32(syscall.SIGINT))
+		proc, err := os.FindProcess(pid)
+		if err != nil {
+			log.Errorf("failed to find pid of 'go test': %v", err)
 			return
-		case s := <-c:
-			atomic.StoreInt32(&p.signal, int32(s.(syscall.Signal)))
-
-			proc, err := os.FindProcess(pid)
-			if err != nil {
-				log.Errorf("failed to find pid of 'go test': %v", err)
-				return
+		}
+		if err := proc.Signal(os.Interrupt); err != nil {
+			if errors.Is(err, os.ErrProcessDone) {
+				return // process already exited
 			}
-			if err := proc.Signal(s); err != nil {
-				log.Errorf("failed to interrupt 'go test': %v", err)
-				return
-			}
+			log.Errorf("failed to interrupt 'go test': %v", err)
+			return
 		}
 	}()
-}
-
-// cancelWaiter wraps a waiter to cancel the context after the wrapped
-// Wait exits.
-type cancelWaiter struct {
-	cancel  func()
-	wrapped waiter
-}
-
-func (w *cancelWaiter) Wait() error {
-	err := w.wrapped.Wait()
-	w.cancel()
-	return err
 }
