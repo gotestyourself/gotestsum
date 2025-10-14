@@ -159,7 +159,7 @@ package may be used to parse the JSON file output.
 
 **Example: desktop notifications**
 
-First install the example notification command with `go get gotest.tools/gotestsum/contrib/notify`.
+First install the example notification command with `go install gotest.tools/gotestsum/contrib/notify@latest`.
 The command will be downloaded to `$GOPATH/bin` as `notify`. Note that this
 example `notify` command only works on Linux with `notify-send` and on macOS with
 [terminal-notifer](https://github.com/julienXX/terminal-notifier) installed.
