@@ -528,7 +528,9 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 }
 
 // writeGitHubActionsError parses test output and emits GitHub Actions error annotations
-func writeGitHubActionsError(buf *bufio.Writer, event TestEvent, outputLines []string, fileLinePattern, panicStackPattern *regexp.Regexp) {
+func writeGitHubActionsError(
+	buf *bufio.Writer, event TestEvent, outputLines []string, fileLinePattern, panicStackPattern *regexp.Regexp,
+) {
 	sanitize := func(s string) string {
 		// Percent must be escaped first
 		s = strings.ReplaceAll(s, "%", "%25")
