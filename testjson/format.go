@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -463,6 +465,12 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 	}
 	output := map[name][]string{}
 
+	// Compile regex patterns once for parsing test failure information
+	// fileLinePattern matches patterns like "    filename.go:123: error message"
+	fileLinePattern := regexp.MustCompile(`^\s+([a-zA-Z0-9_\-./]+\.go):(\d+):`)
+	// panicStackPattern matches panic stack trace lines like "\t/path/to/file.go:123 +0x..."
+	panicStackPattern := regexp.MustCompile(`^\t(.+\.go):(\d+) \+0x`)
+
 	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
 		key := name{Package: event.Package, Test: event.Test}
 
@@ -476,6 +484,11 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 
 		// test case end event
 		if event.Test != "" && event.Action.IsTerminal() {
+			// Emit error annotation for failed tests
+			if event.Action == ActionFail {
+				writeGitHubActionsError(buf, event, output[key], fileLinePattern, panicStackPattern)
+			}
+
 			if len(output[key]) > 0 {
 				buf.WriteString("::group::")
 			} else {
@@ -512,4 +525,84 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 		buf.WriteString("\n")
 		return buf.Flush()
 	})
+}
+
+// writeGitHubActionsError parses test output and emits GitHub Actions error annotations
+func writeGitHubActionsError(buf *bufio.Writer, event TestEvent, outputLines []string, fileLinePattern, panicStackPattern *regexp.Regexp) {
+	sanitize := func(s string) string {
+		// Percent must be escaped first
+		s = strings.ReplaceAll(s, "%", "%25")
+		// Escape newlines and carriage returns
+		s = strings.ReplaceAll(s, "\r", "%0D")
+		s = strings.ReplaceAll(s, "\n", "%0A")
+		return s
+	}
+
+	// Check if this is a panic by looking for panic: in the output
+	var isPanic bool
+	var panicMessage strings.Builder
+	for _, outputLine := range outputLines {
+		if strings.Contains(outputLine, "panic:") {
+			isPanic = true
+			panicMessage.WriteString(strings.TrimSpace(outputLine))
+			panicMessage.WriteString(" ")
+		}
+	}
+
+	if isPanic {
+		// For panics, emit a single annotation with the panic location
+		var file string
+		var line string
+
+		// Look for the test file in the stack trace
+		// Prefer _test.go files over other files (like testing.go or runtime files)
+		for _, outputLine := range outputLines {
+			if matches := panicStackPattern.FindStringSubmatch(outputLine); len(matches) == 3 {
+				stackFile := filepath.Base(matches[1])
+				stackLine := matches[2]
+				isTestFile := strings.HasSuffix(stackFile, "_test.go")
+
+				if file == "" || isTestFile {
+					file = stackFile
+					line = stackLine
+
+					if isTestFile {
+						break
+					}
+				}
+			}
+		}
+
+		message := strings.TrimSpace(panicMessage.String())
+		if message == "" {
+			message = "Test panicked"
+		}
+
+		if file != "" && line != "" {
+			fmt.Fprintf(buf, "::error file=%s,line=%s,title=%s::%s\n",
+				sanitize(file), line, sanitize(event.Test), sanitize(message))
+		} else {
+			fmt.Fprintf(buf, "::error title=%s::%s\n", sanitize(event.Test), sanitize(message))
+		}
+	} else {
+		// For regular test failures, emit one annotation per error line
+		for _, outputLine := range outputLines {
+			if matches := fileLinePattern.FindStringSubmatch(outputLine); len(matches) == 3 {
+				file := matches[1]
+				line := matches[2]
+
+				parts := strings.SplitN(outputLine, ":", 3)
+				var message string
+				if len(parts) >= 3 {
+					message = strings.TrimSpace(parts[2])
+				}
+				if message == "" {
+					message = "Test failed"
+				}
+
+				fmt.Fprintf(buf, "::error file=%s,line=%s,title=%s::%s\n",
+					sanitize(file), line, sanitize(event.Test), sanitize(message))
+			}
+		}
+	}
 }
