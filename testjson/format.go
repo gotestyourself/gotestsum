@@ -456,6 +456,23 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 	}
 }
 
+type githubActionsErrorPatterns struct {
+	fileLine   *regexp.Regexp
+	panicStack *regexp.Regexp
+	panicLine  *regexp.Regexp
+}
+
+func newGitHubActionsErrorPatterns() githubActionsErrorPatterns {
+	return githubActionsErrorPatterns{
+		// Matches "    filename.go:123:" style lines emitted by go test failures
+		fileLine: regexp.MustCompile(`^\s+([a-zA-Z0-9_\-./]+\.go):(\d+):`),
+		// Matches stack frames emitted in Go panic traces
+		panicStack: regexp.MustCompile(`^\t(.+\.go):(\d+) \+0x`),
+		// Matches canonical panic lines such as "panic: runtime error: ..."
+		panicLine: regexp.MustCompile(`^panic:\s*`),
+	}
+}
+
 func githubActionsFormat(out io.Writer) EventFormatter {
 	buf := bufio.NewWriter(out)
 
@@ -465,11 +482,7 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 	}
 	output := map[name][]string{}
 
-	// Compile regex patterns once for parsing test failure information
-	// fileLinePattern matches patterns like "    filename.go:123: error message"
-	fileLinePattern := regexp.MustCompile(`^\s+([a-zA-Z0-9_\-./]+\.go):(\d+):`)
-	// panicStackPattern matches panic stack trace lines like "\t/path/to/file.go:123 +0x..."
-	panicStackPattern := regexp.MustCompile(`^\t(.+\.go):(\d+) \+0x`)
+	patterns := newGitHubActionsErrorPatterns()
 
 	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
 		key := name{Package: event.Package, Test: event.Test}
@@ -486,7 +499,7 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 		if event.Test != "" && event.Action.IsTerminal() {
 			// Emit error annotation for failed tests
 			if event.Action == ActionFail {
-				writeGitHubActionsError(buf, event, output[key], fileLinePattern, panicStackPattern)
+				writeGitHubActionsError(buf, event, output[key], patterns)
 			}
 
 			if len(output[key]) > 0 {
@@ -529,7 +542,7 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 
 // writeGitHubActionsError parses test output and emits GitHub Actions error annotations
 func writeGitHubActionsError(
-	buf *bufio.Writer, event TestEvent, outputLines []string, fileLinePattern, panicStackPattern *regexp.Regexp,
+	buf *bufio.Writer, event TestEvent, outputLines []string, patterns githubActionsErrorPatterns,
 ) {
 	sanitize := func(s string) string {
 		// Percent must be escaped first
@@ -544,9 +557,10 @@ func writeGitHubActionsError(
 	var isPanic bool
 	var panicMessage strings.Builder
 	for _, outputLine := range outputLines {
-		if strings.Contains(outputLine, "panic:") {
+		trimmed := strings.TrimSpace(outputLine)
+		if patterns.panicLine.MatchString(trimmed) {
 			isPanic = true
-			panicMessage.WriteString(strings.TrimSpace(outputLine))
+			panicMessage.WriteString(trimmed)
 			panicMessage.WriteString(" ")
 		}
 	}
@@ -559,7 +573,7 @@ func writeGitHubActionsError(
 		// Look for the test file in the stack trace
 		// Prefer _test.go files over other files (like testing.go or runtime files)
 		for _, outputLine := range outputLines {
-			if matches := panicStackPattern.FindStringSubmatch(outputLine); len(matches) == 3 {
+			if matches := patterns.panicStack.FindStringSubmatch(outputLine); len(matches) == 3 {
 				stackFile := filepath.Base(matches[1])
 				stackLine := matches[2]
 				isTestFile := strings.HasSuffix(stackFile, "_test.go")
@@ -589,7 +603,7 @@ func writeGitHubActionsError(
 	} else {
 		// For regular test failures, emit one annotation per error line
 		for _, outputLine := range outputLines {
-			if matches := fileLinePattern.FindStringSubmatch(outputLine); len(matches) == 3 {
+			if matches := patterns.fileLine.FindStringSubmatch(outputLine); len(matches) == 3 {
 				file := matches[1]
 				line := matches[2]
 
