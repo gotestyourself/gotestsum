@@ -97,3 +97,44 @@ func TestWriteGitHubActionsError_UsesAdditionalLinesForMessage(t *testing.T) {
 		"::error file=my_integration_test.go,line=42,title=pkg.TestHasDiff::Expected <int>: 0 to equal <int>: 1\n",
 	)
 }
+
+func TestWriteGitHubActionsError_IncludesRepoRelativeFile(t *testing.T) {
+	patchPkgPathPrefix(t, "github.com/example/project")
+	out := new(bytes.Buffer)
+	writer := bufio.NewWriter(out)
+
+	event := TestEvent{
+		Test:    "pkg.TestHasFailure",
+		Package: "github.com/example/project/internal/foo",
+	}
+	lines := []string{"\tfoo_test.go:12: boom"}
+
+	writeGitHubActionsError(writer, event, lines, newGitHubActionsErrorPatterns())
+
+	assert.Equal(t,
+		flushGitHubActionsBuffer(t, writer, out),
+		"::error file=internal/foo/foo_test.go,line=12,title=pkg.TestHasFailure::boom\n",
+	)
+}
+
+func TestWriteGitHubActionsError_PanicUsesRepoRelativeFile(t *testing.T) {
+	patchPkgPathPrefix(t, "github.com/example/project")
+	out := new(bytes.Buffer)
+	writer := bufio.NewWriter(out)
+
+	event := TestEvent{
+		Test:    "pkg.TestPanicsHard",
+		Package: "github.com/example/project/pkg/bar",
+	}
+	lines := []string{
+		"panic: oh no",
+		"\t/home/runner/work/project/pkg/bar/bar_test.go:55 +0x123",
+	}
+
+	writeGitHubActionsError(writer, event, lines, newGitHubActionsErrorPatterns())
+
+	assert.Equal(t,
+		flushGitHubActionsBuffer(t, writer, out),
+		"::error file=pkg/bar/bar_test.go,line=55,title=pkg.TestPanicsHard::panic: oh no\n",
+	)
+}

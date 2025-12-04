@@ -574,12 +574,14 @@ func writeGitHubActionsError(
 		// Prefer _test.go files over other files (like testing.go or runtime files)
 		for _, outputLine := range outputLines {
 			if matches := patterns.panicStack.FindStringSubmatch(outputLine); len(matches) == 3 {
-				stackFile := filepath.Base(matches[1])
+				stackPath := filepath.ToSlash(matches[1])
+				stackFile := filepath.Base(stackPath)
 				stackLine := matches[2]
 				isTestFile := strings.HasSuffix(stackFile, "_test.go")
+				repoRelative := repoRelativeFile(event, stackPath)
 
-				if file == "" || isTestFile {
-					file = stackFile
+				if (file == "" && repoRelative != "") || isTestFile {
+					file = repoRelative
 					line = stackLine
 
 					if isTestFile {
@@ -604,7 +606,8 @@ func writeGitHubActionsError(
 		// For regular test failures, emit one annotation per error line
 		for idx, outputLine := range outputLines {
 			if matches := patterns.fileLine.FindStringSubmatch(outputLine); len(matches) == 3 {
-				file := matches[1]
+				rawFile := matches[1]
+				file := repoRelativeFile(event, rawFile)
 				line := matches[2]
 
 				// Ignore logs or helper output from non-test files; these are often
@@ -659,4 +662,27 @@ func collectAdditionalMessage(lines []string, patterns githubActionsErrorPattern
 	}
 
 	return strings.Join(parts, " ")
+}
+
+func repoRelativeFile(event TestEvent, file string) string {
+	clean := filepath.ToSlash(file)
+	clean = strings.TrimPrefix(clean, "./")
+	if clean == "" {
+		return ""
+	}
+	pkgPath := RelativePackagePath(event.Package)
+	pkgPath = strings.TrimPrefix(pkgPath, "./")
+	if pkgPath == "" || pkgPath == "." {
+		if strings.HasPrefix(clean, "/") || strings.Contains(clean, ":") {
+			return filepath.Base(clean)
+		}
+		return clean
+	}
+	if idx := strings.Index(clean, pkgPath+"/"); idx >= 0 {
+		return clean[idx:]
+	}
+	if !strings.Contains(clean, "/") {
+		return pkgPath + "/" + clean
+	}
+	return clean
 }
