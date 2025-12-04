@@ -63,3 +63,15 @@ func TestWriteGitHubActionsError_PanicRequiresStrictMatch(t *testing.T) {
 		"::error file=failure_test.go,line=12,title=pkg.TestLogsPanicWord::panic: not a real panic\n",
 	)
 }
+
+func TestWriteGitHubActionsError_IgnoresNonTestLogs(t *testing.T) {
+	out := new(bytes.Buffer)
+	writer := bufio.NewWriter(out)
+
+	event := TestEvent{Test: "pkg.TestWithTelemetry"}
+	lines := []string{"\tprocessExecutor.go:140: [request-handler.log] 2025-12-04T17:55:24Z INFO Worker [RequestHandler] finished"}
+
+	writeGitHubActionsError(writer, event, lines, newGitHubActionsErrorPatterns())
+
+	assert.Equal(t, flushGitHubActionsBuffer(t, writer, out), "")
+}

@@ -607,6 +607,13 @@ func writeGitHubActionsError(
 				file := matches[1]
 				line := matches[2]
 
+				// Ignore logs or helper output from non-test files; these are often
+				// informational (for example, telemetry logs) and shouldn't surface as
+				// GitHub Actions annotations.
+				if !strings.HasSuffix(file, "_test.go") {
+					continue
+				}
+
 				parts := strings.SplitN(outputLine, ":", 3)
 				var message string
 				if len(parts) >= 3 {
