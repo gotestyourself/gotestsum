@@ -637,7 +637,6 @@ func writeGitHubActionsError(
 }
 
 func collectAdditionalMessage(lines []string, patterns githubActionsErrorPatterns) string {
-	var parts []string
 	shouldStop := func(line string, trimmed string) bool {
 		if trimmed == "" {
 			return true
@@ -653,6 +652,7 @@ func collectAdditionalMessage(lines []string, patterns githubActionsErrorPattern
 		return false
 	}
 
+	parts := make([]string, 0, len(lines))
 	for _, line := range lines {
 		trimmed := strings.TrimSpace(line)
 		if shouldStop(line, trimmed) {

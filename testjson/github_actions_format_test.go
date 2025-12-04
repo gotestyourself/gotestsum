@@ -69,7 +69,9 @@ func TestWriteGitHubActionsError_IgnoresNonTestLogs(t *testing.T) {
 	writer := bufio.NewWriter(out)
 
 	event := TestEvent{Test: "pkg.TestWithTelemetry"}
-	lines := []string{"\tprocessExecutor.go:140: [request-handler.log] 2025-12-04T17:55:24Z INFO Worker [RequestHandler] finished"}
+	lines := []string{
+		"\texample.go:140: [request-handler.log] 2025-12-04T17:55:24Z INFO Worker [RequestHandler] finished",
+	}
 
 	writeGitHubActionsError(writer, event, lines, newGitHubActionsErrorPatterns())
 
