@@ -75,3 +75,25 @@ func TestWriteGitHubActionsError_IgnoresNonTestLogs(t *testing.T) {
 
 	assert.Equal(t, flushGitHubActionsBuffer(t, writer, out), "")
 }
+
+func TestWriteGitHubActionsError_UsesAdditionalLinesForMessage(t *testing.T) {
+	out := new(bytes.Buffer)
+	writer := bufio.NewWriter(out)
+
+	event := TestEvent{Test: "pkg.TestHasDiff"}
+	lines := []string{
+		"\tmy_integration_test.go:42:",
+		"\t\tExpected",
+		"\t\t    <int>: 0",
+		"\t\tto equal",
+		"\t\t    <int>: 1",
+		"",
+	}
+
+	writeGitHubActionsError(writer, event, lines, newGitHubActionsErrorPatterns())
+
+	assert.Equal(t,
+		flushGitHubActionsBuffer(t, writer, out),
+		"::error file=my_integration_test.go,line=42,title=pkg.TestHasDiff::Expected <int>: 0 to equal <int>: 1\n",
+	)
+}

@@ -602,7 +602,7 @@ func writeGitHubActionsError(
 		}
 	} else {
 		// For regular test failures, emit one annotation per error line
-		for _, outputLine := range outputLines {
+		for idx, outputLine := range outputLines {
 			if matches := patterns.fileLine.FindStringSubmatch(outputLine); len(matches) == 3 {
 				file := matches[1]
 				line := matches[2]
@@ -620,6 +620,9 @@ func writeGitHubActionsError(
 					message = strings.TrimSpace(parts[2])
 				}
 				if message == "" {
+					message = collectAdditionalMessage(outputLines[idx+1:], patterns)
+				}
+				if message == "" {
 					message = "Test failed"
 				}
 
@@ -628,4 +631,32 @@ func writeGitHubActionsError(
 			}
 		}
 	}
+}
+
+func collectAdditionalMessage(lines []string, patterns githubActionsErrorPatterns) string {
+	var parts []string
+	shouldStop := func(line string, trimmed string) bool {
+		if trimmed == "" {
+			return true
+		}
+		if patterns.fileLine.MatchString(line) || patterns.panicStack.MatchString(line) {
+			return true
+		}
+		if strings.HasPrefix(trimmed, "PASS ") || strings.HasPrefix(trimmed, "FAIL ") ||
+			strings.HasPrefix(trimmed, "SKIP ") || strings.HasPrefix(trimmed, "=== ") ||
+			strings.HasPrefix(trimmed, "--- ") || strings.HasPrefix(trimmed, "::") {
+			return true
+		}
+		return false
+	}
+
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		if shouldStop(line, trimmed) {
+			break
+		}
+		parts = append(parts, trimmed)
+	}
+
+	return strings.Join(parts, " ")
 }
