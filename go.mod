@@ -9,16 +9,16 @@ require (
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/google/go-cmp v0.7.0
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
-	golang.org/x/sync v0.17.0
-	golang.org/x/sys v0.36.0
+	golang.org/x/sync v0.19.0
+	golang.org/x/sys v0.39.0
 	golang.org/x/term v0.35.0
-	golang.org/x/tools v0.36.0
+	golang.org/x/tools v0.40.0
 	gotest.tools/v3 v3.5.2
 )
 
 require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	golang.org/x/mod v0.27.0 // indirect
+	golang.org/x/mod v0.31.0 // indirect
 	golang.org/x/text v0.17.0 // indirect
 )
