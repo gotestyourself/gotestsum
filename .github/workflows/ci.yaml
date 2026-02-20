@@ -21,6 +21,6 @@ jobs:
         with:
           go-version: stable
       - run: go build .
-      - run: ./gotestsum -f testname -- ./... -race -count=
+      - run: ./gotestsum -f testname -- ./... -race -count=1
       - name: "DEBUG: Showing new github actions concise format"
         run: ./gotestsum -f github-actions-concise -- ./... -race -count=1
