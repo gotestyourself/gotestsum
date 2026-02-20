@@ -1,9 +1,6 @@
   FAIL Package testjson/internal/badmain (1ms)
-
   EMPTY Package testjson/internal/empty (cached)
-
   PASS Package testjson/internal/good (cached)
-
 ::group::FAIL testjson/internal/parallelfails.TestNestedParallelFailures/a (0.00s)
     fails_test.go:50: failed sub a
     --- FAIL: TestNestedParallelFailures/a (0.00s)
@@ -38,7 +35,6 @@
 
 ::endgroup::
   FAIL Package testjson/internal/parallelfails (20ms)
-
 ::group::FAIL testjson/internal/withfails.TestFailed (0.00s)
     fails_test.go:34: this failed
 
@@ -55,4 +51,3 @@ this is stderr
 ::endgroup::
   FAIL testjson/internal/withfails.TestNestedWithFailure (0.00s)
   FAIL Package testjson/internal/withfails (20ms)
-

@@ -574,7 +574,6 @@ func githubActionsConciseFormat(out io.Writer) EventFormatter {
 		buf.WriteString(result)
 		buf.WriteString(" Package ")
 		buf.WriteString(packageLine(event, exec.Package(event.Package)))
-		buf.WriteString("\n")
 		return buf.Flush()
 	})
 }
