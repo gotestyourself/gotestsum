@@ -161,6 +161,7 @@ Formats:
     testname                 print a line for each test and package
     testdox                  print a sentence for each test using gotestdox
     github-actions           testname format with github actions log grouping
+    github-actions-concise   pkgname-and-test-fails format with github actions log grouping
     standard-quiet           standard go test format
     standard-verbose         standard go test -v format
 
@@ -425,7 +426,7 @@ func argIndex(flag string, args []string) (start, end int) {
 // if the -args flag is not in args.
 // The -args flag is a 'go test' flag that indicates that all subsequent
 // args should be passed to the test binary. It requires that the list of
-// packages comes before -args, so we re-use it as a placeholder in the case
+// packages comes before -args, so we reuse it as a placeholder in the case
 // where some args must be passed to the test binary.
 func findPkgArgPosition(args []string) int {
 	if i := boolArgIndex("args", args); i >= 0 {

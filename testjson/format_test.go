@@ -172,6 +172,11 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 			format:      githubActionsFormat,
 			expectedOut: "format/github-actions.out",
 		},
+		{
+			name:        "github-actions-concise",
+			format:      githubActionsConciseFormat,
+			expectedOut: "format/github-actions-concise.out",
+		},
 	}
 
 	for _, tc := range testCases {
