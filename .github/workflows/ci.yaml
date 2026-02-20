@@ -24,3 +24,5 @@ jobs:
       - run: ./gotestsum -f testname -- ./... -race -count=1
       - name: "DEBUG: Showing new github actions concise format"
         run: ./gotestsum -f github-actions-concise -- ./... -race -count=1
+      - name: "DEBUG: Showing new github actions format with failures"
+        run: ./gotestsum -f github-actions-concise -- -tags=stubpkg -count=1 ./testjson/internal/...
