@@ -21,8 +21,6 @@ jobs:
         with:
           go-version: stable
       - run: go build .
-      - run: ./gotestsum -f testname -- ./... -race -count=1
-      - name: "DEBUG: Showing original github actions format"
-        run: ./gotestsum -f github-actions -- -tags=stubpkg -count=1 ./testjson/internal/...
+      - run: ./gotestsum -f testname -- ./... -race -count=
       - name: "DEBUG: Showing new github actions concise format"
         run: ./gotestsum -f github-actions-concise -- ./... -race -count=1
