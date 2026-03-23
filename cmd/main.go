@@ -69,7 +69,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 		lookEnvWithDefault("GOTESTSUM_FORMAT", "pkgname"),
 		"print format of test input")
 	flags.BoolVar(&opts.formatOptions.HideEmptyPackages, "format-hide-empty-pkg",
-		false, "do not print empty packages in compact formats")
+		truthyFlag(lookEnvWithDefault("GOTESTSUM_FORMAT_HIDE_EMPTY_PKG", "")),
+		"do not print empty packages in compact formats")
 	flags.BoolVar(&opts.formatOptions.UseHiVisibilityIcons, "format-hivis",
 		false, "use high visibility characters in some formats")
 	_ = flags.MarkHidden("format-hivis")
