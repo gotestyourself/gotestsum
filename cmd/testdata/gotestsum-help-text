@@ -41,6 +41,7 @@ Formats:
     testname                 print a line for each test and package
     testdox                  print a sentence for each test using gotestdox
     github-actions           testname format with github actions log grouping
+    tap                      TAP format (Test Anything Protocol)
     standard-quiet           standard go test format
     standard-verbose         standard go test -v format
 

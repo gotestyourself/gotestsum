@@ -1,0 +1,9 @@
+TAP version 13
+1..N
+ok 1 - github.com/example/pkg.TestPass # time=0.010s
+not ok 2 - github.com/example/pkg.TestFail # time=0.020s
+# === RUN   TestFail
+#     example_test.go:42: assertion failed
+# --- FAIL: TestFail (0.00s)
+ok 3 - github.com/example/pkg.TestSkip # SKIP # time=0.001s
+ok 4 - github.com/example/pkg.TestPassWithOutput # time=0.030s

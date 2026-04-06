@@ -1,0 +1,21 @@
+{"Time":"2022-06-19T13:44:44.859682146-04:00","Action":"run","Package":"github.com/example/pkg","Test":"TestPass"}
+{"Time":"2022-06-19T13:44:44.859690198-04:00","Action":"output","Package":"github.com/example/pkg","Test":"TestPass","Output":"=== RUN   TestPass\n"}
+{"Time":"2022-06-19T13:44:44.859696077-04:00","Action":"output","Package":"github.com/example/pkg","Test":"TestPass","Output":"--- PASS: TestPass (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859699224-04:00","Action":"pass","Package":"github.com/example/pkg","Test":"TestPass","Elapsed":0.01}
+{"Time":"2022-06-19T13:44:44.859701901-04:00","Action":"run","Package":"github.com/example/pkg","Test":"TestFail"}
+{"Time":"2022-06-19T13:44:44.859704199-04:00","Action":"output","Package":"github.com/example/pkg","Test":"TestFail","Output":"=== RUN   TestFail\n"}
+{"Time":"2022-06-19T13:44:44.859706845-04:00","Action":"output","Package":"github.com/example/pkg","Test":"TestFail","Output":"    example_test.go:42: assertion failed\n"}
+{"Time":"2022-06-19T13:44:44.859709737-04:00","Action":"output","Package":"github.com/example/pkg","Test":"TestFail","Output":"--- FAIL: TestFail (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859712195-04:00","Action":"fail","Package":"github.com/example/pkg","Test":"TestFail","Elapsed":0.02}
+{"Time":"2022-06-19T13:44:44.859714391-04:00","Action":"run","Package":"github.com/example/pkg","Test":"TestSkip"}
+{"Time":"2022-06-19T13:44:44.859716575-04:00","Action":"output","Package":"github.com/example/pkg","Test":"TestSkip","Output":"=== RUN   TestSkip\n"}
+{"Time":"2022-06-19T13:44:44.859719038-04:00","Action":"output","Package":"github.com/example/pkg","Test":"TestSkip","Output":"--- SKIP: TestSkip (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859721732-04:00","Action":"skip","Package":"github.com/example/pkg","Test":"TestSkip","Elapsed":0.001}
+{"Time":"2022-06-19T13:44:44.859724262-04:00","Action":"run","Package":"github.com/example/pkg","Test":"TestPassWithOutput"}
+{"Time":"2022-06-19T13:44:44.859726506-04:00","Action":"output","Package":"github.com/example/pkg","Test":"TestPassWithOutput","Output":"=== RUN   TestPassWithOutput\n"}
+{"Time":"2022-06-19T13:44:44.859728601-04:00","Action":"output","Package":"github.com/example/pkg","Test":"TestPassWithOutput","Output":"some debug output\n"}
+{"Time":"2022-06-19T13:44:44.859738124-04:00","Action":"output","Package":"github.com/example/pkg","Test":"TestPassWithOutput","Output":"--- PASS: TestPassWithOutput (0.00s)\n"}
+{"Time":"2022-06-19T13:44:44.859741082-04:00","Action":"pass","Package":"github.com/example/pkg","Test":"TestPassWithOutput","Elapsed":0.03}
+{"Time":"2022-06-19T13:44:44.859860205-04:00","Action":"output","Package":"github.com/example/pkg","Output":"PASS\n"}
+{"Time":"2022-06-19T13:44:44.859862788-04:00","Action":"output","Package":"github.com/example/pkg","Output":"ok  \tgithub.com/example/pkg\t0.05s\n"}
+{"Time":"2022-06-19T13:44:44.85986508-04:00","Action":"pass","Package":"github.com/example/pkg","Elapsed":0.05}
