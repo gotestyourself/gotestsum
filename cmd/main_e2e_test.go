@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bytes"
-	goversion "go/version"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -30,9 +29,6 @@ func TestMain(m *testing.M) {
 func TestE2E_RerunFails(t *testing.T) {
 	if testing.Short() {
 		t.Skip("too slow for short run")
-	}
-	if !isGoVersionAtLeast("go1.22") {
-		t.Skipf("version %v no longer supported by this test", runtime.Version())
 	}
 	t.Setenv("GITHUB_ACTIONS", "no")
 
@@ -69,7 +65,7 @@ func TestE2E_RerunFails(t *testing.T) {
 			text.OpRemoveTestElapsedTime,
 			filepath.ToSlash, // for windows
 		)
-		golden.Assert(t, out, "e2e/expected/"+expectedFilename(t.Name()))
+		golden.Assert(t, out, "e2e/expected/"+t.Name())
 	}
 	var testCases = []testCase{
 		{
@@ -119,21 +115,6 @@ func osEnviron() map[string]string {
 		}
 	}
 	return e
-}
-
-func expectedFilename(name string) string {
-	ver := runtime.Version()
-	switch {
-	case isPreGo124(ver):
-		return name + "-go1.23"
-	default:
-		return name
-	}
-}
-
-// go1.24 changed how it handles build output
-func isPreGo124(ver string) bool {
-	return goversion.Compare(ver, "go1.24") < 0
 }
 
 var binaryFixture pkgFixtureFile
