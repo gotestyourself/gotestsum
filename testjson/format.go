@@ -353,6 +353,14 @@ func packageLine(event TestEvent, pkg *Package) string {
 	var buf strings.Builder
 	buf.WriteString(RelativePackagePath(event.Package))
 
+	if pkg == nil {
+		if event.Elapsed != 0 {
+			d := elapsedDuration(event.Elapsed)
+			buf.WriteString(fmt.Sprintf(" (%s)", d))
+		}
+		return buf.String()
+	}
+
 	switch {
 	case pkg.cached:
 		buf.WriteString(" (cached)")
