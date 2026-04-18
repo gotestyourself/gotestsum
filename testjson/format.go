@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -454,6 +456,23 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 	}
 }
 
+type githubActionsErrorPatterns struct {
+	fileLine   *regexp.Regexp
+	panicStack *regexp.Regexp
+	panicLine  *regexp.Regexp
+}
+
+func newGitHubActionsErrorPatterns() githubActionsErrorPatterns {
+	return githubActionsErrorPatterns{
+		// Matches "    filename.go:123:" style lines emitted by go test failures
+		fileLine: regexp.MustCompile(`^\s+([a-zA-Z0-9_\-./]+\.go):(\d+):`),
+		// Matches stack frames emitted in Go panic traces
+		panicStack: regexp.MustCompile(`^\t(.+\.go):(\d+) \+0x`),
+		// Matches canonical panic lines such as "panic: runtime error: ..."
+		panicLine: regexp.MustCompile(`^panic:\s*`),
+	}
+}
+
 func githubActionsFormat(out io.Writer) EventFormatter {
 	buf := bufio.NewWriter(out)
 
@@ -462,6 +481,8 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 		Test    string
 	}
 	output := map[name][]string{}
+
+	patterns := newGitHubActionsErrorPatterns()
 
 	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
 		key := name{Package: event.Package, Test: event.Test}
@@ -476,6 +497,11 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 
 		// test case end event
 		if event.Test != "" && event.Action.IsTerminal() {
+			// Emit error annotation for failed tests
+			if event.Action == ActionFail {
+				writeGitHubActionsError(buf, event, output[key], patterns)
+			}
+
 			if len(output[key]) > 0 {
 				buf.WriteString("::group::")
 			} else {
@@ -512,4 +538,151 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 		buf.WriteString("\n")
 		return buf.Flush()
 	})
+}
+
+// writeGitHubActionsError parses test output and emits GitHub Actions error annotations
+func writeGitHubActionsError(
+	buf *bufio.Writer, event TestEvent, outputLines []string, patterns githubActionsErrorPatterns,
+) {
+	sanitize := func(s string) string {
+		// Percent must be escaped first
+		s = strings.ReplaceAll(s, "%", "%25")
+		// Escape newlines and carriage returns
+		s = strings.ReplaceAll(s, "\r", "%0D")
+		s = strings.ReplaceAll(s, "\n", "%0A")
+		return s
+	}
+
+	// Check if this is a panic by looking for panic: in the output
+	var isPanic bool
+	var panicMessage strings.Builder
+	for _, outputLine := range outputLines {
+		trimmed := strings.TrimSpace(outputLine)
+		if patterns.panicLine.MatchString(trimmed) {
+			isPanic = true
+			panicMessage.WriteString(trimmed)
+			panicMessage.WriteString(" ")
+		}
+	}
+
+	if isPanic {
+		// For panics, emit a single annotation with the panic location
+		var file string
+		var line string
+
+		// Look for the test file in the stack trace
+		// Prefer _test.go files over other files (like testing.go or runtime files)
+		for _, outputLine := range outputLines {
+			if matches := patterns.panicStack.FindStringSubmatch(outputLine); len(matches) == 3 {
+				stackPath := filepath.ToSlash(matches[1])
+				stackFile := filepath.Base(stackPath)
+				stackLine := matches[2]
+				isTestFile := strings.HasSuffix(stackFile, "_test.go")
+				repoRelative := repoRelativeFile(event, stackPath)
+
+				if (file == "" && repoRelative != "") || isTestFile {
+					file = repoRelative
+					line = stackLine
+
+					if isTestFile {
+						break
+					}
+				}
+			}
+		}
+
+		message := strings.TrimSpace(panicMessage.String())
+		if message == "" {
+			message = "Test panicked"
+		}
+
+		if file != "" && line != "" {
+			fmt.Fprintf(buf, "::error file=%s,line=%s,title=%s::%s\n",
+				sanitize(file), line, sanitize(event.Test), sanitize(message))
+		} else {
+			fmt.Fprintf(buf, "::error title=%s::%s\n", sanitize(event.Test), sanitize(message))
+		}
+	} else {
+		// For regular test failures, emit one annotation per error line
+		for idx, outputLine := range outputLines {
+			if matches := patterns.fileLine.FindStringSubmatch(outputLine); len(matches) == 3 {
+				rawFile := matches[1]
+				file := repoRelativeFile(event, rawFile)
+				line := matches[2]
+
+				// Ignore logs or helper output from non-test files; these are often
+				// informational (for example, telemetry logs) and shouldn't surface as
+				// GitHub Actions annotations.
+				if !strings.HasSuffix(file, "_test.go") {
+					continue
+				}
+
+				parts := strings.SplitN(outputLine, ":", 3)
+				var message string
+				if len(parts) >= 3 {
+					message = strings.TrimSpace(parts[2])
+				}
+				if message == "" {
+					message = collectAdditionalMessage(outputLines[idx+1:], patterns)
+				}
+				if message == "" {
+					message = "Test failed"
+				}
+
+				fmt.Fprintf(buf, "::error file=%s,line=%s,title=%s::%s\n",
+					sanitize(file), line, sanitize(event.Test), sanitize(message))
+			}
+		}
+	}
+}
+
+func collectAdditionalMessage(lines []string, patterns githubActionsErrorPatterns) string {
+	shouldStop := func(line string, trimmed string) bool {
+		if trimmed == "" {
+			return true
+		}
+		if patterns.fileLine.MatchString(line) || patterns.panicStack.MatchString(line) {
+			return true
+		}
+		if strings.HasPrefix(trimmed, "PASS ") || strings.HasPrefix(trimmed, "FAIL ") ||
+			strings.HasPrefix(trimmed, "SKIP ") || strings.HasPrefix(trimmed, "=== ") ||
+			strings.HasPrefix(trimmed, "--- ") || strings.HasPrefix(trimmed, "::") {
+			return true
+		}
+		return false
+	}
+
+	parts := make([]string, 0, len(lines))
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		if shouldStop(line, trimmed) {
+			break
+		}
+		parts = append(parts, trimmed)
+	}
+
+	return strings.Join(parts, " ")
+}
+
+func repoRelativeFile(event TestEvent, file string) string {
+	clean := filepath.ToSlash(file)
+	clean = strings.TrimPrefix(clean, "./")
+	if clean == "" {
+		return ""
+	}
+	pkgPath := RelativePackagePath(event.Package)
+	pkgPath = strings.TrimPrefix(pkgPath, "./")
+	if pkgPath == "" || pkgPath == "." {
+		if strings.HasPrefix(clean, "/") || strings.Contains(clean, ":") {
+			return filepath.Base(clean)
+		}
+		return clean
+	}
+	if idx := strings.Index(clean, pkgPath+"/"); idx >= 0 {
+		return clean[idx:]
+	}
+	if !strings.Contains(clean, "/") {
+		return pkgPath + "/" + clean
+	}
+	return clean
 }

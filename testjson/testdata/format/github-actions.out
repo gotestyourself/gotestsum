@@ -74,35 +74,42 @@ this is a Print
 this is stderr
 
 ::endgroup::
+::error file=testjson/internal/parallelfails/fails_test.go,line=50,title=TestNestedParallelFailures/a::failed sub a
 ::group::FAIL testjson/internal/parallelfails.TestNestedParallelFailures/a (0.00s)
     fails_test.go:50: failed sub a
     --- FAIL: TestNestedParallelFailures/a (0.00s)
 
 ::endgroup::
+::error file=testjson/internal/parallelfails/fails_test.go,line=50,title=TestNestedParallelFailures/d::failed sub d
 ::group::FAIL testjson/internal/parallelfails.TestNestedParallelFailures/d (0.00s)
     fails_test.go:50: failed sub d
     --- FAIL: TestNestedParallelFailures/d (0.00s)
 
 ::endgroup::
+::error file=testjson/internal/parallelfails/fails_test.go,line=50,title=TestNestedParallelFailures/c::failed sub c
 ::group::FAIL testjson/internal/parallelfails.TestNestedParallelFailures/c (0.00s)
     fails_test.go:50: failed sub c
     --- FAIL: TestNestedParallelFailures/c (0.00s)
 
 ::endgroup::
+::error file=testjson/internal/parallelfails/fails_test.go,line=50,title=TestNestedParallelFailures/b::failed sub b
 ::group::FAIL testjson/internal/parallelfails.TestNestedParallelFailures/b (0.00s)
     fails_test.go:50: failed sub b
     --- FAIL: TestNestedParallelFailures/b (0.00s)
 
 ::endgroup::
   FAIL testjson/internal/parallelfails.TestNestedParallelFailures (0.00s)
+::error file=testjson/internal/parallelfails/fails_test.go,line=29,title=TestParallelTheFirst::failed the first
 ::group::FAIL testjson/internal/parallelfails.TestParallelTheFirst (0.01s)
     fails_test.go:29: failed the first
 
 ::endgroup::
+::error file=testjson/internal/parallelfails/fails_test.go,line=41,title=TestParallelTheThird::failed the third
 ::group::FAIL testjson/internal/parallelfails.TestParallelTheThird (0.00s)
     fails_test.go:41: failed the third
 
 ::endgroup::
+::error file=testjson/internal/parallelfails/fails_test.go,line=35,title=TestParallelTheSecond::failed the second
 ::group::FAIL testjson/internal/parallelfails.TestParallelTheSecond (0.01s)
     fails_test.go:35: failed the second
 
@@ -126,6 +133,7 @@ this is a Print
     fails_test.go:30: the skip message
 
 ::endgroup::
+::error file=testjson/internal/withfails/fails_test.go,line=34,title=TestFailed::this failed
 ::group::FAIL testjson/internal/withfails.TestFailed (0.00s)
     fails_test.go:34: this failed
 
@@ -134,6 +142,7 @@ this is a Print
 this is stderr
 
 ::endgroup::
+::error file=testjson/internal/withfails/fails_test.go,line=43,title=TestFailedWithStderr::also failed
 ::group::FAIL testjson/internal/withfails.TestFailedWithStderr (0.00s)
 this is stderr
     fails_test.go:43: also failed
@@ -155,6 +164,7 @@ this is stderr
     --- PASS: TestNestedWithFailure/b (0.00s)
 
 ::endgroup::
+::error file=testjson/internal/withfails/fails_test.go,line=65,title=TestNestedWithFailure/c::failed
 ::group::FAIL testjson/internal/withfails.TestNestedWithFailure/c (0.00s)
     fails_test.go:65: failed
     --- FAIL: TestNestedWithFailure/c (0.00s)
