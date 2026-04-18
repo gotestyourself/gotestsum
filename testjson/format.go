@@ -449,6 +449,10 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 		return pkgNameWithFailuresFormat(out, formatOpts)
 	case "github-actions", "github-action":
 		return githubActionsFormat(out)
+	case "buildkite":
+		return buildkiteFormat(out, false)
+	case "buildkite-verbose":
+		return buildkiteFormat(out, true)
 	default:
 		return nil
 	}
@@ -510,6 +514,94 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 		buf.WriteString(" Package ")
 		buf.WriteString(packageLine(event, exec.Package(event.Package)))
 		buf.WriteString("\n")
+		return buf.Flush()
+	})
+}
+
+func buildkiteFormat(out io.Writer, verbose bool) EventFormatter {
+	const (
+		bkMarkerDeemphasized = "~~~"
+		bkMarkerCollapsed    = "---"
+		bkMarkerExpanded     = "+++"
+	)
+	markers := [3]string{bkMarkerDeemphasized, bkMarkerCollapsed, bkMarkerExpanded}
+
+	buf := bufio.NewWriter(out)
+
+	type name struct {
+		Package string
+		Test    string
+	}
+	output := map[name][]string{}
+	packageOutput := map[string][]string{}
+
+	printOutput := func(output []string, didNotPass bool) {
+		if verbose || didNotPass {
+			// prevent erroneous groups from test output by prefixing lines with markers by an empty string
+			for _, item := range output {
+				for _, bkMarker := range markers {
+					if strings.HasPrefix(item, bkMarker) {
+						buf.WriteString(" ")
+					}
+				}
+				buf.WriteString(item)
+			}
+		}
+	}
+
+	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
+		key := name{Package: event.Package, Test: event.Test}
+
+		// test case event
+		if event.Test != "" {
+			if event.Action == ActionOutput {
+				if !isFramingLine(event.Output, event.Test) {
+					output[key] = append(output[key], event.Output)
+				}
+				return nil
+			}
+
+			if event.Action.IsTerminal() {
+				marker := bkMarkerDeemphasized
+				switch event.Action {
+				case ActionFail:
+					marker = bkMarkerCollapsed
+				}
+				buf.WriteString(marker)
+				buf.WriteString(" ")
+				testNameFormatTestEvent(buf, event)
+				printOutput(output[key], event.Action != ActionPass)
+				delete(output, key)
+				return buf.Flush()
+			}
+
+			return nil
+		}
+		// package event
+
+		if event.Action == ActionOutput {
+			packageOutput[event.Package] = append(packageOutput[event.Package], event.Output)
+			return nil
+		}
+		if !event.Action.IsTerminal() {
+			return nil
+		}
+
+		marker := bkMarkerDeemphasized
+		switch event.Action {
+		case ActionFail:
+			marker = bkMarkerCollapsed
+		}
+
+		result := colorEvent(event)(strings.ToUpper(string(event.Action)))
+		pkg := exec.Package(event.Package)
+		if event.Action == ActionSkip || (event.Action == ActionPass && pkg.Total == 0) {
+			event.Action = ActionSkip // always color these as skip actions
+			result = colorEvent(event)("EMPTY")
+		}
+
+		fmt.Fprintf(buf, "%s %s Package %s", marker, result, packageLine(event, exec.Package(event.Package)))
+		printOutput(packageOutput[event.Package], event.Action != ActionPass)
 		return buf.Flush()
 	})
 }

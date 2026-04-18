@@ -58,7 +58,10 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 
 	rec := newFailureRecorderFromExecution(scanConfig.Execution)
 	for attempts := 0; rec.count() > 0 && attempts < opts.rerunFailsMaxAttempts; attempts++ {
-		testjson.PrintSummary(opts.stdout, scanConfig.Execution, testjson.SummarizeNone)
+		testjson.PrintSummaryWithOpts(opts.stdout, scanConfig.Execution, testjson.SummaryOptions{
+			Summary: testjson.SummarizeNone,
+			Format:  opts.format,
+		})
 		opts.stdout.Write([]byte("\n")) //nolint:errcheck
 
 		nextRec := newFailureRecorder(scanConfig.Handler)

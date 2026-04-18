@@ -41,6 +41,8 @@ Formats:
     testname                 print a line for each test and package
     testdox                  print a sentence for each test using gotestdox
     github-actions           testname format with github actions log grouping
+    buildkite                testname format with buildkite log grouping excluding passed test output
+    buildkite-verbose        testname format with buildkite log grouping including passed test output
     standard-quiet           standard go test format
     standard-verbose         standard go test -v format
 

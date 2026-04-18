@@ -172,6 +172,16 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 			format:      githubActionsFormat,
 			expectedOut: "format/github-actions.out",
 		},
+		{
+			name:        "buildkite-verbose",
+			format:      func(out io.Writer) EventFormatter { return buildkiteFormat(out, true) },
+			expectedOut: "format/buildkite-verbose.out",
+		},
+		{
+			name:        "buildkite",
+			format:      func(out io.Writer) EventFormatter { return buildkiteFormat(out, false) },
+			expectedOut: "format/buildkite.out",
+		},
 	}
 
 	for _, tc := range testCases {

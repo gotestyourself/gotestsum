@@ -161,6 +161,8 @@ Formats:
     testname                 print a line for each test and package
     testdox                  print a sentence for each test using gotestdox
     github-actions           testname format with github actions log grouping
+    buildkite                testname format with buildkite log grouping excluding passed test output
+    buildkite-verbose        testname format with buildkite log grouping including passed test output
     standard-quiet           standard go test format
     standard-verbose         standard go test -v format
 
@@ -336,7 +338,10 @@ func run(opts *options) error {
 }
 
 func finishRun(opts *options, exec *testjson.Execution, exitErr error) error {
-	testjson.PrintSummary(opts.stdout, exec, opts.hideSummary.value)
+	testjson.PrintSummaryWithOpts(opts.stdout, exec, testjson.SummaryOptions{
+		Summary: opts.hideSummary.value,
+		Format:  opts.format,
+	})
 
 	if err := writeJUnitFile(opts, exec); err != nil {
 		return fmt.Errorf("failed to write junit file: %w", err)

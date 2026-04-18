@@ -2,6 +2,7 @@ package testjson
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"strings"
 	"testing"
@@ -315,6 +316,32 @@ func TestPrintSummary(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			run(t, tc)
+		})
+	}
+}
+
+func TestSummary_Formats_DefaultGoTestJson(t *testing.T) {
+	run := func(t *testing.T, format string) {
+		exec, err := ScanTestOutput(scanConfigFromGolden("input/go-test-json.out")(t))
+		assert.NilError(t, err)
+
+		var out bytes.Buffer
+		PrintSummaryWithOpts(&out, exec, SummaryOptions{
+			Summary: SummarizeAll,
+			Format:  format,
+		})
+		golden.Assert(t, out.String(), fmt.Sprintf("format-summary/%s.out", format))
+	}
+
+	formats := []string{
+		"none",
+		"buildkite",
+		"buildkite-verbose",
+	}
+
+	for _, format := range formats {
+		t.Run(format, func(t *testing.T) {
+			run(t, format)
 		})
 	}
 }

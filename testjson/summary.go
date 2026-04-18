@@ -64,19 +64,36 @@ func NewSummary(value string) (Summary, bool) {
 	return s, ok
 }
 
+type SummaryPrinter func(out io.Writer, execution *Execution, opts Summary)
+
+type SummaryOptions struct {
+	Summary Summary
+	Format  string
+}
+
+// PrintSummaryWithOpts prints the summary of a test Execution with specific options.
+func PrintSummaryWithOpts(out io.Writer, execution *Execution, opts SummaryOptions) {
+	switch opts.Format {
+	case "buildkite", "buildkite-verbose":
+		// put the summary into an expanded section
+		fmt.Fprintln(out, "+++ Summary")
+	}
+	PrintSummary(out, execution, opts.Summary)
+}
+
 // PrintSummary of a test Execution. Prints a section for each summary type
 // followed by a DONE line to out.
-func PrintSummary(out io.Writer, execution *Execution, opts Summary) {
-	execSummary := newExecSummary(execution, opts)
-	if opts.Includes(SummarizeSkipped) {
+func PrintSummary(out io.Writer, execution *Execution, summary Summary) {
+	execSummary := newExecSummary(execution, summary)
+	if summary.Includes(SummarizeSkipped) {
 		writeTestCaseSummary(out, execSummary, formatSkipped())
 	}
-	if opts.Includes(SummarizeFailed) {
+	if summary.Includes(SummarizeFailed) {
 		writeTestCaseSummary(out, execSummary, formatFailed())
 	}
 
 	errors := execution.Errors()
-	if opts.Includes(SummarizeErrors) {
+	if summary.Includes(SummarizeErrors) {
 		writeErrorSummary(out, errors)
 	}
 
