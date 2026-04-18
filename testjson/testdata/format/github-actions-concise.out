@@ -1,0 +1,53 @@
+  FAIL Package testjson/internal/badmain (1ms)
+  EMPTY Package testjson/internal/empty (cached)
+  PASS Package testjson/internal/good (cached)
+::group::FAIL testjson/internal/parallelfails.TestNestedParallelFailures/a (0.00s)
+    fails_test.go:50: failed sub a
+    --- FAIL: TestNestedParallelFailures/a (0.00s)
+
+::endgroup::
+::group::FAIL testjson/internal/parallelfails.TestNestedParallelFailures/d (0.00s)
+    fails_test.go:50: failed sub d
+    --- FAIL: TestNestedParallelFailures/d (0.00s)
+
+::endgroup::
+::group::FAIL testjson/internal/parallelfails.TestNestedParallelFailures/c (0.00s)
+    fails_test.go:50: failed sub c
+    --- FAIL: TestNestedParallelFailures/c (0.00s)
+
+::endgroup::
+::group::FAIL testjson/internal/parallelfails.TestNestedParallelFailures/b (0.00s)
+    fails_test.go:50: failed sub b
+    --- FAIL: TestNestedParallelFailures/b (0.00s)
+
+::endgroup::
+  FAIL testjson/internal/parallelfails.TestNestedParallelFailures (0.00s)
+::group::FAIL testjson/internal/parallelfails.TestParallelTheFirst (0.01s)
+    fails_test.go:29: failed the first
+
+::endgroup::
+::group::FAIL testjson/internal/parallelfails.TestParallelTheThird (0.00s)
+    fails_test.go:41: failed the third
+
+::endgroup::
+::group::FAIL testjson/internal/parallelfails.TestParallelTheSecond (0.01s)
+    fails_test.go:35: failed the second
+
+::endgroup::
+  FAIL Package testjson/internal/parallelfails (20ms)
+::group::FAIL testjson/internal/withfails.TestFailed (0.00s)
+    fails_test.go:34: this failed
+
+::endgroup::
+::group::FAIL testjson/internal/withfails.TestFailedWithStderr (0.00s)
+this is stderr
+    fails_test.go:43: also failed
+
+::endgroup::
+::group::FAIL testjson/internal/withfails.TestNestedWithFailure/c (0.00s)
+    fails_test.go:65: failed
+    --- FAIL: TestNestedWithFailure/c (0.00s)
+
+::endgroup::
+  FAIL testjson/internal/withfails.TestNestedWithFailure (0.00s)
+  FAIL Package testjson/internal/withfails (20ms)

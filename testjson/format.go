@@ -449,6 +449,8 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 		return pkgNameWithFailuresFormat(out, formatOpts)
 	case "github-actions", "github-action":
 		return githubActionsFormat(out)
+	case "github-actions-concise":
+		return githubActionsConciseFormat(out)
 	default:
 		return nil
 	}
@@ -510,6 +512,68 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 		buf.WriteString(" Package ")
 		buf.WriteString(packageLine(event, exec.Package(event.Package)))
 		buf.WriteString("\n")
+		return buf.Flush()
+	})
+}
+
+func githubActionsConciseFormat(out io.Writer) EventFormatter {
+	buf := bufio.NewWriter(out)
+
+	type name struct {
+		Package string
+		Test    string
+	}
+	output := map[name][]string{}
+
+	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
+		key := name{Package: event.Package, Test: event.Test}
+
+		if event.Test != "" && event.Action == ActionOutput {
+			if !isFramingLine(event.Output, event.Test) {
+				output[key] = append(output[key], event.Output)
+			}
+			return nil
+		}
+
+		// only print individual test lines for failures
+		if event.Test != "" && event.Action.IsTerminal() {
+			if event.Action == ActionFail {
+				if len(output[key]) > 0 {
+					buf.WriteString("::group::")
+				} else {
+					buf.WriteString("  ")
+				}
+				testNameFormatTestEvent(buf, event)
+				for _, item := range output[key] {
+					buf.WriteString(item)
+				}
+				if len(output[key]) > 0 {
+					buf.WriteString("\n::endgroup::\n")
+				}
+			}
+			delete(output, key)
+			if event.Action == ActionFail {
+				return buf.Flush()
+			}
+			return nil
+		}
+
+		// package event
+		if !event.Action.IsTerminal() {
+			return nil
+		}
+
+		result := colorEvent(event)(strings.ToUpper(string(event.Action)))
+		pkg := exec.Package(event.Package)
+		if event.Action == ActionSkip || (event.Action == ActionPass && pkg.Total == 0) {
+			event.Action = ActionSkip
+			result = colorEvent(event)("EMPTY")
+		}
+
+		buf.WriteString("  ")
+		buf.WriteString(result)
+		buf.WriteString(" Package ")
+		buf.WriteString(packageLine(event, exec.Package(event.Package)))
 		return buf.Flush()
 	})
 }
