@@ -161,6 +161,7 @@ Formats:
     testname                 print a line for each test and package
     testdox                  print a sentence for each test using gotestdox
     github-actions           testname format with github actions log grouping
+	tap                      TAP format (Test Anything Protocol)
     standard-quiet           standard go test format
     standard-verbose         standard go test -v format
 
@@ -336,7 +337,10 @@ func run(opts *options) error {
 }
 
 func finishRun(opts *options, exec *testjson.Execution, exitErr error) error {
-	testjson.PrintSummary(opts.stdout, exec, opts.hideSummary.value)
+	// TAP format handles its own output, skip the standard summary
+	if opts.format != "tap" {
+		testjson.PrintSummary(opts.stdout, exec, opts.hideSummary.value)
+	}
 
 	if err := writeJUnitFile(opts, exec); err != nil {
 		return fmt.Errorf("failed to write junit file: %w", err)

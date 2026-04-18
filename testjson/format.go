@@ -449,6 +449,8 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 		return pkgNameWithFailuresFormat(out, formatOpts)
 	case "github-actions", "github-action":
 		return githubActionsFormat(out)
+	case "tap":
+		return tapFormat(out)
 	default:
 		return nil
 	}
@@ -512,4 +514,117 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 		buf.WriteString("\n")
 		return buf.Flush()
 	})
+}
+
+// tapFormat returns a TAP (Test Anything Protocol) format EventFormatter.
+func tapFormat(out io.Writer) EventFormatter {
+	return &tapFormatter{
+		out:     out,
+		testNum: 0,
+		output:  make(map[string][]string),
+		started: false,
+	}
+}
+
+type tapFormatter struct {
+	out     io.Writer
+	testNum int
+	output  map[string][]string
+	started bool
+}
+
+func (t *tapFormatter) Format(event TestEvent, exec *Execution) error {
+	// Write TAP version header on first output
+	if !t.started {
+		t.started = true
+		fmt.Fprintln(t.out, "TAP version 13")
+		fmt.Fprintln(t.out, "1..N")
+	}
+
+	// Handle package events (build failures, etc.)
+	if event.PackageEvent() {
+		return t.formatPackageEvent(event, exec)
+	}
+
+	// Buffer output for test cases
+	if event.Action == ActionOutput {
+		key := event.Package + "::" + event.Test
+		t.output[key] = append(t.output[key], event.Output)
+		return nil
+	}
+
+	// Handle test completion
+	if event.Action.IsTerminal() {
+		t.formatTestEnd(event, exec)
+	}
+
+	return nil
+}
+
+func (t *tapFormatter) formatPackageEvent(event TestEvent, exec *Execution) error {
+	// Handle build failures or package-level failures
+	if event.Action == ActionFail {
+		pkg := exec.Package(event.Package)
+		if pkg.TestMainFailed() || len(pkg.Failed) == 0 {
+			// Build failure or TestMain failure - emit Bail out!
+			fmt.Fprintf(t.out, "Bail out! %s\n", event.Package)
+			// Write package output as diagnostics
+			var buf strings.Builder
+			pkg.WriteOutputTo(&buf, 0)
+			for _, line := range strings.Split(buf.String(), "\n") {
+				if line != "" {
+					fmt.Fprintf(t.out, "# %s\n", line)
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func (t *tapFormatter) formatTestEnd(event TestEvent, exec *Execution) error {
+	t.testNum++
+	key := event.Package + "::" + event.Test
+
+	// Build test line
+	var status string
+	switch event.Action {
+	case ActionPass:
+		status = "ok"
+	case ActionFail:
+		status = "not ok"
+	case ActionSkip:
+		status = "ok"
+	}
+
+	// Format: "ok N - package.TestName" or "not ok N - package.TestName"
+	desc := fmt.Sprintf("%s.%s", event.Package, event.Test)
+	line := fmt.Sprintf("%s %d - %s", status, t.testNum, desc)
+
+	// Add SKIP directive
+	if event.Action == ActionSkip {
+		line += " # SKIP"
+	}
+
+	// Add elapsed time as comment
+	if event.Elapsed > 0 {
+		line += fmt.Sprintf(" # time=%.3fs", event.Elapsed)
+	}
+
+	fmt.Fprintln(t.out, line)
+
+	// Emit buffered output as diagnostics only for failed tests
+	if event.Action == ActionFail {
+		if output, ok := t.output[key]; ok {
+			for _, out := range output {
+				for _, l := range strings.Split(out, "\n") {
+					if l != "" {
+						fmt.Fprintf(t.out, "# %s\n", l)
+					}
+				}
+			}
+		}
+	}
+	delete(t.output, key)
+
+	return nil
 }
