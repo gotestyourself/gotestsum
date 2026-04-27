@@ -441,6 +441,44 @@ func TestRun_RerunFails_PanicPreventsRerun(t *testing.T) {
 	assert.ErrorContains(t, err, "rerun aborted because previous run had a suspected panic", out.String())
 }
 
+func TestRun_RerunFails_RuntimeGoexitPreventsRerun(t *testing.T) {
+	jsonFailed := `{"Package": "pkg", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne/Subtest", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne/Subtest", "Action": "output","Output":"    testing.go:1913: test executed panic(nil) or runtime.Goexit: subtest may have called FailNow on a parent test\n"}
+{"Package": "pkg", "Test": "TestOne/Subtest", "Action": "fail"}
+{"Package": "pkg", "Test": "TestOne", "Action": "fail"}
+{"Package": "pkg", "Action": "fail"}
+`
+
+	var calls int
+	fn := func([]string) *proc {
+		calls++
+		return &proc{
+			cmd:    fakeWaiter{result: newExitCode("failed", 1)},
+			stdout: strings.NewReader(jsonFailed),
+			stderr: bytes.NewReader(nil),
+		}
+	}
+	reset := patchStartGoTestFn(fn)
+	defer reset()
+
+	out := new(bytes.Buffer)
+	opts := &options{
+		rawCommand:                   true,
+		args:                         []string{"./test.test"},
+		format:                       "testname",
+		rerunFailsMaxAttempts:        3,
+		rerunFailsMaxInitialFailures: 1,
+		stdout:                       out,
+		stderr:                       os.Stderr,
+		hideSummary:                  newHideSummaryValue(),
+	}
+	err := run(opts)
+	assert.ErrorContains(t, err, "rerun aborted because previous run had a suspected panic", out.String())
+	assert.Equal(t, calls, 1)
+}
+
 func TestRun_InputFromStdin(t *testing.T) {
 	stdin := os.Stdin
 	t.Cleanup(func() { os.Stdin = stdin })

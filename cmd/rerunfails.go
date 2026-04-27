@@ -103,7 +103,7 @@ func hasErrors(err error, exec *testjson.Execution, opts *options) error {
 	case ExitCodeWithDefault(err) > 1:
 		return fmt.Errorf("unexpected go test exit code: %v", err)
 	case exec.HasPanic():
-		return fmt.Errorf("rerun aborted because previous run had a suspected panic and some test may not have run")
+		return fmt.Errorf("rerun aborted because previous run had a suspected panic or runtime.Goexit and some test may not have run")
 	case exec.HasDataRace() && opts.rerunFailsMaxAttempts > 0 && opts.rerunFailsAbortOnDataRace:
 		return fmt.Errorf("rerun aborted because previous run had a data race")
 	default:

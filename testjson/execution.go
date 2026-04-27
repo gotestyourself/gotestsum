@@ -106,9 +106,9 @@ type Package struct {
 	// cached is true if the package was marked as (cached)
 	cached bool
 	// panicked is true if the package, or one of the tests in the package,
-	// contained output that looked like a panic. This is used to mitigate
-	// github.com/golang/go/issues/45508. This field may be removed in the future
-	// if the issue is fixed in Go.
+	// contained output that looked like a panic or parent-test Goexit. This is
+	// used to mitigate github.com/golang/go/issues/45508. This field may be
+	// removed in the future if the issue is fixed in Go.
 	panicked bool
 	// hasDataRace is true if the package, or one of the tests in the package,
 	// contained output that looked like a data race.
@@ -202,8 +202,14 @@ func (p *Package) OutputLines(tc TestCase) []string {
 	return result
 }
 
+const runtimeGoexitOutput = "test executed panic(nil) or runtime.Goexit"
+
+func outputLooksLikePanic(output string) bool {
+	return strings.HasPrefix(output, "panic: ") || strings.Contains(output, runtimeGoexitOutput)
+}
+
 func (p *Package) addOutput(id int, output string) {
-	if strings.HasPrefix(output, "panic: ") {
+	if outputLooksLikePanic(output) {
 		p.panicked = true
 	}
 	if strings.HasPrefix(output, "WARNING: DATA RACE") {
@@ -682,7 +688,7 @@ func (e *Execution) Errors() []string {
 }
 
 // HasPanic returns true if at least one package had output that looked like a
-// panic.
+// panic or parent-test Goexit.
 func (e *Execution) HasPanic() bool {
 	for _, pkg := range e.packages {
 		if pkg.panicked {
