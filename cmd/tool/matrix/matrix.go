@@ -2,6 +2,7 @@ package matrix
 
 import (
 	"bufio"
+	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -187,14 +189,32 @@ func closeFiles(files []*os.File) {
 	}
 }
 
+// consistentThreshold sets a duration of package test run under which packages
+// are assigned to buckets in a consistent way instead of using a bucket of
+// minium total duration. This helps to avoid situation when many short-running
+// or unknown packages are assigned to a single bucket.
+const consistentThreshold = 5 * time.Millisecond
+
 func bucketPackages(timing map[string]time.Duration, packages []string, n uint) []bucket {
 	sort.SliceStable(packages, func(i, j int) bool {
 		return timing[packages[i]] >= timing[packages[j]]
 	})
 
-	buckets := make([]bucket, n)
+	var (
+		buckets        = make([]bucket, n)
+		allBucketsUsed = false
+	)
 	for _, pkg := range packages {
-		i := minBucket(buckets)
+		var i int
+		if !allBucketsUsed {
+			allBucketsUsed = isAllBucketsUsed(buckets)
+		}
+		if timing[pkg] > consistentThreshold || !allBucketsUsed {
+			i = minBucket(buckets)
+		} else {
+			i = consistentBucket(pkg, n)
+		}
+
 		buckets[i].Total += timing[pkg]
 		buckets[i].Packages = append(buckets[i].Packages, pkg)
 		log.Debugf("adding %v (%v) to bucket %v with total %v",
@@ -216,6 +236,23 @@ func minBucket(buckets []bucket) int {
 		}
 	}
 	return n
+}
+
+func isAllBucketsUsed(buckets []bucket) bool {
+	for _, b := range buckets {
+		if b.Total == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+func consistentBucket(pkg string, n uint) int {
+	h := md5.New()
+	io.WriteString(h, pkg)
+	hash := fmt.Sprintf("%x", h.Sum(nil))
+	decimal, _ := strconv.ParseUint(hash[:10], 16, 64)
+	return int(decimal) % int(n)
 }
 
 type bucket struct {
