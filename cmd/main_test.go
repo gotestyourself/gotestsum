@@ -442,10 +442,13 @@ func TestRun_RerunFails_PanicPreventsRerun(t *testing.T) {
 }
 
 func TestRun_RerunFails_RuntimeGoexitPreventsRerun(t *testing.T) {
+	goexitOutput := `{"Package": "pkg", "Test": "TestOne/Subtest", "Action": "output",` +
+		`"Output":"    testing.go:1913: test executed panic(nil) or runtime.Goexit:` +
+		` subtest may have called FailNow on a parent test\n"}`
 	jsonFailed := `{"Package": "pkg", "Action": "run"}
 {"Package": "pkg", "Test": "TestOne", "Action": "run"}
 {"Package": "pkg", "Test": "TestOne/Subtest", "Action": "run"}
-{"Package": "pkg", "Test": "TestOne/Subtest", "Action": "output","Output":"    testing.go:1913: test executed panic(nil) or runtime.Goexit: subtest may have called FailNow on a parent test\n"}
+` + goexitOutput + `
 {"Package": "pkg", "Test": "TestOne/Subtest", "Action": "fail"}
 {"Package": "pkg", "Test": "TestOne", "Action": "fail"}
 {"Package": "pkg", "Action": "fail"}
