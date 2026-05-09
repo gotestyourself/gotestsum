@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -138,6 +139,8 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 
 	flags.BoolVar(&opts.debug, "debug", false, "enabled debug logging")
 	flags.BoolVar(&opts.version, "version", false, "show version and exit")
+	flags.StringVar(&opts.failedFirstJSONFile, "failed-first", "",
+		"path to previous run's JSON file. Failed tests from this file will be run first")
 	return flags, opts
 }
 
@@ -214,6 +217,7 @@ type options struct {
 	watchChdir                   bool
 	maxFails                     int
 	version                      bool
+	failedFirstJSONFile          string
 
 	// shims for testing
 	stdout io.Writer
@@ -221,6 +225,11 @@ type options struct {
 }
 
 func (o options) Validate() error {
+	if o.failedFirstJSONFile != "" {
+		if _, err := os.Stat(o.failedFirstJSONFile); os.IsNotExist(err) {
+			return fmt.Errorf("failed-first JSON file does not exist: %s", o.failedFirstJSONFile)
+		}
+	}
 	if o.rerunFailsMaxAttempts > 0 && len(o.args) > 0 && !o.rawCommand && len(o.packages) == 0 {
 		return fmt.Errorf(
 			"when go test args are used with --rerun-fails " +
@@ -282,6 +291,71 @@ func run(opts *options) error {
 
 	if err := opts.Validate(); err != nil {
 		return err
+	}
+
+	// --failed-first logic
+	if opts.failedFirstJSONFile != "" {
+		data, err := os.ReadFile(opts.failedFirstJSONFile)
+		if err != nil {
+			return fmt.Errorf("failed to read previous run JSON file: %w", err)
+		}
+		// Parse JSON lines
+		var failedTests []struct{ Package, Test, Action string }
+		for _, line := range strings.Split(string(data), "\n") {
+			if strings.TrimSpace(line) == "" {
+				continue
+			}
+			var evt struct{ Package, Test, Action string }
+			_ = json.Unmarshal([]byte(line), &evt)
+			if evt.Action == "fail" && evt.Test != "" {
+				failedTests = append(failedTests, evt)
+			}
+		}
+		// Run failed tests first
+		for _, tc := range failedTests {
+			goTestProc, err := startGoTestFn(ctx, "", goTestCmdArgs(opts, rerunOpts{
+				runFlag: goTestRunFlagForTestCase(testjson.TestName(tc.Test)),
+				pkg:     tc.Package,
+			}))
+			if err != nil {
+				return err
+			}
+			cfg := testjson.ScanConfig{
+				Stdout:  goTestProc.stdout,
+				Stderr:  goTestProc.stderr,
+				Handler: &noopHandler{},
+				Stop:    cancel,
+			}
+			_, _ = testjson.ScanTestOutput(cfg)
+			_ = goTestProc.cmd.Wait()
+		}
+		// Then run all tests
+		goTestProc, err := startGoTestFn(ctx, "", goTestCmdArgs(opts, rerunOpts{}))
+		if err != nil {
+			return err
+		}
+		handler, err := newEventHandler(opts)
+		if err != nil {
+			return err
+		}
+		defer handler.Close()
+		cfg := testjson.ScanConfig{
+			Stdout:                   goTestProc.stdout,
+			Stderr:                   goTestProc.stderr,
+			Handler:                  handler,
+			Stop:                     cancel,
+			IgnoreNonJSONOutputLines: opts.ignoreNonJSONOutputLines,
+		}
+		exec, err := testjson.ScanTestOutput(cfg)
+		handler.Flush()
+		if err != nil {
+			return finishRun(opts, exec, err)
+		}
+		exitErr := goTestProc.cmd.Wait()
+		if signum := atomic.LoadInt32(&goTestProc.signal); signum != 0 {
+			return finishRun(opts, exec, exitError{num: signalExitCode + int(signum)})
+		}
+		return finishRun(opts, exec, exitErr)
 	}
 
 	goTestProc, err := startGoTestFn(ctx, "", goTestCmdArgs(opts, rerunOpts{}))
@@ -555,3 +629,8 @@ func (w *cancelWaiter) Wait() error {
 	w.cancel()
 	return err
 }
+
+type noopHandler struct{}
+
+func (s noopHandler) Event(testjson.TestEvent, *testjson.Execution) error { return nil }
+func (s noopHandler) Err(string) error                                    { return nil }

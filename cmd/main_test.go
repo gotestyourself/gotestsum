@@ -550,3 +550,127 @@ func TestRun_JsonFileTimingEvents(t *testing.T) {
 	assert.NilError(t, err)
 	golden.Assert(t, string(raw), "expected-jsonfile-timing-events")
 }
+
+func TestRun_FailedFirst_BasicOrder(t *testing.T) {
+	// Fake previous run JSON: TestFail1 and TestFail2 failed, TestPass passed
+	prevJSON := `{"Package": "pkg", "Test": "TestFail1", "Action": "fail"}
+{"Package": "pkg", "Test": "TestFail2", "Action": "fail"}
+{"Package": "pkg", "Test": "TestPass", "Action": "pass"}
+{"Package": "pkg", "Action": "fail"}`
+
+	tmp := t.TempDir()
+	jsonFile := filepath.Join(tmp, "prev.json")
+	assert.NilError(t, os.WriteFile(jsonFile, []byte(prevJSON), 0644))
+
+	var called [][]string
+	fn := func(args []string) *proc {
+		called = append(called, args)
+		return &proc{
+			cmd:    fakeWaiter{},
+			stdout: strings.NewReader("{}"),
+			stderr: bytes.NewReader(nil),
+		}
+	}
+	reset := patchStartGoTestFn(fn)
+	defer reset()
+
+	opts := &options{
+		failedFirstJSONFile: jsonFile,
+		stdout:              new(bytes.Buffer),
+		stderr:              new(bytes.Buffer),
+		format:              "testname",
+		args:                []string{"./test.test"},
+		hideSummary:         newHideSummaryValue(),
+	}
+	// Should run TestFail1, TestFail2, then all tests
+	err := run(opts)
+	assert.NilError(t, err)
+	assert.Assert(t, len(called) >= 3) // 2 failed + 1 all
+	assert.Assert(t, strings.Contains(strings.Join(called[0], " "), "-test.run=^TestFail1$"))
+	assert.Assert(t, strings.Contains(strings.Join(called[1], " "), "-test.run=^TestFail2$"))
+	assert.Assert(t, !strings.Contains(strings.Join(called[2], " "), "-test.run=^TestFail")) // all tests, no -test.run
+}
+
+func TestRun_FailedFirst_NoFailedTests(t *testing.T) {
+	// Only passed tests in previous run
+	prevJSON := `{"Package": "pkg", "Test": "TestPass", "Action": "pass"}
+{"Package": "pkg", "Action": "pass"}`
+	tmp := t.TempDir()
+	jsonFile := filepath.Join(tmp, "prev.json")
+	assert.NilError(t, os.WriteFile(jsonFile, []byte(prevJSON), 0644))
+
+	var called [][]string
+	fn := func(args []string) *proc {
+		called = append(called, args)
+		return &proc{
+			cmd:    fakeWaiter{},
+			stdout: strings.NewReader("{}"),
+			stderr: bytes.NewReader(nil),
+		}
+	}
+	reset := patchStartGoTestFn(fn)
+	defer reset()
+
+	opts := &options{
+		failedFirstJSONFile: jsonFile,
+		stdout:              new(bytes.Buffer),
+		stderr:              new(bytes.Buffer),
+		format:              "testname",
+		args:                []string{"./test.test"},
+		hideSummary:         newHideSummaryValue(),
+	}
+	err := run(opts)
+	assert.NilError(t, err)
+	assert.Equal(t, len(called), 1) // Only all tests
+	assert.Assert(t, !strings.Contains(strings.Join(called[0], " "), "-test.run"))
+}
+
+func TestRun_FailedFirst_InvalidFile(t *testing.T) {
+	opts := &options{
+		failedFirstJSONFile: "not-exist.json",
+		stdout:              new(bytes.Buffer),
+		stderr:              new(bytes.Buffer),
+		format:              "testname",
+		args:                []string{"./test.test"},
+		hideSummary:         newHideSummaryValue(),
+	}
+	err := run(opts)
+	assert.ErrorContains(t, err, "failed-first JSON file does not exist")
+}
+
+func TestRun_FailedFirst_OnlyFailed(t *testing.T) {
+	// Only failed tests in previous run
+	prevJSON := `{"Package": "pkg", "Test": "TestFail1", "Action": "fail"}
+{"Package": "pkg", "Test": "TestFail2", "Action": "fail"}
+{"Package": "pkg", "Action": "fail"}`
+	tmp := t.TempDir()
+	jsonFile := filepath.Join(tmp, "prev.json")
+	assert.NilError(t, os.WriteFile(jsonFile, []byte(prevJSON), 0644))
+
+	var called [][]string
+	fn := func(args []string) *proc {
+		called = append(called, args)
+		return &proc{
+			cmd:    fakeWaiter{},
+			stdout: strings.NewReader("{}"),
+			stderr: bytes.NewReader(nil),
+		}
+	}
+	reset := patchStartGoTestFn(fn)
+	defer reset()
+
+	opts := &options{
+		failedFirstJSONFile: jsonFile,
+		stdout:              new(bytes.Buffer),
+		stderr:              new(bytes.Buffer),
+		format:              "testname",
+		args:                []string{"./test.test"},
+		hideSummary:         newHideSummaryValue(),
+	}
+	err := run(opts)
+	assert.NilError(t, err)
+	assert.Equal(t, len(called), 3) // 2 failed + 1 all
+	assert.Assert(t, strings.Contains(strings.Join(called[0], " "), "-test.run=^TestFail1$"))
+	assert.Assert(t, strings.Contains(strings.Join(called[1], " "), "-test.run=^TestFail2$"))
+	assert.Assert(t, !strings.Contains(strings.Join(called[2], " "), "-test.run=^TestFail"))
+}
