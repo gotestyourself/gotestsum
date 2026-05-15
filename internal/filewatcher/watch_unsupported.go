@@ -11,6 +11,7 @@ import (
 
 type Event struct {
 	PkgPath string
+	Args    []string
 	Debug   bool
 }
 
