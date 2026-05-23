@@ -449,12 +449,34 @@ func NewEventFormatter(out io.Writer, format string, formatOpts FormatOptions) E
 		return pkgNameWithFailuresFormat(out, formatOpts)
 	case "github-actions", "github-action":
 		return githubActionsFormat(out)
+	case "github-actions-fails":
+		return githubActionsFailsFormat(out)
 	default:
 		return nil
 	}
 }
 
 func githubActionsFormat(out io.Writer) EventFormatter {
+	return (&githubActionsConfig{}).NewFormatter(out)
+}
+
+func githubActionsFailsFormat(out io.Writer) EventFormatter {
+	return (&githubActionsConfig{
+		HideSuccessfulTests: true,
+	}).NewFormatter(out)
+}
+
+// githubActionsConfig controls how test events are presented using
+// GitHub Actions log grouping.
+type githubActionsConfig struct {
+	// HideSuccessfulTests suppresses passed and skipped test case lines.
+	//
+	// Package result lines are still printed so CI logs retain package-level
+	// progress and failure context.
+	HideSuccessfulTests bool
+}
+
+func (c *githubActionsConfig) NewFormatter(out io.Writer) EventFormatter {
 	buf := bufio.NewWriter(out)
 
 	type name struct {
@@ -466,9 +488,17 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 	return eventFormatterFunc(func(event TestEvent, exec *Execution) error {
 		key := name{Package: event.Package, Test: event.Test}
 
-		// test case output
-		if event.Test != "" && event.Action == ActionOutput {
-			if !isFramingLine(event.Output, event.Test) {
+		if event.Action == ActionOutput {
+			switch {
+			case event.Test != "":
+				// test case output
+				if !isFramingLine(event.Output, event.Test) {
+					output[key] = append(output[key], event.Output)
+				}
+			case event.Package != "":
+				// Package output is usually just the go test PASS/FAIL footer,
+				// but TestMain and init failures may put their only useful
+				// diagnostics here.
 				output[key] = append(output[key], event.Output)
 			}
 			return nil
@@ -476,6 +506,13 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 
 		// test case end event
 		if event.Test != "" && event.Action.IsTerminal() {
+			defer delete(output, key)
+			// Failure-only mode keeps package progress visible,
+			// but drops successful test cases before they can create log noise.
+			if c.HideSuccessfulTests && event.Action != ActionFail {
+				return nil
+			}
+
 			if len(output[key]) > 0 {
 				buf.WriteString("::group::")
 			} else {
@@ -489,14 +526,14 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 			if len(output[key]) > 0 {
 				buf.WriteString("\n::endgroup::\n")
 			}
-			delete(output, key)
 			return buf.Flush()
 		}
 
 		// package event
-		if !event.Action.IsTerminal() {
+		if !event.PackageEvent() || !event.Action.IsTerminal() {
 			return nil
 		}
+		defer delete(output, key)
 
 		result := colorEvent(event)(strings.ToUpper(string(event.Action)))
 		pkg := exec.Package(event.Package)
@@ -505,11 +542,30 @@ func githubActionsFormat(out io.Writer) EventFormatter {
 			result = colorEvent(event)("EMPTY")
 		}
 
-		buf.WriteString("  ")
+		openGroup := func() { buf.WriteString("  ") }
+		closeGroup := func() { buf.WriteString("\n") }
+
+		// In failure-only mode,
+		// package-level failures need their output promoted.
+		// Otherwise failures in TestMain or init code
+		// can lose information.
+		var packageOutput []string
+		if c.HideSuccessfulTests && event.Action == ActionFail && pkg.TestMainFailed() {
+			packageOutput = output[key]
+			if len(packageOutput) > 0 {
+				openGroup = func() { buf.WriteString("::group::") }
+				closeGroup = func() { buf.WriteString("\n::endgroup::\n") }
+			}
+		}
+
+		openGroup()
 		buf.WriteString(result)
 		buf.WriteString(" Package ")
 		buf.WriteString(packageLine(event, exec.Package(event.Package)))
-		buf.WriteString("\n")
+		for _, item := range packageOutput {
+			buf.WriteString(item)
+		}
+		closeGroup()
 		return buf.Flush()
 	})
 }
