@@ -73,7 +73,9 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 
 	run := func(t *testing.T, tc testCase) {
 		out := new(bytes.Buffer)
-		shim := newFakeHandler(tc.format(out), "input/go-test-json")
+		formatter := tc.format(out)
+		assert.Assert(t, formatter != nil)
+		shim := newFakeHandler(formatter, "input/go-test-json")
 		exec, err := ScanTestOutput(shim.Config(t))
 		assert.NilError(t, err)
 
@@ -171,6 +173,13 @@ func TestFormats_DefaultGoTestJson(t *testing.T) {
 			name:        "github-actions",
 			format:      githubActionsFormat,
 			expectedOut: "format/github-actions.out",
+		},
+		{
+			name: "github-actions-fails",
+			format: func(out io.Writer) EventFormatter {
+				return NewEventFormatter(out, "github-actions-fails", FormatOptions{})
+			},
+			expectedOut: "format/github-actions-fails.out",
 		},
 	}
 

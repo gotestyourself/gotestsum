@@ -50,6 +50,8 @@ Commonly used formats (see `--help` for a full list):
  * `pkgname` (default) - print a line for each package.
  * `testname` - print a line for each test and package.
  * `testdox` - print a sentence for each test using [gotestdox](https://github.com/bitfield/gotestdox).
+ * `github-actions` - print test output with GitHub Actions log groups.
+ * `github-actions-fails` - same as `github-actions` but only print failures.
  * `standard-quiet` - the standard `go test` format.
  * `standard-verbose` - the standard `go test -v` format.
 
