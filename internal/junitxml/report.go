@@ -137,7 +137,7 @@ func generate(exec *testjson.Execution, cfg Config) JUnitTestSuites {
 			Tests:      pkg.Total,
 			Time:       formatDurationAsSeconds(pkg.Elapsed()),
 			Properties: packageProperties(version),
-			TestCases:  packageTestCases(pkg, cfg.FormatTestCaseClassname),
+			TestCases:  packageTestCases(pkg, exec.BuildError(pkg.FailedBuild()), cfg.FormatTestCaseClassname),
 			Failures:   len(pkg.Failed),
 			Skipped:    len(pkg.Skipped),
 			Timestamp:  cfg.customTimestamp,
@@ -193,7 +193,7 @@ func goVersion() string {
 	return strings.TrimPrefix(strings.TrimSpace(string(out)), "go version ")
 }
 
-func packageTestCases(pkg *testjson.Package, formatClassname FormatFunc) []JUnitTestCase {
+func packageTestCases(pkg *testjson.Package, buildError string, formatClassname FormatFunc) []JUnitTestCase {
 	cases := []JUnitTestCase{}
 
 	if pkg.TestMainFailed() {
@@ -202,7 +202,7 @@ func packageTestCases(pkg *testjson.Package, formatClassname FormatFunc) []JUnit
 		jtc := newJUnitTestCase(testjson.TestCase{Test: "TestMain"}, formatClassname)
 		jtc.Failure = &JUnitFailure{
 			Message:  "Failed",
-			Contents: buf.String(),
+			Contents: buildError + buf.String(),
 		}
 		cases = append(cases, jtc)
 	}
