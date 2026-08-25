@@ -84,6 +84,22 @@ func TestWrite_WithAttributes(t *testing.T) {
 	golden.Assert(t, out.String(), "junitxml-report-tc-with-attributes.golden")
 }
 
+func TestWrite_BuildErrors(t *testing.T) {
+	out := new(bytes.Buffer)
+	exec := createExecution(t, testjson.ScanConfig{
+		Stdout: readTestData(t, "go-test-json-builderror.out"),
+	})
+
+	t.Setenv("GOVERSION", "go7.7.7")
+	err := Write(out, exec, Config{
+		ProjectName:     "test",
+		customTimestamp: new(time.Time).Format(time.RFC3339),
+		customElapsed:   "2.1",
+	})
+	assert.NilError(t, err)
+	golden.Assert(t, out.String(), "junitxml-report-builderror.golden")
+}
+
 func createExecution(t *testing.T, config testjson.ScanConfig) *testjson.Execution {
 	exec, err := testjson.ScanTestOutput(config)
 	assert.NilError(t, err)

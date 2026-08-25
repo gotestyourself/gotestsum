@@ -13,6 +13,28 @@ import (
 	"gotest.tools/v3/golden"
 )
 
+func TestExecution_Add_BuildError(t *testing.T) {
+	source := `{"ImportPath":"pkg [pkg.test]","Action":"build-output","Output":"# pkg [pkg.test]\n"}
+{"ImportPath":"pkg [pkg.test]","Action":"build-output","Output":"pkg/bad.go:4:7: undefined: undefinedSymbol\n"}
+{"ImportPath":"pkg [pkg.test]","Action":"build-fail"}
+{"Action":"start","Package":"pkg"}
+{"Action":"output","Package":"pkg","Output":"FAIL\tpkg [build failed]\n"}
+{"Action":"fail","Package":"pkg","Elapsed":0.006,"FailedBuild":"pkg [pkg.test]"}
+`
+	exec, err := ScanTestOutput(ScanConfig{Stdout: strings.NewReader(source)})
+	assert.NilError(t, err)
+
+	// the build events must not create an empty pseudo-package
+	assert.DeepEqual(t, exec.Packages(), []string{"pkg"})
+
+	pkg := exec.Package("pkg")
+	assert.Equal(t, pkg.FailedBuild(), "pkg [pkg.test]")
+
+	expected := "# pkg [pkg.test]\npkg/bad.go:4:7: undefined: undefinedSymbol\n"
+	assert.Equal(t, exec.BuildError(pkg.FailedBuild()), expected)
+	assert.Equal(t, exec.BuildError("does-not-exist"), "")
+}
+
 func TestExecution_Add_PackageCoverage(t *testing.T) {
 	exec := newExecution()
 	exec.add(TestEvent{

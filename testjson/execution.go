@@ -20,16 +20,17 @@ import (
 type Action string
 
 const (
-	ActionRun    Action = "run"
-	ActionPause  Action = "pause"
-	ActionCont   Action = "cont"
-	ActionPass   Action = "pass"
-	ActionBench  Action = "bench"
-	ActionFail   Action = "fail"
-	ActionOutput Action = "output"
-	ActionSkip   Action = "skip"
-	ActionBuild  Action = "build-output"
-	ActionAttr   Action = "attr"
+	ActionRun       Action = "run"
+	ActionPause     Action = "pause"
+	ActionCont      Action = "cont"
+	ActionPass      Action = "pass"
+	ActionBench     Action = "bench"
+	ActionFail      Action = "fail"
+	ActionOutput    Action = "output"
+	ActionSkip      Action = "skip"
+	ActionBuild     Action = "build-output"
+	ActionBuildFail Action = "build-fail"
+	ActionAttr      Action = "attr"
 )
 
 // IsTerminal returns true if the Action is one of: pass, fail, skip.
@@ -50,6 +51,10 @@ type TestEvent struct {
 	Package    string
 	Test       string
 	ImportPath string
+	// FailedBuild is set on a package fail event to the import path of the
+	// build that failed. It links the package to the build-output events that
+	// contain the compile errors.
+	FailedBuild string
 	// Elapsed time in seconds
 	Elapsed float64
 	// Output of test or benchmark
@@ -87,6 +92,10 @@ type Package struct {
 
 	// elapsed time reported by the pass or fail event for the package.
 	elapsed time.Duration
+
+	// failedBuild is the import path of the failed build reported by the
+	// package fail event, used to look up the build error output.
+	failedBuild string
 
 	// mapping of root TestCase ID to all sub test IDs. Used to mitigate
 	// github.com/golang/go/issues/29755, and github.com/golang/go/issues/40771.
@@ -127,6 +136,13 @@ type Package struct {
 // were no tests.
 func (p *Package) Result() Action {
 	return p.action
+}
+
+// FailedBuild returns the import path of the build that failed for this package,
+// or an empty string if the package built successfully. The value can be passed
+// to Execution.BuildError to retrieve the compile errors.
+func (p *Package) FailedBuild() string {
+	return p.failedBuild
 }
 
 // Elapsed returns the elapsed time of the package, as reported by the
@@ -378,11 +394,25 @@ type Execution struct {
 	packages   map[string]*Package
 	errorsLock sync.RWMutex
 	errors     []string
-	done       bool
-	lastRunID  int
+	// buildErrors stores the build-output lines for each failed build, keyed by
+	// the build's import path (matching the FailedBuild of a package fail event).
+	buildErrors map[string][]string
+	done        bool
+	lastRunID   int
 }
 
 func (e *Execution) add(event TestEvent) {
+	// Build events carry only an ImportPath, not a Package, so they are
+	// recorded on their own and must not create an empty pseudo-package.
+	if event.Action == ActionBuild {
+		e.addError(event.Output)
+		e.addBuildError(event.ImportPath, event.Output)
+		return
+	}
+	if event.Action == ActionBuildFail {
+		return
+	}
+
 	pkg, ok := e.packages[event.Package]
 	if !ok {
 		pkg = newPackage()
@@ -401,11 +431,6 @@ func (e *Execution) add(event TestEvent) {
 		}
 	}
 
-	if event.Action == ActionBuild {
-		e.addError(event.Output)
-		return
-	}
-
 	if event.PackageEvent() {
 		pkg.addEvent(event)
 		return
@@ -418,6 +443,9 @@ func (p *Package) addEvent(event TestEvent) {
 	case ActionPass, ActionFail:
 		p.action = event.Action
 		p.elapsed = elapsedDuration(event.Elapsed)
+		if event.FailedBuild != "" {
+			p.failedBuild = event.FailedBuild
+		}
 	case ActionOutput:
 		if coverage, ok := isCoverageOutput(event.Output); ok {
 			p.coverage = coverage
@@ -679,6 +707,27 @@ func (e *Execution) Errors() []string {
 	e.errorsLock.RLock()
 	defer e.errorsLock.RUnlock()
 	return e.errors
+}
+
+func (e *Execution) addBuildError(importPath, output string) {
+	if importPath == "" {
+		return
+	}
+	e.errorsLock.Lock()
+	defer e.errorsLock.Unlock()
+	if e.buildErrors == nil {
+		e.buildErrors = make(map[string][]string)
+	}
+	e.buildErrors[importPath] = append(e.buildErrors[importPath], output)
+}
+
+// BuildError returns the build-output for the failed build with the given
+// import path, or an empty string if there was none. The import path matches
+// the FailedBuild reported by a package fail event.
+func (e *Execution) BuildError(importPath string) string {
+	e.errorsLock.RLock()
+	defer e.errorsLock.RUnlock()
+	return strings.Join(e.buildErrors[importPath], "")
 }
 
 // HasPanic returns true if at least one package had output that looked like a

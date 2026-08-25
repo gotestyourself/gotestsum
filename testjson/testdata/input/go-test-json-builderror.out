@@ -1,0 +1,15 @@
+{"ImportPath":"example.com/builderror/badpkg [example.com/builderror/badpkg.test]","Action":"build-output","Output":"# example.com/builderror/badpkg [example.com/builderror/badpkg.test]\n"}
+{"ImportPath":"example.com/builderror/badpkg [example.com/builderror/badpkg.test]","Action":"build-output","Output":"badpkg/bad.go:4:2: declared and not used: x\n"}
+{"ImportPath":"example.com/builderror/badpkg [example.com/builderror/badpkg.test]","Action":"build-output","Output":"badpkg/bad.go:4:7: undefined: undefinedSymbol\n"}
+{"ImportPath":"example.com/builderror/badpkg [example.com/builderror/badpkg.test]","Action":"build-fail"}
+{"Time":"2022-01-02T15:04:05.000000000Z","Action":"start","Package":"example.com/builderror/badpkg"}
+{"Time":"2022-01-02T15:04:05.000000000Z","Action":"output","Package":"example.com/builderror/badpkg","Output":"FAIL\texample.com/builderror/badpkg [build failed]\n"}
+{"Time":"2022-01-02T15:04:05.000000000Z","Action":"fail","Package":"example.com/builderror/badpkg","Elapsed":0.006,"FailedBuild":"example.com/builderror/badpkg [example.com/builderror/badpkg.test]"}
+{"Time":"2022-01-02T15:04:05.000000000Z","Action":"start","Package":"example.com/builderror/goodpkg"}
+{"Time":"2022-01-02T15:04:05.000000000Z","Action":"run","Package":"example.com/builderror/goodpkg","Test":"TestAdd"}
+{"Time":"2022-01-02T15:04:05.000000000Z","Action":"output","Package":"example.com/builderror/goodpkg","Test":"TestAdd","Output":"=== RUN   TestAdd\n"}
+{"Time":"2022-01-02T15:04:05.000000000Z","Action":"output","Package":"example.com/builderror/goodpkg","Test":"TestAdd","Output":"--- PASS: TestAdd (0.00s)\n"}
+{"Time":"2022-01-02T15:04:05.000000000Z","Action":"pass","Package":"example.com/builderror/goodpkg","Test":"TestAdd","Elapsed":0}
+{"Time":"2022-01-02T15:04:05.000000000Z","Action":"output","Package":"example.com/builderror/goodpkg","Output":"PASS\n"}
+{"Time":"2022-01-02T15:04:05.000000000Z","Action":"output","Package":"example.com/builderror/goodpkg","Output":"ok  \texample.com/builderror/goodpkg\t0.008s\n"}
+{"Time":"2022-01-02T15:04:05.000000000Z","Action":"pass","Package":"example.com/builderror/goodpkg","Elapsed":0.008}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="test" tests="1" failures="1" errors="2" time="2.1">
+	<testsuite tests="0" failures="0" time="0.006000" name="example.com/builderror/badpkg" timestamp="0001-01-01T00:00:00Z">
+		<properties>
+			<property name="go.version" value="go7.7.7"></property>
+		</properties>
+		<testcase classname="" name="TestMain" time="0.000000">
+			<failure message="Failed" type=""># example.com/builderror/badpkg [example.com/builderror/badpkg.test]&#xA;badpkg/bad.go:4:2: declared and not used: x&#xA;badpkg/bad.go:4:7: undefined: undefinedSymbol&#xA;FAIL&#x9;example.com/builderror/badpkg [build failed]&#xA;</failure>
+		</testcase>
+	</testsuite>
+	<testsuite tests="1" failures="0" time="0.008000" name="example.com/builderror/goodpkg" timestamp="0001-01-01T00:00:00Z">
+		<properties>
+			<property name="go.version" value="go7.7.7"></property>
+		</properties>
+		<testcase classname="example.com/builderror/goodpkg" name="TestAdd" time="0.000000"></testcase>
+	</testsuite>
+</testsuites>
