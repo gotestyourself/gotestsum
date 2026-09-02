@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="test" tests="8" failures="6" errors="0" time="2.1">
+	<testsuite tests="8" failures="6" time="0.777000" name="gotest.tools/gotestsum/testjson/internal/nestedfails" timestamp="0001-01-01T00:00:00Z">
+		<properties>
+			<property name="go.version" value="go7.7.7"></property>
+		</properties>
+		<testcase classname="gotest.tools/gotestsum/testjson/internal/nestedfails" name="TestParentFailsWithSubtestFailure/fails" time="0.000000">
+			<failure message="Failed" type="">=== RUN   TestParentFailsWithSubtestFailure/fails&#xA;    fails_test.go:15: this failed&#xA;--- FAIL: TestParentFailsWithSubtestFailure/fails (0.00s)&#xA;</failure>
+		</testcase>
+		<testcase classname="gotest.tools/gotestsum/testjson/internal/nestedfails" name="TestParentFailsWithSubtestFailure" time="0.000000">
+			<failure message="Failed" type="">=== RUN   TestParentFailsWithSubtestFailure&#xA;--- FAIL: TestParentFailsWithSubtestFailure (0.00s)&#xA;</failure>
+		</testcase>
+		<testcase classname="gotest.tools/gotestsum/testjson/internal/nestedfails" name="TestParentFailsWithoutSubtestFailure" time="0.000000">
+			<failure message="Failed" type="">=== RUN   TestParentFailsWithoutSubtestFailure&#xA;    fails_test.go:23: the parent failed&#xA;--- FAIL: TestParentFailsWithoutSubtestFailure (0.00s)&#xA;=== RUN   TestParentFailsWithoutSubtestFailure/passes&#xA;--- PASS: TestParentFailsWithoutSubtestFailure/passes (0.00s)&#xA;</failure>
+		</testcase>
+		<testcase classname="gotest.tools/gotestsum/testjson/internal/nestedfails" name="TestDeeplyNested/b/c" time="0.000000">
+			<failure message="Failed" type="">=== RUN   TestDeeplyNested/b/c&#xA;    fails_test.go:30: this failed&#xA;--- FAIL: TestDeeplyNested/b/c (0.00s)&#xA;</failure>
+		</testcase>
+		<testcase classname="gotest.tools/gotestsum/testjson/internal/nestedfails" name="TestDeeplyNested/b" time="0.000000">
+			<failure message="Failed" type="">=== RUN   TestDeeplyNested/b&#xA;--- FAIL: TestDeeplyNested/b (0.00s)&#xA;</failure>
+		</testcase>
+		<testcase classname="gotest.tools/gotestsum/testjson/internal/nestedfails" name="TestDeeplyNested" time="0.000000">
+			<failure message="Failed" type="">=== RUN   TestDeeplyNested&#xA;--- FAIL: TestDeeplyNested (0.00s)&#xA;</failure>
+		</testcase>
+		<testcase classname="gotest.tools/gotestsum/testjson/internal/nestedfails" name="TestParentFailsWithSubtestFailure/passes" time="0.000000"></testcase>
+		<testcase classname="gotest.tools/gotestsum/testjson/internal/nestedfails" name="TestParentFailsWithoutSubtestFailure/passes" time="0.000000"></testcase>
+	</testsuite>
+</testsuites>

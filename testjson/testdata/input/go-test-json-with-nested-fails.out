@@ -1,0 +1,38 @@
+{"Time":"2026-09-02T13:25:07.188099+10:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithSubtestFailure"}
+{"Time":"2026-09-02T13:25:07.188511+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithSubtestFailure","Output":"=== RUN   TestParentFailsWithSubtestFailure\n"}
+{"Time":"2026-09-02T13:25:07.188765+10:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithSubtestFailure/passes"}
+{"Time":"2026-09-02T13:25:07.188834+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithSubtestFailure/passes","Output":"=== RUN   TestParentFailsWithSubtestFailure/passes\n"}
+{"Time":"2026-09-02T13:25:07.188892+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithSubtestFailure/passes","Output":"--- PASS: TestParentFailsWithSubtestFailure/passes (0.00s)\n"}
+{"Time":"2026-09-02T13:25:07.188916+10:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithSubtestFailure/passes","Elapsed":0}
+{"Time":"2026-09-02T13:25:07.189003+10:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithSubtestFailure/fails"}
+{"Time":"2026-09-02T13:25:07.189069+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithSubtestFailure/fails","Output":"=== RUN   TestParentFailsWithSubtestFailure/fails\n"}
+{"Time":"2026-09-02T13:25:07.189131+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithSubtestFailure/fails","Output":"    fails_test.go:15: this failed\n"}
+{"Time":"2026-09-02T13:25:07.189201+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithSubtestFailure/fails","Output":"--- FAIL: TestParentFailsWithSubtestFailure/fails (0.00s)\n"}
+{"Time":"2026-09-02T13:25:07.189242+10:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithSubtestFailure/fails","Elapsed":0}
+{"Time":"2026-09-02T13:25:07.189521+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithSubtestFailure","Output":"--- FAIL: TestParentFailsWithSubtestFailure (0.00s)\n"}
+{"Time":"2026-09-02T13:25:07.189612+10:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithSubtestFailure","Elapsed":0}
+{"Time":"2026-09-02T13:25:07.189732+10:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithoutSubtestFailure"}
+{"Time":"2026-09-02T13:25:07.1901+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithoutSubtestFailure","Output":"=== RUN   TestParentFailsWithoutSubtestFailure\n"}
+{"Time":"2026-09-02T13:25:07.190145+10:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithoutSubtestFailure/passes"}
+{"Time":"2026-09-02T13:25:07.190236+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithoutSubtestFailure/passes","Output":"=== RUN   TestParentFailsWithoutSubtestFailure/passes\n"}
+{"Time":"2026-09-02T13:25:07.190267+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithoutSubtestFailure/passes","Output":"--- PASS: TestParentFailsWithoutSubtestFailure/passes (0.00s)\n"}
+{"Time":"2026-09-02T13:25:07.190299+10:00","Action":"pass","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithoutSubtestFailure/passes","Elapsed":0}
+{"Time":"2026-09-02T13:25:07.190323+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithoutSubtestFailure","Output":"    fails_test.go:23: the parent failed\n"}
+{"Time":"2026-09-02T13:25:07.190347+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithoutSubtestFailure","Output":"--- FAIL: TestParentFailsWithoutSubtestFailure (0.00s)\n"}
+{"Time":"2026-09-02T13:25:07.190376+10:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestParentFailsWithoutSubtestFailure","Elapsed":0}
+{"Time":"2026-09-02T13:25:07.190405+10:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestDeeplyNested"}
+{"Time":"2026-09-02T13:25:07.190435+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestDeeplyNested","Output":"=== RUN   TestDeeplyNested\n"}
+{"Time":"2026-09-02T13:25:07.190475+10:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestDeeplyNested/b"}
+{"Time":"2026-09-02T13:25:07.190492+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestDeeplyNested/b","Output":"=== RUN   TestDeeplyNested/b\n"}
+{"Time":"2026-09-02T13:25:07.190507+10:00","Action":"run","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestDeeplyNested/b/c"}
+{"Time":"2026-09-02T13:25:07.190522+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestDeeplyNested/b/c","Output":"=== RUN   TestDeeplyNested/b/c\n"}
+{"Time":"2026-09-02T13:25:07.190546+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestDeeplyNested/b/c","Output":"    fails_test.go:30: this failed\n"}
+{"Time":"2026-09-02T13:25:07.190575+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestDeeplyNested/b/c","Output":"--- FAIL: TestDeeplyNested/b/c (0.00s)\n"}
+{"Time":"2026-09-02T13:25:07.190599+10:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestDeeplyNested/b/c","Elapsed":0}
+{"Time":"2026-09-02T13:25:07.190621+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestDeeplyNested/b","Output":"--- FAIL: TestDeeplyNested/b (0.00s)\n"}
+{"Time":"2026-09-02T13:25:07.190639+10:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestDeeplyNested/b","Elapsed":0}
+{"Time":"2026-09-02T13:25:07.190654+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestDeeplyNested","Output":"--- FAIL: TestDeeplyNested (0.00s)\n"}
+{"Time":"2026-09-02T13:25:07.190668+10:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Test":"TestDeeplyNested","Elapsed":0}
+{"Time":"2026-09-02T13:25:07.190682+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Output":"FAIL\n"}
+{"Time":"2026-09-02T13:25:07.191063+10:00","Action":"output","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Output":"FAIL\tgotest.tools/gotestsum/testjson/internal/nestedfails\t0.775s\n"}
+{"Time":"2026-09-02T13:25:07.191151+10:00","Action":"fail","Package":"gotest.tools/gotestsum/testjson/internal/nestedfails","Elapsed":0.777}

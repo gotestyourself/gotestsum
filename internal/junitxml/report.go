@@ -84,6 +84,7 @@ type Config struct {
 	FormatTestCaseClassname FormatFunc
 	HideEmptyPackages       bool
 	HideSkippedTests        bool
+	HideParentFailures      bool
 	// This is used for tests to have a consistent timestamp
 	customTimestamp string
 	customElapsed   string
@@ -109,10 +110,17 @@ func generate(exec *testjson.Execution, cfg Config) JUnitTestSuites {
 		total -= len(exec.Skipped())
 	}
 
+	failed := exec.Failed()
+	if cfg.HideParentFailures {
+		unique := testjson.FilterFailedUnique(failed)
+		total -= len(failed) - len(unique)
+		failed = unique
+	}
+
 	suites := JUnitTestSuites{
 		Name:     cfg.ProjectName,
 		Tests:    total,
-		Failures: len(exec.Failed()),
+		Failures: len(failed),
 		Errors:   len(exec.Errors()),
 		Time:     formatDurationAsSeconds(exec.Elapsed()),
 	}
@@ -130,6 +138,12 @@ func generate(exec *testjson.Execution, cfg Config) JUnitTestSuites {
 		if cfg.HideSkippedTests && len(pkg.Skipped) > 0 {
 			pkg.Total -= len(pkg.Skipped)
 			pkg.Skipped = nil
+		}
+
+		if cfg.HideParentFailures && len(pkg.Failed) > 0 {
+			unique := testjson.FilterFailedUnique(slices.Clone(pkg.Failed))
+			pkg.Total -= len(pkg.Failed) - len(unique)
+			pkg.Failed = unique
 		}
 
 		junitpkg := JUnitTestSuite{
