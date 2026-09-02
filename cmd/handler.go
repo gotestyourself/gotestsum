@@ -154,6 +154,7 @@ func writeJUnitFile(opts *options, execution *testjson.Execution) error {
 		FormatTestCaseClassname: opts.junitTestCaseClassnameFormat.Value(),
 		HideEmptyPackages:       opts.junitHideEmptyPackages,
 		HideSkippedTests:        opts.junitHideSkippedTests,
+		HideParentFailures:      opts.junitHideParentFailures,
 	})
 }
 

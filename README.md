@@ -117,6 +117,14 @@ accept the following values:
 * `relative` - a package path relative to the root of the repository
 * `full` - the full package path (default)
 
+When a subtest fails, `go test` also fails every parent test, and each of those
+failures is reported as a separate `testcase` with a `failure`. Set the
+`--junitfile-hide-parent-failures` flag or the
+`GOTESTSUM_JUNIT_HIDE_PARENT_FAILURES` environment variable to omit a failed
+parent test when one of its subtests also failed, so that a single failure is
+reported once. A parent that failed without any of its subtests failing is
+always kept, because nothing below it accounts for the failure.
+
 
 Note: If Go is not installed, or the `go` binary is not in `PATH`, the `GOVERSION`
 environment variable can be set to remove the "failed to lookup go version for junit xml"

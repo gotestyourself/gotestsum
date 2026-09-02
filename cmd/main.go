@@ -121,6 +121,9 @@ func setupFlags(name string) (*pflag.FlagSet, *options) {
 	flags.BoolVar(&opts.junitHideSkippedTests, "junitfile-hide-skipped-tests",
 		truthyFlag(lookEnvWithDefault("GOTESTSUM_JUNIT_HIDE_SKIPPED_TESTS", "")),
 		"omit skipped tests from the junit.xml file")
+	flags.BoolVar(&opts.junitHideParentFailures, "junitfile-hide-parent-failures",
+		truthyFlag(lookEnvWithDefault("GOTESTSUM_JUNIT_HIDE_PARENT_FAILURES", "")),
+		"omit parent tests that failed only because a subtest failed from the junit.xml file")
 
 	flags.IntVar(&opts.rerunFailsMaxAttempts, "rerun-fails", 0,
 		"rerun failed tests until they all pass, or attempts exceeds maximum. Defaults to max 2 reruns when enabled")
@@ -203,6 +206,7 @@ type options struct {
 	junitProjectName             string
 	junitHideEmptyPackages       bool
 	junitHideSkippedTests        bool
+	junitHideParentFailures      bool
 	rerunFailsMaxAttempts        int
 	rerunFailsMaxInitialFailures int
 	rerunFailsReportFile         string
