@@ -102,6 +102,10 @@ func TestOptions_Validate_FromFlags(t *testing.T) {
 }
 
 func TestGoTestCmdArgs(t *testing.T) {
+	const (
+		sourceFilePackage = "command-line-arguments"
+		sourceTestFile    = "example_test.go"
+	)
 	type testCase struct {
 		opts      *options
 		rerunOpts rerunOpts
@@ -134,6 +138,33 @@ func TestGoTestCmdArgs(t *testing.T) {
 			packages: []string{"./pkg"},
 		},
 		expected: []string{"go", "test", "-json", "./pkg"},
+	})
+	run(t, "rerun a source file", testCase{
+		opts: &options{packages: []string{sourceTestFile}},
+		rerunOpts: newRerunOptsFromTestCase(testjson.TestCase{
+			Package: sourceFilePackage, Test: "TestFail",
+		}),
+		expected: []string{"go", "test", "-json", "-test.run=^TestFail$", sourceTestFile},
+	})
+	run(t, "rerun source files with go and test flags", testCase{
+		opts: &options{
+			packages: []string{"helper.go", sourceTestFile},
+			args:     []string{"-count=2", "-run=Test", "-args", "-custom=value"},
+		},
+		rerunOpts: newRerunOptsFromTestCase(testjson.TestCase{
+			Package: sourceFilePackage, Test: "TestFail/Subtest",
+		}),
+		expected: []string{
+			"go", "test", "-json", "-test.run=^TestFail$/^Subtest$", "-count=2",
+			"helper.go", sourceTestFile, "-args", "-custom=value",
+		},
+	})
+	run(t, "rerun a package named command-line-arguments", testCase{
+		opts: &options{packages: []string{"./..."}},
+		rerunOpts: newRerunOptsFromTestCase(testjson.TestCase{
+			Package: sourceFilePackage, Test: "TestFail",
+		}),
+		expected: []string{"go", "test", "-json", "-test.run=^TestFail$", sourceFilePackage},
 	})
 	run(t, "TEST_DIRECTORY env var no args", testCase{
 		opts:     &options{},
