@@ -20,6 +20,8 @@ import (
 	"gotest.tools/v3/skip"
 )
 
+const runTestsOnce = "-count=1"
+
 func TestMain(m *testing.M) {
 	code := m.Run()
 	binaryFixture.Cleanup()
@@ -74,7 +76,7 @@ func TestE2E_RerunFails(t *testing.T) {
 				"-f=testname",
 				"--rerun-fails=4",
 				"--packages=./testdata/e2e/flaky/",
-				"--", "-count=1", "-tags=testdata",
+				"--", runTestsOnce, "-tags=testdata",
 			},
 		},
 		{
@@ -83,7 +85,7 @@ func TestE2E_RerunFails(t *testing.T) {
 				"-f=testname",
 				"--rerun-fails=2",
 				"--packages=./testdata/e2e/flaky/",
-				"--", "-count=1", "-tags=testdata",
+				"--", runTestsOnce, "-tags=testdata",
 			},
 			expectedErr: "exit status 1",
 		},
@@ -93,7 +95,7 @@ func TestE2E_RerunFails(t *testing.T) {
 				"-f=testname",
 				"--rerun-fails=2",
 				"--packages=../testjson/internal/broken",
-				"--", "-count=1", "-tags=stubpkg",
+				"--", runTestsOnce, "-tags=stubpkg",
 			},
 			expectedErr: "rerun aborted because previous run had errors",
 		},
@@ -103,6 +105,34 @@ func TestE2E_RerunFails(t *testing.T) {
 			fn(t, tc)
 		})
 	}
+}
+
+func TestE2E_RerunFails_SourceFile(t *testing.T) {
+	if testing.Short() {
+		t.Skip("too slow for short run")
+	}
+	t.Setenv("GITHUB_ACTIONS", "no")
+	seedFile := fs.NewFile(t, t.Name(), fs.WithContent("0"))
+	defer seedFile.Remove()
+	envVars := osEnviron()
+	envVars["TEST_SEEDFILE"] = seedFile.Path()
+	env.PatchAll(t, envVars)
+
+	flags, opts := setupFlags("gotestsum")
+	assert.NilError(t, flags.Parse([]string{
+		"--rerun-fails=1", "--packages=./testdata/e2e/flaky/flaky_test.go",
+		"--", runTestsOnce, "-run=^TestFailsRarely$",
+	}))
+	opts.args = flags.Args()
+	opts.stdout = new(bytes.Buffer)
+	opts.stderr = new(bytes.Buffer)
+
+	assert.NilError(t, run(opts))
+	// The fixture fails with seed 0 and passes with seed 1, so two executions
+	// prove that the source file was retried, not just the initial invocation.
+	seed, err := os.ReadFile(seedFile.Path())
+	assert.NilError(t, err)
+	assert.Equal(t, string(seed), "2")
 }
 
 // osEnviron returns os.Environ() as a map, with any GOTESTSUM_ env vars removed

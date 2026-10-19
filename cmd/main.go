@@ -389,6 +389,11 @@ func goTestCmdArgs(opts *options, rerunOpts rerunOpts) []string {
 
 func cmdArgPackageList(opts *options, rerunOpts rerunOpts, defPkgList ...string) []string {
 	switch {
+	case rerunOpts.pkg == "command-line-arguments" && len(opts.packages) > 0 &&
+		strings.HasSuffix(opts.packages[0], ".go"):
+		// Go reports this synthetic package name when testing named source files.
+		// Rerun the same files, including any helpers needed to compile the test.
+		return opts.packages
 	case rerunOpts.pkg != "":
 		return []string{rerunOpts.pkg}
 	case len(opts.packages) > 0:
