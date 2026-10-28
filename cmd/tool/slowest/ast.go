@@ -14,7 +14,14 @@ import (
 	"gotest.tools/gotestsum/testjson"
 )
 
-func writeTestSkip(tcs []testjson.TestCase, skipStmt ast.Stmt) error {
+type skipStatement func(*ast.FuncDecl) (ast.Stmt, error)
+
+const (
+	defaultSkipPreset      = "default"
+	testingShortSkipPreset = "testing.Short"
+)
+
+func writeTestSkip(tcs []testjson.TestCase, skipStmt skipStatement) error {
 	fset := token.NewFileSet()
 	cfg := packages.Config{
 		Mode:       modeAll(),
@@ -27,6 +34,11 @@ func writeTestSkip(tcs []testjson.TestCase, skipStmt ast.Stmt) error {
 	if err != nil {
 		return fmt.Errorf("failed to load packages: %v", err)
 	}
+	type sourceFile struct {
+		path string
+		file *ast.File
+	}
+	var pending []sourceFile
 
 	for _, pkg := range pkgs {
 		if len(pkg.Errors) > 0 {
@@ -42,15 +54,25 @@ func writeTestSkip(tcs []testjson.TestCase, skipStmt ast.Stmt) error {
 		for _, file := range pkg.Syntax {
 			path := fset.File(file.Pos()).Name()
 			log.Debugf("looking for test cases in: %v", path)
-			if !rewriteAST(file, tcs, skipStmt) {
+			modified, err := rewriteAST(file, tcs, skipStmt)
+			if err != nil {
+				return fmt.Errorf("failed to rewrite %v: %v", path, err)
+			}
+			if !modified {
 				continue
 			}
-			if err := writeFile(path, file, fset); err != nil {
-				return fmt.Errorf("failed to write ast to file %v: %v", path, err)
-			}
+			pending = append(pending, sourceFile{path: path, file: file})
 		}
 	}
-	return errTestCasesNotFound(index)
+	if err := errTestCasesNotFound(index); err != nil {
+		return err
+	}
+	for _, item := range pending {
+		if err := writeFile(item.path, item.file, fset); err != nil {
+			return fmt.Errorf("failed to write ast to file %v: %v", item.path, err)
+		}
+	}
+	return nil
 }
 
 // normalizePkgName removes the _test suffix from a package name. External test
@@ -76,12 +98,8 @@ func writeFile(path string, file *ast.File, fset *token.FileSet) error {
 
 func parseSkipStatement(text string) (ast.Stmt, error) {
 	switch text {
-	case "default", "testing.Short":
-		text = `
-	if testing.Short() {
-		t.Skip("too slow for testing.Short")
-	}
-`
+	case defaultSkipPreset, testingShortSkipPreset:
+		return testingShortSkipStatement("t"), nil
 	}
 	// Add some required boilerplate around the statement to make it a valid file
 	text = "package stub\nfunc Stub() {\n" + text + "\n}\n"
@@ -93,7 +111,50 @@ func parseSkipStatement(text string) (ast.Stmt, error) {
 	return stmt, nil
 }
 
-func rewriteAST(file *ast.File, testNames set, skipStmt ast.Stmt) bool {
+func newSkipStatement(text string) (skipStatement, error) {
+	switch text {
+	case defaultSkipPreset, testingShortSkipPreset:
+		return func(fd *ast.FuncDecl) (ast.Stmt, error) {
+			if fd.Type.Params == nil || len(fd.Type.Params.List) == 0 {
+				return nil, fmt.Errorf("%s has no test parameter for the testing.Short preset", fd.Name.Name)
+			}
+			param := fd.Type.Params.List[0]
+			if len(param.Names) > 0 && param.Names[0].Name != "_" {
+				return testingShortSkipStatement(param.Names[0].Name), nil
+			}
+
+			// Name an unused parameter without shadowing names in the test body.
+			used := make(map[string]bool)
+			ast.Inspect(fd, func(node ast.Node) bool {
+				if ident, ok := node.(*ast.Ident); ok {
+					used[ident.Name] = true
+				}
+				return true
+			})
+			name := "t"
+			for used[name] {
+				name += "_"
+			}
+			param.Names = []*ast.Ident{ast.NewIdent(name)}
+			return testingShortSkipStatement(name), nil
+		}, nil
+	}
+
+	stmt, err := parseSkipStatement(text)
+	return func(*ast.FuncDecl) (ast.Stmt, error) { return stmt, nil }, err
+}
+
+func testingShortSkipStatement(name string) ast.Stmt {
+	return &ast.IfStmt{
+		Cond: &ast.CallExpr{Fun: &ast.SelectorExpr{X: ast.NewIdent("testing"), Sel: ast.NewIdent("Short")}},
+		Body: &ast.BlockStmt{List: []ast.Stmt{&ast.ExprStmt{X: &ast.CallExpr{
+			Fun:  &ast.SelectorExpr{X: ast.NewIdent(name), Sel: ast.NewIdent("Skip")},
+			Args: []ast.Expr{&ast.BasicLit{Kind: token.STRING, Value: `"too slow for testing.Short"`}},
+		}}}},
+	}
+}
+
+func rewriteAST(file *ast.File, testNames set, skipStmt skipStatement) (bool, error) {
 	var modified bool
 	for _, decl := range file.Decls {
 		fd, ok := decl.(*ast.FuncDecl)
@@ -105,11 +166,15 @@ func rewriteAST(file *ast.File, testNames set, skipStmt ast.Stmt) bool {
 			continue
 		}
 
-		fd.Body.List = append([]ast.Stmt{skipStmt}, fd.Body.List...)
+		stmt, err := skipStmt(fd)
+		if err != nil {
+			return false, err
+		}
+		fd.Body.List = append([]ast.Stmt{stmt}, fd.Body.List...)
 		modified = true
 		delete(testNames, name)
 	}
-	return modified
+	return modified, nil
 }
 
 type set map[string]struct{}

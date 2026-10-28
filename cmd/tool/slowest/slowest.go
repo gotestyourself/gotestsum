@@ -122,7 +122,7 @@ func run(opts *options) error {
 
 	tcs := aggregate.Slowest(exec, opts.threshold, opts.topN)
 	if opts.skipStatement != "" {
-		skipStmt, err := parseSkipStatement(opts.skipStatement)
+		skipStmt, err := newSkipStatement(opts.skipStatement)
 		if err != nil {
 			return fmt.Errorf("failed to parse skip expr: %v", err)
 		}
