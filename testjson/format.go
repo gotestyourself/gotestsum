@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -219,7 +220,19 @@ func isPkgFailureOutput(event TestEvent) bool {
 		!strings.HasPrefix(out, "ok  \t"+event.Package),
 		!strings.HasPrefix(out, "?   \t"+event.Package),
 		!isShuffleSeedOutput(out),
+		!isCoverageFramingOutput(event),
 	)
+}
+
+var coverageFramingLine = regexp.MustCompile(
+	`^coverage: ([0-9]+(\.[0-9]+)?% of statements( in [^\n]+)?|\[no statements\])\n$`)
+
+func isCoverageFramingOutput(event TestEvent) bool {
+	out := event.Output
+	if prefix := "\t" + event.Package + "\t"; strings.HasPrefix(out, prefix) {
+		out = strings.TrimPrefix(strings.TrimPrefix(out, prefix), "\t")
+	}
+	return coverageFramingLine.MatchString(out)
 }
 
 func all(cond ...bool) bool {

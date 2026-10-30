@@ -219,9 +219,15 @@ func TestFormats_Coverage(t *testing.T) {
 			expectedOut: "format/testdox-coverage.out",
 		},
 		{
-			name:        "testname",
+			name:        "testname go1.19-",
 			format:      testNameFormat,
 			expectedOut: "format/testname-coverage.out",
+		},
+		{
+			name:        "testname go1.20+",
+			format:      testNameFormat,
+			input:       "input/go-test-json-with-cover-go1.20",
+			expectedOut: "format/testname-coverage-go1.20.out",
 		},
 		{
 			name: "pkgname go1.19-",
@@ -320,6 +326,65 @@ func TestFormats_Shuffle(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			run(t, tc)
+		})
+	}
+}
+
+// The input is the Go 1.22.1 output from https://github.com/gotestyourself/gotestsum/issues/391.
+func TestTestNameFormat_CoverProfile(t *testing.T) {
+	patchPkgPathPrefix(t, "")
+	out := new(bytes.Buffer)
+	shim := newFakeHandler(testNameFormat(out), "")
+	_, err := ScanTestOutput(ScanConfig{
+		Stdout:  bytes.NewReader(golden.Get(t, "input/go-test-json-with-coverprofile.out")),
+		Handler: shim,
+	})
+	assert.NilError(t, err)
+	assert.Equal(t, shim.err.String(), "")
+	assert.Equal(t, out.String(), "PASS example/hello.TestHello (0.00s)\n"+
+		"PASS example/hello/apackage.TestFoo (0.00s)\n"+
+		"PASS example/hello (coverage: 0.0% of statements)\n"+
+		"PASS example/hello/apackage (coverage: 100.0% of statements)\n"+
+		"EMPTY example/hello/anotherpkg (coverage: 0.0% of statements)\n")
+}
+
+func TestIsPkgFailureOutput_Coverage(t *testing.T) {
+	for _, tc := range []struct {
+		name    string
+		output  string
+		failure bool
+	}{
+		{name: "coverage", output: "coverage: 33.3% of statements\n"},
+		{name: "coverpkg", output: "coverage: 33.3% of statements in ./...\n"},
+		{name: "no statements", output: "coverage: [no statements]\n"},
+		{name: "go1.20 coverage", output: "\texample/pkg\tcoverage: 33.3% of statements\n"},
+		{name: "go1.20 no statements", output: "\texample/pkg\tcoverage: [no statements]\n"},
+		{name: "empty package", output: "\texample/pkg\t\tcoverage: 0.0% of statements\n"},
+		{name: "empty package coverpkg", output: "\texample/pkg\t\tcoverage: 0.0% of statements in ./...\n"},
+		{name: "panic", output: "panic: failed to initialize\n", failure: true},
+		{name: "build error", output: "./main.go:3: undefined: value\n", failure: true},
+		{name: "testmain failure", output: "TestMain: setup failed\n", failure: true},
+		{name: "coverage error", output: "coverage: failed to write profile\n", failure: true},
+		{name: "package coverage error", output: "\texample/pkg\tcoverage: failed to write profile\n", failure: true},
+		{
+			name:    "coverage error with percentage",
+			output:  "coverage: failed to write profile after measuring 12.3% of statements\n",
+			failure: true,
+		},
+		{name: "coverage trailing diagnostic", output: "coverage: 12.3% of statements: failed\n", failure: true},
+		{name: "coverage mention", output: "expected coverage: 100.0% of statements\n", failure: true},
+		{name: "other package", output: "\tother/pkg\tcoverage: 0.0% of statements\n", failure: true},
+		{name: "package prefix", output: "\texample/pkg/other\tcoverage: 0.0% of statements\n", failure: true},
+		{name: "package suffix", output: "\tother/example/pkg\tcoverage: 0.0% of statements\n", failure: true},
+		{name: "package diagnostic", output: "\texample/pkg\tfailed to initialize\n", failure: true},
+		{name: "indented test output", output: "    coverage: 100.0% of statements\n", failure: true},
+		{name: "tab-indented output", output: "\tcoverage: 100.0% of statements\n", failure: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			event := TestEvent{Action: ActionOutput, Package: "example/pkg", Output: tc.output}
+			assert.Equal(t, isPkgFailureOutput(event), tc.failure)
+			event.Test = "TestCoverage/subtest"
+			assert.Assert(t, !isPkgFailureOutput(event))
 		})
 	}
 }
