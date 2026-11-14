@@ -211,6 +211,16 @@ can be changed with `--rerun-fails-max-failures=n`.
 You may use the `--rerun-fails-abort-on-data-race` flag to abort the re-run if
 a data race is detected.
 
+By default, when a subtest fails, only that subtest is selected for the re-run.
+Use `--rerun-fails-run-root-test` with `--rerun-fails` to re-run its entire
+top-level test, including sibling subtests that already passed. For example,
+if `TestExample/first` passes and `TestExample/second` fails, this command
+re-runs both subtests instead of selecting only `TestExample/second`:
+
+```
+gotestsum --rerun-fails --rerun-fails-run-root-test
+```
+
 Note that using `--rerun-fails` may require the use of other flags, depending on
 how you specify args to `go test`:
 
