@@ -285,6 +285,12 @@ const neverFinished time.Duration = -1
 func (p *Package) end() []TestEvent {
 	result := make([]TestEvent, 0, len(p.running))
 	for k, tc := range p.running {
+		if tc.paused {
+			// A test that called t.Parallel() and never resumed was waiting for a
+			// parallel slot and did not run.
+			delete(p.running, k)
+			continue
+		}
 		if tc.Test.IsSubTest() && rootTestPassed(p, tc) {
 			// mitigate github.com/golang/go/issues/40771 (gotestsum/issues/141)
 			// by skipping missing subtest end events when the root test passed.
@@ -346,6 +352,9 @@ type TestCase struct {
 	// hasSubTestFailed is true when a subtest of this TestCase has failed. It is
 	// used to find root TestCases which have no failing subtests.
 	hasSubTestFailed bool
+	// paused is true between a pause and a cont event while a parallel test is
+	// waiting for a slot to run.
+	paused bool
 	// Time when the test was run.
 	Time time.Time
 	// Attributes are the attributes emitted from T.Attr.
@@ -483,11 +492,14 @@ func (p *Package) addTestEvent(event TestEvent) {
 		p.running[event.Test] = tc.addAttribute(event.Key, event.Value)
 		return
 	case ActionPause, ActionCont:
+		tc.paused = event.Action == ActionPause
+		p.running[event.Test] = tc
 		return
 	}
 
 	// the event.Action must be one of the three "test end" events
 	delete(p.running, event.Test)
+	tc.paused = false
 	tc.Elapsed = elapsedDuration(event.Elapsed)
 
 	switch event.Action {

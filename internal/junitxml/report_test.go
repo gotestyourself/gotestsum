@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"runtime"
+	"strings"
 	"testing"
 	"time"
 
@@ -152,4 +153,43 @@ func Test_encodeAttributes(t *testing.T) {
 			assert.DeepEqual(t, tt.want, got)
 		})
 	}
+}
+
+func TestWrite_PausedTestsAtTimeout(t *testing.T) {
+	in := strings.NewReader(`{"Action":"start","Package":"example.com/p"}
+{"Action":"run","Package":"example.com/p","Test":"TestRunning"}
+{"Action":"output","Package":"example.com/p","Test":"TestRunning","Output":"=== RUN   TestRunning\n"}
+{"Action":"output","Package":"example.com/p","Test":"TestRunning","Output":"=== PAUSE TestRunning\n"}
+{"Action":"pause","Package":"example.com/p","Test":"TestRunning"}
+{"Action":"run","Package":"example.com/p","Test":"TestPaused"}
+{"Action":"output","Package":"example.com/p","Test":"TestPaused","Output":"=== RUN   TestPaused\n"}
+{"Action":"output","Package":"example.com/p","Test":"TestPaused","Output":"=== PAUSE TestPaused\n"}
+{"Action":"pause","Package":"example.com/p","Test":"TestPaused"}
+{"Action":"output","Package":"example.com/p","Test":"TestRunning","Output":"=== CONT  TestRunning\n"}
+{"Action":"cont","Package":"example.com/p","Test":"TestRunning"}
+{"Action":"output","Package":"example.com/p","Test":"TestRunning","Output":"panic: test timed out after 1s\n"}
+{"Action":"output","Package":"example.com/p","Test":"TestRunning","Output":"\trunning tests:\n"}
+{"Action":"output","Package":"example.com/p","Test":"TestRunning","Output":"\t\tTestRunning (1s)\n"}
+{"Action":"output","Package":"example.com/p","Output":"FAIL\texample.com/p\t1.002s\n"}
+{"Action":"fail","Package":"example.com/p","Elapsed":1.002}
+`)
+	exec := createExecution(t, testjson.ScanConfig{Stdout: in})
+	t.Setenv("GOVERSION", "go7.7.7")
+
+	suites := generate(exec, Config{
+		ProjectName:     "test",
+		customTimestamp: new(time.Time).Format(time.RFC3339),
+		customElapsed:   "1.0",
+	})
+	assert.Equal(t, suites.Tests, 2)
+	assert.Equal(t, suites.Failures, 2)
+	assert.Equal(t, len(suites.Suites), 1)
+
+	suite := suites.Suites[0]
+	assert.Equal(t, suite.Failures, 1)
+	names := make([]string, 0, len(suite.TestCases))
+	for _, tc := range suite.TestCases {
+		names = append(names, tc.Name)
+	}
+	assert.DeepEqual(t, names, []string{"TestMain", "TestRunning"})
 }
