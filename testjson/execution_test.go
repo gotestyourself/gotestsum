@@ -315,3 +315,104 @@ func TestFilterFailedUnique_NestedWithGaps(t *testing.T) {
 	cmpTestCase := cmp.AllowUnexported(TestCase{})
 	assert.DeepEqual(t, expected, actual, cmpTestCase)
 }
+
+func TestScanTestOutput_PausedTestsNotMarkedFailed(t *testing.T) {
+	const pkgName = "pkg"
+
+	t.Run("paused top-level test at package timeout", func(t *testing.T) {
+		in := strings.NewReader(`{"Action":"start","Package":"pkg"}
+{"Action":"run","Package":"pkg","Test":"TestPassed"}
+{"Action":"output","Package":"pkg","Test":"TestPassed","Output":"=== RUN   TestPassed\n"}
+{"Action":"output","Package":"pkg","Test":"TestPassed","Output":"=== PAUSE TestPassed\n"}
+{"Action":"pause","Package":"pkg","Test":"TestPassed"}
+{"Action":"run","Package":"pkg","Test":"TestRunning"}
+{"Action":"output","Package":"pkg","Test":"TestRunning","Output":"=== RUN   TestRunning\n"}
+{"Action":"output","Package":"pkg","Test":"TestRunning","Output":"=== PAUSE TestRunning\n"}
+{"Action":"pause","Package":"pkg","Test":"TestRunning"}
+{"Action":"run","Package":"pkg","Test":"TestPaused"}
+{"Action":"output","Package":"pkg","Test":"TestPaused","Output":"=== RUN   TestPaused\n"}
+{"Action":"output","Package":"pkg","Test":"TestPaused","Output":"=== PAUSE TestPaused\n"}
+{"Action":"pause","Package":"pkg","Test":"TestPaused"}
+{"Action":"output","Package":"pkg","Test":"TestPassed","Output":"=== CONT  TestPassed\n"}
+{"Action":"cont","Package":"pkg","Test":"TestPassed"}
+{"Action":"output","Package":"pkg","Test":"TestPassed","Output":"--- PASS: TestPassed (0.01s)\n"}
+{"Action":"pass","Package":"pkg","Test":"TestPassed","Elapsed":0.01}
+{"Action":"output","Package":"pkg","Test":"TestRunning","Output":"=== CONT  TestRunning\n"}
+{"Action":"cont","Package":"pkg","Test":"TestRunning"}
+{"Action":"output","Package":"pkg","Test":"TestRunning","Output":"panic: test timed out after 1s\n"}
+{"Action":"output","Package":"pkg","Test":"TestRunning","Output":"\trunning tests:\n"}
+{"Action":"output","Package":"pkg","Test":"TestRunning","Output":"\t\tTestRunning (1s)\n"}
+{"Action":"output","Package":"pkg","Output":"FAIL\tpkg\t1.002s\n"}
+{"Action":"fail","Package":"pkg","Elapsed":1.002}
+`)
+		handler := &captureHandler{}
+		exec, err := ScanTestOutput(ScanConfig{Stdout: in, Handler: handler})
+		assert.NilError(t, err)
+
+		pkg := exec.Package(pkgName)
+		assert.Equal(t, pkg.Total, 3)
+		assert.Assert(t, pkg.TestMainFailed())
+		assert.Equal(t, len(pkg.running), 0)
+		assert.DeepEqual(t, testCaseNames(pkg.Passed), []string{"TestPassed"})
+		assert.DeepEqual(t, testCaseNames(pkg.Failed), []string{"TestRunning"})
+		assert.Equal(t, pkg.Failed[0].Elapsed, neverFinished)
+
+		lastEvent := handler.events[len(handler.events)-1]
+		assert.Equal(t, lastEvent.Action, ActionFail)
+		assert.Equal(t, lastEvent.Test, "TestRunning")
+		assert.Equal(t, lastEvent.Elapsed, float64(neverFinished))
+	})
+
+	t.Run("paused parallel subtest at package timeout", func(t *testing.T) {
+		in := strings.NewReader(`{"Action":"start","Package":"pkg"}
+{"Action":"run","Package":"pkg","Test":"TestSubGroup"}
+{"Action":"output","Package":"pkg","Test":"TestSubGroup","Output":"=== RUN   TestSubGroup\n"}
+{"Action":"run","Package":"pkg","Test":"TestSubGroup/SubRunning"}
+{"Action":"output","Package":"pkg","Test":"TestSubGroup/SubRunning","Output":"=== RUN   TestSubGroup/SubRunning\n"}
+{"Action":"pause","Package":"pkg","Test":"TestSubGroup/SubRunning"}
+{"Action":"run","Package":"pkg","Test":"TestSubGroup/SubPaused"}
+{"Action":"output","Package":"pkg","Test":"TestSubGroup/SubPaused","Output":"=== RUN   TestSubGroup/SubPaused\n"}
+{"Action":"pause","Package":"pkg","Test":"TestSubGroup/SubPaused"}
+{"Action":"cont","Package":"pkg","Test":"TestSubGroup/SubRunning"}
+{"Action":"output","Package":"pkg","Test":"TestSubGroup/SubRunning","Output":"panic: test timed out after 1s\n"}
+{"Action":"fail","Package":"pkg","Elapsed":1.002}
+`)
+		exec, err := ScanTestOutput(ScanConfig{Stdout: in})
+		assert.NilError(t, err)
+
+		pkg := exec.Package(pkgName)
+		failed := testCaseNames(pkg.Failed)
+		cmpSort := cmpopts.SortSlices(func(a, b string) bool { return a < b })
+		assert.DeepEqual(t, failed, []string{"TestSubGroup", "TestSubGroup/SubRunning"}, cmpSort)
+		assert.Equal(t, len(pkg.running), 0)
+	})
+
+	t.Run("paused test cleared before reusing Execution", func(t *testing.T) {
+		run1 := strings.NewReader(`{"Action":"run","Package":"pkg","Test":"TestFailed"}
+{"Action":"fail","Package":"pkg","Test":"TestFailed","Elapsed":0.01}
+{"Action":"run","Package":"pkg","Test":"TestPaused"}
+{"Action":"pause","Package":"pkg","Test":"TestPaused"}
+{"Action":"fail","Package":"pkg","Elapsed":0.02}
+`)
+		exec, err := ScanTestOutput(ScanConfig{Stdout: run1, RunID: 0})
+		assert.NilError(t, err)
+		assert.DeepEqual(t, testCaseNames(exec.Package(pkgName).Failed), []string{"TestFailed"})
+
+		// Simulate a rerun where TestPaused emits an event without ActionRun; it must
+		// not inherit the stale paused flag from RunID 0.
+		run2 := strings.NewReader(`{"Action":"output","Package":"pkg","Test":"TestPaused","Output":"boom\n"}
+{"Action":"fail","Package":"pkg","Elapsed":0.01}
+`)
+		exec, err = ScanTestOutput(ScanConfig{Stdout: run2, Execution: exec, RunID: 1})
+		assert.NilError(t, err)
+		assert.DeepEqual(t, testCaseNames(exec.Package(pkgName).Failed), []string{"TestFailed", "TestPaused"})
+	})
+}
+
+func testCaseNames(tcs []TestCase) []string {
+	names := make([]string, 0, len(tcs))
+	for _, tc := range tcs {
+		names = append(names, tc.Test.Name())
+	}
+	return names
+}
