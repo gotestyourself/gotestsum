@@ -5,11 +5,13 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"slices"
 	"strings"
 	"testing"
 
 	"gotest.tools/gotestsum/testjson"
 	"gotest.tools/v3/assert"
+	"gotest.tools/v3/assert/cmp"
 	"gotest.tools/v3/fs"
 	"gotest.tools/v3/golden"
 )
@@ -60,30 +62,42 @@ func TestWriteRerunFailsReport_HandlesMissingActionRunEvents(t *testing.T) {
 
 func TestGoTestRunFlagFromTestCases(t *testing.T) {
 	type testCase struct {
-		input    string
+		input    []string
 		expected string
 	}
 	fn := func(t *testing.T, tc testCase) {
-		actual := goTestRunFlagForTestCase(testjson.TestName(tc.input))
+		var tests []testjson.TestName
+		for _, name := range tc.input {
+			tests = append(tests, testjson.TestName(name))
+		}
+		actual := goTestRunFlagForTestCases(tests)
 		assert.Equal(t, actual, tc.expected)
 	}
 
 	var testCases = map[string]testCase{
 		"root test case": {
-			input:    "TestOne",
+			input:    []string{"TestOne"},
 			expected: "-test.run=^TestOne$",
 		},
 		"sub test case": {
-			input:    "TestOne/SubtestA",
+			input:    []string{"TestOne/SubtestA"},
 			expected: "-test.run=^TestOne$/^SubtestA$",
 		},
 		"sub test case with special characters": {
-			input:    "TestOne/Subtest(A)[100]",
+			input:    []string{"TestOne/Subtest(A)[100]"},
 			expected: `-test.run=^TestOne$/^Subtest\(A\)\[100\]$`,
 		},
 		"nested sub test case": {
-			input:    "TestOne/Nested/SubtestA",
+			input:    []string{"TestOne/Nested/SubtestA"},
 			expected: `-test.run=^TestOne$/^Nested$/^SubtestA$`,
+		},
+		"multiple root test cases": {
+			input:    []string{"TestOne", "TestTwo", "Test|Three"},
+			expected: `-test.run=^(TestOne|TestTwo|Test\|Three)$`,
+		},
+		"multiple sub test cases": {
+			input:    []string{"TestOne/Nested/SubtestA", "TestOne/Nested/Subtest(B)"},
+			expected: `-test.run=^TestOne$/^Nested$/^(SubtestA|Subtest\(B\))$`,
 		},
 	}
 
@@ -92,6 +106,61 @@ func TestGoTestRunFlagFromTestCases(t *testing.T) {
 			fn(t, testCases[name])
 		})
 	}
+}
+
+func TestNewRerunOptsFromTestCases(t *testing.T) {
+	tcs := []testjson.TestCase{
+		{Package: "pkg/a", Test: "TestOne"},
+		{Package: "pkg/b", Test: "TestOne"},
+		{Package: "pkg/a", Test: "TestTwo"},
+		{Package: "pkg/a", Test: "TestThree/one"},
+		{Package: "pkg/a", Test: "TestTwo"},
+		{Package: "pkg/a", Test: "TestThree/two"},
+		{Package: "pkg/a", Test: "TestFour/one"},
+	}
+	expected := []rerunOpts{
+		{runFlag: "-test.run=^(TestOne|TestTwo)$", pkg: "pkg/a"},
+		{runFlag: "-test.run=^TestOne$", pkg: "pkg/b"},
+		{runFlag: "-test.run=^TestThree$/^(one|two)$", pkg: "pkg/a"},
+		{runFlag: "-test.run=^TestFour$/^one$", pkg: "pkg/a"},
+	}
+	assert.Assert(t, slices.Equal(newRerunOptsFromTestCases(tcs), expected))
+}
+
+func TestRerunFailed_RunsFailedTestsOfAPackageTogether(t *testing.T) {
+	var calls [][]string
+	reset := patchStartGoTestFn(func(args []string) *proc {
+		calls = append(calls, args)
+		return &proc{
+			cmd:    fakeWaiter{},
+			stdout: strings.NewReader(""),
+			stderr: bytes.NewReader(nil),
+		}
+	})
+	defer reset()
+
+	exec, err := testjson.ScanTestOutput(testjson.ScanConfig{
+		Stdout: strings.NewReader(`{"Package": "pkg", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne", "Action": "run"}
+{"Package": "pkg", "Test": "TestOne", "Action": "fail"}
+{"Package": "pkg", "Test": "TestTwo", "Action": "run"}
+{"Package": "pkg", "Test": "TestTwo", "Action": "fail"}
+{"Package": "pkg", "Action": "fail"}
+`),
+		Stderr:  bytes.NewReader(nil),
+		Handler: noopHandler{},
+	})
+	assert.NilError(t, err)
+
+	opts := &options{
+		rerunFailsMaxInitialFailures: 10,
+		rerunFailsMaxAttempts:        1,
+		stdout:                       new(bytes.Buffer),
+	}
+	err = rerunFailed(context.Background(), opts, testjson.ScanConfig{Execution: exec, Handler: noopHandler{}})
+	assert.NilError(t, err)
+	assert.Equal(t, len(calls), 1)
+	assert.Assert(t, cmp.Contains(strings.Join(calls[0], " "), "-test.run=^(TestOne|TestTwo)$ pkg"))
 }
 
 func TestRerunFailed_ReturnsAnErrorWhenTheLastTestIsSuccessful(t *testing.T) {
@@ -106,14 +175,15 @@ func TestRerunFailed_ReturnsAnErrorWhenTheLastTestIsSuccessful(t *testing.T) {
 `
 	events := []result{
 		{out: jsonFailed, err: newExitCode("run-failed-1", 1)},
-		{out: jsonFailed, err: newExitCode("run-failed-2", 1)},
-		{out: jsonFailed, err: newExitCode("run-failed-3", 1)},
 		{
 			out: `{"Package": "pkg", "Action": "run"}
 {"Package": "pkg", "Test": "TestOne", "Action": "run"}
-{"Package": "pkg", "Test": "TestOne", "Action": "pass"}
-{"Package": "pkg", "Action": "pass"}
+{"Package": "pkg", "Test": "TestOne", "Action": "fail"}
+{"Package": "pkg", "Test": "TestTwo", "Action": "run"}
+{"Package": "pkg", "Test": "TestTwo", "Action": "pass"}
+{"Package": "pkg", "Action": "fail"}
 `,
+			err: newExitCode("run-failed-2", 1),
 		},
 	}
 
@@ -141,7 +211,7 @@ func TestRerunFailed_ReturnsAnErrorWhenTheLastTestIsSuccessful(t *testing.T) {
 		Handler:   noopHandler{},
 	}
 	err := rerunFailed(ctx, opts, cfg)
-	assert.Error(t, err, "run-failed-3")
+	assert.Error(t, err, "run-failed-2")
 }
 
 func TestRerunFailed_AbortOnDataRace(t *testing.T) {
