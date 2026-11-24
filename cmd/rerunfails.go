@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 
@@ -27,11 +28,30 @@ func (o rerunOpts) Args() []string {
 	return result
 }
 
-func newRerunOptsFromTestCase(tc testjson.TestCase) rerunOpts {
-	return rerunOpts{
-		runFlag: goTestRunFlagForTestCase(tc.Test),
-		pkg:     tc.Package,
+// newRerunOptsFromTestCases groups failed test cases that share a package and
+// a parent test, so each group is re-run by a single go test invocation.
+func newRerunOptsFromTestCases(tcs []testjson.TestCase) []rerunOpts {
+	type groupKey struct{ pkg, parent string }
+	var keys []groupKey
+	names := map[groupKey][]testjson.TestName{}
+	for _, tc := range tcs {
+		key := groupKey{pkg: tc.Package, parent: tc.Test.Parent()}
+		if _, ok := names[key]; !ok {
+			keys = append(keys, key)
+		}
+		if !slices.Contains(names[key], tc.Test) {
+			names[key] = append(names[key], tc.Test)
+		}
 	}
+
+	result := make([]rerunOpts, 0, len(keys))
+	for _, key := range keys {
+		result = append(result, rerunOpts{
+			runFlag: goTestRunFlagForTestCases(names[key]),
+			pkg:     key.pkg,
+		})
+	}
+	return result
 }
 
 type testCaseFilter func([]testjson.TestCase) []testjson.TestCase
@@ -62,8 +82,8 @@ func rerunFailed(ctx context.Context, opts *options, scanConfig testjson.ScanCon
 		opts.stdout.Write([]byte("\n")) //nolint:errcheck
 
 		nextRec := newFailureRecorder(scanConfig.Handler)
-		for _, tc := range tcFilter(rec.failures) {
-			goTestProc, err := startGoTestFn(ctx, "", goTestCmdArgs(opts, newRerunOptsFromTestCase(tc)))
+		for _, rerun := range newRerunOptsFromTestCases(tcFilter(rec.failures)) {
+			goTestProc, err := startGoTestFn(ctx, "", goTestCmdArgs(opts, rerun))
 			if err != nil {
 				return err
 			}
@@ -138,22 +158,28 @@ func (r *failureRecorder) count() int {
 	return len(r.failures)
 }
 
-func goTestRunFlagForTestCase(test testjson.TestName) string {
-	if test.IsSubTest() {
-		parts := strings.Split(string(test), "/")
-		var sb strings.Builder
-		sb.WriteString("-test.run=")
-		for i, p := range parts {
-			if i > 0 {
-				sb.WriteByte('/')
-			}
-			sb.WriteByte('^')
-			sb.WriteString(regexp.QuoteMeta(p))
-			sb.WriteByte('$')
+// goTestRunFlagForTestCases returns a -test.run flag matching all the tests,
+// which must share the same parent test.
+func goTestRunFlagForTestCases(tests []testjson.TestName) string {
+	var sb strings.Builder
+	sb.WriteString("-test.run=")
+	if parent := tests[0].Parent(); parent != "" {
+		for _, p := range strings.Split(parent, "/") {
+			sb.WriteString("^" + regexp.QuoteMeta(p) + "$/")
 		}
-		return sb.String()
 	}
-	return "-test.run=^" + regexp.QuoteMeta(test.Name()) + "$"
+
+	leaves := make([]string, len(tests))
+	for i, test := range tests {
+		parts := strings.Split(string(test), "/")
+		leaves[i] = regexp.QuoteMeta(parts[len(parts)-1])
+	}
+	if len(leaves) == 1 {
+		sb.WriteString("^" + leaves[0] + "$")
+	} else {
+		sb.WriteString("^(" + strings.Join(leaves, "|") + ")$")
+	}
+	return sb.String()
 }
 
 func writeRerunFailsReport(opts *options, exec *testjson.Execution) error {

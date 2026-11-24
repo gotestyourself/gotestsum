@@ -204,6 +204,10 @@ The tests will be re-run until each passes once, or the number of attempts
 exceeds the maximum attempts. Maximum attempts defaults to 2, and can be changed
 with `--rerun-fails=n`.
 
+Failed tests in the same package that share a parent test are re-run together by
+a single `go test` invocation, so the package setup (such as `TestMain`) runs once
+per group instead of once per test.
+
 To avoid re-running tests when there are real failures, the re-run will be
 skipped when there are too many test failures. By default this value is 10, and
 can be changed with `--rerun-fails-max-failures=n`.

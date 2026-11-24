@@ -54,7 +54,7 @@ func TestFailsRarely(t *testing.T) {
 
 func TestFailsSometimes(t *testing.T) {
 	setup(t)
-	if seed%4 != 2 {
+	if seed%4 != 3 {
 		t.Fatal("not this time")
 	}
 }
